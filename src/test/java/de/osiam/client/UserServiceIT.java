@@ -1,9 +1,8 @@
 package de.osiam.client;
 
-import com.github.springtestdbunit.DbUnitRule;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.OsiamUserService;
@@ -13,11 +12,11 @@ import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.resources.scim.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,6 +27,8 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
 public class UserServiceIT {
 
@@ -36,18 +37,12 @@ public class UserServiceIT {
 
     private AccessToken accessToken;
     private UUID validUUID = null;
-    private String endpointAddress = "http://localhost:8080/osiam-server/";
+    private String endpointAddress = "http://localhost:8080/osiam-server";
 
     private String clientId = "example-client";
     private String clientSecret = "secret";
     private AuthService authService;
     private OsiamUserService service;
-
-    @Rule
-    public DbUnitRule dbUnit = new DbUnitRule();
-
-    @Autowired
-    DataSource dataSource;
 
     @Before
     public void setUp() throws Exception {
@@ -76,7 +71,7 @@ public class UserServiceIT {
         User actualUser = service.getUserByUUID(validUUID, accessToken);
 
         assertEquals("User", actualUser.getMeta().getResourceType());
-        Date created = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").parse("01.08.2011 18:29:49");
+        Date created = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").parse("31.21.2013 21:34:18");
         assertEquals(created, actualUser.getMeta().getCreated());
         assertEquals(created, actualUser.getMeta().getLastModified());
         assertEquals(VALID_USER_UUID, actualUser.getId());
