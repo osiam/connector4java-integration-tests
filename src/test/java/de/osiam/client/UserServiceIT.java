@@ -76,10 +76,9 @@ public class UserServiceIT {
 
         Meta deserializedMeta = deserializedUser.getMeta();
         Date expectedCreated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2013-07-31 21:43:18");
-        Date expectedModified = expectedCreated;
 
         assertEquals(expectedCreated, deserializedMeta.getCreated());
-        assertEquals(expectedModified, deserializedMeta.getLastModified());
+        assertEquals(expectedCreated, deserializedMeta.getLastModified());
         assertEquals(null, deserializedMeta.getLocation());
         assertEquals(null, deserializedMeta.getVersion());
         assertEquals("User", deserializedMeta.getResourceType());
