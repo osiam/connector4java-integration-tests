@@ -50,17 +50,16 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    @Ignore("David will fix this later today!")
     public void ensure_all_values_are_deserialized_correctly() throws Exception {
         given_a_test_group_UUID();
         Group actualGroup = service.getGroupByUUID(uuidStandardGroup, accessToken);
 
         assertEquals("Group", actualGroup.getMeta().getResourceType());
-        Date created = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").parse("01.08.2011 18:29:49");
+        Date created = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2013-07-31 21:43:18");
         assertEquals(created, actualGroup.getMeta().getCreated());
         assertEquals(created, actualGroup.getMeta().getLastModified());
         assertEquals(VALID_GROUP_UUID, actualGroup.getId());
-        assertEquals("testGroup04", actualGroup.getDisplayName());
+        assertEquals("test_group01", actualGroup.getDisplayName());
         Set<MultiValuedAttribute> users = actualGroup.getMembers();
         int count = 0;
         for (MultiValuedAttribute multiValuedAttribute : users) {
