@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-    <osiam_client internal_id="3" accesstokenvalidityseconds="2342" client_secret="secret" id="example-cLient"
+    <osiam_client internal_id="3" accesstokenvalidityseconds="2342" client_secret="secret" id="example-client"
                   implicit_approvaL="false" redirect_uri="http://localhost:5000/oauth2"
                   refreshtokenvalidityseconds="2342" validityinseconds="2342"/>
     <osiam_client_grants id="3" grants="authorization_code"/>
