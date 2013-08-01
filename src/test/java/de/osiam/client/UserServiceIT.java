@@ -1,9 +1,15 @@
 package de.osiam.client;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.OsiamUserService;
@@ -14,19 +20,16 @@ import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Meta;
+import org.osiam.resources.scim.MultiValuedAttribute;
+import org.osiam.resources.scim.Name;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
-import static org.junit.Assert.*;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -75,16 +78,23 @@ public class UserServiceIT {
     public void ensure_metadata_is_deserialized_correctly() throws Exception {
         givenAValidUUID();
         whenUserIsDeserialized();
+        
         Meta deserializedMeta = deserializedUser.getMeta();
         Date expectedCreated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2013-07-31 21:43:18");
         Date expectedModified = expectedCreated;
+        
         assertEquals(expectedCreated, deserializedMeta.getCreated());
+        assertEquals(expectedModified, deserializedMeta.getLastModified());
+        assertEquals(null, deserializedMeta.getLocation());
+        assertEquals(null, deserializedMeta.getVersion());
+        assertEquals("User", deserializedMeta.getResourceType());
     }
 
     @Test
     public void ensure_address_is_deserialized_correctly() throws Exception {
         givenAValidUUID();
         whenUserIsDeserialized();
+        
         List<Address> addresses = deserializedUser.getAddresses();
         assertEquals(1, addresses.size());
         Address address = addresses.get(0);
@@ -94,47 +104,99 @@ public class UserServiceIT {
         assertEquals(COUNTRY, address.getCountry());
         assertEquals(COUNTRY, address.getRegion());
         assertEquals(COUNTRY, address.getLocality());
+    }
+    
+    @Test
+    public void ensure_name_is_deserialized_correctly() throws Exception {
+        givenAValidUUID();
+        whenUserIsDeserialized();
+        
+        Name name = deserializedUser.getName();
+        
+        assertEquals("Jensen", name.getFamilyName());
+        assertEquals("Ms. Barbara J Jensen III", name.getFormatted());
+        assertEquals("Barbara", name.getGivenName());
+        assertEquals(null, name.getHonorificPrefix());
+        assertEquals(null, name.getHonorificSuffix());
+        assertEquals(null, name.getMiddleName());
+    }
+    
+    @Test
+    public void ensure_emails_are_deserialized_correctly() throws Exception {
+        givenAValidUUID();
+        whenUserIsDeserialized();
+        
+        List<MultiValuedAttribute> emails = deserializedUser.getEmails();
+        assertEquals(1, emails.size());
+        MultiValuedAttribute email = emails.get(0);
 
+        assertEquals("Barbara@mail.com", email.getValue().toString());
+        assertEquals("work", email.getType());
+    }
+    
+    @Test
+    public void ensure_photos_are_deserialized_correctly() throws Exception {
+        givenAValidUUID();
+        whenUserIsDeserialized();
+        
+        List<MultiValuedAttribute> photos = deserializedUser.getPhotos();
+        assertEquals(1, photos.size());
+        MultiValuedAttribute photo = photos.get(0);
+
+        assertEquals("http://photos.com/barbara.jpg", photo.getValue().toString());
+        assertEquals("photo", photo.getType());
+    }
+    
+    @Test
+    public void ensure_ims_are_deserialized_correctly() throws Exception {
+        givenAValidUUID();
+        whenUserIsDeserialized();
+        
+        List<MultiValuedAttribute> ims = deserializedUser.getIms();
+        assertEquals(1, ims.size());
+        MultiValuedAttribute im = ims.get(0);
+
+        assertEquals("Hello World", im.getValue().toString());
+        assertEquals("aim", im.getType());
     }
 
     @Test
-    @Ignore
-    public void ensure_all_values_are_deserialized_correctly() throws Exception {
+    public void ensure_phonenumbers_are_deserialized_correctly() throws Exception {
+        givenAValidUUID();
+        whenUserIsDeserialized();
+        
+        List<MultiValuedAttribute> phonenumbers = deserializedUser.getPhoneNumbers();
+        assertEquals(1, phonenumbers.size());
+        MultiValuedAttribute phonenumber = phonenumbers.get(0);
+
+        assertEquals("555-555-8377", phonenumber.getValue().toString());
+        assertEquals("work", phonenumber.getType());
+    }
+    
+    @Test
+    public void ensure_external_id_is_deserialized_correctly() throws Exception {
+        givenAValidUUID();
+        whenUserIsDeserialized();
+        
+        assertEquals("bjensen", deserializedUser.getExternalId());
+    }
+    
+    @Test
+    public void ensure_basic_values_are_deserialized_correctly() throws Exception {
         givenAValidUUID();
         whenUserIsDeserialized();
 
-        assertEquals("User", deserializedUser.getMeta().getResourceType());
-
-        assertEquals("bjensen", deserializedUser.getDisplayName());
-        assertEquals(2, deserializedUser.getEmails().size());
-        String email = deserializedUser.getEmails().get(0).getValue().toString();
-        boolean exists = email.equals("MaxExample@work.com") || email.equals("MaxExample@home.de");
-        assertTrue(exists);
-        email = deserializedUser.getEmails().get(1).getValue().toString();
-        exists = email.equals("MaxExample@work.com") || email.equals("MaxExample@home.de");
-        assertTrue(exists);
-        assertEquals("MExample", deserializedUser.getExternalId());
-        assertEquals("de", deserializedUser.getLocale());
-        assertEquals("Example", deserializedUser.getName().getFamilyName());
-        assertEquals("Max", deserializedUser.getName().getGivenName());
-        assertEquals("Jason", deserializedUser.getName().getMiddleName());
-        assertEquals("Max", deserializedUser.getNickName());
-        assertEquals(null, deserializedUser.getPassword());
-        assertEquals(1, deserializedUser.getPhoneNumbers().size());
-        assertEquals("666-999-6666", deserializedUser.getPhoneNumbers().get(0).getValue().toString());
-        assertEquals("de", deserializedUser.getPreferredLanguage());
-        assertEquals("http://test.de", deserializedUser.getProfileUrl());
-        assertEquals("UTC", deserializedUser.getTimezone());
-        assertEquals("Dr", deserializedUser.getTitle());
-        assertEquals("bjensen", deserializedUser.getUserName());
-        assertEquals("User", deserializedUser.getUserType());
         assertEquals(null, deserializedUser.isActive());
-        assertEquals(1, deserializedUser.getPhotos().size());
-        assertEquals("photo", deserializedUser.getPhotos().get(0).getType());
-        assertEquals("https://photos.example.com/profilephoto/72930000000Ccne.jpg"
-                , deserializedUser.getPhotos().get(0).getValue().toString());
-        assertEquals(1, deserializedUser.getIms().size());
-        assertEquals("someaimhandle", deserializedUser.getIms().get(0).getValue().toString());
+        assertEquals("baJensen", deserializedUser.getDisplayName());
+        assertEquals("de", deserializedUser.getLocale());
+        assertEquals("Barbara", deserializedUser.getNickName());
+        assertEquals(null, deserializedUser.getPassword());
+        assertEquals("de", deserializedUser.getPreferredLanguage());
+        assertEquals("http://babara.com", deserializedUser.getProfileUrl());
+        assertEquals("UTC", deserializedUser.getTimezone());
+        assertEquals("Dr.", deserializedUser.getTitle());
+        assertEquals("bjensen", deserializedUser.getUserName());
+        assertEquals("user", deserializedUser.getUserType());
     }
 
     @Test(expected = NoResultException.class)
