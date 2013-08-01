@@ -12,13 +12,13 @@
     <osiam_client_scopes id="3" scope="PUT"/>
     <osiam_client_scopes id="3" scope="PATCH"/>
     <osiam_client_scopes id="3" scope="DELETE"/>
-    <scim_address id="8" country="germany" locality="germany" postalcode="11111"
-                  postgresql_does_not_like_primary="false" region="germany" streetaddress="example street 42"
+    <scim_address id="8" country="Germany" locality="Germany" postalcode="11111"
+                  postgresql_does_not_like_primary="false" region="Germany" streetaddress="example street 42"
                   type="work"/>
     <scim_meta id="4" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
     <scim_id internal_id="1" externalid="" id="cef9452e-00a9-4cec-a086-d171374ffbef" meta_id="4"/>
     <scim_id internal_id="5" externalid="bjensen" id="f04f1022-8870-469a-ad56-c3209aebf8eb" meta_id="6"/>
-    <scim_meta id="6" created="2013-07-31 21:43:18.394" lastmodified="2013-07-31 21:43:18.394" resourcetype="User"/>
+    <scim_meta id="6" created="2013-07-31 21:43:18.000" lastmodified="2013-07-31 21:43:18.000" resourcetype="User"/>
     <scim_name id="7" familyname="Jensen" formatted="Ms. Barbara J Jensen III" givenname="Barbara"/>
     <scim_roles value="USER"/>
     <scim_user
