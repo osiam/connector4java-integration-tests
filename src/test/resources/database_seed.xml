@@ -1,37 +1,55 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-    <osiam_client internal_id="3" accesstokenvalidityseconds="2342" client_secret="secret" id="example-client"
-                  implicit_approvaL="false" redirect_uri="http://localhost:5000/oauth2"
-                  refreshtokenvalidityseconds="2342" validityinseconds="2342"/>
-    <osiam_client_grants id="3" grants="authorization_code"/>
-    <osiam_client_grants id="3" grants="refresh-token"/>
-    <osiam_client_grants id="3" grants="password"/>
-    <osiam_client_grants id="3" grants="client_credentials"/>
-    <osiam_client_scopes id="3" scope="GET"/>
-    <osiam_client_scopes id="3" scope="POST"/>
-    <osiam_client_scopes id="3" scope="PUT"/>
-    <osiam_client_scopes id="3" scope="PATCH"/>
-    <osiam_client_scopes id="3" scope="DELETE"/>
-    <scim_address id="8" country="Germany" locality="Germany" postalcode="11111"
-                  postgresql_does_not_like_primary="false" region="Germany" streetaddress="example street 42"
-                  type="work"/>
-    <scim_meta id="4" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
-    <scim_id internal_id="1" externalid="" id="cef9452e-00a9-4cec-a086-d171374ffbef" meta_id="4"/>
-    <scim_id internal_id="5" externalid="bjensen" id="f04f1022-8870-469a-ad56-c3209aebf8eb" meta_id="6"/>
-    <scim_meta id="6" created="2013-07-31 21:43:18.000" lastmodified="2013-07-31 21:43:18.000" resourcetype="User"/>
-    <scim_name id="7" familyname="Jensen" formatted="Ms. Barbara J Jensen III" givenname="Barbara"/>
-    <scim_roles value="USER"/>
-    <scim_user
-            password="76ab8f145eda495597b700ce75bc304a007a09393f18224ca3afd521c319e1f873bf240ece27f689ee17b9fd2329b51cfb78897fdede67d9d1f0a551ff5479f0" 
-            displayname="baJensen" locale="de" nickname="Barbara" preferredlanguage="de" profileurl="http://babara.com"
-            timezone="UTC" title="Dr." username="bjensen" usertype="user" internal_id="5" name_id="7"/>
-    <scim_user
-            password="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
-            username="marissa" internal_id="1"/>
+    <OSIAM_CLIENT INTERNAL_ID="3" ACCESSTOKENVALIDITYSECONDS="2342" CLIENT_SECRET="secret" ID="example-client"
+                  IMPLICIT_APPROVAL="false" REDIRECT_URI="http://localhost:5000/oauth2"
+                  REFRESHTOKENVALIDITYSECONDS="2342" VALIDITYINSECONDS="2342"/>
+    <OSIAM_CLIENT_GRANTS ID="3" GRANTS="authorization_code"/>
+    <OSIAM_CLIENT_GRANTS ID="3" GRANTS="refresh-token"/>
+    <OSIAM_CLIENT_GRANTS ID="3" GRANTS="password"/>
+    <OSIAM_CLIENT_GRANTS ID="3" GRANTS="client_credentials"/>
+    <OSIAM_CLIENT_SCOPES ID="3" SCOPE="GET"/>
+    <OSIAM_CLIENT_SCOPES ID="3" SCOPE="POST"/>
+    <OSIAM_CLIENT_SCOPES ID="3" SCOPE="PUT"/>
+    <OSIAM_CLIENT_SCOPES ID="3" SCOPE="PATCH"/>
+    <OSIAM_CLIENT_SCOPES ID="3" SCOPE="DELETE"/>
+    <SCIM_ADDRESS ID="8" COUNTRY="Germany" LOCALITY="Germany" POSTALCODE="11111"
+                  POSTGRESQL_DOES_NOT_LIKE_PRIMARY="false" REGION="Germany" STREETADDRESS="example street 42"
+                  TYPE="work"/>
+    <SCIM_META ID="4" CREATED="2011-10-10 00:00:00.0" LASTMODIFIED="2011-10-10 00:00:00.0" RESOURCETYPE="User"/>
+    <SCIM_META ID="6" CREATED="2013-07-31 21:43:18.0" LASTMODIFIED="2013-07-31 21:43:18.0" RESOURCETYPE="User"/>
+    <SCIM_META ID="8" CREATED="2013-08-01 12:02:53.808" LASTMODIFIED="2013-08-01 12:02:53.808" RESOURCETYPE="Group"/>
+    <SCIM_META ID="10" CREATED="2013-08-01 12:03:24.427" LASTMODIFIED="2013-08-01 12:03:24.427" RESOURCETYPE="Group"/>
+    <SCIM_META ID="12" CREATED="2013-08-01 12:05:25.859" LASTMODIFIED="2013-08-01 12:05:25.859" RESOURCETYPE="Group"/>
+    <SCIM_META ID="14" CREATED="2013-08-01 12:06:05.297" LASTMODIFIED="2013-08-01 12:06:05.297" RESOURCETYPE="Group"/>
+    <SCIM_META ID="16" CREATED="2013-08-01 12:06:17.76" LASTMODIFIED="2013-08-01 12:06:17.76" RESOURCETYPE="Group"/>
+    <SCIM_META ID="18" CREATED="2013-08-01 12:07:15.483" LASTMODIFIED="2013-08-01 12:07:15.483" RESOURCETYPE="Group"/>
+    <SCIM_META ID="22" CREATED="2013-08-01 12:10:35.564" LASTMODIFIED="2013-08-01 12:10:35.564" RESOURCETYPE="Group"/>
+    <SCIM_ID INTERNAL_ID="1" EXTERNALID="" ID="cef9452e-00a9-4cec-a086-d171374ffbef" META_ID="4"/>
+    <SCIM_ID INTERNAL_ID="5" EXTERNALID="bjensen" ID="f04f1022-8870-469a-ad56-c3209aebf8eb" META_ID="6"/>
+    <SCIM_ID INTERNAL_ID="7" ID="65c8909a-d23d-4a0c-b66c-db909e531ef6" META_ID="8"/>
+    <SCIM_ID INTERNAL_ID="9" ID="b0dc0a53-3e64-46b1-b835-2a48bf480574" META_ID="10"/>
+    <SCIM_ID INTERNAL_ID="11" ID="0cb908cf-81a9-4966-803f-a3eb92968bb4" META_ID="12"/>
+    <SCIM_ID INTERNAL_ID="13" ID="8316491e-ead0-41ac-9ab9-172a812420bf" META_ID="14"/>
+    <SCIM_ID INTERNAL_ID="15" ID="22e2bf15-b956-4479-b260-5eaeb2391485" META_ID="16"/>
+    <SCIM_ID INTERNAL_ID="17" ID="70d09d3d-c44a-4611-83aa-a1f2e21cd28e" META_ID="18"/>
+    <SCIM_ID INTERNAL_ID="21" ID="83de7dc8-7a1a-4321-866b-cf35df710aaa" META_ID="22"/>
+    <SCIM_GROUP DISPLAYNAME="test_group01" INTERNAL_ID="7"/>
+    <SCIM_GROUP DISPLAYNAME="test_group02" INTERNAL_ID="9"/>
+    <SCIM_GROUP DISPLAYNAME="test_group07" INTERNAL_ID="21"/>
+    <SCIM_NAME ID="7" FAMILYNAME="Jensen" FORMATTED="Ms. Barbara J Jensen III" GIVENNAME="Barbara"/>
 
-    <scim_user_scim_address scim_user_internal_id="5" addresses_id="8"/>
-    <scim_phonenumber value="555-555-8377" type="work" user_internal_id="5"/>
-    <scim_email value="Barbara@mail.com" type="work" postgresql_does_not_like_primary="1" user_internal_id="5"/>
-    <scim_photo value="http://photos.com/barbara.jpg" type="photo" user_internal_id="5"/>
-    <scim_im value="Hello World" type="aim" user_internal_id="5"/>
+    <SCIM_USER
+            PASSWORD="76ab8f145eda495597b700ce75bc304a007a09393f18224ca3afd521c319e1f873bf240ece27f689ee17b9fd2329b51cfb78897fdede67d9d1f0a551ff5479f0"
+            DISPLAYNAME="BarbaraJ." LOCALE="de" NICKNAME="Barbara" PREFERREDLANGUAGE="de" PROFILEURL="http://babaraJ.com"
+            TIMEZONE="UTC" TITLE="Dr." USERNAME="bjensen" USERTYPE="user" INTERNAL_ID="5" NAME_ID="7"/>
+    <SCIM_USER
+            PASSWORD="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
+            USERNAME="marissa" INTERNAL_ID="1"/>
+
+
+    <SCIM_PHONENUMBER VALUE="555-555-8377" TYPE="work" USER_INTERNAL_ID="5"/>
+    <SCIM_EMAIL VALUE="barbara@example.com" TYPE="work" POSTGRESQL_DOES_NOT_LIKE_PRIMARY="1" USER_INTERNAL_ID="5"/>
+    <SCIM_PHOTO VALUE="http://example.com/barbara.jpg" TYPE="photo" USER_INTERNAL_ID="5"/>
+    <SCIM_IM VALUE="barbara" TYPE="xmpp" USER_INTERNAL_ID="5"/>
+    <SCIM_USER_SCIM_ADDRESS SCIM_USER_INTERNAL_ID="5" ADDRESSES_ID="8"/>
 </dataset>
