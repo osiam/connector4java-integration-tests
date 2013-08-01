@@ -8,16 +8,12 @@ import org.junit.runner.RunWith;
 import org.osiam.client.OsiamUserService;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
-import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.oauth.AuthService;
-import org.osiam.client.oauth.GrantType;
 import org.osiam.resources.scim.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -32,46 +28,32 @@ import static org.junit.Assert.fail;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
-public class UserServiceIT {
+public class UserServiceIT extends AbstractIntegrationTestBase {
 
-    private static final String VALID_USER_UUID = "f04f1022-8870-469a-ad56-c3209aebf8eb";
-    private static final String INVALID_UUID = "ffffffff-ffff-ffff-ffff-fffffffffff";
+
     private static final String COUNTRY = "Germany";
-
-    private AccessToken accessToken;
     private UUID validUUID = null;
-    private String endpointAddress = "http://localhost:8080/osiam-server";
 
-    private String clientId = "example-client";
-    private String clientSecret = "secret";
-    private AuthService authService;
     private OsiamUserService service;
     private User deserializedUser;
 
     @Before
     public void setUp() throws Exception {
 
-        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
-                withClientId(clientId).
-                withClientSecret(clientSecret).
-                withGrantType(GrantType.PASSWORD).
-                withUsername("marissa").
-                withPassword("koala");
-        authService = authBuilder.build();
         service = new OsiamUserService.Builder(endpointAddress).build();
-        accessToken = authService.retrieveAccessToken();
+
     }
 
     @Test
     public void get_a_valid_user() throws Exception {
-        givenAValidUUID();
+        givenAValidUserUUID();
         whenUserIsDeserialized();
         assertEquals(validUUID.toString(), deserializedUser.getId());
     }
 
     @Test
     public void metadata_is_deserialized_correctly() throws Exception {
-        givenAValidUUID();
+        givenAValidUserUUID();
         whenUserIsDeserialized();
 
         Meta deserializedMeta = deserializedUser.getMeta();
@@ -86,7 +68,7 @@ public class UserServiceIT {
 
     @Test
     public void address_is_deserialized_correctly() throws Exception {
-        givenAValidUUID();
+        givenAValidUserUUID();
         whenUserIsDeserialized();
 
         List<Address> addresses = deserializedUser.getAddresses();
@@ -102,7 +84,7 @@ public class UserServiceIT {
 
     @Test
     public void name_is_deserialized_correctly() throws Exception {
-        givenAValidUUID();
+        givenAValidUserUUID();
         whenUserIsDeserialized();
 
         Name name = deserializedUser.getName();
@@ -117,7 +99,7 @@ public class UserServiceIT {
 
     @Test
     public void emails_are_deserialized_correctly() throws Exception {
-        givenAValidUUID();
+        givenAValidUserUUID();
         whenUserIsDeserialized();
 
         List<MultiValuedAttribute> emails = deserializedUser.getEmails();
@@ -130,7 +112,7 @@ public class UserServiceIT {
 
     @Test
     public void photos_are_deserialized_correctly() throws Exception {
-        givenAValidUUID();
+        givenAValidUserUUID();
         whenUserIsDeserialized();
 
         List<MultiValuedAttribute> photos = deserializedUser.getPhotos();
@@ -143,7 +125,7 @@ public class UserServiceIT {
 
     @Test
     public void ims_are_deserialized_correctly() throws Exception {
-        givenAValidUUID();
+        givenAValidUserUUID();
         whenUserIsDeserialized();
 
         List<MultiValuedAttribute> ims = deserializedUser.getIms();
@@ -156,7 +138,7 @@ public class UserServiceIT {
 
     @Test
     public void phonenumbers_are_deserialized_correctly() throws Exception {
-        givenAValidUUID();
+        givenAValidUserUUID();
         whenUserIsDeserialized();
 
         List<MultiValuedAttribute> phonenumbers = deserializedUser.getPhoneNumbers();
@@ -169,14 +151,14 @@ public class UserServiceIT {
 
     @Test
     public void external_id_is_deserialized_correctly() throws Exception {
-        givenAValidUUID();
+        givenAValidUserUUID();
         whenUserIsDeserialized();
 
     }
 
     @Test
     public void ensure_basic_values_are_deserialized_correctly() throws Exception {
-        givenAValidUUID();
+        givenAValidUserUUID();
         whenUserIsDeserialized();
 
         assertEquals("bjensen", deserializedUser.getExternalId());
@@ -194,19 +176,19 @@ public class UserServiceIT {
 
     @Test
     public void password_is_not_transferred() throws Exception {
-        givenAValidUUID();
+        givenAValidUserUUID();
         whenUserIsDeserialized();
         assertEquals(null, deserializedUser.getPassword());
     }
 
     @Test(expected = NoResultException.class)
     public void get_an_invalid_user_raises_exception() throws Exception {
-        service.getUserByUUID(UUID.fromString("b01e0710-e9b9-4181-995f-4f1f59dc2999"), accessToken);
+        service.getUserByUUID(UUID.fromString(INVALID_UUID), accessToken);
     }
 
     @Test(expected = UnauthorizedException.class)
     public void provide_an_invalid_access_token_raises_exception() throws Exception {
-        givenAValidUUID();
+        givenAValidUserUUID();
         given_an_invalid_access_token();
 
         whenUserIsDeserialized();
@@ -217,15 +199,7 @@ public class UserServiceIT {
         deserializedUser = service.getUserByUUID(validUUID, accessToken);
     }
 
-    private void given_an_invalid_access_token() throws Exception {
-        accessToken = new AccessToken();
-        Field tokenField = accessToken.getClass().getDeclaredField("token");
-        tokenField.setAccessible(true);
-        tokenField.set(accessToken, INVALID_UUID);
-        tokenField.setAccessible(false);
-    }
-
-    private void givenAValidUUID() throws Exception {
+    private void givenAValidUserUUID() throws Exception {
         validUUID = UUID.fromString(VALID_USER_UUID);
     }
 }
