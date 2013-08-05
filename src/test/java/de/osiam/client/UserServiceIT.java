@@ -31,7 +31,6 @@ import static org.junit.Assert.fail;
 public class UserServiceIT extends AbstractIntegrationTestBase {
 
 
-    private static final String COUNTRY = "Germany";
     private UUID validUUID = null;
 
     private OsiamUserService service;
@@ -51,36 +50,7 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
         assertEquals(validUUID.toString(), deserializedUser.getId());
     }
 
-    @Test
-    public void metadata_is_deserialized_correctly() throws Exception {
-        givenAValidUserUUID();
-        whenUserIsDeserialized();
 
-        Meta deserializedMeta = deserializedUser.getMeta();
-        Date expectedCreated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2013-07-31 21:43:18");
-
-        assertEquals(expectedCreated, deserializedMeta.getCreated());
-        assertEquals(expectedCreated, deserializedMeta.getLastModified());
-        assertEquals(null, deserializedMeta.getLocation());
-        assertEquals(null, deserializedMeta.getVersion());
-        assertEquals("User", deserializedMeta.getResourceType());
-    }
-
-    @Test
-    public void address_is_deserialized_correctly() throws Exception {
-        givenAValidUserUUID();
-        whenUserIsDeserialized();
-
-        List<Address> addresses = deserializedUser.getAddresses();
-        assertEquals(1, addresses.size());
-        Address address = addresses.get(0);
-
-        assertEquals("example street 42", address.getStreetAddress());
-        assertEquals("11111", address.getPostalCode());
-        assertEquals(COUNTRY, address.getCountry());
-        assertEquals(COUNTRY, address.getRegion());
-        assertEquals(COUNTRY, address.getLocality());
-    }
 
     @Test
     public void name_is_deserialized_correctly() throws Exception {
