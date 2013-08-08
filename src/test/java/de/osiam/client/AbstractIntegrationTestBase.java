@@ -9,7 +9,7 @@ import java.lang.reflect.Field;
 import java.util.UUID;
 
 public abstract class AbstractIntegrationTestBase {
-    static final protected String VALID_USER_UUID = "f04f1022-8870-469a-ad56-c3209aebf8eb";
+    static final protected String VALID_USER_UUID = "834b410a-943b-4c80-817a-4465aed037bc";
     static final protected String INVALID_UUID = "ffffffff-ffff-ffff-ffff-fffffffffff";
     protected String endpointAddress = "http://localhost:8080/osiam-server";
     protected String clientId = "example-client";

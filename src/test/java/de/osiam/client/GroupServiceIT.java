@@ -33,7 +33,7 @@ import static org.junit.Assert.assertEquals;
 @DatabaseSetup("/database_seed.xml")
 public class GroupServiceIT extends AbstractIntegrationTestBase {
 
-    static private String VALID_GROUP_UUID = "65c8909a-d23d-4a0c-b66c-db909e531ef6";
+    static private String VALID_GROUP_UUID = "69e1a5dc-89be-4343-976c-b5541af249f4";
     private UUID uuidStandardGroup;
     private QueryResult<Group> queryResult;
     private OsiamGroupService service;

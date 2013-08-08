@@ -78,7 +78,7 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
         assertEquals(1, emails.size());
         MultiValuedAttribute email = emails.get(0);
 
-        assertEquals("barbara@example.com", email.getValue().toString());
+        assertEquals("bjensen@example.com", email.getValue().toString());
         assertEquals("work", email.getType());
     }
 
@@ -109,19 +109,6 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void phonenumbers_are_deserialized_correctly() throws Exception {
-        givenAValidUserUUID();
-        whenUserIsDeserialized();
-
-        List<MultiValuedAttribute> phonenumbers = deserializedUser.getPhoneNumbers();
-        assertEquals(1, phonenumbers.size());
-        MultiValuedAttribute phonenumber = phonenumbers.get(0);
-
-        assertEquals("555-555-8377", phonenumber.getValue().toString());
-        assertEquals("work", phonenumber.getType());
-    }
-
-    @Test
     public void external_id_is_deserialized_correctly() throws Exception {
         givenAValidUserUUID();
         whenUserIsDeserialized();
@@ -134,12 +121,9 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
         whenUserIsDeserialized();
 
         assertEquals("bjensen", deserializedUser.getExternalId());
-        assertEquals(null, deserializedUser.isActive());
         assertEquals("BarbaraJ.", deserializedUser.getDisplayName());
         assertEquals("de", deserializedUser.getLocale());
         assertEquals("Barbara", deserializedUser.getNickName());
-        assertEquals("de", deserializedUser.getPreferredLanguage());
-        assertEquals("http://babaraJ.com", deserializedUser.getProfileUrl());
         assertEquals("UTC", deserializedUser.getTimezone());
         assertEquals("Dr.", deserializedUser.getTitle());
         assertEquals("bjensen", deserializedUser.getUserName());
@@ -232,7 +216,7 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void search_for_user_by_emails_value(){
-        String searchString = "emails.value eq barbara@example.com";
+        String searchString = "emails.value eq bjensen@example.com";
         whenSingleUserIsSearchedByQueryString(searchString);
         queryResultContainsOnlyValidUser();
     }
