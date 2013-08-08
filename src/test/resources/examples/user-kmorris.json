@@ -1,35 +1,35 @@
 {
     "schemas": ["urn:scim:schemas:core:1.0"],
-    "externalId": "dcooper",
+    "externalId": "kmorris",
     "name": {
-        "formatted": "Mr. Daniel Cooper",
-        "familyName": "Cooper",
-        "givenName": "Daniel"
+        "formatted": "Mr. Kenny Morris",
+        "familyName": "Morris",
+        "givenName": "Kenny"
     },
-    "userName": "dcooper",
+    "userName": "kmorris",
     "phoneNumbers": [
         {
-            "value": "666-555-8377",
+            "value": "600-555-8377",
             "type": "work"
         }
     ],
     "addresses": [
         {
-            "streetAddress": "example street 66",
+            "streetAddress": "example street 60",
             "locality": "Germany",
             "region": "Germany",
-            "postalCode": "66666",
+            "postalCode": "66111",
             "country": "Germany",
             "type": "work"
         }
     ],
-    "displayName": "DanielC.",
-    "nickName": "Daniel",
+    "displayName": "KennyM.",
+    "nickName": "Kenny",
     "locale": "de",
-    "title": "",
+    "title": "Dr.",
     "emails": [
         {
-            "value": "dcooper@example.com",
+            "value": "kmorris@example.com",
             "type": "work"
         }
     ]

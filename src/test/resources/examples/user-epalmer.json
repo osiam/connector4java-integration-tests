@@ -1,35 +1,35 @@
 {
     "schemas": ["urn:scim:schemas:core:1.0"],
-    "externalId": "dcooper",
+    "externalId": "epalmer",
     "name": {
-        "formatted": "Mr. Daniel Cooper",
-        "familyName": "Cooper",
-        "givenName": "Daniel"
+        "formatted": "Mr. Emil Palmer",
+        "familyName": "Palmer",
+        "givenName": "Emil"
     },
-    "userName": "dcooper",
+    "userName": "epalmer",
     "phoneNumbers": [
         {
-            "value": "666-555-8377",
+            "value": "677-555-8377",
             "type": "work"
         }
     ],
     "addresses": [
         {
-            "streetAddress": "example street 66",
+            "streetAddress": "example street 67",
             "locality": "Germany",
             "region": "Germany",
-            "postalCode": "66666",
+            "postalCode": "66777",
             "country": "Germany",
             "type": "work"
         }
     ],
-    "displayName": "DanielC.",
-    "nickName": "Daniel",
+    "displayName": "EmilP.",
+    "nickName": "Emil",
     "locale": "de",
     "title": "",
     "emails": [
         {
-            "value": "dcooper@example.com",
+            "value": "epalmer@example.com",
             "type": "work"
         }
     ]

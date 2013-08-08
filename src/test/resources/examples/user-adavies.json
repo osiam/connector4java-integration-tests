@@ -1,35 +1,35 @@
 {
     "schemas": ["urn:scim:schemas:core:1.0"],
-    "externalId": "dcooper",
+    "externalId": "adavies",
     "name": {
-        "formatted": "Mr. Daniel Cooper",
-        "familyName": "Cooper",
-        "givenName": "Daniel"
+        "formatted": "Ms. Adeline Davies",
+        "familyName": "Davies",
+        "givenName": "Adeline"
     },
-    "userName": "dcooper",
+    "userName": "adavies",
     "phoneNumbers": [
         {
-            "value": "666-555-8377",
+            "value": "633-555-8377",
             "type": "work"
         }
     ],
     "addresses": [
         {
-            "streetAddress": "example street 66",
+            "streetAddress": "example street 63",
             "locality": "Germany",
             "region": "Germany",
-            "postalCode": "66666",
+            "postalCode": "66333",
             "country": "Germany",
             "type": "work"
         }
     ],
-    "displayName": "DanielC.",
-    "nickName": "Daniel",
+    "displayName": "AdelineD.",
+    "nickName": "Adeline",
     "locale": "de",
-    "title": "",
+    "title": "Prof.",
     "emails": [
         {
-            "value": "dcooper@example.com",
+            "value": "adavies@example.com",
             "type": "work"
         }
     ]

@@ -1,35 +1,35 @@
 {
     "schemas": ["urn:scim:schemas:core:1.0"],
-    "externalId": "epalmer",
+    "externalId": "gbarker",
     "name": {
-        "formatted": "Mr. Emil Palmer",
-        "familyName": "Palmer",
-        "givenName": "Emil"
+        "formatted": "Mr. Gregg Barker",
+        "familyName": "Barker",
+        "givenName": "Gregg"
     },
-    "userName": "epalmer",
+    "userName": "gparker",
     "phoneNumbers": [
         {
-            "value": "677-555-8377",
+            "value": "688-555-8377",
             "type": "work"
         }
     ],
     "addresses": [
         {
-            "streetAddress": "example street 67",
+            "streetAddress": "example street 68",
             "locality": "Germany",
             "region": "Germany",
-            "postalCode": "66777",
+            "postalCode": "66888",
             "country": "Germany",
             "type": "work"
         }
     ],
-    "displayName": "EmilP.",
-    "nickName": "Emil",
+    "displayName": "GreggB.",
+    "nickName": "Gregg",
     "locale": "de",
     "title": "",
     "emails": [
         {
-            "value": "epalmer@example.com",
+            "value": "gbarker@example.com",
             "type": "work"
         }
     ]
