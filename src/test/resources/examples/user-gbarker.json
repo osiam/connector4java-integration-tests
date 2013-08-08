@@ -1,0 +1,36 @@
+{
+    "schemas": ["urn:scim:schemas:core:1.0"],
+    "externalId": "epalmer",
+    "name": {
+        "formatted": "Mr. Emil Palmer",
+        "familyName": "Palmer",
+        "givenName": "Emil"
+    },
+    "userName": "epalmer",
+    "phoneNumbers": [
+        {
+            "value": "677-555-8377",
+            "type": "work"
+        }
+    ],
+    "addresses": [
+        {
+            "streetAddress": "example street 67",
+            "locality": "Germany",
+            "region": "Germany",
+            "postalCode": "66777",
+            "country": "Germany",
+            "type": "work"
+        }
+    ],
+    "displayName": "EmilP.",
+    "nickName": "Emil",
+    "locale": "de",
+    "title": "",
+    "emails": [
+        {
+            "value": "epalmer@example.com",
+            "type": "work"
+        }
+    ]
+}

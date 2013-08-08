@@ -1,0 +1,36 @@
+{
+    "schemas": ["urn:scim:schemas:core:1.0"],
+    "externalId": "jcambell",
+    "name": {
+        "formatted": "Mr. Jake Campbell",
+        "familyName": "Campbell",
+        "givenName": "Jake"
+    },
+    "userName": "jcambell",
+    "phoneNumbers": [
+        {
+            "value": "611-555-8377",
+            "type": "work"
+        }
+    ],
+    "addresses": [
+        {
+            "streetAddress": "example street 61",
+            "locality": "Germany",
+            "region": "Germany",
+            "postalCode": "66111",
+            "country": "Germany",
+            "type": "work"
+        }
+    ],
+    "displayName": "JakeC.",
+    "nickName": "Jake",
+    "locale": "de",
+    "title": "Dr.",
+    "emails": [
+        {
+            "value": "jcampell@example.com",
+            "type": "work"
+        }
+    ]
+}

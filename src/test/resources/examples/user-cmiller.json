@@ -1,0 +1,36 @@
+{
+    "schemas": ["urn:scim:schemas:core:1.0"],
+    "externalId": "bthomson",
+    "name": {
+        "formatted": "Ms. Beccy Thompson",
+        "familyName": "Thompson",
+        "givenName": "Beccy"
+    },
+    "userName": "jcambell",
+    "phoneNumbers": [
+        {
+            "value": "622-555-8377",
+            "type": "work"
+        }
+    ],
+    "addresses": [
+        {
+            "streetAddress": "example street 62",
+            "locality": "Germany",
+            "region": "Germany",
+            "postalCode": "66222",
+            "country": "Germany",
+            "type": "work"
+        }
+    ],
+    "displayName": "BeccyT.",
+    "nickName": "Beccy",
+    "locale": "de",
+    "title": "Dr.",
+    "emails": [
+        {
+            "value": "bthomson@example.com",
+            "type": "work"
+        }
+    ]
+}

@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.osiam.client.OsiamUserService;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.query.QueryBuilder;
 import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.*;
 import org.springframework.test.context.ContextConfiguration;
@@ -244,6 +245,16 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
     }
 
     @Test
+    public void search_for_user_by_compared_search_string_and_querybuilder(){
+        QueryBuilder queryBuilder = new QueryBuilder(User.class);
+        queryBuilder.query("title").equalTo("Dr.")
+                .and("nickName").equalTo("Barbara")
+                .and("displayName").equalTo("BarbaraJ.");
+        whenSingleUserIsSearchedByQueryBuilder(queryBuilder);
+        queryResultContainsOnlyValidUser();
+    }
+
+    @Test
     public void search_for_user_by_non_used_username(){
         String searchString = "userName eq noUserWithThisName";
         whenSingleUserIsSearchedByQueryString(searchString);
@@ -252,13 +263,13 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
 
     private void queryResultContainsOnlyValidUser(){
         assertTrue(queryResult != null);
-        assertEquals(queryResult.getTotalResults(), 1);
+        assertEquals(1, queryResult.getTotalResults());
         queryResultContainsValidUser();
     }
 
     private void queryResultContainsNoValidUser(){
         assertTrue(queryResult != null);
-        assertEquals(queryResult.getTotalResults(), 0);
+        assertEquals(0, queryResult.getTotalResults());
     }
 
     private void queryResultContainsValidUser(){
@@ -272,7 +283,11 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
     }
 
     private void whenSingleUserIsSearchedByQueryString(String queryString) {
-        queryResult = service.searchUsersByQueryString(queryString, accessToken);
+        queryResult = service.searchUsers(queryString, accessToken);
+    }
+
+    private void whenSingleUserIsSearchedByQueryBuilder(QueryBuilder queryBuilder) {
+        queryResult = service.searchUsers(queryBuilder, accessToken);
     }
 
     private void whenUserIsDeserialized() {

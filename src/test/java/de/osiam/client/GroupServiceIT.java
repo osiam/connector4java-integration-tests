@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.osiam.client.OsiamGroupService;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.query.QueryBuilder;
 import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.MultiValuedAttribute;
@@ -101,6 +102,14 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
         queryResultContainsNoValidUser();
     }
 
+    @Test
+    public void search_for_group_by_querybuilder_and_displayName(){
+        QueryBuilder queryBuilder = new QueryBuilder(Group.class);
+        queryBuilder.query("displayName").equalTo("test_group01");
+        whenSingleGroupIsSearchedByQueryBuilder(queryBuilder);
+        queryResultContainsOnlyValidGroiup();
+    }
+
     private void queryResultContainsOnlyValidGroiup(){
         assertTrue(queryResult != null);
         assertEquals(queryResult.getTotalResults(), 1);
@@ -126,7 +135,11 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
     }
 
     private void whenSingleGroupIsSearchedByQueryString(String queryString) {
-        queryResult = service.searchGroupsByQueryString(queryString, accessToken);
+        queryResult = service.searchGroups(queryString, accessToken);
+    }
+
+    private void whenSingleGroupIsSearchedByQueryBuilder(QueryBuilder queryString) {
+        queryResult = service.searchGroups(queryString, accessToken);
     }
 
 }
