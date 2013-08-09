@@ -245,6 +245,37 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
         queryResultContainsNoValidUser();
     }
 
+    @Test
+    public void search_for_3_user_by_username_using_and(){
+        String user01 = "cmiller";
+        String user02 = "hsimpson";
+        String user03 = "kmorris";
+        String searchString = "userName eq " + user01 + " and userName eq " + user02 + "and userName eq " + user03;
+        whenSingleUserIsSearchedByQueryString(searchString);
+        queryResultContainsNoValidUser();
+    }
+
+    @Test
+    public void search_for_3_user_by_username_using_or(){
+        String user01 = "cmiller";
+        String user02 = "hsimpson";
+        String user03 = "kmorris";
+        String searchString = "userName eq " + user01 + " or userName eq " + user02 + " or userName eq " + user03;
+        whenSingleUserIsSearchedByQueryString(searchString);
+        queryResultContainsUser(user01);
+        queryResultContainsUser(user02);
+        queryResultContainsUser(user03);
+    }
+
+    private void queryResultContainsUser(String userName){
+        assertTrue(queryResult != null);
+        for(User actUser : queryResult.getResources()){
+            if(actUser.getUserName().equals(userName)){
+                return; // OK
+            }
+        }
+        fail("User " + userName + " could not be found.");
+    }
     private void queryResultContainsOnlyValidUser(){
         assertTrue(queryResult != null);
         assertEquals(1, queryResult.getTotalResults());
