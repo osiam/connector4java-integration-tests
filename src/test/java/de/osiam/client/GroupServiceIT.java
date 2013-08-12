@@ -40,7 +40,6 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
 
     @Before
     public void setUp() throws URISyntaxException {
-
         service = new OsiamGroupService.Builder(endpointAddress).build();
     }
 
@@ -88,58 +87,8 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
         fail();
     }
 
-    @Test
-    public void search_for_group_by_displayName(){
-        String searchString = "displayName eq test_group01";
-        whenSingleGroupIsSearchedByQueryString(searchString);
-        queryResultContainsOnlyValidGroiup();
-    }
-
-    @Test
-    public void search_for_group_by_non_used_displayName(){
-        String searchString = "displayName eq thisIsNoGroup";
-        whenSingleGroupIsSearchedByQueryString(searchString);
-        queryResultContainsNoValidUser();
-    }
-
-    @Test
-    public void search_for_group_by_querybuilder_and_displayName(){
-        QueryBuilder queryBuilder = new QueryBuilder(Group.class);
-        queryBuilder.query("displayName").equalTo("test_group01");
-        whenSingleGroupIsSearchedByQueryBuilder(queryBuilder);
-        queryResultContainsOnlyValidGroiup();
-    }
-
-    private void queryResultContainsOnlyValidGroiup(){
-        assertTrue(queryResult != null);
-        assertEquals(queryResult.getTotalResults(), 1);
-        queryResultContainsValidGroup();
-    }
-
-    private void queryResultContainsNoValidUser(){
-        assertTrue(queryResult != null);
-        assertEquals(queryResult.getTotalResults(), 0);
-    }
-
-    private void queryResultContainsValidGroup(){
-        assertTrue(queryResult != null);
-        for(Group actGroup : queryResult.getResources()){
-            if(actGroup.getId().equals(VALID_GROUP_UUID)){
-                return; // OK
-            }
-        }
-        fail("Valid group could not be found.");
-    }
     private void given_a_test_group_UUID() {
         uuidStandardGroup = UUID.fromString(VALID_GROUP_UUID);
-    }
-
-    private void whenSingleGroupIsSearchedByQueryString(String queryString) {
-        queryResult = service.searchGroups(queryString, accessToken);
-    }
-
-    private void whenSingleGroupIsSearchedByQueryBuilder(QueryBuilder queryString) {
-        queryResult = service.searchGroups(queryString, accessToken);
     }
 
 }
