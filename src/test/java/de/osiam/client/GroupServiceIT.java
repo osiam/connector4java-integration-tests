@@ -35,7 +35,6 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
 
     static private String VALID_GROUP_UUID = "69e1a5dc-89be-4343-976c-b5541af249f4";
     private UUID uuidStandardGroup;
-    private QueryResult<Group> queryResult;
     private OsiamGroupService service;
 
     @Before
@@ -76,15 +75,6 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
     @Test(expected = NoResultException.class)
     public void get_an_invalid_group_raises_exception() throws Exception {
         service.getGroupByUUID(UUID.fromString("b01e0710-e9b9-4181-995f-4f1f59dc2999"), accessToken);
-    }
-
-    @Test(expected = UnauthorizedException.class)
-    public void provide_an_invalid_access_token_raises_exception() throws Exception {
-        given_a_test_group_UUID();
-        given_an_invalid_access_token();
-
-        service.getGroupByUUID(uuidStandardGroup, accessToken);
-        fail();
     }
 
     private void given_a_test_group_UUID() {

@@ -48,62 +48,6 @@ public class SearchUserService extends AbstractIntegrationTestBase  {
     }
 
     @Test
-    public void search_for_user_by_name_formated(){
-        String searchString = "name.formatted eq Ms. Barbara J Jensen III";
-        whenSingleUserIsSearchedByQueryString(searchString);
-        queryResultContainsOnlyValidUser();
-    }
-
-    @Test
-    public void search_for_user_by_name_familyName(){
-        String searchString = "name.familyName eq Jensen";
-        whenSingleUserIsSearchedByQueryString(searchString);
-        queryResultContainsOnlyValidUser();
-    }
-
-    @Test
-    public void search_for_user_by_name_givenName(){
-        String searchString = "name.givenName eq Barbara";
-        whenSingleUserIsSearchedByQueryString(searchString);
-        queryResultContainsOnlyValidUser();
-    }
-
-    @Test
-    public void search_for_user_by_displayName(){
-        String searchString = "displayName eq BarbaraJ.";
-        whenSingleUserIsSearchedByQueryString(searchString);
-        queryResultContainsOnlyValidUser();
-    }
-
-    @Test
-    public void search_for_user_by_nickName(){
-        String searchString = "nickName eq Barbara";
-        whenSingleUserIsSearchedByQueryString(searchString);
-        queryResultContainsOnlyValidUser();
-    }
-
-    @Test
-    public void search_for_user_by_locale(){
-        String searchString = "locale eq de";
-        whenSingleUserIsSearchedByQueryString(searchString);
-        queryResultContainsValidUser();
-    }
-
-    @Test
-    public void search_for_user_by_title(){
-        String searchString = "title eq Dr.";
-        whenSingleUserIsSearchedByQueryString(searchString);
-        queryResultContainsValidUser();
-    }
-
-    @Test
-    public void search_for_user_by_emails_value(){
-        String searchString = "emails.value eq bjensen@example.com";
-        whenSingleUserIsSearchedByQueryString(searchString);
-        queryResultContainsOnlyValidUser();
-    }
-
-    @Test
     public void search_for_user_by_compared_search_string(){
         String searchString = "title eq Dr. and nickName eq Barbara and displayName eq BarbaraJ.";
         whenSingleUserIsSearchedByQueryString(searchString);
@@ -118,13 +62,6 @@ public class SearchUserService extends AbstractIntegrationTestBase  {
                 .and("displayName").equalTo("BarbaraJ.");
         whenSingleUserIsSearchedByQueryBuilder(queryBuilder);
         queryResultContainsOnlyValidUser();
-    }
-
-    @Test
-    public void search_for_user_by_non_used_username(){
-        String searchString = "userName eq noUserWithThisName";
-        whenSingleUserIsSearchedByQueryString(searchString);
-        queryResultContainsNoValidUser();
     }
 
     @Test
