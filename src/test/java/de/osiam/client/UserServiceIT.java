@@ -1,27 +1,27 @@
 package de.osiam.client;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
+import java.util.List;
+import java.util.UUID;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.OsiamUserService;
-import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
-import org.osiam.client.query.QueryBuilder;
-import org.osiam.client.query.QueryResult;
-import org.osiam.resources.scim.*;
+import org.osiam.resources.scim.MultiValuedAttribute;
+import org.osiam.resources.scim.Name;
+import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import java.util.List;
-import java.util.UUID;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -53,9 +53,9 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
         assertEquals("Jensen", name.getFamilyName());
         assertEquals("Ms. Barbara J Jensen III", name.getFormatted());
         assertEquals("Barbara", name.getGivenName());
-        assertEquals(null, name.getHonorificPrefix());
-        assertEquals(null, name.getHonorificSuffix());
-        assertEquals(null, name.getMiddleName());
+        assertNull(name.getHonorificPrefix());
+        assertNull(name.getHonorificSuffix());
+        assertNull(name.getMiddleName());
     }
 
     @Test
@@ -72,23 +72,16 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void external_id_is_deserialized_correctly() throws Exception {
-        givenAValidUserUUID();
-        whenUserIsDeserialized();
-
-    }
-
-    @Test
     public void password_is_not_transferred() throws Exception {
         givenAValidUserUUID();
         whenUserIsDeserialized();
-        assertEquals(null, deserializedUser.getPassword());
+        assertNull(deserializedUser.getPassword());
     }
 
     @Test(expected = UnauthorizedException.class)
     public void provide_an_invalid_access_token_raises_exception() throws Exception {
         givenAValidUserUUID();
-        given_an_invalid_access_token();
+        givenAnInvalidAccessToken();
 
         whenUserIsDeserialized();
         fail();
