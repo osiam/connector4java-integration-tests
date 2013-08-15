@@ -3,7 +3,9 @@ package de.osiam.client;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -39,20 +41,20 @@ public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void search_for_group_by_string() {
-        String searchString = "displayName eq "+ EXPECTED_GROUP_NAME;
+        String searchString = encodeExpected("displayName eq "+ EXPECTED_GROUP_NAME);
         whenSingleGroupIsSearchedByQueryString(searchString);
         queryResultContainsOnlyValidGroup();
     }
 
     @Test
     public void search_for_group_by_non_used_displayName() {
-        String searchString = "displayName eq " + INVALID_STRING;
+        String searchString = encodeExpected("displayName eq " + INVALID_STRING);
         whenSingleGroupIsSearchedByQueryString(searchString);
         queryResultContainsNoValidUser();
     }
 
     @Test
-    public void search_for_group_with_querybuilder() {
+    public void search_for_group_with_querybuilder() throws UnsupportedEncodingException {
         Query query = new Query.Builder(Group.class)
                 .filter("displayName").equalTo(EXPECTED_GROUP_NAME).build();
 
@@ -64,7 +66,7 @@ public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
         assertEquals(queryResult.getTotalResults(), 1);
         queryResultContainsValidGroup();
     }
-    
+
     private void queryResultContainsValidGroup() {
         for (Group actGroup : queryResult.getResources()) {
             if (actGroup.getId().equals(VALID_GROUP_UUID)) {
@@ -72,7 +74,7 @@ public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
             }
         }
         fail("Valid group could not be found.");
-    }  
+    }
 
     private void queryResultContainsNoValidUser() {
         assertEquals(queryResult.getTotalResults(), 0);

@@ -5,7 +5,11 @@ import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.net.URLEncoder;
+
+import static org.springframework.test.util.AssertionErrors.fail;
 
 public abstract class AbstractIntegrationTestBase {
     static final protected String VALID_USER_UUID = "834b410a-943b-4c80-817a-4465aed037bc";
@@ -37,10 +41,19 @@ public abstract class AbstractIntegrationTestBase {
         tokenField.set(accessToken, AbstractIntegrationTestBase.INVALID_UUID);
         tokenField.setAccessible(false);
     }
-    
+
     protected int expectedNumberOfMembers(int expectedMembers) {
-    	
-    	return expectedMembers;
+
+        return expectedMembers;
+    }
+
+    protected String encodeExpected(String string) {
+        try {
+            return URLEncoder.encode(string, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            fail("Unable to encode queryString");
+        }
+        return ""; //can't reach
     }
 
 }
