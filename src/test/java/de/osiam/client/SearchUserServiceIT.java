@@ -99,19 +99,15 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         queryBuilder.filter("meta.created").greaterThan("2000-05-23T13:12:45.672").and(innerQuery);
 
         queryResult = service.searchUsers(queryBuilder.build(), accessToken);
-        assertEquals(expectedNumberOfMembers(1), queryResult.getTotalResults());
-   //   TODO: Marrissa is never returned because she doesn't have a name property. See issue #5
-   //     assertEquals(expectedNumberOfMembers(2), queryResult.getTotalResults());
-   //     queryResultContainsUser("marissa");
+        assertEquals(expectedNumberOfMembers(2), queryResult.getTotalResults());
+        queryResultContainsUser("marissa");
         queryResultContainsUser("hsimpson");
     }
 
     @Test
-    @Ignore
     public void sorted_search() throws UnsupportedEncodingException {
         Query.Builder queryBuilder = new Query.Builder(User.class);
         queryBuilder.sortBy("userName").withSortOrder(SortOrder.ASCENDING);
-        String hdfghdf = queryBuilder.build().toString();
         queryResult = service.searchUsers(queryBuilder.build(), accessToken);
 
         ArrayList<String> sortedUserNames = new ArrayList<>();
@@ -125,8 +121,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         sortedUserNames.add("hsimpson");
         sortedUserNames.add("kmorris");
         sortedUserNames.add("ewilley");
-        //   TODO: Marrissa is never returned because she doesn't have a name property. See issue #5
-        //sortedUserNames.add("marissa");
+        sortedUserNames.add("marissa");
         Collections.sort(sortedUserNames);
 
         assertEquals(sortedUserNames.size(), queryResult.getTotalResults());
