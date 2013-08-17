@@ -3,7 +3,6 @@ package de.osiam.client;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.OsiamUserService;
@@ -29,6 +28,8 @@ import static org.junit.Assert.*;
 @DatabaseSetup("/database_seed.xml")
 public class SearchUserServiceIT extends AbstractIntegrationTestBase {
 
+    private static final int ITEMS_PER_PAGE = 3;
+    private static final int STARTINDEX_SECOND_PAGE = 3;
     private OsiamUserService service;
     private QueryResult<User> queryResult;
 
@@ -40,14 +41,14 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     @Test
     public void search_for_user_by_username() {
         String searchString = encodeExpected("userName eq bjensen");
-        whenSingleUserIsSearchedByQueryString(searchString);
+        whenSearchIsDoneByString(searchString);
         queryResultContainsOnlyValidUser();
     }
 
     @Test
     public void search_for_user_by_emails_value() {
         String searchString = encodeExpected("emails.value eq bjensen@example.com");
-        whenSingleUserIsSearchedByQueryString(searchString);
+        whenSearchIsDoneByString(searchString);
         queryResultContainsOnlyValidUser();
     }
 
@@ -57,14 +58,14 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         Query query = new Query.Builder(User.class).filter("title").equalTo("Dr.")
                 .and("nickName").equalTo("Barbara")
                 .and("displayName").equalTo("BarbaraJ.").build();
-        whenSingleUserIsSearchedByQueryBuilder(query);
+        whenSearchedIsDoneByQuery(query);
         queryResultContainsOnlyValidUser();
     }
 
     @Test
     public void search_for_user_by_non_used_username() {
         String searchString = encodeExpected("userName eq " + INVALID_STRING);
-        whenSingleUserIsSearchedByQueryString(searchString);
+        whenSearchIsDoneByString(searchString);
         queryResultDoesNotContainValidUsers();
     }
 
@@ -74,7 +75,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         String user02 = "hsimpson";
         String user03 = "kmorris";
         String searchString = encodeExpected("userName eq " + user01 + " and userName eq " + user02 + "and userName eq " + user03);
-        whenSingleUserIsSearchedByQueryString(searchString);
+        whenSearchIsDoneByString(searchString);
         queryResultDoesNotContainValidUsers();
     }
 
@@ -84,7 +85,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         String user02 = "hsimpson";
         String user03 = "kmorris";
         String searchString = encodeExpected("userName eq " + user01 + " or userName eq " + user02 + " or userName eq " + user03);
-        whenSingleUserIsSearchedByQueryString(searchString);
+        whenSearchIsDoneByString(searchString);
         queryResultContainsUser(user01);
         queryResultContainsUser(user02);
         queryResultContainsUser(user03);
@@ -102,6 +103,23 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         assertEquals(expectedNumberOfMembers(2), queryResult.getTotalResults());
         queryResultContainsUser("marissa");
         queryResultContainsUser("hsimpson");
+    }
+
+    @Test
+    public void nextPage_scrolls_forward() throws UnsupportedEncodingException {
+        Query.Builder builder = new Query.Builder(User.class).countPerPage(ITEMS_PER_PAGE);
+        Query query = builder.build().nextPage();
+        whenSearchedIsDoneByQuery(query);
+        assertEquals(STARTINDEX_SECOND_PAGE, queryResult.getStartIndex());
+    }
+
+    @Test
+    public void prevPage_scrolls_backward() throws UnsupportedEncodingException {
+        // since OSIAMs default startIndex is wrongly '0' using ITEMS_PER_PAGE works here.
+        Query.Builder builder = new Query.Builder(User.class).countPerPage(ITEMS_PER_PAGE).startIndex(STARTINDEX_SECOND_PAGE);
+        Query query = builder.build().previousPage();
+        whenSearchedIsDoneByQuery(query);
+        assertEquals(STARTINDEX_SECOND_PAGE - ITEMS_PER_PAGE, queryResult.getStartIndex());
     }
 
     @Test
@@ -152,7 +170,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         assertEquals(0, queryResult.getTotalResults());
     }
 
-    private void whenSingleUserIsSearchedByQueryString(String queryString) {
+    private void whenSearchIsDoneByString(String queryString) {
         queryResult = service.searchUsers("filter=" + queryString, accessToken);
     }
 
@@ -166,7 +184,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         fail("Valid user could not be found.");
     }
 
-    private void whenSingleUserIsSearchedByQueryBuilder(Query query) {
+    private void whenSearchedIsDoneByQuery(Query query) {
         queryResult = service.searchUsers(query, accessToken);
     }
 
