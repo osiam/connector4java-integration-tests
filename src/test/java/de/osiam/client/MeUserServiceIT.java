@@ -39,6 +39,14 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
 
     @Before
     public void setUp() throws Exception {
+        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
+                withClientId(clientId).
+                withClientSecret(clientSecret).
+                withGrantType(GrantType.PASSWORD).
+                withUsername("bjensen").
+                withPassword("koala");
+        authService = authBuilder.build();
+        accessToken = authService.retrieveAccessToken();
         service = new OsiamUserService.Builder(endpointAddress).build();
     }
 
