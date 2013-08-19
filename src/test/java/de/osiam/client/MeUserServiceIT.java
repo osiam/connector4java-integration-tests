@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.junit.Before;
@@ -37,19 +39,13 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
 
     @Before
     public void setUp() throws Exception {
-        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
-                withClientId(clientId).
-                withClientSecret(clientSecret).
-                withGrantType(GrantType.PASSWORD).
-                withUsername("bjensen").
-                withPassword("koala");
-        authService = authBuilder.build();
-        accessToken = authService.retrieveAccessToken();
         service = new OsiamUserService.Builder(endpointAddress).build();
     }
 
     @Test
-    public void name_is_deserialized_correctly() throws Exception {
+    public void name_is_deserialized_correctly_for_user_bjensen() throws Exception {
+        givenAnAccessTokenForBJensen();
+        
         whenUserIsDeserialized();
 
         Name name = deserializedUser.getName();
@@ -63,7 +59,9 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void emails_are_deserialized_correctly() throws Exception {
+    public void emails_are_deserialized_correctly_for_user_bjensen() throws Exception {
+        givenAnAccessTokenForBJensen();
+        
         whenUserIsDeserialized();
 
         List<MultiValuedAttribute> emails = deserializedUser.getEmails();
@@ -72,6 +70,47 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
 
         assertEquals("bjensen@example.com", email.getValue().toString());
         assertEquals("work", email.getType());
+    }
+    
+    @Test
+    public void name_is_deserialized_correctly_for_user_hsimpson() throws Exception {
+        givenAnAccessTokenForHSimpson();
+        
+        whenUserIsDeserialized();
+
+        Name name = deserializedUser.getName();
+
+        assertEquals("Simpson", name.getFamilyName());
+        assertEquals("Mr. Homer Simpson", name.getFormatted());
+        assertEquals("Homer", name.getGivenName());
+        assertNull(name.getHonorificPrefix());
+        assertNull(name.getHonorificSuffix());
+        assertNull(name.getMiddleName());
+    }
+
+    @Test
+    public void emails_are_deserialized_correctly_for_user_hsimpson() throws Exception {
+        givenAnAccessTokenForHSimpson();
+
+        whenUserIsDeserialized();
+
+        List<MultiValuedAttribute> emails = deserializedUser.getEmails();
+        assertEquals(2, emails.size());
+
+        Collections.sort(emails, new Comparator<MultiValuedAttribute>() {
+            @Override
+            public int compare(MultiValuedAttribute o1, MultiValuedAttribute o2) {
+                return o1.getType().compareTo(o2.getType());
+            }
+        });
+
+        MultiValuedAttribute email1 = emails.get(1);
+        assertEquals("hsimpson@atom-example.com", email1.getValue().toString());
+        assertEquals("work", email1.getType());
+
+        MultiValuedAttribute email2 = emails.get(0);
+        assertEquals("hsimpson@phome-example.com", email2.getValue().toString());
+        assertEquals("home", email2.getType());
     }
 
     @Test
@@ -90,5 +129,27 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
 
     private void whenUserIsDeserialized() {
         deserializedUser = service.getMe(accessToken);
+    }
+    
+    private void givenAnAccessTokenForBJensen() throws Exception {
+        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
+                withClientId(clientId).
+                withClientSecret(clientSecret).
+                withGrantType(GrantType.PASSWORD).
+                withUsername("bjensen").
+                withPassword("koala");
+        authService = authBuilder.build();
+        accessToken = authService.retrieveAccessToken();
+    }
+
+    private void givenAnAccessTokenForHSimpson() throws Exception {
+        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
+                withClientId(clientId).
+                withClientSecret(clientSecret).
+                withGrantType(GrantType.PASSWORD).
+                withUsername("hsimpson").
+                withPassword("koala");
+        authService = authBuilder.build();
+        accessToken = authService.retrieveAccessToken();
     }
 }
