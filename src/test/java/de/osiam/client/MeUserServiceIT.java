@@ -94,15 +94,8 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
 
         whenUserIsDeserialized();
 
-        List<MultiValuedAttribute> emails = deserializedUser.getEmails();
+        List<MultiValuedAttribute> emails = sortEmails(deserializedUser.getEmails());
         assertEquals(2, emails.size());
-
-        Collections.sort(emails, new Comparator<MultiValuedAttribute>() {
-            @Override
-            public int compare(MultiValuedAttribute o1, MultiValuedAttribute o2) {
-                return o1.getType().compareTo(o2.getType());
-            }
-        });
 
         MultiValuedAttribute email1 = emails.get(1);
         assertEquals("hsimpson@atom-example.com", email1.getValue().toString());
@@ -129,6 +122,17 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
 
     private void whenUserIsDeserialized() {
         deserializedUser = service.getMe(accessToken);
+    }
+    
+    private List<MultiValuedAttribute> sortEmails(List<MultiValuedAttribute> emails) {
+        Collections.sort(emails, new Comparator<MultiValuedAttribute>() {
+            @Override
+            public int compare(MultiValuedAttribute o1, MultiValuedAttribute o2) {
+                return o1.getType().compareTo(o2.getType());
+            }
+        });
+        
+        return emails;
     }
     
     private void givenAnAccessTokenForBJensen() throws Exception {
