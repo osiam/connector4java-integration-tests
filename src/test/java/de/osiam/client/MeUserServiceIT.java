@@ -69,7 +69,7 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     @Test
     public void emails_are_deserialized_correctly_for_user_bjensen() throws Exception {
         givenAnAccessTokenForBJensen();
-        
+
         whenUserIsDeserialized();
 
         List<MultiValuedAttribute> emails = deserializedUser.getEmails();
