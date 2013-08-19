@@ -71,7 +71,7 @@
 
     <scim_roles value="USER"/>
 
-    <scim_user password="76ab8f145eda495597b700ce75bc304a007a09393f18224ca3afd521c319e1f873bf240ece27f689ee17b9fd2329b51cfb78897fdede67d9d1f0a551ff5479f0"
+    <scim_user password="42db3b474c2a54f6b1c3c352e4436274de6b0239432c9a6c2d51c62e54b28ad1e3ecbb306f7748890934e3dae4292e339189c8bb7af55f68de9855ca455f19e4"
                displayname="BarbaraJ." locale="de" nickname="Barbara" preferredlanguage="de" profileurl="http://babaraJ.com" timezone="UTC" title="Dr."
                username="bjensen" usertype="user" internal_id="46" name_id="48"/>
     <scim_user displayname="BeccyT." locale="de" nickname="Beccy"
