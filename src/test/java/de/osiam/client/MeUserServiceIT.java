@@ -165,5 +165,4 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
         accessToken = authService.retrieveAccessToken();
     }
     
-    
 }
