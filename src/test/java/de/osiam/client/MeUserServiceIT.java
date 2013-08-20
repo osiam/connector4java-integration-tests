@@ -39,14 +39,6 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
 
     @Before
     public void setUp() throws Exception {
-        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
-                withClientId(clientId).
-                withClientSecret(clientSecret).
-                withGrantType(GrantType.PASSWORD).
-                withUsername("bjensen").
-                withPassword("koala");
-        authService = authBuilder.build();
-        accessToken = authService.retrieveAccessToken();
         service = new OsiamUserService.Builder(endpointAddress).build();
     }
 
@@ -69,7 +61,7 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     @Test
     public void emails_are_deserialized_correctly_for_user_bjensen() throws Exception {
         givenAnAccessTokenForBJensen();
-
+        
         whenUserIsDeserialized();
 
         List<MultiValuedAttribute> emails = deserializedUser.getEmails();
@@ -130,8 +122,8 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     
     @Test(expected = UnauthorizedException.class)
     public void access_token_is_expired() throws Exception {
-    	givenAnAccessTokenForOneSecond();
-    	Thread.sleep(1000);
+        givenAnAccessTokenForOneSecond();
+        Thread.sleep(1000);
         whenUserIsDeserialized();
         fail();
     }
@@ -172,5 +164,6 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
         authService = authBuilder.build();
         accessToken = authService.retrieveAccessToken();
     }
+    
     
 }
