@@ -14,7 +14,7 @@
     <osiam_client_scopes id="3" scope="PATCH"/>
     <osiam_client_scopes id="3" scope="DELETE"/>
     
-    <osiam_client internal_id="80" id="example-client-2" redirect_uri="http://localhost:5000/oauth2" client_secret="secret"
+    <osiam_client internal_id="80" id="example-client-2" redirect_uri="http://localhost:5001/oauth2" client_secret="secret1"
                   accesstokenvalidityseconds="1" refreshtokenvalidityseconds="1" validityinseconds="1"
                   implicit_approval="false"/>
     <osiam_client_grants id="80" grants="authorization_code"/>
