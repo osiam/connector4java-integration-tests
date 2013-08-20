@@ -13,6 +13,19 @@
     <osiam_client_scopes id="3" scope="PUT"/>
     <osiam_client_scopes id="3" scope="PATCH"/>
     <osiam_client_scopes id="3" scope="DELETE"/>
+    
+    <osiam_client internal_id="80" id="example-client-2" redirect_uri="http://localhost:5000/oauth2" client_secret="secret"
+                  accesstokenvalidityseconds="1" refreshtokenvalidityseconds="1" validityinseconds="1"
+                  implicit_approval="false"/>
+    <osiam_client_grants id="80" grants="authorization_code"/>
+    <osiam_client_grants id="80" grants="refresh-token"/>
+    <osiam_client_grants id="80" grants="password"/>
+    <osiam_client_grants id="80" grants="client_credentials"/>
+    <osiam_client_scopes id="80" scope="GET"/>
+    <osiam_client_scopes id="80" scope="POST"/>
+    <osiam_client_scopes id="80" scope="PUT"/>
+    <osiam_client_scopes id="80" scope="PATCH"/>
+    <osiam_client_scopes id="80" scope="DELETE"/>
 
     <scim_meta id="4" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
     <scim_meta id="6" created="2013-08-08 19:45:20.816" lastmodified="2013-08-08 19:45:20.816" resourcetype="User"/>
