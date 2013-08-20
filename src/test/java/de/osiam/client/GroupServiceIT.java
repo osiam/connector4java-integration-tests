@@ -1,6 +1,7 @@
 package de.osiam.client;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.OsiamGroupService;
 import org.osiam.client.exception.NoResultException;
+import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.MultiValuedAttribute;
 import org.springframework.test.context.ContextConfiguration;
@@ -65,6 +67,15 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
     @Test(expected = NoResultException.class)
     public void get_an_invalid_group_raises_exception() throws Exception {
         service.getGroupByUUID(UUID.fromString(INVALID_UUID), accessToken);
+    }
+    
+    @Test(expected = UnauthorizedException.class)
+    public void access_token_is_expired() throws Exception {
+    	given_a_test_group_UUID();
+    	givenAnAccessTokenForOneSecond();
+    	Thread.sleep(1000);
+    	service.getGroupByUUID(UUID.fromString(INVALID_UUID), accessToken);
+        fail();
     }
 
     private void given_a_test_group_UUID() {
