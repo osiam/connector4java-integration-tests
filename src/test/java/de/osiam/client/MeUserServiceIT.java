@@ -119,6 +119,14 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
         whenUserIsDeserialized();
         fail();
     }
+    
+    @Test(expected = UnauthorizedException.class)
+    public void access_token_is_expired() throws Exception {
+    	givenAnAccessTokenForOneSecond();
+    	Thread.sleep(1000);
+        whenUserIsDeserialized();
+        fail();
+    }
 
     private void whenUserIsDeserialized() {
         deserializedUser = service.getMe(accessToken);
@@ -156,4 +164,6 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
         authService = authBuilder.build();
         accessToken = authService.retrieveAccessToken();
     }
+    
+    
 }

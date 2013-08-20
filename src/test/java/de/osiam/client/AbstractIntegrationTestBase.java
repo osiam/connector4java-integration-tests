@@ -33,6 +33,17 @@ public abstract class AbstractIntegrationTestBase {
         authService = authBuilder.build();
         accessToken = authService.retrieveAccessToken();
     }
+    
+    protected void givenAnAccessTokenForOneSecond() throws Exception {
+        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
+                withClientId("example-client-2").
+                withClientSecret("secret1").
+                withGrantType(GrantType.PASSWORD).
+                withUsername("hsimpson").
+                withPassword("koala");
+        authService = authBuilder.build();
+        accessToken = authService.retrieveAccessToken();
+    }
 
     protected void givenAnInvalidAccessToken() throws Exception {
         accessToken = new AccessToken();
