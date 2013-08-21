@@ -132,7 +132,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     @Test
     public void sorted_search() throws UnsupportedEncodingException {
         Query.Builder queryBuilder = new Query.Builder(User.class);
-        queryBuilder.sortBy(User_.userName).withSortOrder(SortOrder.ASCENDING);
+        queryBuilder.sortBy(User_.userName).sortOrder(SortOrder.ASCENDING);
         queryResult = service.searchUsers(queryBuilder.build(), accessToken);
 
         ArrayList<String> sortedUserNames = new ArrayList<>();
