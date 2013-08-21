@@ -25,22 +25,22 @@ public abstract class AbstractIntegrationTestBase {
     public void abstractSetUp() throws Exception {
 
         AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
-                withClientId(clientId).
-                withClientSecret(clientSecret).
-                withGrantType(GrantType.PASSWORD).
-                withUsername("marissa").
-                withPassword("koala");
+                clientId(clientId).
+                clientSecret(clientSecret).
+                grantType(GrantType.PASSWORD).
+                username("marissa").
+                password("koala");
         authService = authBuilder.build();
         accessToken = authService.retrieveAccessToken();
     }
     
     protected void givenAnAccessTokenForOneSecond() throws Exception {
         AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
-                withClientId("example-client-2").
-                withClientSecret("secret1").
-                withGrantType(GrantType.PASSWORD).
-                withUsername("hsimpson").
-                withPassword("koala");
+                clientId("example-client-2").
+                clientSecret("secret1").
+                grantType(GrantType.PASSWORD).
+                username("hsimpson").
+                password("koala");
         authService = authBuilder.build();
         accessToken = authService.retrieveAccessToken();
     }

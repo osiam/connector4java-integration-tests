@@ -145,22 +145,22 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     
     private void givenAnAccessTokenForBJensen() throws Exception {
         AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
-                withClientId(clientId).
-                withClientSecret(clientSecret).
-                withGrantType(GrantType.PASSWORD).
-                withUsername("bjensen").
-                withPassword("koala");
+                clientId(clientId).
+                clientSecret(clientSecret).
+                grantType(GrantType.PASSWORD).
+                username("bjensen").
+                password("koala");
         authService = authBuilder.build();
         accessToken = authService.retrieveAccessToken();
     }
 
     private void givenAnAccessTokenForHSimpson() throws Exception {
         AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
-                withClientId(clientId).
-                withClientSecret(clientSecret).
-                withGrantType(GrantType.PASSWORD).
-                withUsername("hsimpson").
-                withPassword("koala");
+                clientId(clientId).
+                clientSecret(clientSecret).
+                grantType(GrantType.PASSWORD).
+                username("hsimpson").
+                password("koala");
         authService = authBuilder.build();
         accessToken = authService.retrieveAccessToken();
     }
