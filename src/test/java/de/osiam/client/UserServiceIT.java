@@ -87,6 +87,15 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
         fail();
     }
 
+    @Test(expected = UnauthorizedException.class)
+    public void access_token_is_expired() throws Exception {
+    	givenAValidUserUUID();
+    	givenAnAccessTokenForOneSecond();
+    	Thread.sleep(1000);
+        whenUserIsDeserialized();
+        fail();
+    }
+    
     private void whenUserIsDeserialized() {
         deserializedUser = service.getUserByUUID(validUUID, accessToken);
     }
