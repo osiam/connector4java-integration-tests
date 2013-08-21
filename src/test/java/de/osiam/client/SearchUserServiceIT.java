@@ -9,6 +9,7 @@ import org.osiam.client.OsiamUserService;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
 import org.osiam.client.query.SortOrder;
+import org.osiam.client.query.metamodel.User_;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -16,8 +17,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 
 import static org.junit.Assert.*;
 
@@ -55,9 +58,9 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void search_for_user_with_multiple_fields() throws UnsupportedEncodingException {
-        Query query = new Query.Builder(User.class).filter("title").equalTo("Dr.")
-                .and("nickName").equalTo("Barbara")
-                .and("displayName").equalTo("BarbaraJ.").build();
+        Query.Filter filter = new Query.Filter(User.class);
+        filter.startsWith(User_.title.equalTo("Dr.")).and(User_.nickName.equalTo("Barbara")).and(User_.displayName.equalTo("BarbaraJ."));
+        Query query = new Query.Builder(User.class).filter(filter).build();
         whenSearchedIsDoneByQuery(query);
         queryResultContainsOnlyValidUser();
     }
@@ -92,12 +95,16 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void search_with_braces() throws UnsupportedEncodingException {
-        Query.Builder innerQuery = new Query.Builder(User.class);
-        innerQuery.filter("userName").equalTo("marissa").or("userName").equalTo("hsimpson");
+    public void search_with_braces() throws Exception {
+        Query.Filter innerFilter = new Query.Filter(User.class);
+        innerFilter.startsWith(User_.userName.equalTo("marissa")).or(User_.userName.equalTo("hsimpson"));
 
+        SimpleDateFormat sdfToDate = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSS" );
+        Date date = sdfToDate.parse("2000-05-23T13:12:45.672");
+        Query.Filter mainFilter = new Query.Filter(User.class);
+        mainFilter.startsWith(User_.meta.created.greaterThan(date)).and(innerFilter);
         Query.Builder queryBuilder = new Query.Builder(User.class);
-        queryBuilder.filter("meta.created").greaterThan("2000-05-23T13:12:45.672").and(innerQuery);
+        queryBuilder.filter(mainFilter);
 
         queryResult = service.searchUsers(queryBuilder.build(), accessToken);
         assertEquals(expectedNumberOfMembers(2), queryResult.getTotalResults());
@@ -125,7 +132,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     @Test
     public void sorted_search() throws UnsupportedEncodingException {
         Query.Builder queryBuilder = new Query.Builder(User.class);
-        queryBuilder.sortBy("userName").withSortOrder(SortOrder.ASCENDING);
+        queryBuilder.sortBy(User_.userName).withSortOrder(SortOrder.ASCENDING);
         queryResult = service.searchUsers(queryBuilder.build(), accessToken);
 
         ArrayList<String> sortedUserNames = new ArrayList<>();

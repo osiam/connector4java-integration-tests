@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.osiam.client.OsiamGroupService;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
+import org.osiam.client.query.metamodel.Group_;
 import org.osiam.resources.scim.Group;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -55,8 +56,10 @@ public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void search_for_group_with_querybuilder() throws UnsupportedEncodingException {
+        Query.Filter filter = new Query.Filter(Group.class);
+        filter.startsWith(Group_.displayName.equalTo(EXPECTED_GROUP_NAME));
         Query query = new Query.Builder(Group.class)
-                .filter("displayName").equalTo(EXPECTED_GROUP_NAME).build();
+                .filter(filter).build();
 
         whenSingleGroupIsSearchedByQueryBuilder(query);
         queryResultContainsOnlyValidGroup();
