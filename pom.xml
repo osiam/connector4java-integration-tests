@@ -37,7 +37,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
         <java.version>1.7</java.version>
-        <osiam.version>0.7-SNAPSHOT</osiam.version>
+        <osiam.version>0.8-SNAPSHOT</osiam.version>
         <derby.version>10.10.1.1</derby.version>
         <spring.version>3.2.2.RELEASE</spring.version>
         <org.hibernate-version>4.1.10.Final</org.hibernate-version>
