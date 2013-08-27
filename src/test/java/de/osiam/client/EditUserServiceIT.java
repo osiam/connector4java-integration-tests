@@ -193,8 +193,9 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
         MultiValuedAttribute email01 = new MultiValuedAttribute.Builder().setValue("example@example.de").setPrimary(true).setType("work").build();
         MultiValuedAttribute email02 = new MultiValuedAttribute.Builder().setValue("example02@example.de").setPrimary(false).setType("home").build();
         List<MultiValuedAttribute> emails = new ArrayList<>();
-        emails.add(email02);
         emails.add(email01);
+        emails.add(email02);
+
 
         Name name = new Name.Builder().setFamilyName("familyName")
                 .setGivenName("vorName")
@@ -240,7 +241,10 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
         assertEquals(expectedMultiValuedAttributes.size(), actualMultiValuedAttributes.size());
         for(int count = 0; count < expectedMultiValuedAttributes.size(); count++){
             MultiValuedAttribute expectedAttribute = expectedMultiValuedAttributes.get(count);
-            MultiValuedAttribute actualAttribute = actualMultiValuedAttributes.get(count);
+            MultiValuedAttribute actualAttribute = getMultiAttributeWithValue(actualMultiValuedAttributes, expectedAttribute.getValue().toString());
+            if(actualAttribute == null){
+                fail("MultiValueAttribute " + expectedAttribute.getValue() + " could not be found");
+            }
 
             assertEquals(expectedAttribute.getDisplay(), actualAttribute.getDisplay());
             assertEquals(expectedAttribute.getOperation(), actualAttribute.getOperation());
@@ -248,6 +252,17 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
             assertEquals(expectedAttribute.getValue(), actualAttribute.getValue());
         }
 
+    }
+
+    private MultiValuedAttribute getMultiAttributeWithValue(List<MultiValuedAttribute> multiValuedAttributes, String expectedValue){
+        MultiValuedAttribute mutliVal = null;
+        for(MultiValuedAttribute actAttribute : multiValuedAttributes){
+            if(actAttribute.getValue().toString().equals(expectedValue)){
+                mutliVal = actAttribute;
+                break;
+            }
+        }
+        return mutliVal;
     }
 
     private void assertEqualsName(Name expectedName, Name actualName){
