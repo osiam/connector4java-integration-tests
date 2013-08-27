@@ -192,11 +192,12 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
                 .build();
         List<Address> addresses = new ArrayList<>();
         addresses.add(address);
-        MultiValuedAttribute email01 = new MultiValuedAttribute.Builder().setValue("example@example.de").setPrimary(true).setType("email").build();
-        MultiValuedAttribute email02 = new MultiValuedAttribute.Builder().setValue("example02@example.de").setPrimary(false).setType("email").build();
+        MultiValuedAttribute email01 = new MultiValuedAttribute.Builder().setValue("example@example.de").setPrimary(true).setType("work").build();
+        MultiValuedAttribute email02 = new MultiValuedAttribute.Builder().setValue("example02@example.de").setPrimary(false).setType("home").build();
         List<MultiValuedAttribute> emails = new ArrayList<>();
-        emails.add(email01);
         emails.add(email02);
+        emails.add(email01);
+
         Name name = new Name.Builder().setFamilyName("familyName")
                 .setGivenName("vorName")
                 .setMiddleName("middle")
@@ -213,7 +214,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
                 .setName(name)
                 .setNickName("aNicknane")
                 .setTitle("Dr.")
-                //.setEmails(emails) //TODO Die emails haben noch irgendeinen Fehler im Aufbau
+                .setEmails(emails)
                 .build();
 
         return user;
