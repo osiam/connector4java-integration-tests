@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.OsiamUserService;
 import org.osiam.client.exception.ConflictException;
+import org.osiam.client.exception.NoResultException;
+import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
 import org.osiam.client.query.metamodel.User_;
@@ -23,7 +25,6 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import java.util.*;
 
 import static junit.framework.Assert.*;
-import static junit.framework.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -33,6 +34,7 @@ import static junit.framework.Assert.assertEquals;
 public class EditUserServiceIT extends AbstractIntegrationTestBase{
 
     private OsiamUserService service;
+    private UUID validUUID = null;
 
     @Before
     public void setUp() throws Exception {
@@ -287,4 +289,20 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     private void givenAValidGroupUUIDForDeletion() throws Exception {
         validUUID = UUID.fromString(VALID_GROUP_UUID);
     }
+    
+    private void whenGroupIsDeleted() {
+        service.deleteUserByUUID(validUUID, accessToken);
+    }
+    
+    private void thenUserIsRemoveFromServer() {
+    	try {
+    		service.getUserByUUID(validUUID, accessToken);
+    	} catch(NoResultException e) {
+    		return;
+    	} catch(Exception e) {
+    		fail(Arrays.toString(e.getStackTrace()));
+    	}
+    	fail();
+    }
+
 }
