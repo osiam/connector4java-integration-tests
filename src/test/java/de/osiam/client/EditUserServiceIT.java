@@ -141,6 +141,39 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
             }
       }
     }
+    
+    @Test
+    public void user_is_deleted() throws Exception {
+    	whenUserIsOnServer();
+    	givenAValidUserUUIDForDeletion();
+        whenUserIsDeleted();
+        thenUserIsRemoveFromServer();
+    }
+    
+    @Test (expected = NoResultException.class)
+    public void group_is_not_deleted() throws Exception {
+    	givenAValidGroupUUIDForDeletion();
+        whenGroupIsDeleted();
+        fail();
+    }
+    
+    @Test (expected = NoResultException.class)
+    public void delete_user_two_times() throws Exception {
+    	whenUserIsOnServer();
+    	givenAValidUserUUIDForDeletion();
+        whenUserIsDeleted();
+        thenUserIsRemoveFromServer();
+        whenUserIsDeleted();
+        fail();
+    }
+    
+    @Test(expected = UnauthorizedException.class)
+    public void provide_an_invalid_access_token_raises_exception() throws Exception {
+    	givenAValidUserUUIDForDeletion();
+        givenAnInvalidAccessToken();
+        whenUserIsDeleted();
+        fail();
+    }
 
     private User createCompleteUser(){
         User user = null;
@@ -237,5 +270,21 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
             assertEquals(expectedAddress.getRegion(), actualAddress.getRegion());
             assertEquals(expectedAddress.getStreetAddress(), actualAddress.getStreetAddress());
         }
+    }
+    
+    private void whenUserIsOnServer() {
+    	validUUID = UUID.fromString(DELETE_USER_UUID);
+    }
+    
+    private void whenUserIsDeleted() {
+        service.deleteUserByUUID(validUUID, accessToken);
+    }
+    
+    private void givenAValidUserUUIDForDeletion() throws Exception {
+        validUUID = UUID.fromString(DELETE_USER_UUID);
+    }
+    
+    private void givenAValidGroupUUIDForDeletion() throws Exception {
+        validUUID = UUID.fromString(VALID_GROUP_UUID);
     }
 }
