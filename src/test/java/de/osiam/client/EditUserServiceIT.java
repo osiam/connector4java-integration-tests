@@ -65,8 +65,8 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
         User newUser = new User.Builder("csu").build();
         User savedUser = service.createUser(newUser, accessToken);
         assertTrue(savedUser.getId().length() > 0);
-        User dbUSer = service.getUserByUUID(UUID.fromString(savedUser.getId()), accessToken);
-        assertEquals(newUser.getUserName(), dbUSer.getUserName());
+        User dbUser = service.getUserByUUID(UUID.fromString(savedUser.getId()), accessToken);
+        assertEquals(newUser.getUserName(), dbUser.getUserName());
     }
 
     @Test
