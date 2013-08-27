@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
@@ -77,9 +78,9 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
     	service.getGroupByUUID(UUID.fromString(INVALID_UUID), accessToken);
         fail();
     }
-
-    private void given_a_test_group_UUID() {
+    
+   private void given_a_test_group_UUID() {
         uuidStandardGroup = UUID.fromString(VALID_GROUP_UUID);
     }
-
+    
 }
