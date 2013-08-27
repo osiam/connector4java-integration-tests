@@ -23,6 +23,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import java.util.*;
 
 import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -120,23 +121,30 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     }
 
     @Test
-    @Ignore
     public void create_complete_user(){
 
-        User newUser = createCompleteUser();
-        User savedUser = service.createUser(newUser, accessToken);
-        Query query = new Query.Builder(User.class).filter(new Query.Filter(User.class).startsWith(User_.userName.equalTo(newUser.getUserName()))).build();
-        QueryResult<User> result = service.searchUsers(query, accessToken);
+        String uuid = "";
+        try{
+            User newUser = createCompleteUser();
+            User savedUser = service.createUser(newUser, accessToken);
+            uuid = savedUser.getId();
+            Query query = new Query.Builder(User.class).filter(new Query.Filter(User.class).startsWith(User_.userName.equalTo(newUser.getUserName()))).build();
+            QueryResult<User> result = service.searchUsers(query, accessToken);
 
-        assertEquals(1, result.getResources().size());
-        User dbUser = result.getResources().get(0);
-        assertEquals(savedUser.getId(), dbUser.getId());
+            assertEquals(1, result.getResources().size());
+            User dbUser = result.getResources().get(0);
+            assertEquals(savedUser.getId(), dbUser.getId());
+            assertEqualsUser(newUser, dbUser);
+      }finally {
+            if(uuid.length() > 0){
+                service.deleteUserByUUID(UUID.fromString(uuid), accessToken);
+            }
+      }
     }
 
     private User createCompleteUser(){
         User user = null;
 
-        boolean active = true;
         Set<Object> any = new HashSet<Object>(Arrays.asList("anyStatement"));
         Address address = new Address.Builder()
                 .setStreetAddress("Example Street 22")
@@ -165,25 +173,69 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
                 .setActive(true)
                 .setAny(any)
                 .setAddresses(addresses)
-                //.setDisplayName("myDisplayName")
-                //.setEmails(emails)
-                //.setGroups()
-                  //.setIms()
-                //.setLocale("de")
-               // .setName(name)
-                //.setEntitlements()
-                //.setNickName("aNicknane")
-                //.setPhoneNumbers()
-                //.setPhotos()
-                //.setPreferredLanguage("german")
-                //.setProfileUrl("")
-                //.setRoles()
-                //.setTimezone("UTF")
-                //.setTitle("Dr.")
-
+                .setLocale("de")
+                .setName(name)
+                .setNickName("aNicknane")
+                .setTitle("Dr.")
+                //.setEmails(emails) //TODO Die emails haben noch irgendeinen Fehler im Aufbau
                 .build();
 
         return user;
     }
 
+    private void assertEqualsUser(User expected, User actual){
+        assertEquals(expected.getUserName(), actual.getUserName());
+        assertEquals(expected.isActive(), actual.isActive());
+        assertEquals(expected.getAny().size(), actual.getAny().size());
+        assertEquals(expected.getAny(), actual.getAny());
+        assertEqualsAddresses(expected.getAddresses(), actual.getAddresses());
+        assertEquals(expected.getLocale(), actual.getLocale());
+        assertEqualsName(expected.getName(), actual.getName());
+        assertEquals(expected.getNickName(), actual.getNickName());
+        assertEquals(expected.getTitle(), actual.getTitle());
+        assertEqualsMultiValuedAttribute(expected.getEmails(), actual.getEmails());
+
+    }
+
+    private void assertEqualsMultiValuedAttribute(List<MultiValuedAttribute> expectedMultiValuedAttributes, List<MultiValuedAttribute> actualMultiValuedAttributes){
+        if((expectedMultiValuedAttributes == null || expectedMultiValuedAttributes.size() == 0)
+                && (actualMultiValuedAttributes == null || actualMultiValuedAttributes.size() == 0)){
+            return;
+        }
+        assertEquals(expectedMultiValuedAttributes.size(), actualMultiValuedAttributes.size());
+        for(int count = 0; count < expectedMultiValuedAttributes.size(); count++){
+            MultiValuedAttribute expectedAttribute = expectedMultiValuedAttributes.get(count);
+            MultiValuedAttribute actualAttribute = actualMultiValuedAttributes.get(count);
+
+            assertEquals(expectedAttribute.getDisplay(), actualAttribute.getDisplay());
+            assertEquals(expectedAttribute.getOperation(), actualAttribute.getOperation());
+            assertEquals(expectedAttribute.getType(), actualAttribute.getType());
+            assertEquals(expectedAttribute.getValue(), actualAttribute.getValue());
+        }
+
+    }
+
+    private void assertEqualsName(Name expectedName, Name actualName){
+        assertEquals(expectedName.getFamilyName(), actualName.getFamilyName());
+        assertEquals(expectedName.getFormatted(), actualName.getFormatted());
+        assertEquals(expectedName.getGivenName(), actualName.getGivenName());
+        assertEquals(expectedName.getHonorificPrefix(), actualName.getHonorificPrefix());
+        assertEquals(expectedName.getHonorificSuffix(), actualName.getHonorificSuffix());
+        assertEquals(expectedName.getMiddleName(), actualName.getMiddleName());
+    }
+
+    private void assertEqualsAddresses(List<Address> expectedAddresses, List<Address> actualAddresses){
+        assertEquals(expectedAddresses.size(), actualAddresses.size());
+        for(int count = 0; count < expectedAddresses.size(); count++){
+            Address expectedAddress = expectedAddresses.get(count);
+            Address actualAddress = actualAddresses.get(count);
+
+            assertEquals(expectedAddress.getCountry(), actualAddress.getCountry());
+            assertEquals(expectedAddress.getFormatted(), actualAddress.getFormatted());
+            assertEquals(expectedAddress.getLocality(), actualAddress.getLocality());
+            assertEquals(expectedAddress.getPostalCode(), actualAddress.getPostalCode());
+            assertEquals(expectedAddress.getRegion(), actualAddress.getRegion());
+            assertEquals(expectedAddress.getStreetAddress(), actualAddress.getStreetAddress());
+        }
+    }
 }
