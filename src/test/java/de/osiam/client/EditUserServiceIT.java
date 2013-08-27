@@ -152,6 +152,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
         thenUserIsRemoveFromServer();
     }
     
+    
     @Test (expected = NoResultException.class)
     public void group_is_not_deleted() throws Exception {
     	givenAValidGroupUUIDForDeletion();
