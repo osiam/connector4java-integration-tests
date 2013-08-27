@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.osiam.client.OsiamGroupService;
 import org.osiam.client.OsiamUserService;
 import org.osiam.client.exception.ConflictException;
+import org.osiam.client.exception.NoResultException;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
 import org.osiam.client.query.metamodel.Group_;
@@ -21,6 +22,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import java.util.*;
 
 import static junit.framework.Assert.*;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -30,6 +32,7 @@ import static junit.framework.Assert.*;
 public class EditGroupServiceIT extends AbstractIntegrationTestBase{
 
     private OsiamGroupService service;
+    private UUID validUUID = null;
 
     @Before
     public void setUp() throws Exception {
@@ -116,5 +119,54 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
         Group dbGroup = result.getResources().get(0);
         assertEquals(savedGroup.getId(), dbGroup.getId());
     }
+    
+    @Test
+    public void group_is_deleted() throws Exception {
+    	given_a_test_group_UUID();
+    	whenGroupIsDeleted();
+    	thenGroupIsRemoveFromServer();
+    }
+    
+    @Test (expected = NoResultException.class)
+    public void user_is_not_deleted() throws Exception {
+    	givenAValidUserUUIDForDeletion();
+        whenUserIsDeleted();
+        fail();
+    }
+    
+    @Test (expected = NoResultException.class)
+    public void delete_group_two_times() throws Exception {
+    	given_a_test_group_UUID();
+    	whenGroupIsDeleted();
+    	thenGroupIsRemoveFromServer();
+    	whenGroupIsDeleted();
+    	fail();
+    }
+    
+    private void given_a_test_group_UUID() {
+    	validUUID = UUID.fromString(VALID_GROUP_UUID);
+    }
+    private void whenGroupIsDeleted() {
+        service.deleteGroup(validUUID, accessToken);
+    }
+    private void thenGroupIsRemoveFromServer() {
+    	try {
+    		service.getGroupByUUID(validUUID, accessToken);
+    	} catch(NoResultException e) {
+    		return;
+    	} catch(Exception e) {
+    		fail(Arrays.toString(e.getStackTrace()));
+    	}
+    	fail();
+    }
+    
+    private void givenAValidUserUUIDForDeletion() throws Exception {
+        validUUID = UUID.fromString(DELETE_USER_UUID);
+    }
+    
+    private void whenUserIsDeleted() {
+        service.deleteGroup(validUUID, accessToken);
+    }
+    
 
 }

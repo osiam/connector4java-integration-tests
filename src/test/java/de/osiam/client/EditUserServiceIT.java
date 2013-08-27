@@ -139,14 +139,13 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
             assertEqualsUser(newUser, dbUser);
       }finally {
             if(uuid.length() > 0){
-                service.deleteUserByUUID(UUID.fromString(uuid), accessToken);
+                service.deleteUser(UUID.fromString(uuid), accessToken);
             }
       }
     }
     
     @Test
     public void user_is_deleted() throws Exception {
-    	whenUserIsOnServer();
     	givenAValidUserUUIDForDeletion();
         whenUserIsDeleted();
         thenUserIsRemoveFromServer();
@@ -162,7 +161,6 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     
     @Test (expected = NoResultException.class)
     public void delete_user_two_times() throws Exception {
-    	whenUserIsOnServer();
     	givenAValidUserUUIDForDeletion();
         whenUserIsDeleted();
         thenUserIsRemoveFromServer();
@@ -275,12 +273,8 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
         }
     }
     
-    private void whenUserIsOnServer() {
-    	validUUID = UUID.fromString(DELETE_USER_UUID);
-    }
-    
     private void whenUserIsDeleted() {
-        service.deleteUserByUUID(validUUID, accessToken);
+        service.deleteUser(validUUID, accessToken);
     }
     
     private void givenAValidUserUUIDForDeletion() throws Exception {
@@ -292,7 +286,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     }
     
     private void whenGroupIsDeleted() {
-        service.deleteUserByUUID(validUUID, accessToken);
+        service.deleteUser(validUUID, accessToken);
     }
     
     private void thenUserIsRemoveFromServer() {
