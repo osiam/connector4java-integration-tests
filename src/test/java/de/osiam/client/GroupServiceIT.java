@@ -36,13 +36,11 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
 	static final private String VALID_GROUP_UUID = "69e1a5dc-89be-4343-976c-b5541af249f4";
 	static final private String EXPECTED_CREATED_DATE = "2013-07-31 21:43:18";
     private UUID uuidStandardGroup;
-    private OsiamGroupService service;
-    private Date created; 
+    private Date created;
         	
     
     @Before
     public void setUp() throws Exception {
-        service = new OsiamGroupService.Builder(endpointAddress).build();
         created = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(EXPECTED_CREATED_DATE);
     }
 

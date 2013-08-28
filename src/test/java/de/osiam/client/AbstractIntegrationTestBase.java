@@ -1,6 +1,7 @@
 package de.osiam.client;
 
 import org.junit.Before;
+import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
@@ -20,31 +21,33 @@ public abstract class AbstractIntegrationTestBase {
     protected String endpointAddress = "http://localhost:8080/osiam-server";
     protected String clientId = "example-client";
     protected String clientSecret = "secret";
-    protected AuthService authService;
+    protected OsiamConnector oConnector;
     protected AccessToken accessToken;
+    protected OsiamConnector service;
 
     @Before
     public void abstractSetUp() throws Exception {
 
-        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(endpointAddress).
                 clientId(clientId).
                 clientSecret(clientSecret).
                 grantType(GrantType.PASSWORD).
                 username("marissa").
                 password("koala");
-        authService = authBuilder.build();
-        accessToken = authService.retrieveAccessToken();
+        oConnector = oConBuilder.build();
+        accessToken = oConnector.retrieveAccessToken();
+        service = new OsiamConnector.Builder(endpointAddress).build();
     }
     
     protected void givenAnAccessTokenForOneSecond() throws Exception {
-        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(endpointAddress).
                 clientId("example-client-2").
                 clientSecret("secret1").
                 grantType(GrantType.PASSWORD).
                 username("hsimpson").
                 password("koala");
-        authService = authBuilder.build();
-        accessToken = authService.retrieveAccessToken();
+        oConnector = oConBuilder.build();
+        accessToken = oConnector.retrieveAccessToken();
     }
 
     protected void givenAnInvalidAccessToken() throws Exception {

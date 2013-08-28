@@ -33,13 +33,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
 
     private static final int ITEMS_PER_PAGE = 3;
     private static final int STARTINDEX_SECOND_PAGE = 3;
-    private OsiamUserService service;
     private QueryResult<User> queryResult;
-
-    @Before
-    public void setUp() throws Exception {
-        service = new OsiamUserService.Builder(endpointAddress).build();
-    }
 
     @Test
     public void search_for_user_by_username() {

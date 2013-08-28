@@ -32,12 +32,6 @@ public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
     private static final String EXPECTED_GROUP_NAME = "test_group01";
 	static private String VALID_GROUP_UUID = "69e1a5dc-89be-4343-976c-b5541af249f4";
     private QueryResult<Group> queryResult;
-    private OsiamGroupService service;
-
-    @Before
-    public void setUp() throws URISyntaxException {
-        service = new OsiamGroupService.Builder(endpointAddress).build();
-    }
 
     @Test
     public void search_for_group_by_string() {

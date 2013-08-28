@@ -31,17 +31,8 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @DatabaseSetup("/database_seed.xml")
 public class UserServiceIT extends AbstractIntegrationTestBase {
 
-
     private UUID validUUID = null;
-
-    private OsiamUserService service;
     private User deserializedUser;
-
-
-    @Before
-    public void setUp() throws Exception {
-        service = new OsiamUserService.Builder(endpointAddress).build();
-    }
 
     @Test
     public void name_is_deserialized_correctly() throws Exception {

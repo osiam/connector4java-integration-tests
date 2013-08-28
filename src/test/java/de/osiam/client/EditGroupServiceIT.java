@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.OsiamGroupService;
 import org.osiam.client.OsiamUserService;
+import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.query.Query;
@@ -31,13 +32,7 @@ import static org.junit.Assert.fail;
 @DatabaseSetup("/database_seed.xml")
 public class EditGroupServiceIT extends AbstractIntegrationTestBase{
 
-    private OsiamGroupService service;
     private UUID validUUID = null;
-
-    @Before
-    public void setUp() throws Exception {
-        service = new OsiamGroupService.Builder(endpointAddress).build();
-    }
 
     @Test  (expected = ConflictException.class)
     public void create_group_with_no_username_raises_exception(){

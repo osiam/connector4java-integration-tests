@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.OsiamUserService;
+import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
@@ -34,13 +35,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @DatabaseSetup("/database_seed.xml")
 public class MeUserServiceIT extends AbstractIntegrationTestBase {
 
-    private OsiamUserService service;
     private User deserializedUser;
-
-    @Before
-    public void setUp() throws Exception {
-        service = new OsiamUserService.Builder(endpointAddress).build();
-    }
 
     @Test
     public void name_is_deserialized_correctly_for_user_bjensen() throws Exception {
@@ -144,25 +139,25 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     }
     
     private void givenAnAccessTokenForBJensen() throws Exception {
-        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
+        OsiamConnector.Builder authBuilder = new OsiamConnector.Builder(endpointAddress).
                 clientId(clientId).
                 clientSecret(clientSecret).
                 grantType(GrantType.PASSWORD).
                 username("bjensen").
                 password("koala");
-        authService = authBuilder.build();
-        accessToken = authService.retrieveAccessToken();
+        oConnector = authBuilder.build();
+        accessToken = oConnector.retrieveAccessToken();
     }
 
     private void givenAnAccessTokenForHSimpson() throws Exception {
-        AuthService.Builder authBuilder = new AuthService.Builder(endpointAddress).
+        OsiamConnector.Builder authBuilder = new OsiamConnector.Builder(endpointAddress).
                 clientId(clientId).
                 clientSecret(clientSecret).
                 grantType(GrantType.PASSWORD).
                 username("hsimpson").
                 password("koala");
-        authService = authBuilder.build();
-        accessToken = authService.retrieveAccessToken();
+        oConnector = authBuilder.build();
+        accessToken = oConnector.retrieveAccessToken();
     }
     
     

@@ -33,13 +33,7 @@ import static junit.framework.Assert.*;
 @DatabaseSetup("/database_seed.xml")
 public class EditUserServiceIT extends AbstractIntegrationTestBase{
 
-    private OsiamUserService service;
     private UUID validUUID = null;
-
-    @Before
-    public void setUp() throws Exception {
-        service = new OsiamUserService.Builder(endpointAddress).build();
-    }
 
     @Test (expected = ConflictException.class)
     public void create_user_with_no_username_raises_exception(){
