@@ -60,7 +60,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
         Group newGroup = new Group.Builder().setDisplayName("crg").build();
         Group savedGroup = service.createGroup(newGroup, accessToken);
         assertTrue(savedGroup.getId().length() > 0);
-        Group dbGroup = service.getGroupByUUID(UUID.fromString(savedGroup.getId()), accessToken);
+        Group dbGroup = service.getGroup(UUID.fromString(savedGroup.getId()), accessToken);
         assertEquals(newGroup.getDisplayName(), dbGroup.getDisplayName());
     }
 
@@ -69,7 +69,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
         String group01Id = "69e1a5dc-89be-4343-976c-b5541af249f4";
         Group newGroup = new Group.Builder().setDisplayName("cgweu").setId(group01Id).build();
         service.createGroup(newGroup, accessToken);
-        Group dbGroup = service.getGroupByUUID(UUID.fromString(group01Id), accessToken);
+        Group dbGroup = service.getGroup(UUID.fromString(group01Id), accessToken);
 
         assertEquals("test_group01", dbGroup.getDisplayName());
     }
@@ -146,7 +146,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
     }
     private void thenGroupIsRemoveFromServer() {
     	try {
-    		service.getGroupByUUID(validUUID, accessToken);
+    		service.getGroup(validUUID, accessToken);
     	} catch(NoResultException e) {
     		return;
     	} catch(Exception e) {

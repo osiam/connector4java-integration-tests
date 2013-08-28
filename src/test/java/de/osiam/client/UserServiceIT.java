@@ -88,7 +88,7 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
     }
     
     private void whenUserIsDeserialized() {
-        deserializedUser = service.getUserByUUID(validUUID, accessToken);
+        deserializedUser = service.getUser(validUUID, accessToken);
     }
 
     private void givenAValidUserUUID() throws Exception {

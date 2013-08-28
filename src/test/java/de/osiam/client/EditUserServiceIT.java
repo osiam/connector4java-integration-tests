@@ -61,7 +61,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
         User newUser = new User.Builder("csu").build();
         User savedUser = service.createUser(newUser, accessToken);
         assertTrue(savedUser.getId().length() > 0);
-        User dbUser = service.getUserByUUID(UUID.fromString(savedUser.getId()), accessToken);
+        User dbUser = service.getUser(UUID.fromString(savedUser.getId()), accessToken);
         assertEquals(newUser.getUserName(), dbUser.getUserName());
     }
 
@@ -70,7 +70,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
         String hSimpsonId = "7d33bcbe-a54c-43d8-867e-f6146164941e";
         User newUser = new User.Builder("crweu").setId(hSimpsonId).build();
         service.createUser(newUser, accessToken);
-        User dbUser = service.getUserByUUID(UUID.fromString(hSimpsonId), accessToken);
+        User dbUser = service.getUser(UUID.fromString(hSimpsonId), accessToken);
 
         assertEquals("hsimpson", dbUser.getUserName());
     }
@@ -301,7 +301,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     
     private void thenUserIsRemoveFromServer() {
     	try {
-    		service.getUserByUUID(validUUID, accessToken);
+    		service.getUser(validUUID, accessToken);
     	} catch(NoResultException e) {
     		return;
     	} catch(Exception e) {

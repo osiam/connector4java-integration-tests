@@ -47,7 +47,7 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
     @Test
     public void ensure_all_values_are_deserialized_correctly() throws Exception {
         given_a_test_group_UUID();
-        Group actualGroup = service.getGroupByUUID(uuidStandardGroup, accessToken);
+        Group actualGroup = service.getGroup(uuidStandardGroup, accessToken);
         
         assertEquals(created, actualGroup.getMeta().getCreated());
         assertEquals(created, actualGroup.getMeta().getLastModified());
@@ -65,7 +65,7 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
 
     @Test(expected = NoResultException.class)
     public void get_an_invalid_group_raises_exception() throws Exception {
-        service.getGroupByUUID(UUID.fromString(INVALID_UUID), accessToken);
+        service.getGroup(UUID.fromString(INVALID_UUID), accessToken);
     }
     
     @Test(expected = UnauthorizedException.class)
@@ -73,7 +73,7 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
     	given_a_test_group_UUID();
     	givenAnAccessTokenForOneSecond();
     	Thread.sleep(1000);
-    	service.getGroupByUUID(UUID.fromString(INVALID_UUID), accessToken);
+    	service.getGroup(UUID.fromString(INVALID_UUID), accessToken);
         fail();
     }
     
