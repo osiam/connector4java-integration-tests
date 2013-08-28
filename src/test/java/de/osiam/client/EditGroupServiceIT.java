@@ -128,7 +128,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
         whenUserIsDeleted();
         fail();
     }
-    
+
     @Test (expected = NoResultException.class)
     public void delete_group_two_times() throws Exception {
     	given_a_test_group_UUID();
@@ -136,6 +136,18 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
     	thenGroupIsRemoveFromServer();
     	whenGroupIsDeleted();
     	fail();
+    }
+
+    @Test
+    public void delete_group_with_members(){
+        UUID uuidGroup01 = UUID.fromString("69e1a5dc-89be-4343-976c-b5541af249f4");
+        oConnector.getGroup(uuidGroup01, accessToken);
+        //group could be found
+        oConnector.deleteGroup(uuidGroup01, accessToken);
+        try{
+            oConnector.getGroup(uuidGroup01, accessToken);
+            fail("Exception excpected");
+        }catch (NoResultException e){}
     }
     
     private void given_a_test_group_UUID() {
