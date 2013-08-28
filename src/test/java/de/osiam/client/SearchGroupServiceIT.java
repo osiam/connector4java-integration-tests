@@ -52,7 +52,7 @@ public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
         Query.Filter filter = new Query.Filter(Group.class);
         filter.startsWith(Group_.displayName.equalTo(EXPECTED_GROUP_NAME));
         Query query = new Query.Builder(Group.class)
-                .filter(filter).build();
+                .setFilter(filter).build();
 
         whenSingleGroupIsSearchedByQueryBuilder(query);
         queryResultContainsOnlyValidGroup();

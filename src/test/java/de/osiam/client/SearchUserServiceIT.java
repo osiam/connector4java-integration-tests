@@ -54,7 +54,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     public void search_for_user_with_multiple_fields() throws UnsupportedEncodingException {
         Query.Filter filter = new Query.Filter(User.class);
         filter.startsWith(User_.title.equalTo("Dr.")).and(User_.nickName.equalTo("Barbara")).and(User_.displayName.equalTo("BarbaraJ."));
-        Query query = new Query.Builder(User.class).filter(filter).build();
+        Query query = new Query.Builder(User.class).setFilter(filter).build();
         whenSearchedIsDoneByQuery(query);
         queryResultContainsOnlyValidUser();
     }
@@ -98,7 +98,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         Query.Filter mainFilter = new Query.Filter(User.class);
         mainFilter.startsWith(User_.meta.created.greaterThan(date)).and(innerFilter);
         Query.Builder queryBuilder = new Query.Builder(User.class);
-        queryBuilder.filter(mainFilter);
+        queryBuilder.setFilter(mainFilter);
 
         queryResult = service.searchUsers(queryBuilder.build(), accessToken);
         assertEquals(expectedNumberOfMembers(2), queryResult.getTotalResults());
@@ -108,7 +108,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void nextPage_scrolls_forward() throws UnsupportedEncodingException {
-        Query.Builder builder = new Query.Builder(User.class).countPerPage(ITEMS_PER_PAGE);
+        Query.Builder builder = new Query.Builder(User.class).setCountPerPage(ITEMS_PER_PAGE);
         Query query = builder.build().nextPage();
         whenSearchedIsDoneByQuery(query);
         assertEquals(STARTINDEX_SECOND_PAGE, queryResult.getStartIndex());
@@ -117,7 +117,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     @Test
     public void prevPage_scrolls_backward() throws UnsupportedEncodingException {
         // since OSIAMs default startIndex is wrongly '0' using ITEMS_PER_PAGE works here.
-        Query.Builder builder = new Query.Builder(User.class).countPerPage(ITEMS_PER_PAGE).startIndex(STARTINDEX_SECOND_PAGE);
+        Query.Builder builder = new Query.Builder(User.class).setCountPerPage(ITEMS_PER_PAGE).setStartIndex(STARTINDEX_SECOND_PAGE);
         Query query = builder.build().previousPage();
         whenSearchedIsDoneByQuery(query);
         assertEquals(STARTINDEX_SECOND_PAGE - ITEMS_PER_PAGE, queryResult.getStartIndex());
@@ -126,7 +126,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     @Test
     public void sorted_search() throws UnsupportedEncodingException {
         Query.Builder queryBuilder = new Query.Builder(User.class);
-        queryBuilder.sortBy(User_.userName).sortOrder(SortOrder.ASCENDING);
+        queryBuilder.setSortBy(User_.userName).setSortOrder(SortOrder.ASCENDING);
         queryResult = service.searchUsers(queryBuilder.build(), accessToken);
 
         ArrayList<String> sortedUserNames = new ArrayList<>();

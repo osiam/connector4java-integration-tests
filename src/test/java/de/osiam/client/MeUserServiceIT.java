@@ -140,22 +140,22 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     
     private void givenAnAccessTokenForBJensen() throws Exception {
         OsiamConnector.Builder authBuilder = new OsiamConnector.Builder(endpointAddress).
-                clientId(clientId).
-                clientSecret(clientSecret).
-                grantType(GrantType.PASSWORD).
-                username("bjensen").
-                password("koala");
+                setClientId(clientId).
+                setClientSecret(clientSecret).
+                setGrantType(GrantType.PASSWORD).
+                setUsername("bjensen").
+                setPassword("koala");
         oConnector = authBuilder.build();
         accessToken = oConnector.retrieveAccessToken();
     }
 
     private void givenAnAccessTokenForHSimpson() throws Exception {
         OsiamConnector.Builder authBuilder = new OsiamConnector.Builder(endpointAddress).
-                clientId(clientId).
-                clientSecret(clientSecret).
-                grantType(GrantType.PASSWORD).
-                username("hsimpson").
-                password("koala");
+                setClientId(clientId).
+                setClientSecret(clientSecret).
+                setGrantType(GrantType.PASSWORD).
+                setUsername("hsimpson").
+                setPassword("koala");
         oConnector = authBuilder.build();
         accessToken = oConnector.retrieveAccessToken();
     }

@@ -29,11 +29,11 @@ public abstract class AbstractIntegrationTestBase {
     public void abstractSetUp() throws Exception {
 
         OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(endpointAddress).
-                clientId(clientId).
-                clientSecret(clientSecret).
-                grantType(GrantType.PASSWORD).
-                username("marissa").
-                password("koala");
+                setClientId(clientId).
+                setClientSecret(clientSecret).
+                setGrantType(GrantType.PASSWORD).
+                setUsername("marissa").
+                setPassword("koala");
         oConnector = oConBuilder.build();
         accessToken = oConnector.retrieveAccessToken();
         service = new OsiamConnector.Builder(endpointAddress).build();
@@ -41,11 +41,11 @@ public abstract class AbstractIntegrationTestBase {
     
     protected void givenAnAccessTokenForOneSecond() throws Exception {
         OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(endpointAddress).
-                clientId("example-client-2").
-                clientSecret("secret1").
-                grantType(GrantType.PASSWORD).
-                username("hsimpson").
-                password("koala");
+                setClientId("example-client-2").
+                setClientSecret("secret1").
+                setGrantType(GrantType.PASSWORD).
+                setUsername("hsimpson").
+                setPassword("koala");
         oConnector = oConBuilder.build();
         accessToken = oConnector.retrieveAccessToken();
     }
