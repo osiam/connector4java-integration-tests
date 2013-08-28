@@ -88,7 +88,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
     public void created_group_can_be_found(){
         String displayName = "cgcbf";
 
-        Query query = new Query.Builder(Group.class).setFilter(new Query.Filter(Group.class).startsWith(Group_.displayName.equalTo(displayName))).build();
+        Query query = new Query.Builder(Group.class).setFilter(new Query.Filter(Group.class, Group_.displayName.equalTo(displayName))).build();
         QueryResult<Group> result = service.searchGroups(query, accessToken);
         assertEquals(0, result.getResources().size());
 
@@ -107,7 +107,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
         String displayName = "urgsanlu";
         Group newGroup = new Group.Builder().setDisplayName(displayName).setId(userId).build();
         Group savedGroup = service.createGroup(newGroup, accessToken);
-        Query query = new Query.Builder(Group.class).setFilter(new Query.Filter(Group.class).startsWith(Group_.displayName.equalTo(displayName))).build();
+        Query query = new Query.Builder(Group.class).setFilter(new Query.Filter(Group.class, Group_.displayName.equalTo(displayName))).build();
         QueryResult<Group> result = service.searchGroups(query, accessToken);
 
         assertEquals(1, result.getResources().size());

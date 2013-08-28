@@ -89,7 +89,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     public void created_user_can_be_found(){
         String userName = "cucbf";
 
-        Query query = new Query.Builder(User.class).setFilter(new Query.Filter(User.class).startsWith(User_.userName.equalTo(userName))).build();
+        Query query = new Query.Builder(User.class).setFilter(new Query.Filter(User.class, User_.userName.equalTo(userName))).build();
         QueryResult<User> result = service.searchUsers(query, accessToken);
         assertEquals(0, result.getResources().size());
 
@@ -108,7 +108,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
         String userName = "gutnuhcas";
         User newUser = new User.Builder(userName).setId(userId).build();
         User savedUser = service.createUser(newUser, accessToken);
-        Query query = new Query.Builder(User.class).setFilter(new Query.Filter(User.class).startsWith(User_.userName.equalTo(userName))).build();
+        Query query = new Query.Builder(User.class).setFilter(new Query.Filter(User.class, User_.userName.equalTo(userName))).build();
         QueryResult<User> result = service.searchUsers(query, accessToken);
 
         assertEquals(1, result.getResources().size());
@@ -124,7 +124,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
             User newUser = createCompleteUser();
             User savedUser = service.createUser(newUser, accessToken);
             uuid = savedUser.getId();
-            Query query = new Query.Builder(User.class).setFilter(new Query.Filter(User.class).startsWith(User_.userName.equalTo(newUser.getUserName()))).build();
+            Query query = new Query.Builder(User.class).setFilter(new Query.Filter(User.class, User_.userName.equalTo(newUser.getUserName()))).build();
             QueryResult<User> result = service.searchUsers(query, accessToken);
 
             assertEquals(1, result.getResources().size());

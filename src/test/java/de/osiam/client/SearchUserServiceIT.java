@@ -52,8 +52,8 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void search_for_user_with_multiple_fields() throws UnsupportedEncodingException {
-        Query.Filter filter = new Query.Filter(User.class);
-        filter.startsWith(User_.title.equalTo("Dr.")).and(User_.nickName.equalTo("Barbara")).and(User_.displayName.equalTo("BarbaraJ."));
+        Query.Filter filter = new Query.Filter(User.class, User_.title.equalTo("Dr."))
+                .and(User_.nickName.equalTo("Barbara")).and(User_.displayName.equalTo("BarbaraJ."));
         Query query = new Query.Builder(User.class).setFilter(filter).build();
         whenSearchedIsDoneByQuery(query);
         queryResultContainsOnlyValidUser();
@@ -90,13 +90,13 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void search_with_braces() throws Exception {
-        Query.Filter innerFilter = new Query.Filter(User.class);
-        innerFilter.startsWith(User_.userName.equalTo("marissa")).or(User_.userName.equalTo("hsimpson"));
+        Query.Filter innerFilter = new Query.Filter(User.class, User_.userName.equalTo("marissa"))
+                .or(User_.userName.equalTo("hsimpson"));
 
         SimpleDateFormat sdfToDate = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSS" );
         Date date = sdfToDate.parse("2000-05-23T13:12:45.672");
-        Query.Filter mainFilter = new Query.Filter(User.class);
-        mainFilter.startsWith(User_.meta.created.greaterThan(date)).and(innerFilter);
+        Query.Filter mainFilter = new Query.Filter(User.class, User_.meta.created.greaterThan(date))
+                .and(innerFilter);
         Query.Builder queryBuilder = new Query.Builder(User.class);
         queryBuilder.setFilter(mainFilter);
 

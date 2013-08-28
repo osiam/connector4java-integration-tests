@@ -49,8 +49,7 @@ public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void search_for_group_with_querybuilder() throws UnsupportedEncodingException {
-        Query.Filter filter = new Query.Filter(Group.class);
-        filter.startsWith(Group_.displayName.equalTo(EXPECTED_GROUP_NAME));
+        Query.Filter filter = new Query.Filter(Group.class, Group_.displayName.equalTo(EXPECTED_GROUP_NAME));
         Query query = new Query.Builder(Group.class)
                 .setFilter(filter).build();
 
