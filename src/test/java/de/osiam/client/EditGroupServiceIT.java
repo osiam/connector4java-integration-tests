@@ -57,11 +57,12 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
 
     @Test
     public void create_simple_Group(){
-        Group newGroup = new Group.Builder().setDisplayName("crg").build();
+        Group newGroup = new Group.Builder().setDisplayName("crg").setExternalId("testGroup").build();
         Group savedGroup = service.createGroup(newGroup, accessToken);
         assertTrue(savedGroup.getId().length() > 0);
         Group dbGroup = service.getGroup(UUID.fromString(savedGroup.getId()), accessToken);
         assertEquals(newGroup.getDisplayName(), dbGroup.getDisplayName());
+        assertEquals(newGroup.getExternalId(), dbGroup.getExternalId());
     }
 
     @Test
