@@ -95,7 +95,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
 
         SimpleDateFormat sdfToDate = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSS" );
         Date date = sdfToDate.parse("2000-05-23T13:12:45.672");
-        Query.Filter mainFilter = new Query.Filter(User.class, User_.meta.created.greaterThan(date))
+        Query.Filter mainFilter = new Query.Filter(User.class, User_.Meta.created.greaterThan(date))
                 .and(innerFilter);
         Query.Builder queryBuilder = new Query.Builder(User.class);
         queryBuilder.setFilter(mainFilter);
