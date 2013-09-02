@@ -23,7 +23,6 @@ public abstract class AbstractIntegrationTestBase {
     protected String clientSecret = "secret";
     protected OsiamConnector oConnector;
     protected AccessToken accessToken;
-    protected OsiamConnector service;
 
     @Before
     public void abstractSetUp() throws Exception {
@@ -36,7 +35,6 @@ public abstract class AbstractIntegrationTestBase {
                 setPassword("koala");
         oConnector = oConBuilder.build();
         accessToken = oConnector.retrieveAccessToken();
-        service = new OsiamConnector.Builder(endpointAddress).build();
     }
     
     protected void givenAnAccessTokenForOneSecond() throws Exception {

@@ -100,7 +100,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         Query.Builder queryBuilder = new Query.Builder(User.class);
         queryBuilder.setFilter(mainFilter);
 
-        queryResult = service.searchUsers(queryBuilder.build(), accessToken);
+        queryResult = oConnector.searchUsers(queryBuilder.build(), accessToken);
         assertEquals(expectedNumberOfMembers(2), queryResult.getTotalResults());
         queryResultContainsUser("marissa");
         queryResultContainsUser("hsimpson");
@@ -127,7 +127,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     public void sorted_search() throws UnsupportedEncodingException {
         Query.Builder queryBuilder = new Query.Builder(User.class);
         queryBuilder.setSortBy(User_.userName).setSortOrder(SortOrder.ASCENDING);
-        queryResult = service.searchUsers(queryBuilder.build(), accessToken);
+        queryResult = oConnector.searchUsers(queryBuilder.build(), accessToken);
 
         ArrayList<String> sortedUserNames = new ArrayList<>();
         sortedUserNames.add("bjensen");
@@ -172,7 +172,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     private void whenSearchIsDoneByString(String queryString) {
-        queryResult = service.searchUsers("filter=" + queryString, accessToken);
+        queryResult = oConnector.searchUsers("filter=" + queryString, accessToken);
     }
 
     private void queryResultContainsValidUser() {
@@ -186,7 +186,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     private void whenSearchedIsDoneByQuery(Query query) {
-        queryResult = service.searchUsers(query, accessToken);
+        queryResult = oConnector.searchUsers(query, accessToken);
     }
 
 }

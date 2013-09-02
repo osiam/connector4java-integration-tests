@@ -124,7 +124,7 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     private void whenUserIsDeserialized() {
-        deserializedUser = service.getMe(accessToken);
+        deserializedUser = oConnector.getMe(accessToken);
     }
     
     private List<MultiValuedAttribute> sortEmails(List<MultiValuedAttribute> emails) {

@@ -2,11 +2,8 @@ package de.osiam.client;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osiam.client.OsiamUserService;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
@@ -33,107 +30,98 @@ import static junit.framework.Assert.*;
 @DatabaseSetup("/database_seed.xml")
 public class EditUserServiceIT extends AbstractIntegrationTestBase{
 
-    private UUID validUUID = null;
+    private UUID VALID_UUID = null;
+    private UUID ID_EXISITNG_USER = UUID.fromString("7d33bcbe-a54c-43d8-867e-f6146164941e");
+    private UUID NEW_UUID = UUID.randomUUID();
+    private String USER_NAME_EXISITNG_USER = "hsimpson";
+    private User NEW_USER;
+    private User RETURN_USER;
+    private User DB_USER;
+    private static final String IRRELEVANT = "irrelevant";
+    private Query QUERY;
 
     @Test (expected = ConflictException.class)
     public void create_user_with_no_username_raises_exception(){
-        User newUser = new User.Builder().build();
-        service.createUser(newUser, accessToken);
+        initializeUserWithNoUserName();
+        createUser();
         fail("Exception excpected");
     }
 
     @Test (expected = ConflictException.class)
     public void create_user_with_exisitng_username_raises_exception(){
-        User newUser = new User.Builder("hsimpson").build();
-        service.createUser(newUser, accessToken);
+        initializeUserWithExisitngUserName();
+        createUser();
         fail("Exception excpected");
     }
 
     @Test (expected = ConflictException.class)
     public void create_empty_user_raises_exception(){
-        User newUser = new User.Builder("").build();
-        service.createUser(newUser, accessToken);
+        initializeUserWithEmptyUserName();
+        createUser();
         fail("Exception excpected");
     }
 
     @Test
     public void create_simple_User(){
-        User newUser = new User.Builder("csu").build();
-        User savedUser = service.createUser(newUser, accessToken);
-        assertTrue(savedUser.getId().length() > 0);
-        User dbUser = service.getUser(UUID.fromString(savedUser.getId()), accessToken);
-        assertEquals(newUser.getUserName(), dbUser.getUserName());
+        initializeSimpleUser();
+        createUser();
+        returnUserHasValidId();
+        loadUser(UUID.fromString(RETURN_USER.getId()));
+        returnAndDbUserHaveSameUserName();
     }
 
     @Test
     public void create_user_with_existing_uuid(){
-        String hSimpsonId = "7d33bcbe-a54c-43d8-867e-f6146164941e";
-        User newUser = new User.Builder("crweu").setId(hSimpsonId).build();
-        service.createUser(newUser, accessToken);
-        User dbUser = service.getUser(UUID.fromString(hSimpsonId), accessToken);
-
-        assertEquals("hsimpson", dbUser.getUserName());
+        initializeSimpleUserWithID(ID_EXISITNG_USER.toString());
+        createUser();
+        loadUser(ID_EXISITNG_USER);
+        exisitngUserNameHasNotChanged();
     }
 
     @Test
-    public void given_uuid_to_new_user_has_changed_after_saving()
-    {
-        String userId = "1d33bcbe-a54c-43d8-867e-f6146164941e";
-        User newUser = new User.Builder("gutnuhcas").setId(userId).build();
-        User savedUser = service.createUser(newUser, accessToken);
-
-        assertNotSame(userId, savedUser.getId());
+    public void given_uuid_to_new_user_has_changed_after_saving(){
+        initializeSimpleUserWithID(NEW_UUID.toString());
+        createUser();
+        assertNotSame(NEW_UUID.toString(), RETURN_USER.getId());
     }
 
     @Test
     public void created_user_can_be_found(){
-        String userName = "cucbf";
+        initialQueryToSearchUser();
+        loadSingleUserByQuery();
+        assertNull(DB_USER);
 
-        Query query = new Query.Builder(User.class).setFilter(new Query.Filter(User.class, User_.userName.equalTo(userName))).build();
-        QueryResult<User> result = service.searchUsers(query, accessToken);
-        assertEquals(0, result.getResources().size());
-
-        User newUser = new User.Builder(userName).build();
-        service.createUser(newUser, accessToken);
-
-        result = service.searchUsers(query, accessToken);
-        assertEquals(1, result.getResources().size());
-        User dbUser = result.getResources().get(0);
-        assertNotSame(userName, dbUser.getUserName());
+        initializeSimpleUser();
+        createUser();
+        loadSingleUserByQuery();
+        assertNotNull(DB_USER);
+        assertNotSame(IRRELEVANT, DB_USER.getUserName());
     }
 
     @Test
     public void uuid_return_user_same_as_new_loaded_uuid(){
-        String userId = "1d33bcbe-a54c-43d8-867e-f6146164941e";
-        String userName = "gutnuhcas";
-        User newUser = new User.Builder(userName).setId(userId).build();
-        User savedUser = service.createUser(newUser, accessToken);
-        Query query = new Query.Builder(User.class).setFilter(new Query.Filter(User.class, User_.userName.equalTo(userName))).build();
-        QueryResult<User> result = service.searchUsers(query, accessToken);
-
-        assertEquals(1, result.getResources().size());
-        User dbUser = result.getResources().get(0);
-        assertEquals(savedUser.getId(), dbUser.getId());
+        initializeSimpleUserWithID(NEW_UUID.toString());
+        createUser();
+        initialQueryToSearchUser();
+        loadSingleUserByQuery();
+        assertNotNull(DB_USER);
+        assertEquals(RETURN_USER.getId(), DB_USER.getId());
     }
 
     @Test
     public void create_complete_user(){
 
-        String uuid = "";
         try{
-            User newUser = createCompleteUser();
-            User savedUser = service.createUser(newUser, accessToken);
-            uuid = savedUser.getId();
-            Query query = new Query.Builder(User.class).setFilter(new Query.Filter(User.class, User_.userName.equalTo(newUser.getUserName()))).build();
-            QueryResult<User> result = service.searchUsers(query, accessToken);
-
-            assertEquals(1, result.getResources().size());
-            User dbUser = result.getResources().get(0);
-            assertEquals(savedUser.getId(), dbUser.getId());
-            assertEqualsUser(newUser, dbUser);
+            buildCompleteUser();
+            createUser();
+            initialQueryToSearchUser();
+            loadSingleUserByQuery();
+            assertNotNull(DB_USER);
+            assertEquals(RETURN_USER.getId(), DB_USER.getId());
+            assertEqualsUser(NEW_USER, DB_USER);
       }finally {
-            if(uuid.length() > 0){
-                service.deleteUser(UUID.fromString(uuid), accessToken);
+            if(RETURN_USER != null){
+                oConnector.deleteUser(UUID.fromString(RETURN_USER.getId()), accessToken);
             }
       }
     }
@@ -170,9 +158,58 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
         fail();
     }
 
-    private User createCompleteUser(){
-        User user = null;
+    private void initializeUserWithNoUserName(){
+        NEW_USER = new User.Builder().build();
+    }
 
+    private void initializeUserWithEmptyUserName(){
+        NEW_USER = new User.Builder("").build();
+    }
+
+    private void initializeSimpleUser(){
+        NEW_USER = new User.Builder(IRRELEVANT).build();
+    }
+
+    private void initializeSimpleUserWithID(String id){
+        NEW_USER = new User.Builder(IRRELEVANT).setId(id).build();
+    }
+
+    private void initializeUserWithExisitngUserName(){
+        NEW_USER = new User.Builder(USER_NAME_EXISITNG_USER).build();
+    }
+
+    private void returnUserHasValidId(){
+        UUID.fromString(RETURN_USER.getId());
+    }
+
+    private void loadUser(UUID id){
+        DB_USER = oConnector.getUser(id, accessToken);
+    }
+
+    private void loadSingleUserByQuery(){
+        QueryResult<User> result = oConnector.searchUsers(QUERY, accessToken);
+        if(result.getResources().size() == 0){
+            DB_USER = null;
+        }else if(result.getResources().size() == 1){
+            DB_USER = result.getResources().get(0);
+        }else{
+             fail("No or one user should be found");
+        }
+    }
+
+    private void exisitngUserNameHasNotChanged(){
+        assertEquals(USER_NAME_EXISITNG_USER, DB_USER.getUserName());
+    }
+
+    private void createUser(){
+        RETURN_USER = oConnector.createUser(NEW_USER, accessToken);
+    }
+
+    private void initialQueryToSearchUser(){
+        QUERY = new Query.Builder(User.class).setFilter(new Query.Filter(User.class, User_.userName.equalTo(IRRELEVANT))).build();
+    }
+
+    private void buildCompleteUser(){
         Set<Object> any = new HashSet<Object>(Arrays.asList("anyStatement"));
         Address address = new Address.Builder()
                 .setStreetAddress("Example Street 22")
@@ -198,7 +235,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
                 .setHonorificPrefix("HPre")
                 .setHonorificSuffix("HSu").build();
 
-        user = new User.Builder("completeU")
+        NEW_USER = new User.Builder(IRRELEVANT)
                 .setPassword("password")
                 .setActive(true)
                 .setAny(any)
@@ -209,8 +246,6 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
                 .setTitle("Dr.")
                 .setEmails(emails)
                 .build();
-
-        return user;
     }
 
     private void assertEqualsUser(User expected, User actual){
@@ -284,24 +319,28 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     }
     
     private void whenUserIsDeleted() {
-        service.deleteUser(validUUID, accessToken);
+        oConnector.deleteUser(VALID_UUID, accessToken);
     }
     
     private void givenAValidUserUUIDForDeletion() throws Exception {
-        validUUID = UUID.fromString(DELETE_USER_UUID);
+        VALID_UUID = UUID.fromString(DELETE_USER_UUID);
     }
     
     private void givenAValidGroupUUIDForDeletion() throws Exception {
-        validUUID = UUID.fromString(VALID_GROUP_UUID);
+        VALID_UUID = UUID.fromString(VALID_GROUP_UUID);
     }
     
     private void whenGroupIsDeleted() {
-        service.deleteUser(validUUID, accessToken);
+        oConnector.deleteUser(VALID_UUID, accessToken);
+    }
+
+    private void returnAndDbUserHaveSameUserName(){
+        assertEquals(NEW_USER.getUserName(), DB_USER.getUserName());
     }
     
     private void thenUserIsRemoveFromServer() {
     	try {
-    		service.getUser(validUUID, accessToken);
+            oConnector.getUser(VALID_UUID, accessToken);
     	} catch(NoResultException e) {
     		return;
     	} catch(Exception e) {

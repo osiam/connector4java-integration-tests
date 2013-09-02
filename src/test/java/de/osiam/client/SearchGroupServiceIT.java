@@ -76,10 +76,10 @@ public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
     }
 
     private void whenSingleGroupIsSearchedByQueryString(String queryString) {
-        queryResult = service.searchGroups("filter=" + queryString, accessToken);
+        queryResult = oConnector.searchGroups("filter=" + queryString, accessToken);
     }
 
     private void whenSingleGroupIsSearchedByQueryBuilder(Query query) {
-        queryResult = service.searchGroups(query, accessToken);
+        queryResult = oConnector.searchGroups(query, accessToken);
     }
 }
