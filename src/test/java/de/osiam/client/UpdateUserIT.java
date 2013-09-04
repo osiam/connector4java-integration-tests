@@ -84,6 +84,14 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     }
     
     @Test
+    public void delete_multivalue_attributes_which_is_not_available(){
+    	getOriginalUser("dma");
+    	createUpdateUserWithWrongEmail();
+        updateUser();
+        
+    }
+    
+    @Test
     public void add_multivalue_attributes(){
     	getOriginalUser("ama");
     	createUpdateUserWithMultiAddFields();
@@ -133,6 +141,8 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     	//assertEquals("photo", multi.getType());//TODO der type wird nicht upgedatet
     	//multi = getSingleMultiValueAttribute(RETURN_USER.getRoles(), "role01");//TODO der type wird nicht gespeichert und kann somit nicht geändert werden
     	//assertEquals("other", multi.getType());//TODO der type wird nicht gespeichert und kann somit nicht geändert werden
+    	//multi = getSingleMultiValueAttribute(RETURN_USER.getGroups(), "69e1a5dc-89be-4343-976c-b5541af249f4"); //TODO gruppen werden nicht angelegt
+    	//assertEquals("indirect", multi.getType());
     }
     
 	@Test
@@ -273,7 +283,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         entitlements.add(entitlement01);
         entitlements.add(entitlement02);
         
-        MultiValuedAttribute group01 = new MultiValuedAttribute.Builder().setValue("69e1a5dc-89be-4343-976c-b5541af249f4").build();
+        MultiValuedAttribute group01 = new MultiValuedAttribute.Builder().setValue("69e1a5dc-89be-4343-976c-b5541af249f4").setType("direct").build();
         MultiValuedAttribute group02 = new MultiValuedAttribute.Builder().setValue("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578").build();
         List<MultiValuedAttribute> groups = new ArrayList<>();
         groups.add(group01);
@@ -335,7 +345,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     private void createUpdateUserWithUpdateFields(){
     	Name newName = new Name.Builder().setFamilyName("newFamilyName").build();
         UPDATE_USER = new UpdateUser.Builder(IRRELEVANT)
-        					.updateNickname(IRRELEVANT)
+        					.updateNickName(IRRELEVANT)
         					.updateExternalId(IRRELEVANT)
         					.updateDisplayName(IRRELEVANT)
         					.updatePassword(IRRELEVANT)
@@ -346,13 +356,13 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         					.updateTitle(IRRELEVANT)
         					.updateUserType(IRRELEVANT)
         					.updateName(newName)
-        					.setActiv(true).build();
+        					.setActive(true).build();
     }
     
     private void createUpdateUserWithUpdateFieldsWithoutPassword(){
     	Name newName = new Name.Builder().setFamilyName("newFamilyName").build();
         UPDATE_USER = new UpdateUser.Builder(IRRELEVANT)
-        					.updateNickname(IRRELEVANT)
+        					.updateNickName(IRRELEVANT)
         					.updateExternalId(IRRELEVANT)
         					.updateDisplayName(IRRELEVANT)
         					.updateLocal(IRRELEVANT)
@@ -362,12 +372,12 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         					.updateTitle(IRRELEVANT)
         					.updateUserType(IRRELEVANT)
         					.updateName(newName)
-        					.setActiv(true).build();
+        					.setActive(true).build();
     }
     
     private void createUpdateUserWithJustOtherNickname(){
         UPDATE_USER = new UpdateUser.Builder(IRRELEVANT)//TODO bug in Server
-		.updateNickname(IRRELEVANT)
+		.updateNickName(IRRELEVANT)
 		.build();
     }
     
@@ -387,18 +397,22 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     	MultiValuedAttribute ims = new MultiValuedAttribute.Builder().setValue("ims01").setType("icq").build();
     	MultiValuedAttribute photo = new MultiValuedAttribute.Builder().setValue("photo01.jpg").setType("photo").build(); 
     	MultiValuedAttribute role = new MultiValuedAttribute.Builder().setValue("role01").setType("other").build();
+    	MultiValuedAttribute group = new MultiValuedAttribute.Builder().setValue("69e1a5dc-89be-4343-976c-b5541af249f4").setType("indirect").build();
+    	new MultiValuedAttribute.Builder().setValue("test").setType("other").build();
+    	
     	UPDATE_USER = new UpdateUser.Builder(IRRELEVANT) //TODO username nur solange bug im server existiert
         					.updateEmail(email)
         					.updatePhoneNumber(phoneNumber)
         					.updateIms(ims)
         					.updateRole(role)
+        					.updateGroup(group)
         					.build();
     }
     
     private void createUpdateUserWithDeleteFields(){
         UPDATE_USER = new UpdateUser.Builder(IRRELEVANT) //TODO username nur solange bug im server existiert
         					.deleteDisplayName()
-        					.deleteNickname()
+        					.deleteNickName()
         					.deleteLocal()
         					.deletePreferredLanguage()
         					.deleteProfileUrl()
@@ -420,6 +434,13 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         					.deletePhoto("photo01.jpg")
         					.deleteRole("role01")
         					//.deleteX509Certificate("certificate01")
+        					.build();
+    }
+    
+    private void createUpdateUserWithWrongEmail(){
+
+    	UPDATE_USER = new UpdateUser.Builder(IRRELEVANT) //TODO username nur solange bug im server existiert
+        					.deleteEmail("test@test.com")
         					.build();
     }
     
