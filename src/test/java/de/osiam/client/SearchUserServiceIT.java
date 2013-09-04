@@ -2,6 +2,10 @@ package de.osiam.client;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -93,8 +97,8 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         Query.Filter innerFilter = new Query.Filter(User.class, User_.userName.equalTo("marissa"))
                 .or(User_.userName.equalTo("hsimpson"));
 
-        SimpleDateFormat sdfToDate = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSS" );
-        Date date = sdfToDate.parse("2000-05-23T13:12:45.672");
+        DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        DateTime date = dateFormat.parseDateTime("2000-05-23T13:12:45.672");
         Query.Filter mainFilter = new Query.Filter(User.class, User_.Meta.created.greaterThan(date))
                 .and(innerFilter);
         Query.Builder queryBuilder = new Query.Builder(User.class);
