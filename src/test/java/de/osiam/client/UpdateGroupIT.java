@@ -48,8 +48,6 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
     private Group returnGroup;
     private Group originalGroup;
 
-
-    
 	@Test
     public void update_all_single_values(){
         getOriginalGroup();
