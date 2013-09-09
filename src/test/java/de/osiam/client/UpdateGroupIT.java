@@ -229,7 +229,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
         mapper.configure( SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false );
         String userAsString = null;
         try {
-            userAsString = mapper.writeValueAsString(updateGroup.getGroupToUpdate());
+            userAsString = mapper.writeValueAsString(updateGroup.getScimConformUpdateGroup());
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
