@@ -35,9 +35,9 @@ import java.util.*;
 public class EditUserServiceIT extends AbstractIntegrationTestBase{
 
     private UUID VALID_UUID = null;
-    private UUID ID_EXISITNG_USER = UUID.fromString("7d33bcbe-a54c-43d8-867e-f6146164941e");
+    private UUID ID_EXISTING_USER = UUID.fromString("7d33bcbe-a54c-43d8-867e-f6146164941e");
     private UUID NEW_UUID = UUID.randomUUID();
-    private String USER_NAME_EXISITNG_USER = "hsimpson";
+    private String USER_NAME_EXISTING_USER = "hsimpson";
     private User NEW_USER;
     private User RETURN_USER;
     private User DB_USER;
@@ -52,8 +52,8 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     }
 
     @Test (expected = ConflictException.class)
-    public void create_user_with_exisitng_username_raises_exception(){
-        initializeUserWithExisitngUserName();
+    public void create_user_with_existing_username_raises_exception(){
+        initializeUserWithExistingUserName();
         createUser();
         fail("Exception excpected");
     }
@@ -76,10 +76,10 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
 
     @Test
     public void create_user_with_existing_uuid(){
-        initializeSimpleUserWithID(ID_EXISITNG_USER.toString());
+        initializeSimpleUserWithID(ID_EXISTING_USER.toString());
         createUser();
-        loadUser(ID_EXISITNG_USER);
-        exisitngUserNameHasNotChanged();
+        loadUser(ID_EXISTING_USER);
+        existingUserNameHasNotChanged();
     }
 
     @Test
@@ -178,8 +178,8 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
         NEW_USER = new User.Builder(IRRELEVANT).setId(id).build();
     }
 
-    private void initializeUserWithExisitngUserName(){
-        NEW_USER = new User.Builder(USER_NAME_EXISITNG_USER).build();
+    private void initializeUserWithExistingUserName(){
+        NEW_USER = new User.Builder(USER_NAME_EXISTING_USER).build();
     }
 
     private void returnUserHasValidId(){
@@ -201,8 +201,8 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
         }
     }
 
-    private void exisitngUserNameHasNotChanged(){
-        assertEquals(USER_NAME_EXISITNG_USER, DB_USER.getUserName());
+    private void existingUserNameHasNotChanged(){
+        assertEquals(USER_NAME_EXISTING_USER, DB_USER.getUserName());
     }
 
     private void createUser(){

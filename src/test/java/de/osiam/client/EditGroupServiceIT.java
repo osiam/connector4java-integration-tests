@@ -29,9 +29,9 @@ import static org.junit.Assert.fail;
 public class EditGroupServiceIT extends AbstractIntegrationTestBase{
 
     private UUID VALID_UUID = null;
-    private UUID ID_EXISITNG_GROUP = UUID.fromString("69e1a5dc-89be-4343-976c-b5541af249f4");
+    private UUID ID_EXISTING_GROUP = UUID.fromString("69e1a5dc-89be-4343-976c-b5541af249f4");
     private UUID NEW_UUID = UUID.randomUUID();
-    private String NAME_EXISITNG_GROUP = "test_group01";
+    private String NAME_EXISTING_GROUP = "test_group01";
     private Group NEW_GROUP;
     private Group RETURN_GROUP;
     private Group DB_GROUP;
@@ -46,8 +46,8 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
     }
 
     @Test (expected = ConflictException.class)
-    public void create_group_with_exisitng_displayName_raises_exception(){
-        initializeGroupWithExisitngDisplayName();
+    public void create_group_with_existing_displayName_raises_exception(){
+        initializeGroupWithExistingDisplayName();
         createGroup();
         fail("Exception excpected");
     }
@@ -70,10 +70,10 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
 
     @Test
     public void create_group_with_existing_uuid(){
-        initializeSimpleGroupWithID(ID_EXISITNG_GROUP.toString());
+        initializeSimpleGroupWithID(ID_EXISTING_GROUP.toString());
         createGroup();
-        loadGroup(ID_EXISITNG_GROUP);
-        exisitngGroupDislpayNameHasNotChanged();
+        loadGroup(ID_EXISTING_GROUP);
+        existingGroupDislpayNameHasNotChanged();
     }
 
     @Test
@@ -183,8 +183,8 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
         NEW_GROUP = new Group.Builder().setDisplayName(IRRELEVANT).setId(id).build();
     }
 
-    private void initializeGroupWithExisitngDisplayName(){
-        NEW_GROUP = new Group.Builder().setDisplayName(NAME_EXISITNG_GROUP).build();
+    private void initializeGroupWithExistingDisplayName(){
+        NEW_GROUP = new Group.Builder().setDisplayName(NAME_EXISTING_GROUP).build();
     }
 
     private void returnGroupHasValidId(){
@@ -206,8 +206,8 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
         }
     }
 
-    private void exisitngGroupDislpayNameHasNotChanged(){
-        assertEquals(NAME_EXISITNG_GROUP, DB_GROUP.getDisplayName());
+    private void existingGroupDislpayNameHasNotChanged(){
+        assertEquals(NAME_EXISTING_GROUP, DB_GROUP.getDisplayName());
     }
 
     private void returnAndDbGroupHaveSameDislplayName(){
