@@ -37,7 +37,7 @@ import static org.junit.Assert.*;
 @DatabaseSetup("/database_seed.xml")
 public class UpdateUserIT extends AbstractIntegrationTestBase{
 
-    private UUID idExisitngUser = UUID.fromString("7d33bcbe-a54c-43d8-867e-f6146164941e");
+    private UUID idExistingUser = UUID.fromString("7d33bcbe-a54c-43d8-867e-f6146164941e");
     private UpdateUser updateUSer;
     private User returnUser;
     private User originalUser;
@@ -66,7 +66,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 	        //assertTrue(isValuePartOfMultivalueList(ORIGINAL_USER.getX509Certificates(), "certificate01"));//TODO at the second run it will fail
 	        //assertFalse(isValuePartOfMultivalueList(RETURN_USER.getX509Certificates(), "certificate01"));//TODO at the second run it will fail
     	}finally{
-    		oConnector.deleteUser(idExisitngUser, accessToken);
+    		oConnector.deleteUser(idExistingUser, accessToken);
     	}
     }
     
@@ -87,7 +87,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 	        assertNull(returnUser.getRoles());
 	        assertNull(returnUser.getX509Certificates());
     	}finally{
-    		oConnector.deleteUser(idExisitngUser, accessToken);
+    		oConnector.deleteUser(idExistingUser, accessToken);
     	}
     }
     
@@ -98,7 +98,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 	    	createUpdateUserWithWrongEmail();
 	        updateUser();
     	}finally{
-    		oConnector.deleteUser(idExisitngUser, accessToken);
+    		oConnector.deleteUser(idExistingUser, accessToken);
     	}
     }
     
@@ -127,7 +127,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 	    	//assertEquals(ORIGINAL_USER.getX509Certificates().size() + 1, RETURN_USER.getX509Certificates().size());//TODO at the second run it will fail
 	    	//assertTrue(isValuePartOfMultivalueList(RETURN_USER.getX509Certificates(), "certificate03"));//TODO at the second run it will fail
     	}finally{
-    		oConnector.deleteUser(idExisitngUser, accessToken);
+    		oConnector.deleteUser(idExistingUser, accessToken);
     	}
     }
     
@@ -158,7 +158,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 	    	//multi = getSingleMultiValueAttribute(RETURN_USER.getGroups(), "69e1a5dc-89be-4343-976c-b5541af249f4"); //TODO gruppen werden nicht angelegt
 	    	//assertEquals("indirect", multi.getType());
     	}finally{
-    		oConnector.deleteUser(idExisitngUser, accessToken);
+    		oConnector.deleteUser(idExistingUser, accessToken);
     	}
     }
     
@@ -182,7 +182,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 	        assertNotEquals(originalUser.getName().getFamilyName(), returnUser.getName().getFamilyName());
 	        assertNotEquals(originalUser.getExternalId(), returnUser.getExternalId());
 		}finally{
-    		oConnector.deleteUser(idExisitngUser, accessToken);
+    		oConnector.deleteUser(idExistingUser, accessToken);
     	}
     }
 		
@@ -203,7 +203,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 	        assertNull(returnUser.getName());
 	        assertNull(returnUser.getExternalId());
 		}finally{
-    		oConnector.deleteUser(idExisitngUser, accessToken);
+    		oConnector.deleteUser(idExistingUser, accessToken);
     	}
     }
 	
@@ -215,7 +215,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 	        updateUser();
 	        makeNewConnectionWithNewPassword();
 		}finally{
-    		oConnector.deleteUser(idExisitngUser, accessToken);
+    		oConnector.deleteUser(idExistingUser, accessToken);
     	}
 	}
 	
@@ -227,7 +227,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 	        updateUser();
 	        makeNewConnection();
 		}finally{
-    		oConnector.deleteUser(idExisitngUser, accessToken);
+    		oConnector.deleteUser(idExistingUser, accessToken);
     	}
 	}
 	
@@ -249,7 +249,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 	        assertEquals(originalUser.getUserType(), returnUser.getUserType());
 	        assertEquals(originalUser.getName().getFamilyName(), returnUser.getName().getFamilyName());
 		}finally{
-    		oConnector.deleteUser(idExisitngUser, accessToken);
+    		oConnector.deleteUser(idExistingUser, accessToken);
     	}
 	}
 	
@@ -261,7 +261,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 			updateUser();
 			fail("exception expected");
 		}finally{
-    		oConnector.deleteUser(idExisitngUser, accessToken);
+    		oConnector.deleteUser(idExistingUser, accessToken);
     	}
 	}
 	
@@ -273,7 +273,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 			updateUser();
 			fail("exception expected");
 		}finally{
-    		oConnector.deleteUser(idExisitngUser, accessToken);
+    		oConnector.deleteUser(idExistingUser, accessToken);
     	}
 	}
 	
@@ -396,7 +396,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         User newUser = userBuilder.build(); 
         
         originalUser = oConnector.createUser(newUser, accessToken);
-        idExisitngUser = UUID.fromString(originalUser.getId());
+        idExistingUser = UUID.fromString(originalUser.getId());
     }
 
     private void createUpdateUserWithUpdateFields(){
@@ -556,7 +556,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     }
 
     private void updateUser(){
-       returnUser = oConnector.updateUser(idExisitngUser, updateUSer, accessToken);
+       returnUser = oConnector.updateUser(idExistingUser, updateUSer, accessToken);
     }
 
     
