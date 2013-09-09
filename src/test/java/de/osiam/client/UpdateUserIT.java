@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
 public class UpdateUserIT extends AbstractIntegrationTestBase{
 
     private UUID idExistingUser = UUID.fromString("7d33bcbe-a54c-43d8-867e-f6146164941e");
-    private UpdateUser updateUSer;
+    private UpdateUser updateUser;
     private User returnUser;
     private User originalUser;
     private static String IRRELEVANT = "Irrelevant";
@@ -282,7 +282,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         mapper.configure( SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false );
         String userAsString = null;
         try {
-            userAsString = mapper.writeValueAsString(updateUSer.getUserToUpdate());
+            userAsString = mapper.writeValueAsString(updateUser.getUserToUpdate());
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -401,7 +401,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 
     private void createUpdateUserWithUpdateFields(){
     	Name newName = new Name.Builder().setFamilyName("newFamilyName").build();
-        updateUSer = new UpdateUser.Builder(IRRELEVANT)
+        updateUser = new UpdateUser.Builder(IRRELEVANT)
         					.updateNickName(IRRELEVANT)
         					.updateExternalId(IRRELEVANT)
         					.updateDisplayName(IRRELEVANT)
@@ -419,7 +419,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     
     private void createUpdateUserWithUpdateFieldsWithoutPassword(){
     	Name newName = new Name.Builder().setFamilyName("newFamilyName").build();
-        updateUSer = new UpdateUser.Builder(UUID.randomUUID().toString())
+        updateUser = new UpdateUser.Builder(UUID.randomUUID().toString())
         					.updateNickName(IRRELEVANT)
         					.updateExternalId(IRRELEVANT)
         					.updateDisplayName(IRRELEVANT)
@@ -434,20 +434,20 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     }
     
     private void createUpdateUserWithJustOtherNickname(){
-        updateUSer = new UpdateUser.Builder(IRRELEVANT)//TODO bug in Server
+        updateUser = new UpdateUser.Builder(IRRELEVANT)//TODO bug in Server
 		.updateNickName(IRRELEVANT)
 		.build();
     }
     
     private void createUpdateUserWithInvalidEmailType(){
     	MultiValuedAttribute email = new MultiValuedAttribute.Builder().setValue("some@thing.com").setType("wrong").build();
-        updateUSer = new UpdateUser.Builder(IRRELEVANT)//TODO bug in Server
+        updateUser = new UpdateUser.Builder(IRRELEVANT)//TODO bug in Server
 		.addOrUpdateEmail(email)
 		.build();
     }
     
     private void createUpdateUserWithEmptyUserName(){
-        updateUSer = new UpdateUser.Builder("")
+        updateUser = new UpdateUser.Builder("")
 		.build();
     }
     
@@ -463,7 +463,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     	MultiValuedAttribute group = new MultiValuedAttribute.Builder().setValue("69e1a5dc-89be-4343-976c-b5541af249f4").setType("indirect").build();
     	new MultiValuedAttribute.Builder().setValue("test").setType("other").build();
     	
-    	updateUSer = new UpdateUser.Builder(IRRELEVANT) //TODO username nur solange bug im server existiert
+    	updateUser = new UpdateUser.Builder(IRRELEVANT) //TODO username nur solange bug im server existiert
         					.addOrUpdateEmail(email)
         					.addOrUpdatesPhoneNumber(phoneNumber)
         					.addOrUpdatesPhoto(photo)
@@ -474,7 +474,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     }
     
     private void createUpdateUserWithDeleteFields(){
-        updateUSer = new UpdateUser.Builder(IRRELEVANT) //TODO username nur solange bug im server existiert
+        updateUser = new UpdateUser.Builder(IRRELEVANT) //TODO username nur solange bug im server existiert
         					.deleteDisplayName()
         					.deleteNickName()
         					.deleteLocal()
@@ -490,7 +490,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     
     private void createUpdateUserWithMultiDeleteFields(){
 
-    	updateUSer = new UpdateUser.Builder(IRRELEVANT) //TODO username nur solange bug im server existiert
+    	updateUser = new UpdateUser.Builder(IRRELEVANT) //TODO username nur solange bug im server existiert
         					.deleteEmail("hsimpson@atom-example.com")
         					//.deleteEntitlement("right2")TODO at the second run it will fail
         					.deleteGroup(UUID.fromString("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"))
@@ -504,7 +504,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     
     private void createUpdateUserWithWrongEmail(){
 
-    	updateUSer = new UpdateUser.Builder(IRRELEVANT) //TODO username nur solange bug im server existiert
+    	updateUser = new UpdateUser.Builder(IRRELEVANT) //TODO username nur solange bug im server existiert
         					.deleteEmail("test@test.com")
         					.build();
     }
@@ -525,7 +525,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     	MultiValuedAttribute certificate = new MultiValuedAttribute.Builder().setValue("certificate03").setType("some").build();
     	MultiValuedAttribute groupMembership = new MultiValuedAttribute.Builder().setValue("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578").build();
     	
-    	updateUSer = new UpdateUser.Builder(IRRELEVANT) //TODO username nur solange bug im server existiert
+    	updateUser = new UpdateUser.Builder(IRRELEVANT) //TODO username nur solange bug im server existiert
         					.addOrUpdateEmail(email)
         					.addOrUpdatesPhoneNumber(phonenumber)
         					.addAddress(newSimpleAddress)
@@ -542,7 +542,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     
     private void createUpdateUserWithMultiAllDeleteFields(){
 
-    	updateUSer = new UpdateUser.Builder(IRRELEVANT) //TODO username nur solange bug im server existiert
+    	updateUser = new UpdateUser.Builder(IRRELEVANT) //TODO username nur solange bug im server existiert
         					.deleteEmails()
         					.deleteAddresses()
         					//.deleteEntitlements()TODO at the second run it will fail
@@ -556,7 +556,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     }
 
     private void updateUser(){
-       returnUser = oConnector.updateUser(idExistingUser, updateUSer, accessToken);
+       returnUser = oConnector.updateUser(idExistingUser, updateUser, accessToken);
     }
 
     
