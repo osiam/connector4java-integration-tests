@@ -84,7 +84,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
         updateGroup();
     }
 	
-	@Test //(expected = ConflictException.class)
+	@Test (expected = ConflictException.class)
     public void try_update_with_user_id_raises_exception(){
         getOriginalGroup();
         createUpdateUserWithUpdateFields();
