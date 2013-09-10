@@ -43,6 +43,8 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
     private static UUID ID_USER_BTHOMSON = UUID.fromString("618b398c-0110-43f2-95df-d1bc4e7d2b4a");
     private static UUID ID_USER_CMILLER = UUID.fromString("ac3bacc9-915d-4bab-9145-9eb600d5e5bf");
     private static UUID ID_USER_HSIMPSON = UUID.fromString("7d33bcbe-a54c-43d8-867e-f6146164941e");
+    private static UUID ID_GROUP_01 = UUID.fromString("69e1a5dc-89be-4343-976c-b5541af249f4");
+    private static UUID ID_GROUP_02 = UUID.fromString("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578");
     private static String IRRELEVANT = "Irrelevant";
     private UpdateGroup updateGroup;
     private Group returnGroup;
@@ -75,6 +77,22 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
     }
 	
 	@Test (expected = ConflictException.class)
+    public void try_update_with_wrong_id_raises_exception(){
+        getOriginalGroup();
+        createUpdateUserWithUpdateFields();
+        idExistingGroup = UUID.randomUUID();
+        updateGroup();
+    }
+	
+	@Test //(expected = ConflictException.class)
+    public void try_update_with_user_id_raises_exception(){
+        getOriginalGroup();
+        createUpdateUserWithUpdateFields();
+        idExistingGroup = ID_USER_HSIMPSON;
+        updateGroup();
+    }
+	
+	@Test (expected = ConflictException.class)
     public void set_display_name_to_empty_string_to_raise_exception(){
         getOriginalGroup();
         createUpdateUserWithEmptyDisplayName();
@@ -82,23 +100,34 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
         fail("exception expected");
     }
 	
-	@Test
-    public void add_new_meber(){
+	@Test (expected = ConflictException.class)
+    public void add_new_mebers(){
 		getOriginalGroup();
 		createUpdateGroupWithAddingMembers();
         updateGroup();
-        assertEquals(originalGroup.getMembers().size() + 1, returnGroup.getMembers().size()); 
+        assertEquals(originalGroup.getMembers().size() + 2, returnGroup.getMembers().size()); 
         MultiValuedAttribute value = getSingleMultiValueAttribute(returnGroup.getMembers(), ID_USER_HSIMPSON);
+        assertNotNull(value);
+        value = getSingleMultiValueAttribute(returnGroup.getMembers(), ID_GROUP_02);
         assertNotNull(value);
     }
 	
 	@Test
-    public void delete_one_meber(){
+    public void add_invalid_mebers(){
+		getOriginalGroup();
+		createUpdateGroupWithAddingInvalidMembers();
+        updateGroup();
+    }
+	
+	@Test
+    public void delete_one_user_and_one_group_member(){
 		getOriginalGroup();
 		createUpdateGroupWithDeleteOneMembers();
         updateGroup();
-        assertEquals(originalGroup.getMembers().size() - 1, returnGroup.getMembers().size()); 
+        assertEquals(originalGroup.getMembers().size() - 2, returnGroup.getMembers().size()); 
         MultiValuedAttribute value = getSingleMultiValueAttribute(returnGroup.getMembers(), ID_USER_HSIMPSON);
+        assertNull(value);
+        value = getSingleMultiValueAttribute(returnGroup.getMembers(), ID_GROUP_01);
         assertNull(value);
     }
 
@@ -154,6 +183,14 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
         updateGroup = new UpdateGroup.Builder()
         					.updateDisplayName(IRRELEVANT)//TODO needs to be set bug in server
         					.addMember(ID_USER_HSIMPSON)
+        					.addMember(ID_GROUP_02)
+        					.build();
+    }
+    
+    private void createUpdateGroupWithAddingInvalidMembers(){
+        updateGroup = new UpdateGroup.Builder()
+        					.updateDisplayName(IRRELEVANT)//TODO needs to be set bug in server
+        					.addMember(UUID.randomUUID())
         					.build();
     }
     
@@ -161,6 +198,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
         updateGroup = new UpdateGroup.Builder()
         					.updateDisplayName(IRRELEVANT)//TODO needs to be set bug in server
         					.deleteMember(ID_USER_CMILLER)
+        					.deleteMember(ID_GROUP_01)
         					.build();
     }
     
@@ -177,9 +215,11 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
         
         MultiValuedAttribute member01 = new MultiValuedAttribute.Builder().setValue(ID_USER_BTHOMSON).setType("hallo").build();
         MultiValuedAttribute member02 = new MultiValuedAttribute.Builder().setValue(ID_USER_CMILLER).build();
+        MultiValuedAttribute member03 = new MultiValuedAttribute.Builder().setValue(ID_GROUP_01).build();
         Set<MultiValuedAttribute> members = new HashSet<>();
         members.add(member01);
-        members.add(member02);        
+        members.add(member02);
+        members.add(member03); 
 
         		userBuilder
         			.setMembers(members)
