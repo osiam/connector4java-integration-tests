@@ -143,7 +143,7 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
                 setClientId(clientId).
                 setClientSecret(clientSecret).
                 setGrantType(GrantType.PASSWORD).
-                setUsername("bjensen").
+                setUserName("bjensen").
                 setPassword("koala");
         oConnector = authBuilder.build();
         accessToken = oConnector.retrieveAccessToken();
@@ -154,7 +154,7 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
                 setClientId(clientId).
                 setClientSecret(clientSecret).
                 setGrantType(GrantType.PASSWORD).
-                setUsername("hsimpson").
+                setUserName("hsimpson").
                 setPassword("koala");
         oConnector = authBuilder.build();
         accessToken = oConnector.retrieveAccessToken();

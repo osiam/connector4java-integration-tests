@@ -55,8 +55,8 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
         getOriginalGroup();
         createUpdateUserWithUpdateFields();
         updateGroup();
-        assertNotEquals(originalGroup.getDisplayName(), returnGroup.getDisplayName());
-        assertNotEquals(originalGroup.getExternalId(), returnGroup.getExternalId());
+        assertEquals("DisplayName", returnGroup.getDisplayName());
+        assertEquals("ExternalId", returnGroup.getExternalId());
     }
 	
 	@Test
@@ -100,7 +100,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
         fail("exception expected");
     }
 	
-	@Test (expected = ConflictException.class)
+	@Test 
     public void add_new_mebers(){
 		getOriginalGroup();
 		createUpdateGroupWithAddingMembers();
@@ -112,7 +112,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
         assertNotNull(value);
     }
 	
-	@Test
+	@Test (expected = ConflictException.class)
     public void add_invalid_mebers(){
 		getOriginalGroup();
 		createUpdateGroupWithAddingInvalidMembers();
@@ -234,8 +234,8 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
 
     private void createUpdateUserWithUpdateFields(){
         updateGroup = new UpdateGroup.Builder()
-        					.updateDisplayName(IRRELEVANT)
-        					.updateExternalId(IRRELEVANT)
+        					.updateDisplayName("DisplayName")
+        					.updateExternalId("ExternalId")
         					.build();
     }
     

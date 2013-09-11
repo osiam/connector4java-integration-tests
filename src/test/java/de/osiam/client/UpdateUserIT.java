@@ -168,19 +168,19 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 	        getOriginalUser("uasv");
 	        createUpdateUserWithUpdateFields();
 	        updateUser();
-	        assertNotEquals(originalUser.getUserName(), returnUser.getUserName());
-	        assertNotEquals(originalUser.getNickName(), returnUser.getNickName());
+	        assertEquals("UserName", returnUser.getUserName());
+	        assertEquals("NickName", returnUser.getNickName());
 	        assertNotEquals(originalUser.isActive(), returnUser.isActive());
-	        assertNotEquals(originalUser.getDisplayName(), returnUser.getDisplayName());
-	        assertNotEquals(originalUser.getExternalId(), returnUser.getExternalId());
-	        assertNotEquals(originalUser.getLocale(), returnUser.getLocale());
-	        assertNotEquals(originalUser.getPreferredLanguage(), returnUser.getPreferredLanguage());
-	        assertNotEquals(originalUser.getProfileUrl(), returnUser.getProfileUrl());
-	        assertNotEquals(originalUser.getTimezone(), returnUser.getTimezone());
-	        assertNotEquals(originalUser.getTitle(), returnUser.getTitle());
-	        assertNotEquals(originalUser.getUserType(), returnUser.getUserType());
-	        assertNotEquals(originalUser.getName().getFamilyName(), returnUser.getName().getFamilyName());
-	        assertNotEquals(originalUser.getExternalId(), returnUser.getExternalId());
+	        assertEquals("DisplayName", returnUser.getDisplayName());
+	        assertEquals("ExternalId", returnUser.getExternalId());
+	        assertEquals("Locale", returnUser.getLocale());
+	        assertEquals("PreferredLanguage", returnUser.getPreferredLanguage());
+	        assertEquals("ProfileUrl", returnUser.getProfileUrl());
+	        assertEquals("Timezone", returnUser.getTimezone());
+	        assertEquals("Title", returnUser.getTitle());
+	        assertEquals("UserType", returnUser.getUserType());
+	        assertEquals("FamilyName", returnUser.getName().getFamilyName());
+	        assertEquals("ExternalId", returnUser.getExternalId());
 		}finally{
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
@@ -400,20 +400,20 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     }
 
     private void createUpdateUserWithUpdateFields(){
-    	Name newName = new Name.Builder().setFamilyName("newFamilyName").build();
+    	Name newName = new Name.Builder().setFamilyName("FamilyName").build();
         updateUser = new UpdateUser.Builder()
-        					.updateUsername(IRRELEVANT)
-        					.updateNickName(IRRELEVANT)
-        					.updateExternalId(IRRELEVANT)
-        					.updateDisplayName(IRRELEVANT)
-        					.updatePassword(IRRELEVANT)
-        					.updateLocal(IRRELEVANT)
-        					.updatePreferredLanguage(IRRELEVANT)
-        					.updateProfileUrl(IRRELEVANT)
-        					.updateTimezone(IRRELEVANT)
-        					.updateTitle(IRRELEVANT)
-        					.updateUserType(IRRELEVANT)
-        					.updateExternalId(IRRELEVANT)
+        					.updateUserName("UserName")
+        					.updateNickName("NickName")
+        					.updateExternalId("ExternalId")
+        					.updateDisplayName("DisplayName")
+        					.updatePassword("Password")
+        					.updateLocale("Locale")
+        					.updatePreferredLanguage("PreferredLanguage")
+        					.updateProfileUrl("ProfileUrl")
+        					.updateTimezone("Timezone")
+        					.updateTitle("Title")
+        					.updateUserType("UserType")
+        					.updateExternalId("ExternalId")
         					.updateName(newName)
         					.setActive(true).build();
     }
@@ -421,11 +421,11 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     private void createUpdateUserWithUpdateFieldsWithoutPassword(){
     	Name newName = new Name.Builder().setFamilyName("newFamilyName").build();
         updateUser = new UpdateUser.Builder()
-        					.updateUsername(UUID.randomUUID().toString())
+        					.updateUserName(UUID.randomUUID().toString())
         					.updateNickName(IRRELEVANT)
         					.updateExternalId(IRRELEVANT)
         					.updateDisplayName(IRRELEVANT)
-        					.updateLocal(IRRELEVANT)
+        					.updateLocale(IRRELEVANT)
         					.updatePreferredLanguage(IRRELEVANT)
         					.updateProfileUrl(IRRELEVANT)
         					.updateTimezone(IRRELEVANT)
@@ -436,20 +436,20 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     }
     
     private void createUpdateUserWithJustOtherNickname(){
-        updateUser = new UpdateUser.Builder().updateUsername(IRRELEVANT)//TODO bug in Server
+        updateUser = new UpdateUser.Builder().updateUserName(IRRELEVANT)//TODO bug in Server
 		.updateNickName(IRRELEVANT)
 		.build();
     }
     
     private void createUpdateUserWithInvalidEmailType(){
     	MultiValuedAttribute email = new MultiValuedAttribute.Builder().setValue("some@thing.com").setType("wrong").build();
-        updateUser = new UpdateUser.Builder().updateUsername(IRRELEVANT)//TODO bug in Server
+        updateUser = new UpdateUser.Builder().updateUserName(IRRELEVANT)//TODO bug in Server
 		.addOrUpdateEmail(email)
 		.build();
     }
     
     private void createUpdateUserWithEmptyUserName(){
-        updateUser = new UpdateUser.Builder().updateUsername("")
+        updateUser = new UpdateUser.Builder().updateUserName("")
 		.build();
     }
     
@@ -466,7 +466,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     	new MultiValuedAttribute.Builder().setValue("test").setType("other").build();
     	
     	updateUser = new UpdateUser.Builder()
-    						.updateUsername(IRRELEVANT)//TODO username nur solange bug im server existiert
+    						.updateUserName(IRRELEVANT)//TODO username nur solange bug im server existiert
         					.addOrUpdateEmail(email)
         					.addOrUpdatesPhoneNumber(phoneNumber)
         					.addOrUpdatesPhoto(photo)
@@ -478,7 +478,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     
     private void createUpdateUserWithDeleteFields(){
         updateUser = new UpdateUser.Builder() 
-        					.updateUsername(IRRELEVANT)//TODO username nur solange bug im server existiert
+        					.updateUserName(IRRELEVANT)//TODO username nur solange bug im server existiert
         					.deleteDisplayName()
         					.deleteNickName()
         					.deleteLocal()
@@ -495,7 +495,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     private void createUpdateUserWithMultiDeleteFields(){
 
     	updateUser = new UpdateUser.Builder() 
-    						.updateUsername(IRRELEVANT)//TODO username nur solange bug im server existiert
+    						.updateUserName(IRRELEVANT)//TODO username nur solange bug im server existiert
         					.deleteEmail("hsimpson@atom-example.com")
         					//.deleteEntitlement("right2")TODO at the second run it will fail
         					.deleteGroup(UUID.fromString("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"))
@@ -510,7 +510,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     private void createUpdateUserWithWrongEmail(){
 
     	updateUser = new UpdateUser.Builder() 
-    						.updateUsername(IRRELEVANT)//TODO username nur solange bug im server existiert
+    						.updateUserName(IRRELEVANT)//TODO username nur solange bug im server existiert
         					.deleteEmail("test@test.com")
         					.build();
     }
@@ -532,7 +532,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     	MultiValuedAttribute groupMembership = new MultiValuedAttribute.Builder().setValue("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578").build();
     	
     	updateUser = new UpdateUser.Builder()
-    						.updateUsername(IRRELEVANT)//TODO username nur solange bug im server existiert
+    						.updateUserName(IRRELEVANT)//TODO username nur solange bug im server existiert
         					.addOrUpdateEmail(email)
         					.addOrUpdatesPhoneNumber(phonenumber)
         					.addAddress(newSimpleAddress)
@@ -550,7 +550,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     private void createUpdateUserWithMultiAllDeleteFields(){
 
     	updateUser = new UpdateUser.Builder()
-    						.updateUsername(IRRELEVANT)//TODO username nur solange bug im server existiert
+    						.updateUserName(IRRELEVANT)//TODO username nur solange bug im server existiert
         					.deleteEmails()
         					.deleteAddresses()
         					//.deleteEntitlements()TODO at the second run it will fail
@@ -567,14 +567,13 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
        returnUser = oConnector.updateUser(idExistingUser, updateUser, accessToken);
     }
 
-    
     private void makeNewConnectionWithNewPassword() {
     	OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(endpointAddress).
                 setClientId(clientId).
                 setClientSecret(clientSecret).
                 setGrantType(GrantType.PASSWORD).
-                setUsername(IRRELEVANT).
-                setPassword(IRRELEVANT);
+                setUserName("UserName").
+                setPassword("Password");
         oConnector = oConBuilder.build();
         oConnector.retrieveAccessToken();
     }
@@ -584,7 +583,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
                 setClientId(clientId).
                 setClientSecret(clientSecret).
                 setGrantType(GrantType.PASSWORD).
-                setUsername("marissa").
+                setUserName("marissa").
                 setPassword("koala");
         oConnector = oConBuilder.build();
         oConnector.retrieveAccessToken();

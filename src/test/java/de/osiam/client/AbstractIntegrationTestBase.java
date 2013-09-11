@@ -31,7 +31,7 @@ public abstract class AbstractIntegrationTestBase {
                 setClientId(clientId).
                 setClientSecret(clientSecret).
                 setGrantType(GrantType.PASSWORD).
-                setUsername("marissa").
+                setUserName("marissa").
                 setPassword("koala");
         oConnector = oConBuilder.build();
         accessToken = oConnector.retrieveAccessToken();
@@ -42,7 +42,7 @@ public abstract class AbstractIntegrationTestBase {
                 setClientId("example-client-2").
                 setClientSecret("secret1").
                 setGrantType(GrantType.PASSWORD).
-                setUsername("hsimpson").
+                setUserName("hsimpson").
                 setPassword("koala");
         oConnector = oConBuilder.build();
         accessToken = oConnector.retrieveAccessToken();
