@@ -16,6 +16,7 @@ import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
+import org.osiam.client.oauth.Scope;
 import org.osiam.resources.scim.MultiValuedAttribute;
 import org.osiam.resources.scim.Name;
 import org.osiam.resources.scim.User;
@@ -144,7 +145,8 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
                 setClientSecret(clientSecret).
                 setGrantType(GrantType.PASSWORD).
                 setUserName("bjensen").
-                setPassword("koala");
+                setPassword("koala").
+                setScope(Scope.ALL);
         oConnector = authBuilder.build();
         accessToken = oConnector.retrieveAccessToken();
     }
@@ -155,7 +157,8 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
                 setClientSecret(clientSecret).
                 setGrantType(GrantType.PASSWORD).
                 setUserName("hsimpson").
-                setPassword("koala");
+                setPassword("koala").
+                setScope(Scope.ALL);
         oConnector = authBuilder.build();
         accessToken = oConnector.retrieveAccessToken();
     }

@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.oauth.GrantType;
+import org.osiam.client.oauth.Scope;
 import org.osiam.client.update.UpdateUser;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.MultiValuedAttribute;
@@ -573,7 +574,8 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
                 setClientSecret(clientSecret).
                 setGrantType(GrantType.PASSWORD).
                 setUserName("UserName").
-                setPassword("Password");
+                setPassword("Password").
+                setScope(Scope.ALL);
         oConnector = oConBuilder.build();
         oConnector.retrieveAccessToken();
     }
@@ -584,7 +586,8 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
                 setClientSecret(clientSecret).
                 setGrantType(GrantType.PASSWORD).
                 setUserName("marissa").
-                setPassword("koala");
+                setPassword("koala").
+                setScope(Scope.ALL);
         oConnector = oConBuilder.build();
         oConnector.retrieveAccessToken();
     }

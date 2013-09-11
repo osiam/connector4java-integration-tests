@@ -5,6 +5,7 @@ import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
+import org.osiam.client.oauth.Scope;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -32,7 +33,8 @@ public abstract class AbstractIntegrationTestBase {
                 setClientSecret(clientSecret).
                 setGrantType(GrantType.PASSWORD).
                 setUserName("marissa").
-                setPassword("koala");
+                setPassword("koala").
+                setScope(Scope.ALL);
         oConnector = oConBuilder.build();
         accessToken = oConnector.retrieveAccessToken();
     }
@@ -43,7 +45,8 @@ public abstract class AbstractIntegrationTestBase {
                 setClientSecret("secret1").
                 setGrantType(GrantType.PASSWORD).
                 setUserName("hsimpson").
-                setPassword("koala");
+                setPassword("koala").
+                setScope(Scope.ALL);
         oConnector = oConBuilder.build();
         accessToken = oConnector.retrieveAccessToken();
     }

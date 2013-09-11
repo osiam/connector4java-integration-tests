@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
+import org.osiam.client.oauth.Scope;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -30,7 +31,8 @@ public class LoginIT {
         OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(endpointAddress).
                 setClientId(clientId).
                 setClientSecret(clientSecret).
-                setGrantType(GrantType.CLIENT_CREDENTIALS);
+                setGrantType(GrantType.CLIENT_CREDENTIALS).
+                setScope(Scope.ALL);
         oConnector = oConBuilder.build();
         oConnector.retrieveAccessToken();
 	}
