@@ -21,7 +21,7 @@ abstract class AbstractIT extends Specification {
     private static final String USER_NAME = "marissa"
     private static final String USER_PASSWORD = "koala"
 
-    protected static final String OSIAM_ENDPOINT = "http://localhost:8080/osiam-server"
+    protected static final String OSIAM_ENDPOINT = "http://localhost:8180/osiam-server"
 
     protected OsiamConnector osiamConnector;
     protected AccessToken accessToken;
