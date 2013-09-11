@@ -19,7 +19,7 @@ public abstract class AbstractIntegrationTestBase {
     static final protected String INVALID_STRING = "invalid";
     static final protected String DELETE_USER_UUID = "618b398c-0110-43f2-95df-d1bc4e7d2b4a";
     static final protected String VALID_GROUP_UUID = "69e1a5dc-89be-4343-976c-b5541af249f4";
-    protected String endpointAddress = "http://localhost:8080/osiam-server";
+    protected String endpointAddress = "http://localhost:8180/osiam-server";
     protected String clientId = "example-client";
     protected String clientSecret = "secret";
     protected OsiamConnector oConnector;
