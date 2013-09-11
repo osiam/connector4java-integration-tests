@@ -3,6 +3,8 @@ package org.osiam.test
 import org.osiam.client.connector.OsiamConnector
 import org.osiam.client.oauth.AccessToken
 import org.osiam.client.oauth.GrantType
+import org.osiam.client.oauth.Scope;
+
 import spock.lang.Specification
 
 /**
@@ -30,7 +32,8 @@ abstract class AbstractIT extends Specification {
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.PASSWORD).
                 setUserName(USER_NAME).
-                setPassword(USER_PASSWORD)
+                setPassword(USER_PASSWORD).
+				setScope(Scope.ALL)
         osiamConnector = connectorBuilder.build()
     }
 }
