@@ -3,7 +3,6 @@ package de.osiam.client;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.connector.OsiamConnector;
-import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 import org.springframework.test.context.ContextConfiguration;
@@ -21,7 +20,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @DatabaseSetup("/database_seed.xml")
 public class LoginIT {
 	
-    protected String endpointAddress = "http://localhost:8080/osiam-server";
+    protected String endpointAddress = "http://localhost:8180/osiam-server";
     protected String clientId = "example-client";
     protected String clientSecret = "secret";
     protected OsiamConnector oConnector;
