@@ -73,16 +73,24 @@ class ControllerIT extends AbstractIT {
         }
 
         then: "the response should be 200 OK"
-        assert responseStatusCode == 200
+        assert responseStatusCode == expectedResponseCode
 
         expect: "the response type is JSON"
-        assert responseContentType == "application/json;charset=UTF-8"
+        assert responseContentType == expectedResponseType
 
         where:
-        testCase   | scope       | contentType      | expectedResponseCode | expectedResponseType             | requestPath
-        "a"        | Method.GET  | ContentType.JSON | 200                  | "application/json;charset=UTF-8" | "/Users"
-        "b"        | Method.GET  | ContentType.JSON | 200                  | "application/json;charset=UTF-8" | "/Users/"
-        "c"        | Method.GET  | ContentType.JSON | 200                  | "application/json;charset=UTF-8" | "/Groups"
-        "d"        | Method.GET  | ContentType.JSON | 200                  | "application/json;charset=UTF-8" | "/Groups/"
+        testCase   | scope       | contentType        | expectedResponseCode | expectedResponseType             | requestPath
+        "a"        | Method.GET  | ContentType.JSON   | 200                  | "application/json;charset=UTF-8" | "/Users"
+        "b"        | Method.GET  | ContentType.JSON   | 200                  | "application/json;charset=UTF-8" | "/Users/"
+        "c"        | Method.GET  | ContentType.JSON   | 200                  | "application/json;charset=UTF-8" | "/Groups"
+        "d"        | Method.GET  | ContentType.JSON   | 200                  | "application/json;charset=UTF-8" | "/Groups/"
+        "e"        | Method.GET  | ContentType.ANY    | 200                  | "application/json;charset=UTF-8" | "/Users"
+        "f"        | Method.GET  | ContentType.TEXT   | 406                  | null                             | "/Users"
+        "g"        | Method.GET  | ContentType.BINARY | 406                  | null                             | "/Users"
+        "h"        | Method.GET  | ContentType.HTML   | 406                  | null                             | "/Users"
+        "i"        | Method.GET  | ContentType.URLENC | 406                  | null                             | "/Users"
+        "j"        | Method.GET  | ContentType.XML    | 406                  | null                             | "/Users"
+        "k"        | Method.GET  | "invalid"          | 406                  | null                             | "/Users"
+        "l"        | Method.GET  | "/"                | 406                  | null                             | "/Users"
     }
 }
