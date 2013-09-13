@@ -48,7 +48,7 @@ class ControllerIT extends AbstractIT {
         given: "a valid access token"
         AccessToken validAccessToken = osiamConnector.retrieveAccessToken()
 
-        when: "a valid request is sent"
+        when: "a request is sent"
         def http = new HTTPBuilder(OSIAM_ENDPOINT)
 
         def responseStatusCode
@@ -72,10 +72,10 @@ class ControllerIT extends AbstractIT {
 
         }
 
-        then: "the response should be 200 OK"
+        then: "the response should be as expected"
         assert responseStatusCode == expectedResponseCode
 
-        expect: "the response type is JSON"
+        expect: "the response type should be as expected"
         assert responseContentType == expectedResponseType
 
         where:
@@ -92,5 +92,47 @@ class ControllerIT extends AbstractIT {
         "j"        | Method.GET  | ContentType.XML    | 406                  | null                             | "/Users"
         "k"        | Method.GET  | "invalid"          | 406                  | null                             | "/Users"
         "l"        | Method.GET  | "/"                | 406                  | null                             | "/Users"
+    }
+
+    //@Unroll
+    def "REGT-002-#testCase: A search operation on path #requestPath with search string #searchString should work."() {
+        given: "a valid access token"
+        AccessToken validAccessToken = osiamConnector.retrieveAccessToken()
+
+        when: "a request is sent"
+        def http = new HTTPBuilder(OSIAM_ENDPOINT)
+
+        def responseStatusCode
+        def responseContentType
+
+        http.request(Method.GET, ContentType.JSON) { req ->
+            uri.path = OSIAM_ENDPOINT + requestPath
+            uri.query = [ filter:searchString ]
+            headers."Authorization" = "Bearer " + validAccessToken.getToken()
+
+            // response handler for a success response code:
+            response.success = { resp, json ->
+                responseStatusCode = resp.statusLine.statusCode
+                responseContentType = resp.headers."Content-Type"
+            }
+
+            // handler for any failure status code:
+            response.failure = { resp ->
+                responseStatusCode = resp.statusLine.statusCode
+                contentType = resp.headers."Content-Type"
+            }
+
+        }
+
+        then: "the response should be as expected"
+        assert responseStatusCode == expectedResponseCode
+
+        expect: "the response type should be as expected"
+        assert responseContentType == expectedResponseType
+
+        where:
+        testCase   | scope       | contentType        | expectedResponseCode | expectedResponseType             | requestPath | searchString
+        "a"        | Method.GET  | ContentType.JSON   | 200                  | "application/json;charset=UTF-8" | "/Users"    | "emails.type co work"
+        "b"        | Method.GET  | ContentType.JSON   | 200                  | "application/json;charset=UTF-8" | "/Users"    | "userName co mar"
     }
 }
