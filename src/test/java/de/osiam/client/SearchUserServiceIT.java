@@ -1,15 +1,19 @@
 package de.osiam.client;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.theories.PotentialAssignment.CouldNotGenerateValueException;
 import org.junit.runner.RunWith;
-import org.osiam.client.OsiamUserService;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
 import org.osiam.client.query.SortOrder;
@@ -20,13 +24,8 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-
-import static org.junit.Assert.*;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -36,7 +35,7 @@ import static org.junit.Assert.*;
 public class SearchUserServiceIT extends AbstractIntegrationTestBase {
 
     private static final int ITEMS_PER_PAGE = 3;
-    private static final int STARTINDEX_SECOND_PAGE = 3;
+    private static final int STARTINDEX_SECOND_PAGE = 4;
     private QueryResult<User> queryResult;
 
     @Test
@@ -152,6 +151,22 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         for (User actUser : queryResult.getResources()) {
             assertEquals(sortedUserNames.get(count++), actUser.getUserName());
         }
+    }
+    
+    @Test
+    public void get_all_user_if_over_hundert_user_exists(){
+    	create100NewUser();
+    	QueryResult<User> qResult = oConnector.getAllUsers(accessToken);
+    	
+    	assertEquals(111, qResult.getResources().size());
+    }
+    
+    private void create100NewUser(){
+		for(int count = 0; count < 100; count++){
+    		User user = new User.Builder("user" + count).build();
+    		oConnector.createUser(user, accessToken);
+
+    	}	    	
     }
     
     private void queryResultContainsUser(String userName) {
