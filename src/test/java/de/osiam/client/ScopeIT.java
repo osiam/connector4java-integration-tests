@@ -52,7 +52,7 @@ public class ScopeIT {
     }
     
     @Test (expected = ForbiddenException.class)
-    public void try_to_retrieve_user(){
+    public void try_to_retrieve_user_raises_exception(){
     	oConnector = oConBuilder.setScope(Scope.DELETE).build();
     	
     	oConBuilder.setScope(Scope.DELETE,  Scope.GET, Scope.PATCH);
@@ -62,28 +62,28 @@ public class ScopeIT {
     }
     
     @Test (expected = ForbiddenException.class)
-    public void try_to_retrieve_group(){
+    public void try_to_retrieve_group_raises_exception(){
     	oConnector = oConBuilder.setScope(Scope.DELETE).build();
     	accessToken = oConnector.retrieveAccessToken();
     	oConnector.getGroup(VALID_GROUP_UUID, accessToken);
     }
 
     @Test (expected = ForbiddenException.class)
-    public void try_to_retrieve_all_users(){
+    public void try_to_retrieve_all_users_raises_exception(){
     	oConnector = oConBuilder.setScope(Scope.DELETE).build();
     	accessToken = oConnector.retrieveAccessToken();
     	oConnector.getAllUsers(accessToken);
     }
     
     @Test (expected = ForbiddenException.class)
-    public void try_to_retrieve_all_groups(){
+    public void try_to_retrieve_all_groups_raises_exception(){
     	oConnector = oConBuilder.setScope(Scope.DELETE).build();
     	accessToken = oConnector.retrieveAccessToken();
     	oConnector.getAllGroups(accessToken);
     }
     
     @Test(expected = ForbiddenException.class)
-    public void try_to_create_user(){
+    public void try_to_create_user_raises_exception(){
     	oConnector = oConBuilder.setScope(Scope.DELETE).build();
     	accessToken = oConnector.retrieveAccessToken();
     	User user = new User.Builder("test").build();
@@ -91,7 +91,7 @@ public class ScopeIT {
     }
     
     @Test(expected = ForbiddenException.class)
-    public void try_to_create_group(){
+    public void try_to_create_group_raises_exception(){
     	oConnector = oConBuilder.setScope(Scope.DELETE).build();
     	accessToken = oConnector.retrieveAccessToken();
     	Group group = new Group.Builder().setDisplayName("test").build();
@@ -99,14 +99,14 @@ public class ScopeIT {
     }
     
     @Test (expected = ForbiddenException.class)
-    public void try_to_get_actual_user(){
+    public void try_to_get_actual_user_raises_exception(){
     	oConnector = oConBuilder.setScope(Scope.DELETE).build();
     	accessToken = oConnector.retrieveAccessToken();
     	oConnector.getMe(accessToken);
     }
     
     @Test (expected = ForbiddenException.class)
-    public void try_to_update_user(){
+    public void try_to_update_user_raises_exception(){
     	oConnector = oConBuilder.setScope(Scope.DELETE).build();
     	accessToken = oConnector.retrieveAccessToken();
     	UpdateUser updateUser = new UpdateUser.Builder().setActive(false).build();
@@ -114,7 +114,7 @@ public class ScopeIT {
     }
     
     @Test (expected = ForbiddenException.class)
-    public void try_to_update_group(){
+    public void try_to_update_group_raises_exception(){
     	oConnector = oConBuilder.setScope(Scope.DELETE).build();
     	accessToken = oConnector.retrieveAccessToken();
     	UpdateGroup updateGroup = new UpdateGroup.Builder().updateDisplayName("irrelevant").build();
@@ -122,7 +122,7 @@ public class ScopeIT {
     }
     
     @Test (expected = ForbiddenException.class)
-    public void try_to_search_for_user(){
+    public void try_to_search_for_user_raises_exception(){
     	oConnector = oConBuilder.setScope(Scope.DELETE).build();
     	accessToken = oConnector.retrieveAccessToken();
     	Query query = new Query.Builder(User.class).setStartIndex(0).build();
@@ -130,7 +130,7 @@ public class ScopeIT {
     }
     
     @Test (expected = ForbiddenException.class)
-    public void try_to_search_for_group(){
+    public void try_to_search_for_group_raises_exception(){
     	oConnector = oConBuilder.setScope(Scope.DELETE).build();
     	accessToken = oConnector.retrieveAccessToken();
     	Query query = new Query.Builder(Group.class).setStartIndex(0).build();
@@ -138,16 +138,129 @@ public class ScopeIT {
     }
     
     @Test (expected = ForbiddenException.class)
-    public void try_to_delete_user(){
+    public void try_to_delete_user_raises_exception(){
     	oConnector = oConBuilder.setScope(Scope.GET).build();
     	accessToken = oConnector.retrieveAccessToken();
     	oConnector.deleteUser(VALID_USER_UUID, accessToken);
     }
     
     @Test (expected = ForbiddenException.class)
-    public void try_to_delete_group(){
+    public void try_to_delete_group_raises_exception(){
     	oConnector = oConBuilder.setScope(Scope.GET).build();
     	accessToken = oConnector.retrieveAccessToken();
     	oConnector.deleteGroup(VALID_GROUP_UUID, accessToken);
+    }
+    
+    @Test 
+    public void try_to_retrieve_user(){
+    	oConnector = oConBuilder.setScope(Scope.GET).build();
+    	
+    	oConBuilder.setScope(Scope.DELETE,  Scope.GET, Scope.PATCH);
+    	oConBuilder.setScope(Scope.DELETE);
+    	accessToken = oConnector.retrieveAccessToken();
+    	oConnector.getUser(VALID_USER_UUID, accessToken);
+    }
+    
+    @Test 
+    public void try_to_retrieve_group(){
+    	oConnector = oConBuilder.setScope(Scope.GET).build();
+    	accessToken = oConnector.retrieveAccessToken();
+    	oConnector.getGroup(VALID_GROUP_UUID, accessToken);
+    }
+
+    @Test 
+    public void try_to_retrieve_all_users(){
+    	oConnector = oConBuilder.setScope(Scope.GET).build();
+    	accessToken = oConnector.retrieveAccessToken();
+    	oConnector.getAllUsers(accessToken);
+    }
+    
+    @Test 
+    public void try_to_retrieve_all_groups(){
+    	oConnector = oConBuilder.setScope(Scope.GET).build();
+    	accessToken = oConnector.retrieveAccessToken();
+    	oConnector.getAllGroups(accessToken);
+    }
+    
+    @Test
+    public void try_to_create_user(){
+    	oConnector = oConBuilder.setScope(Scope.POST).build();
+    	accessToken = oConnector.retrieveAccessToken();
+    	User user = new User.Builder("test").build();
+    	oConnector.createUser(user, accessToken);
+    }
+    
+    @Test
+    public void try_to_create_group(){
+    	oConnector = oConBuilder.setScope(Scope.POST).build();
+    	accessToken = oConnector.retrieveAccessToken();
+    	Group group = new Group.Builder().setDisplayName("test").build();
+    	oConnector.createGroup(group, accessToken);
+    }
+    
+    @Test 
+    public void try_to_get_actual_user(){
+    	oConnector = oConBuilder.setScope(Scope.GET).build();
+    	accessToken = oConnector.retrieveAccessToken();
+    	oConnector.getMe(accessToken);
+    }
+    
+    @Test
+    public void try_to_update_user(){
+    	oConnector = oConBuilder.setScope(Scope.PATCH).build();
+    	accessToken = oConnector.retrieveAccessToken();
+    	UpdateUser updateUser = new UpdateUser.Builder().updateUserName("newName").setActive(false).build();
+    	oConnector.updateUser(VALID_USER_UUID, updateUser, accessToken);
+    }
+    
+    @Test
+    public void try_to_update_group(){
+    	oConnector = oConBuilder.setScope(Scope.PATCH).build();
+    	accessToken = oConnector.retrieveAccessToken();
+    	UpdateGroup updateGroup = new UpdateGroup.Builder().updateDisplayName("irrelevant").build();
+    	oConnector.updateGroup(VALID_GROUP_UUID, updateGroup, accessToken);
+    }
+    
+    @Test
+    public void try_to_search_for_user(){
+    	oConnector = oConBuilder.setScope(Scope.GET).build();
+    	accessToken = oConnector.retrieveAccessToken();
+    	Query query = new Query.Builder(User.class).setStartIndex(0).build();
+    	oConnector.searchUsers(query, accessToken);
+    }
+    
+    @Test 
+    public void try_to_search_for_group(){
+    	oConnector = oConBuilder.setScope(Scope.GET).build();
+    	accessToken = oConnector.retrieveAccessToken();
+    	Query query = new Query.Builder(Group.class).setStartIndex(0).build();
+    	oConnector.searchUsers(query, accessToken);
+    }
+    
+    @Test 
+    public void try_to_delete_user(){
+    	oConnector = oConBuilder.setScope(Scope.DELETE, Scope.POST).build();
+    	accessToken = oConnector.retrieveAccessToken();
+    	UUID newUserId = createTestUser();
+    	oConnector.deleteUser(newUserId, accessToken);
+    }
+    
+    @Test 
+    public void try_to_delete_group(){
+    	oConnector = oConBuilder.setScope(Scope.DELETE).build();
+    	accessToken = oConnector.retrieveAccessToken();
+    	oConnector.deleteGroup(VALID_GROUP_UUID, accessToken);
+    }
+    
+    @Test 
+    public void try_to_get_actual_user_with_string_scope(){
+    	oConnector = oConBuilder.setScope("GET").build();
+    	accessToken = oConnector.retrieveAccessToken();
+    	oConnector.getMe(accessToken);
+    }
+    
+    private UUID createTestUser(){
+    	User user = new User.Builder("testUSer0065").build();
+    	return UUID.fromString(oConnector.createUser(user, accessToken).getId());
     }
 }
