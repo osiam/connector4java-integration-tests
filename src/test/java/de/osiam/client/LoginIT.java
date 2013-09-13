@@ -3,6 +3,8 @@ package de.osiam.client;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.connector.OsiamConnector;
+import org.osiam.client.exception.ConflictException;
+import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 import org.springframework.test.context.ContextConfiguration;
@@ -35,6 +37,18 @@ public class LoginIT {
         oConnector = oConBuilder.build();
         oConnector.retrieveAccessToken();
 	}
+
+    @Test (expected = ConflictException.class)
+    public void get_actual_user_rasies_exception(){
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(endpointAddress).
+                setClientId(clientId).
+                setClientSecret(clientSecret).
+                setGrantType(GrantType.CLIENT_CREDENTIALS).
+                setScope(Scope.ALL);
+        oConnector = oConBuilder.build();
+        AccessToken accessToken = oConnector.retrieveAccessToken();
+        oConnector.getMe(accessToken);
+    }
 	
 
 }
