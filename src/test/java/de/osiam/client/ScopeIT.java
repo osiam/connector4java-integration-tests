@@ -254,7 +254,7 @@ public class ScopeIT {
     
     @Test 
     public void try_to_get_actual_user_with_string_scope(){
-    	oConnector = oConBuilder.setScope(Scope.GET).build();
+    	oConnector = oConBuilder.setScope("GET").build();
     	accessToken = oConnector.retrieveAccessToken();
     	oConnector.getMe(accessToken);
     }
