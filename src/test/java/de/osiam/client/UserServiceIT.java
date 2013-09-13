@@ -7,10 +7,8 @@ import static org.junit.Assert.fail;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osiam.client.OsiamUserService;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.resources.scim.MultiValuedAttribute;
 import org.osiam.resources.scim.Name;

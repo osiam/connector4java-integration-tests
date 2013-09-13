@@ -8,13 +8,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osiam.client.OsiamUserService;
 import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.exception.UnauthorizedException;
-import org.osiam.client.oauth.AuthService;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 import org.osiam.resources.scim.MultiValuedAttribute;

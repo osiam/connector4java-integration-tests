@@ -1,7 +1,14 @@
 package de.osiam.client;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
+import java.util.Arrays;
+import java.util.UUID;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
@@ -9,17 +16,14 @@ import org.osiam.client.exception.NoResultException;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
 import org.osiam.client.query.metamodel.Group_;
-import org.osiam.resources.scim.*;
+import org.osiam.resources.scim.Group;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import java.util.*;
-
-import static junit.framework.Assert.*;
-import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -81,7 +85,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
     {
         initializeSimpleGroupWithID(NEW_UUID.toString());
         createGroup();
-        assertNotSame(NEW_UUID.toString(), RETURN_GROUP.getId());
+        assertNotEquals(NEW_UUID.toString(), RETURN_GROUP.getId());
     }
 
     @Test
@@ -94,7 +98,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
         createGroup();
         loadSingleGroupByQuery();
         assertNotNull(DB_GROUP);
-        assertNotSame(IRRELEVANT, DB_GROUP.getDisplayName());
+        assertNotEquals(IRRELEVANT, DB_GROUP.getDisplayName());
     }
 
     @Test

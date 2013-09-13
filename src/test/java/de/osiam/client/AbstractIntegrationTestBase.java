@@ -1,17 +1,16 @@
 package de.osiam.client;
 
-import org.junit.Before;
-import org.osiam.client.connector.OsiamConnector;
-import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.oauth.AuthService;
-import org.osiam.client.oauth.GrantType;
-import org.osiam.client.oauth.Scope;
+import static org.springframework.test.util.AssertionErrors.fail;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
 
-import static org.springframework.test.util.AssertionErrors.fail;
+import org.junit.Before;
+import org.osiam.client.connector.OsiamConnector;
+import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.oauth.GrantType;
+import org.osiam.client.oauth.Scope;
 
 public abstract class AbstractIntegrationTestBase {
     static final protected String VALID_USER_UUID = "834b410a-943b-4c80-817a-4465aed037bc";

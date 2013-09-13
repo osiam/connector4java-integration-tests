@@ -12,7 +12,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.junit.Test;
-import org.junit.experimental.theories.PotentialAssignment.CouldNotGenerateValueException;
 import org.junit.runner.RunWith;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
