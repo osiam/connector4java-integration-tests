@@ -124,7 +124,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         Query.Builder builder = new Query.Builder(User.class).setCountPerPage(ITEMS_PER_PAGE).setStartIndex(STARTINDEX_SECOND_PAGE);
         Query query = builder.build().previousPage();
         whenSearchedIsDoneByQuery(query);
-        assertEquals(STARTINDEX_SECOND_PAGE - ITEMS_PER_PAGE, queryResult.getStartIndex());
+        assertEquals(1, queryResult.getStartIndex());
     }
 
     @Test
@@ -153,7 +153,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
             assertEquals(sortedUserNames.get(count++), actUser.getUserName());
         }
     }
-
+    
     private void queryResultContainsUser(String userName) {
         assertTrue(queryResult != null);
         for (User actUser : queryResult.getResources()) {
