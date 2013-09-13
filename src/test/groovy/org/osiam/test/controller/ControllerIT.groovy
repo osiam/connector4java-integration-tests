@@ -1,6 +1,8 @@
 package org.osiam.test.controller
 
+import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
+import groovyx.net.http.Method
 import org.dbunit.database.DatabaseDataSourceConnection
 import org.dbunit.database.IDatabaseConnection
 import org.dbunit.dataset.IDataSet
@@ -10,6 +12,7 @@ import org.osiam.client.oauth.AccessToken
 import org.osiam.test.AbstractIT
 import org.springframework.context.ApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext
+import spock.lang.Unroll
 
 import javax.sql.DataSource
 
@@ -40,19 +43,46 @@ class ControllerIT extends AbstractIT {
         }
     }
 
-    def "REGT-001: HTTP response codes and types"() {
+    @Unroll
+    def "REGT-001-#testCase: An API request missing an accept header with scope #scope and content type #contentType on path #requestPath should return HTTP status code #expectedResponseCode and content type #expectedResponseType."() {
         given: "a valid access token"
         AccessToken validAccessToken = osiamConnector.retrieveAccessToken()
 
         when: "a valid request is sent"
         def http = new HTTPBuilder(OSIAM_ENDPOINT)
-        // TODO
+
+        def responseStatusCode
+        def responseContentType
+
+        http.request(scope, contentType) { req ->
+            uri.path = OSIAM_ENDPOINT + requestPath
+            headers."Authorization" = "Bearer " + validAccessToken.getToken()
+
+            // response handler for a success response code:
+            response.success = { resp, json ->
+                responseStatusCode = resp.statusLine.statusCode
+                responseContentType = resp.headers."Content-Type"
+            }
+
+            // handler for any failure status code:
+            response.failure = { resp ->
+                responseStatusCode = resp.statusLine.statusCode
+                contentType = resp.headers."Content-Type"
+            }
+
+        }
 
         then: "the response should be 200 OK"
-        // TODO
-        assert false
+        assert responseStatusCode == 200
 
         expect: "the response type is JSON"
-        // TODO
+        assert responseContentType == "application/json;charset=UTF-8"
+
+        where:
+        testCase   | scope       | contentType      | expectedResponseCode | expectedResponseType             | requestPath
+        "a"        | Method.GET  | ContentType.JSON | 200                  | "application/json;charset=UTF-8" | "/Users"
+        "b"        | Method.GET  | ContentType.JSON | 200                  | "application/json;charset=UTF-8" | "/Users/"
+        "c"        | Method.GET  | ContentType.JSON | 200                  | "application/json;charset=UTF-8" | "/Groups"
+        "d"        | Method.GET  | ContentType.JSON | 200                  | "application/json;charset=UTF-8" | "/Groups/"
     }
 }
