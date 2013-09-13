@@ -29,7 +29,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @DatabaseSetup("/database_seed.xml")
 public class UserServiceIT extends AbstractIntegrationTestBase {
 
-    private UUID validUUID = null;
+    private String validUUID = null;
     private User deserializedUser;
 
     @Test
@@ -90,6 +90,6 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
     }
 
     private void givenAValidUserUUID() throws Exception {
-        validUUID = UUID.fromString(VALID_USER_UUID);
+        validUUID = VALID_USER_UUID;
     }
 }

@@ -30,8 +30,8 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @DatabaseSetup("/database_seed.xml")
 public class ScopeIT {
 
-    static final private UUID VALID_USER_UUID = UUID.fromString("834b410a-943b-4c80-817a-4465aed037bc");
-    static final private UUID VALID_GROUP_UUID = UUID.fromString("69e1a5dc-89be-4343-976c-b5541af249f4");
+    static final private String VALID_USER_UUID = "834b410a-943b-4c80-817a-4465aed037bc";
+    static final private String VALID_GROUP_UUID = "69e1a5dc-89be-4343-976c-b5541af249f4";
     private String endpointAddress = "http://localhost:8180/osiam-server";
     private String clientId = "example-client";
     private String clientSecret = "secret";
@@ -241,7 +241,7 @@ public class ScopeIT {
     public void try_to_delete_user(){
     	oConnector = oConBuilder.setScope(Scope.DELETE, Scope.POST).build();
     	accessToken = oConnector.retrieveAccessToken();
-    	UUID newUserId = createTestUser();
+    	String newUserId = createTestUser();
     	oConnector.deleteUser(newUserId, accessToken);
     }
     
@@ -259,8 +259,8 @@ public class ScopeIT {
     	oConnector.getMe(accessToken);
     }
     
-    private UUID createTestUser(){
+    private String createTestUser(){
     	User user = new User.Builder("testUSer0065").build();
-    	return UUID.fromString(oConnector.createUser(user, accessToken).getId());
+    	return oConnector.createUser(user, accessToken).getId();
     }
 }

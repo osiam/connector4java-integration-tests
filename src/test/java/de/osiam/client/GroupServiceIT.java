@@ -33,7 +33,7 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
     private static final String EXPECTED_GROUPNAME = "test_group01";
 	static final private String VALID_GROUP_UUID = "69e1a5dc-89be-4343-976c-b5541af249f4";
 	static final private String EXPECTED_CREATED_DATE = "2013-07-31 21:43:18";
-    private UUID uuidStandardGroup;
+    private String uuidStandardGroup;
     private Date created;
         	
     
@@ -63,7 +63,7 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
 
     @Test(expected = NoResultException.class)
     public void get_an_invalid_group_raises_exception() throws Exception {
-        oConnector.getGroup(UUID.fromString(INVALID_UUID), accessToken);
+        oConnector.getGroup(INVALID_UUID, accessToken);
     }
     
     @Test(expected = UnauthorizedException.class)
@@ -71,12 +71,12 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
     	given_a_test_group_UUID();
     	givenAnAccessTokenForOneSecond();
     	Thread.sleep(1000);
-        oConnector.getGroup(UUID.fromString(INVALID_UUID), accessToken);
+        oConnector.getGroup(INVALID_UUID, accessToken);
         fail();
     }
     
    private void given_a_test_group_UUID() {
-        uuidStandardGroup = UUID.fromString(VALID_GROUP_UUID);
+        uuidStandardGroup = VALID_GROUP_UUID;
     }
     
 }

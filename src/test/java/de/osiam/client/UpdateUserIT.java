@@ -42,7 +42,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @DatabaseSetup("/database_seed.xml")
 public class UpdateUserIT extends AbstractIntegrationTestBase{
 
-    private UUID idExistingUser = UUID.fromString("7d33bcbe-a54c-43d8-867e-f6146164941e");
+    private String idExistingUser = "7d33bcbe-a54c-43d8-867e-f6146164941e";
     private UpdateUser updateUser;
     private User returnUser;
     private User originalUser;
@@ -401,7 +401,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         User newUser = userBuilder.build(); 
         
         originalUser = oConnector.createUser(newUser, accessToken);
-        idExistingUser = UUID.fromString(originalUser.getId());
+        idExistingUser = originalUser.getId();
     }
 
     private void createUpdateUserWithUpdateFields(){

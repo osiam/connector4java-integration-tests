@@ -32,8 +32,8 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @DatabaseSetup("/database_seed.xml")
 public class EditGroupServiceIT extends AbstractIntegrationTestBase{
 
-    private UUID VALID_UUID = null;
-    private UUID ID_EXISTING_GROUP = UUID.fromString("69e1a5dc-89be-4343-976c-b5541af249f4");
+    private String VALID_UUID = null;
+    private String ID_EXISTING_GROUP = "69e1a5dc-89be-4343-976c-b5541af249f4";
     private UUID NEW_UUID = UUID.randomUUID();
     private String NAME_EXISTING_GROUP = "test_group01";
     private Group NEW_GROUP;
@@ -68,7 +68,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
         initializeSimpleGroup();
         createGroup();
         returnGroupHasValidId();
-        loadGroup(UUID.fromString(RETURN_GROUP.getId()));
+        loadGroup(RETURN_GROUP.getId());
         returnAndDbGroupHaveSameDislplayName();
     }
 
@@ -98,7 +98,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
         createGroup();
         loadSingleGroupByQuery();
         assertNotNull(DB_GROUP);
-        assertNotEquals(IRRELEVANT, DB_GROUP.getDisplayName());
+        assertEquals(IRRELEVANT, DB_GROUP.getDisplayName());
     }
 
     @Test
@@ -136,7 +136,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
 
     @Test
     public void delete_group_with_members(){
-        UUID uuidGroup01 = UUID.fromString("69e1a5dc-89be-4343-976c-b5541af249f4");
+        String uuidGroup01 = "69e1a5dc-89be-4343-976c-b5541af249f4";
         oConnector.getGroup(uuidGroup01, accessToken);
         //group could be found
         oConnector.deleteGroup(uuidGroup01, accessToken);
@@ -147,7 +147,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
     }
     
     private void given_a_test_group_UUID() {
-    	VALID_UUID = UUID.fromString(VALID_GROUP_UUID);
+    	VALID_UUID = VALID_GROUP_UUID;
     }
     private void whenGroupIsDeleted() {
         oConnector.deleteGroup(VALID_UUID, accessToken);
@@ -164,7 +164,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
     }
     
     private void givenAValidUserUUIDForDeletion() throws Exception {
-        VALID_UUID = UUID.fromString(DELETE_USER_UUID);
+        VALID_UUID = DELETE_USER_UUID;
     }
     
     private void whenUserIsDeleted() {
@@ -195,7 +195,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
         UUID.fromString(RETURN_GROUP.getId());
     }
 
-    private void loadGroup(UUID id){
+    private void loadGroup(String id){
         DB_GROUP = oConnector.getGroup(id, accessToken);
     }
 

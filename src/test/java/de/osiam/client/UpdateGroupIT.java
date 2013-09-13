@@ -36,12 +36,12 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @DatabaseSetup("/database_seed.xml")
 public class UpdateGroupIT extends AbstractIntegrationTestBase{
 
-    private static UUID idExistingGroup = UUID.fromString("7d33bcbe-a54c-43d8-867e-f6146164941e");
+    private static String idExistingGroup = "7d33bcbe-a54c-43d8-867e-f6146164941e";
     private static UUID ID_USER_BTHOMSON = UUID.fromString("618b398c-0110-43f2-95df-d1bc4e7d2b4a");
     private static UUID ID_USER_CMILLER = UUID.fromString("ac3bacc9-915d-4bab-9145-9eb600d5e5bf");
-    private static UUID ID_USER_HSIMPSON = UUID.fromString("7d33bcbe-a54c-43d8-867e-f6146164941e");
+    private static String ID_USER_HSIMPSON = "7d33bcbe-a54c-43d8-867e-f6146164941e";
     private static UUID ID_GROUP_01 = UUID.fromString("69e1a5dc-89be-4343-976c-b5541af249f4");
-    private static UUID ID_GROUP_02 = UUID.fromString("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578");
+    private static String ID_GROUP_02 = "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578";
     private static String IRRELEVANT = "Irrelevant";
     private UpdateGroup updateGroup;
     private Group returnGroup;
@@ -77,7 +77,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
     public void try_update_with_wrong_id_raises_exception(){
         getOriginalGroup();
         createUpdateUserWithUpdateFields();
-        idExistingGroup = UUID.randomUUID();
+        idExistingGroup = UUID.randomUUID().toString();
         updateGroup();
     }
 	
@@ -187,7 +187,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
     private void createUpdateGroupWithAddingInvalidMembers(){
         updateGroup = new UpdateGroup.Builder()
         					.updateDisplayName(IRRELEVANT)//TODO needs to be set bug in server
-        					.addMember(UUID.randomUUID())
+        					.addMember(UUID.randomUUID().toString())
         					.build();
     }
     
@@ -226,7 +226,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
         Group newGroup = userBuilder.build(); 
         
         originalGroup = oConnector.createGroup(newGroup, accessToken);
-        idExistingGroup = UUID.fromString(originalGroup.getId());
+        idExistingGroup = originalGroup.getId();
     }
 
     private void createUpdateUserWithUpdateFields(){

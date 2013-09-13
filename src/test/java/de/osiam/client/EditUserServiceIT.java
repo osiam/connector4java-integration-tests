@@ -34,8 +34,8 @@ import java.util.*;
 @DatabaseSetup("/database_seed.xml")
 public class EditUserServiceIT extends AbstractIntegrationTestBase{
 
-    private UUID VALID_UUID = null;
-    private UUID ID_EXISTING_USER = UUID.fromString("7d33bcbe-a54c-43d8-867e-f6146164941e");
+    private String VALID_UUID = null;
+    private String ID_EXISTING_USER = "7d33bcbe-a54c-43d8-867e-f6146164941e";
     private UUID NEW_UUID = UUID.randomUUID();
     private String USER_NAME_EXISTING_USER = "hsimpson";
     private User NEW_USER;
@@ -70,7 +70,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
         initializeSimpleUser();
         createUser();
         returnUserHasValidId();
-        loadUser(UUID.fromString(RETURN_USER.getId()));
+        loadUser(RETURN_USER.getId());
         returnAndDbUserHaveSameUserName();
     }
 
@@ -125,7 +125,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
             assertEqualsUser(NEW_USER, DB_USER);
       }finally {
             if(RETURN_USER != null){
-                oConnector.deleteUser(UUID.fromString(RETURN_USER.getId()), accessToken);
+                oConnector.deleteUser(RETURN_USER.getId(), accessToken);
             }
       }
     }
@@ -186,7 +186,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
         UUID.fromString(RETURN_USER.getId());
     }
 
-    private void loadUser(UUID id){
+    private void loadUser(String id){
         DB_USER = oConnector.getUser(id, accessToken);
     }
 
@@ -327,11 +327,11 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     }
     
     private void givenAValidUserUUIDForDeletion() throws Exception {
-        VALID_UUID = UUID.fromString(DELETE_USER_UUID);
+        VALID_UUID = DELETE_USER_UUID;
     }
     
     private void givenAValidGroupUUIDForDeletion() throws Exception {
-        VALID_UUID = UUID.fromString(VALID_GROUP_UUID);
+        VALID_UUID = VALID_GROUP_UUID;
     }
     
     private void whenGroupIsDeleted() {
