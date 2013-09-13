@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.exception.ConflictException;
+import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
@@ -38,6 +39,17 @@ public class LoginIT {
         oConnector.retrieveAccessToken();
 	}
 
+	@Test (expected = UnauthorizedException.class)
+	public void login_with_wrong_client_credentials(){
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(endpointAddress).
+                setClientId(clientId).
+                setClientSecret("wrong" + clientSecret).
+                setGrantType(GrantType.CLIENT_CREDENTIALS).
+                setScope(Scope.ALL);
+        oConnector = oConBuilder.build();
+        oConnector.retrieveAccessToken();
+	}
+	
     @Test (expected = ConflictException.class)
     public void get_actual_user_rasies_exception(){
         OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(endpointAddress).
