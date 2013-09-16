@@ -144,7 +144,7 @@ class ControllerIT extends AbstractIT {
         "h"      | "userName le m"       | 200                  | null                                                                                              // String
         "i"      | "emails.type eq work" | 200                  | null                                                                                              // Enum
         "j"      | "emails.type co work" | 409                  | "[error_code:CONFLICT, description:String filter operator is not applicable on Enum type.]"       // Enum
-        "k"      | "emails.type sw rk"   | 409                  | "[error_code:CONFLICT, description:String filter operator is not applicable on Enum type.]"       // Enum
+        "k"      | "emails.type sw work" | 409                  | "[error_code:CONFLICT, description:String filter operator is not applicable on Enum type.]"       // Enum
         "l"      | "emails.type pr work" | 200                  | null                                                                                              // Enum
         "m"      | "emails.type gt work" | 200                  | null                                                                                              // Enum
         "n"      | "emails.type ge work" | 200                  | null                                                                                              // Enum
