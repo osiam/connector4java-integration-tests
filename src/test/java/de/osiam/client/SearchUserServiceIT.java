@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -155,9 +156,8 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     @Test
     public void get_all_user_if_over_hundert_user_exists(){
     	create100NewUser();
-    	QueryResult<User> qResult = oConnector.getAllUsers(accessToken);
-    	
-    	assertEquals(111, qResult.getResources().size());
+    	List<User> allUsers = oConnector.getAllUsers(accessToken);
+    	assertEquals(111, allUsers.size());
     }
     
     private void create100NewUser(){
