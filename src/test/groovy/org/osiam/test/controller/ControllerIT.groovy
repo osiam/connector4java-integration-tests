@@ -95,7 +95,7 @@ class ControllerIT extends AbstractIT {
     }
 
     @Unroll
-    def "REGT-002-#testCase: A search operation on path #requestPath with search string #searchString should return HTTP status code #expectedResponseCode."() {
+    def "REGT-002-#testCase: A search operation on the Users endpoint with search string #searchString should return HTTP status code #expectedResponseCode."() {
         given: "a valid access token"
         AccessToken validAccessToken = osiamConnector.retrieveAccessToken()
 
