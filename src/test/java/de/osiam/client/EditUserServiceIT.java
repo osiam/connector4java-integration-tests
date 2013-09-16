@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
@@ -20,6 +21,7 @@ import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.MultiValuedAttribute;
 import org.osiam.resources.scim.Name;
 import org.osiam.resources.scim.User;
+import org.springframework.test.AssertThrows;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -34,9 +36,9 @@ import java.util.*;
 @DatabaseSetup("/database_seed.xml")
 public class EditUserServiceIT extends AbstractIntegrationTestBase{
 
-    private String VALID_UUID = null;
-    private String ID_EXISTING_USER = "7d33bcbe-a54c-43d8-867e-f6146164941e";
-    private UUID NEW_UUID = UUID.randomUUID();
+    private String validId = null;
+    private static String ID_EXISTING_USER = "7d33bcbe-a54c-43d8-867e-f6146164941e";
+    private String newId = UUID.randomUUID().toString();
     private String USER_NAME_EXISTING_USER = "hsimpson";
     private User NEW_USER;
     private User RETURN_USER;
@@ -75,7 +77,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     }
 
     @Test
-    public void create_user_with_existing_uuid(){
+    public void create_user_with_existing_id(){
         initializeSimpleUserWithID(ID_EXISTING_USER.toString());
         createUser();
         loadUser(ID_EXISTING_USER);
@@ -83,10 +85,10 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     }
 
     @Test
-    public void given_uuid_to_new_user_has_changed_after_saving(){
-        initializeSimpleUserWithID(NEW_UUID.toString());
+    public void given_id_to_new_user_has_changed_after_saving(){
+        initializeSimpleUserWithID(newId.toString());
         createUser();
-        assertNotSame(NEW_UUID.toString(), RETURN_USER.getId());
+        assertNotSame(newId.toString(), RETURN_USER.getId());
     }
 
     @Test
@@ -103,8 +105,8 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     }
 
     @Test
-    public void uuid_return_user_same_as_new_loaded_uuid(){
-        initializeSimpleUserWithID(NEW_UUID.toString());
+    public void id_return_user_same_as_new_loaded_id(){
+        initializeSimpleUserWithID(newId.toString());
         createUser();
         initialQueryToSearchUser();
         loadSingleUserByQuery();
@@ -132,7 +134,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     
     @Test
     public void user_is_deleted() throws Exception {
-    	givenAValidUserUUIDForDeletion();
+    	givenAValidUserIDForDeletion();
         whenUserIsDeleted();
         thenUserIsRemoveFromServer();
     }
@@ -140,14 +142,14 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     
     @Test (expected = NoResultException.class)
     public void group_is_not_deleted() throws Exception {
-    	givenAValidGroupUUIDForDeletion();
+    	givenAValidGroupIDForDeletion();
         whenGroupIsDeleted();
         fail();
     }
     
     @Test (expected = NoResultException.class)
     public void delete_user_two_times() throws Exception {
-    	givenAValidUserUUIDForDeletion();
+    	givenAValidUserIDForDeletion();
         whenUserIsDeleted();
         thenUserIsRemoveFromServer();
         whenUserIsDeleted();
@@ -156,7 +158,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     
     @Test(expected = UnauthorizedException.class)
     public void provide_an_invalid_access_token_raises_exception() throws Exception {
-    	givenAValidUserUUIDForDeletion();
+    	givenAValidUserIDForDeletion();
         givenAnInvalidAccessToken();
         whenUserIsDeleted();
         fail();
@@ -183,7 +185,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     }
 
     private void returnUserHasValidId(){
-        UUID.fromString(RETURN_USER.getId());
+        assertTrue(RETURN_USER.getId().length() > 0);
     }
 
     private void loadUser(String id){
@@ -323,19 +325,19 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     }
     
     private void whenUserIsDeleted() {
-        oConnector.deleteUser(VALID_UUID, accessToken);
+        oConnector.deleteUser(validId, accessToken);
     }
     
-    private void givenAValidUserUUIDForDeletion() throws Exception {
-        VALID_UUID = DELETE_USER_UUID;
+    private void givenAValidUserIDForDeletion() throws Exception {
+        validId = DELETE_USER_ID;
     }
     
-    private void givenAValidGroupUUIDForDeletion() throws Exception {
-        VALID_UUID = VALID_GROUP_UUID;
+    private void givenAValidGroupIDForDeletion() throws Exception {
+        validId = VALID_GROUP_ID;
     }
     
     private void whenGroupIsDeleted() {
-        oConnector.deleteUser(VALID_UUID, accessToken);
+        oConnector.deleteUser(validId, accessToken);
     }
 
     private void returnAndDbUserHaveSameUserName(){
@@ -344,7 +346,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     
     private void thenUserIsRemoveFromServer() {
     	try {
-            oConnector.getUser(VALID_UUID, accessToken);
+            oConnector.getUser(validId, accessToken);
     	} catch(NoResultException e) {
     		return;
     	} catch(Exception e) {

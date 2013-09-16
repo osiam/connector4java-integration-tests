@@ -13,11 +13,11 @@ import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 
 public abstract class AbstractIntegrationTestBase {
-    static final protected String VALID_USER_UUID = "834b410a-943b-4c80-817a-4465aed037bc";
-    static final protected String INVALID_UUID = "ffffffff-ffff-ffff-ffff-fffffffffff";
+    static final protected String VALID_USER_ID = "834b410a-943b-4c80-817a-4465aed037bc";
+    static final protected String INVALID_ID = "ffffffff-ffff-ffff-ffff-fffffffffff";
     static final protected String INVALID_STRING = "invalid";
-    static final protected String DELETE_USER_UUID = "618b398c-0110-43f2-95df-d1bc4e7d2b4a";
-    static final protected String VALID_GROUP_UUID = "69e1a5dc-89be-4343-976c-b5541af249f4";
+    static final protected String DELETE_USER_ID = "618b398c-0110-43f2-95df-d1bc4e7d2b4a";
+    static final protected String VALID_GROUP_ID = "69e1a5dc-89be-4343-976c-b5541af249f4";
     protected String endpointAddress = "http://localhost:8180/osiam-server";
     protected String clientId = "example-client";
     protected String clientSecret = "secret";
@@ -54,7 +54,7 @@ public abstract class AbstractIntegrationTestBase {
         accessToken = new AccessToken();
         Field tokenField = accessToken.getClass().getDeclaredField("token");
         tokenField.setAccessible(true);
-        tokenField.set(accessToken, AbstractIntegrationTestBase.INVALID_UUID);
+        tokenField.set(accessToken, AbstractIntegrationTestBase.INVALID_ID);
         tokenField.setAccessible(false);
     }
 

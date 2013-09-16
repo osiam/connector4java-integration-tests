@@ -1,7 +1,5 @@
 package de.osiam.client;
 
-import java.util.UUID;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,8 +28,8 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @DatabaseSetup("/database_seed.xml")
 public class ScopeIT {
 
-    static final private String VALID_USER_UUID = "834b410a-943b-4c80-817a-4465aed037bc";
-    static final private String VALID_GROUP_UUID = "69e1a5dc-89be-4343-976c-b5541af249f4";
+    static final private String VALID_USER_ID = "834b410a-943b-4c80-817a-4465aed037bc";
+    static final private String VALID_GROUP_ID = "69e1a5dc-89be-4343-976c-b5541af249f4";
     private String endpointAddress = "http://localhost:8180/osiam-server";
     private String clientId = "example-client";
     private String clientSecret = "secret";
@@ -58,14 +56,14 @@ public class ScopeIT {
     	oConBuilder.setScope(Scope.DELETE,  Scope.GET, Scope.PATCH);
     	oConBuilder.setScope(Scope.DELETE);
     	accessToken = oConnector.retrieveAccessToken();
-    	oConnector.getUser(VALID_USER_UUID, accessToken);
+    	oConnector.getUser(VALID_USER_ID, accessToken);
     }
     
     @Test (expected = ForbiddenException.class)
     public void try_to_retrieve_group_raises_exception(){
     	oConnector = oConBuilder.setScope(Scope.DELETE).build();
     	accessToken = oConnector.retrieveAccessToken();
-    	oConnector.getGroup(VALID_GROUP_UUID, accessToken);
+    	oConnector.getGroup(VALID_GROUP_ID, accessToken);
     }
 
     @Test (expected = ForbiddenException.class)
@@ -110,7 +108,7 @@ public class ScopeIT {
     	oConnector = oConBuilder.setScope(Scope.DELETE).build();
     	accessToken = oConnector.retrieveAccessToken();
     	UpdateUser updateUser = new UpdateUser.Builder().setActive(false).build();
-    	oConnector.updateUser(VALID_USER_UUID, updateUser, accessToken);
+    	oConnector.updateUser(VALID_USER_ID, updateUser, accessToken);
     }
     
     @Test (expected = ForbiddenException.class)
@@ -118,7 +116,7 @@ public class ScopeIT {
     	oConnector = oConBuilder.setScope(Scope.DELETE).build();
     	accessToken = oConnector.retrieveAccessToken();
     	UpdateGroup updateGroup = new UpdateGroup.Builder().updateDisplayName("irrelevant").build();
-    	oConnector.updateGroup(VALID_GROUP_UUID, updateGroup, accessToken);
+    	oConnector.updateGroup(VALID_GROUP_ID, updateGroup, accessToken);
     }
     
     @Test (expected = ForbiddenException.class)
@@ -141,14 +139,14 @@ public class ScopeIT {
     public void try_to_delete_user_raises_exception(){
     	oConnector = oConBuilder.setScope(Scope.GET).build();
     	accessToken = oConnector.retrieveAccessToken();
-    	oConnector.deleteUser(VALID_USER_UUID, accessToken);
+    	oConnector.deleteUser(VALID_USER_ID, accessToken);
     }
     
     @Test (expected = ForbiddenException.class)
     public void try_to_delete_group_raises_exception(){
     	oConnector = oConBuilder.setScope(Scope.GET).build();
     	accessToken = oConnector.retrieveAccessToken();
-    	oConnector.deleteGroup(VALID_GROUP_UUID, accessToken);
+    	oConnector.deleteGroup(VALID_GROUP_ID, accessToken);
     }
     
     @Test 
@@ -158,14 +156,14 @@ public class ScopeIT {
     	oConBuilder.setScope(Scope.DELETE,  Scope.GET, Scope.PATCH);
     	oConBuilder.setScope(Scope.DELETE);
     	accessToken = oConnector.retrieveAccessToken();
-    	oConnector.getUser(VALID_USER_UUID, accessToken);
+    	oConnector.getUser(VALID_USER_ID, accessToken);
     }
     
     @Test 
     public void try_to_retrieve_group(){
     	oConnector = oConBuilder.setScope(Scope.GET).build();
     	accessToken = oConnector.retrieveAccessToken();
-    	oConnector.getGroup(VALID_GROUP_UUID, accessToken);
+    	oConnector.getGroup(VALID_GROUP_ID, accessToken);
     }
 
     @Test 
@@ -210,7 +208,7 @@ public class ScopeIT {
     	oConnector = oConBuilder.setScope(Scope.PATCH).build();
     	accessToken = oConnector.retrieveAccessToken();
     	UpdateUser updateUser = new UpdateUser.Builder().updateUserName("newName").setActive(false).build();
-    	oConnector.updateUser(VALID_USER_UUID, updateUser, accessToken);
+    	oConnector.updateUser(VALID_USER_ID, updateUser, accessToken);
     }
     
     @Test
@@ -218,7 +216,7 @@ public class ScopeIT {
     	oConnector = oConBuilder.setScope(Scope.PATCH).build();
     	accessToken = oConnector.retrieveAccessToken();
     	UpdateGroup updateGroup = new UpdateGroup.Builder().updateDisplayName("irrelevant").build();
-    	oConnector.updateGroup(VALID_GROUP_UUID, updateGroup, accessToken);
+    	oConnector.updateGroup(VALID_GROUP_ID, updateGroup, accessToken);
     }
     
     @Test
@@ -249,7 +247,7 @@ public class ScopeIT {
     public void try_to_delete_group(){
     	oConnector = oConBuilder.setScope(Scope.DELETE).build();
     	accessToken = oConnector.retrieveAccessToken();
-    	oConnector.deleteGroup(VALID_GROUP_UUID, accessToken);
+    	oConnector.deleteGroup(VALID_GROUP_ID, accessToken);
     }
     
     @Test 

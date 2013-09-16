@@ -503,7 +503,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     						.updateUserName(IRRELEVANT)//TODO username nur solange bug im server existiert
         					.deleteEmail("hsimpson@atom-example.com")
         					//.deleteEntitlement("right2")TODO at the second run it will fail
-        					.deleteGroup(UUID.fromString("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"))
+        					.deleteGroup("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578")
         					.deleteIms("ims01")
         					.deletePhoneNumber("0245817964")
         					.deletePhoto("photo01.jpg")

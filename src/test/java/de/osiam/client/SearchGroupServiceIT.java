@@ -27,7 +27,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
 
     private static final String EXPECTED_GROUP_NAME = "test_group01";
-	static private String VALID_GROUP_UUID = "69e1a5dc-89be-4343-976c-b5541af249f4";
+    private static String VALID_GROUP_ID = "69e1a5dc-89be-4343-976c-b5541af249f4";
     private QueryResult<Group> queryResult;
 
     @Test
@@ -61,7 +61,7 @@ public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
 
     private void queryResultContainsValidGroup() {
         for (Group actGroup : queryResult.getResources()) {
-            if (actGroup.getId().equals(VALID_GROUP_UUID)) {
+            if (actGroup.getId().equals(VALID_GROUP_ID)) {
                 return; // OK
             }
         }

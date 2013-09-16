@@ -37,10 +37,10 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 public class UpdateGroupIT extends AbstractIntegrationTestBase{
 
     private static String idExistingGroup = "7d33bcbe-a54c-43d8-867e-f6146164941e";
-    private static UUID ID_USER_BTHOMSON = UUID.fromString("618b398c-0110-43f2-95df-d1bc4e7d2b4a");
-    private static UUID ID_USER_CMILLER = UUID.fromString("ac3bacc9-915d-4bab-9145-9eb600d5e5bf");
+    private static String ID_USER_BTHOMSON = "618b398c-0110-43f2-95df-d1bc4e7d2b4a";
+    private static String ID_USER_CMILLER = "ac3bacc9-915d-4bab-9145-9eb600d5e5bf";
     private static String ID_USER_HSIMPSON = "7d33bcbe-a54c-43d8-867e-f6146164941e";
-    private static UUID ID_GROUP_01 = UUID.fromString("69e1a5dc-89be-4343-976c-b5541af249f4");
+    private static String ID_GROUP_01 = "69e1a5dc-89be-4343-976c-b5541af249f4";
     private static String ID_GROUP_02 = "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578";
     private static String IRRELEVANT = "Irrelevant";
     private UpdateGroup updateGroup;

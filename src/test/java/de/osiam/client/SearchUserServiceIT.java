@@ -196,7 +196,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     private void queryResultContainsValidUser() {
         assertTrue(queryResult != null);
         for (User actUser : queryResult.getResources()) {
-            if (actUser.getId().equals(VALID_USER_UUID)) {
+            if (actUser.getId().equals(VALID_USER_ID)) {
                 return; // OK
             }
         }

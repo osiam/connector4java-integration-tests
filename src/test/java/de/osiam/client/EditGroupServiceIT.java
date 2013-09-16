@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -32,13 +33,13 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @DatabaseSetup("/database_seed.xml")
 public class EditGroupServiceIT extends AbstractIntegrationTestBase{
 
-    private String VALID_UUID = null;
-    private String ID_EXISTING_GROUP = "69e1a5dc-89be-4343-976c-b5541af249f4";
-    private UUID NEW_UUID = UUID.randomUUID();
-    private String NAME_EXISTING_GROUP = "test_group01";
-    private Group NEW_GROUP;
-    private Group RETURN_GROUP;
-    private Group DB_GROUP;
+    private String validId = null;
+    private static String ID_EXISTING_GROUP = "69e1a5dc-89be-4343-976c-b5541af249f4";
+    private static String NEW_ID = UUID.randomUUID().toString();
+    private static String NAME_EXISTING_GROUP = "test_group01";
+    private Group newGroup;
+    private Group returnGroup;
+    private Group dbGroup;
     private static final String IRRELEVANT = "irrelevant";
     private Query QUERY;
 
@@ -68,12 +69,12 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
         initializeSimpleGroup();
         createGroup();
         returnGroupHasValidId();
-        loadGroup(RETURN_GROUP.getId());
+        loadGroup(returnGroup.getId());
         returnAndDbGroupHaveSameDislplayName();
     }
 
     @Test
-    public void create_group_with_existing_uuid(){
+    public void create_group_with_existing_id(){
         initializeSimpleGroupWithID(ID_EXISTING_GROUP.toString());
         createGroup();
         loadGroup(ID_EXISTING_GROUP);
@@ -81,53 +82,53 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
     }
 
     @Test
-    public void given_uuid_to_new_group_has_changed_after_saving()
+    public void given_id_to_new_group_has_changed_after_saving()
     {
-        initializeSimpleGroupWithID(NEW_UUID.toString());
+        initializeSimpleGroupWithID(NEW_ID.toString());
         createGroup();
-        assertNotEquals(NEW_UUID.toString(), RETURN_GROUP.getId());
+        assertNotEquals(NEW_ID.toString(), returnGroup.getId());
     }
 
     @Test
     public void created_group_can_be_found(){
         initialQueryToSearchGroup();
         loadSingleGroupByQuery();
-        assertNull(DB_GROUP);
+        assertNull(dbGroup);
 
         initializeSimpleGroup();
         createGroup();
         loadSingleGroupByQuery();
-        assertNotNull(DB_GROUP);
-        assertEquals(IRRELEVANT, DB_GROUP.getDisplayName());
+        assertNotNull(dbGroup);
+        assertEquals(IRRELEVANT, dbGroup.getDisplayName());
     }
 
     @Test
-    public void uuid_return_group_same_as_new_loaded_uuid(){
-        initializeSimpleGroupWithID(NEW_UUID.toString());
+    public void id_return_group_same_as_new_loaded_id(){
+        initializeSimpleGroupWithID(NEW_ID.toString());
         createGroup();
         initialQueryToSearchGroup();
         loadSingleGroupByQuery();
-        assertNotNull(DB_GROUP);
-        assertEquals(RETURN_GROUP.getId(), DB_GROUP.getId());
+        assertNotNull(dbGroup);
+        assertEquals(returnGroup.getId(), dbGroup.getId());
     }
     
     @Test
     public void group_is_deleted() throws Exception {
-    	given_a_test_group_UUID();
+    	given_a_test_group_ID();
     	whenGroupIsDeleted();
     	thenGroupIsRemoveFromServer();
     }
     
     @Test (expected = NoResultException.class)
     public void user_is_not_deleted() throws Exception {
-    	givenAValidUserUUIDForDeletion();
+    	givenAValidUserIDForDeletion();
         whenUserIsDeleted();
         fail();
     }
 
     @Test (expected = NoResultException.class)
     public void delete_group_two_times() throws Exception {
-    	given_a_test_group_UUID();
+    	given_a_test_group_ID();
     	whenGroupIsDeleted();
     	thenGroupIsRemoveFromServer();
     	whenGroupIsDeleted();
@@ -136,25 +137,25 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
 
     @Test
     public void delete_group_with_members(){
-        String uuidGroup01 = "69e1a5dc-89be-4343-976c-b5541af249f4";
-        oConnector.getGroup(uuidGroup01, accessToken);
+        String idGroup01 = "69e1a5dc-89be-4343-976c-b5541af249f4";
+        oConnector.getGroup(idGroup01, accessToken);
         //group could be found
-        oConnector.deleteGroup(uuidGroup01, accessToken);
+        oConnector.deleteGroup(idGroup01, accessToken);
         try{
-            oConnector.getGroup(uuidGroup01, accessToken);
+            oConnector.getGroup(idGroup01, accessToken);
             fail("Exception excpected");
         }catch (NoResultException e){}
     }
     
-    private void given_a_test_group_UUID() {
-    	VALID_UUID = VALID_GROUP_UUID;
+    private void given_a_test_group_ID() {
+    	validId = VALID_GROUP_ID;
     }
     private void whenGroupIsDeleted() {
-        oConnector.deleteGroup(VALID_UUID, accessToken);
+        oConnector.deleteGroup(validId, accessToken);
     }
     private void thenGroupIsRemoveFromServer() {
     	try {
-            oConnector.getGroup(VALID_UUID, accessToken);
+            oConnector.getGroup(validId, accessToken);
     	} catch(NoResultException e) {
     		return;
     	} catch(Exception e) {
@@ -163,63 +164,63 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
     	fail();
     }
     
-    private void givenAValidUserUUIDForDeletion() throws Exception {
-        VALID_UUID = DELETE_USER_UUID;
+    private void givenAValidUserIDForDeletion() throws Exception {
+        validId = DELETE_USER_ID;
     }
     
     private void whenUserIsDeleted() {
-        oConnector.deleteGroup(VALID_UUID, accessToken);
+        oConnector.deleteGroup(validId, accessToken);
     }
 
     private void initializeGroupWithNoUserName(){
-        NEW_GROUP = new Group.Builder().build();
+        newGroup = new Group.Builder().build();
     }
 
     private void initializeGroupWithEmptyDisplayName(){
-        NEW_GROUP = new Group.Builder().setDisplayName("").build();
+        newGroup = new Group.Builder().setDisplayName("").build();
     }
 
     private void initializeSimpleGroup(){
-        NEW_GROUP = new Group.Builder().setDisplayName(IRRELEVANT).build();
+        newGroup = new Group.Builder().setDisplayName(IRRELEVANT).build();
     }
 
     private void initializeSimpleGroupWithID(String id){
-        NEW_GROUP = new Group.Builder().setDisplayName(IRRELEVANT).setId(id).build();
+        newGroup = new Group.Builder().setDisplayName(IRRELEVANT).setId(id).build();
     }
 
     private void initializeGroupWithExistingDisplayName(){
-        NEW_GROUP = new Group.Builder().setDisplayName(NAME_EXISTING_GROUP).build();
+        newGroup = new Group.Builder().setDisplayName(NAME_EXISTING_GROUP).build();
     }
 
     private void returnGroupHasValidId(){
-        UUID.fromString(RETURN_GROUP.getId());
+        assertTrue(returnGroup.getId().length() > 0);
     }
 
     private void loadGroup(String id){
-        DB_GROUP = oConnector.getGroup(id, accessToken);
+        dbGroup = oConnector.getGroup(id, accessToken);
     }
 
     private void loadSingleGroupByQuery(){
         QueryResult<Group> result = oConnector.searchGroups(QUERY, accessToken);
         if(result.getResources().size() == 0){
-            DB_GROUP = null;
+            dbGroup = null;
         }else if(result.getResources().size() == 1){
-            DB_GROUP = result.getResources().get(0);
+            dbGroup = result.getResources().get(0);
         }else{
             fail("No or one user should be found");
         }
     }
 
     private void existingGroupDislpayNameHasNotChanged(){
-        assertEquals(NAME_EXISTING_GROUP, DB_GROUP.getDisplayName());
+        assertEquals(NAME_EXISTING_GROUP, dbGroup.getDisplayName());
     }
 
     private void returnAndDbGroupHaveSameDislplayName(){
-        assertEquals(NEW_GROUP.getDisplayName(), DB_GROUP.getDisplayName());
+        assertEquals(newGroup.getDisplayName(), dbGroup.getDisplayName());
     }
 
     private void createGroup(){
-        RETURN_GROUP = oConnector.createGroup(NEW_GROUP, accessToken);
+        returnGroup = oConnector.createGroup(newGroup, accessToken);
     }
 
     private void initialQueryToSearchGroup(){

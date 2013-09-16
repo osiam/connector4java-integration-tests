@@ -29,12 +29,12 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @DatabaseSetup("/database_seed.xml")
 public class UserServiceIT extends AbstractIntegrationTestBase {
 
-    private String validUUID = null;
+    private String validID = null;
     private User deserializedUser;
 
     @Test
     public void name_is_deserialized_correctly() throws Exception {
-        givenAValidUserUUID();
+        givenAValidUserID();
         whenUserIsDeserialized();
 
         Name name = deserializedUser.getName();
@@ -49,7 +49,7 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void emails_are_deserialized_correctly() throws Exception {
-        givenAValidUserUUID();
+        givenAValidUserID();
         whenUserIsDeserialized();
 
         List<MultiValuedAttribute> emails = deserializedUser.getEmails();
@@ -62,14 +62,14 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void password_is_not_transferred() throws Exception {
-        givenAValidUserUUID();
+        givenAValidUserID();
         whenUserIsDeserialized();
         assertNull(deserializedUser.getPassword());
     }
 
     @Test(expected = UnauthorizedException.class)
     public void provide_an_invalid_access_token_raises_exception() throws Exception {
-        givenAValidUserUUID();
+        givenAValidUserID();
         givenAnInvalidAccessToken();
 
         whenUserIsDeserialized();
@@ -78,7 +78,7 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
 
     @Test(expected = UnauthorizedException.class)
     public void access_token_is_expired() throws Exception {
-    	givenAValidUserUUID();
+    	givenAValidUserID();
     	givenAnAccessTokenForOneSecond();
     	Thread.sleep(1000);
         whenUserIsDeserialized();
@@ -86,10 +86,10 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
     }
     
     private void whenUserIsDeserialized() {
-        deserializedUser = oConnector.getUser(validUUID, accessToken);
+        deserializedUser = oConnector.getUser(validID, accessToken);
     }
 
-    private void givenAValidUserUUID() throws Exception {
-        validUUID = VALID_USER_UUID;
+    private void givenAValidUserID() throws Exception {
+        validID = VALID_USER_ID;
     }
 }
