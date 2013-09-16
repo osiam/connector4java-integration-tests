@@ -79,19 +79,19 @@ class ControllerIT extends AbstractIT {
         assert responseContentType == expectedResponseType
 
         where:
-        testCase | requestPath  | contentType        | expectedResponseCode | expectedResponseType
-        "a"      | "/Users"     | ContentType.JSON   | 200                  | "application/json;charset=UTF-8"
-        "b"      | "/Users/"    | ContentType.JSON   | 200                  | "application/json;charset=UTF-8"
-        "c"      | "/Groups"    | ContentType.JSON   | 200                  | "application/json;charset=UTF-8"
-        "d"      | "/Groups/"   | ContentType.JSON   | 200                  | "application/json;charset=UTF-8"
-        "e"      | "/Users"     | ContentType.ANY    | 200                  | "application/json;charset=UTF-8"
-        "f"      | "/Users"     | ContentType.TEXT   | 406                  | null
-        "g"      | "/Users"     | ContentType.BINARY | 406                  | null
-        "h"      | "/Users"     | ContentType.HTML   | 406                  | null
-        "i"      | "/Users"     | ContentType.URLENC | 406                  | null
-        "j"      | "/Users"     | ContentType.XML    | 406                  | null
-        "k"      | "/Users"     | "invalid"          | 406                  | null
-        "l"      | "/Users"     | "/"                | 406                  | null
+        testCase | requestPath | contentType        | expectedResponseCode | expectedResponseType
+        "a"      | "/Users"    | ContentType.JSON   | 200                  | "application/json;charset=UTF-8"
+        "b"      | "/Users/"   | ContentType.JSON   | 200                  | "application/json;charset=UTF-8"
+        "c"      | "/Groups"   | ContentType.JSON   | 200                  | "application/json;charset=UTF-8"
+        "d"      | "/Groups/"  | ContentType.JSON   | 200                  | "application/json;charset=UTF-8"
+        "e"      | "/Users"    | ContentType.ANY    | 200                  | "application/json;charset=UTF-8"
+        "f"      | "/Users"    | ContentType.TEXT   | 406                  | null
+        "g"      | "/Users"    | ContentType.BINARY | 406                  | null
+        "h"      | "/Users"    | ContentType.HTML   | 406                  | null
+        "i"      | "/Users"    | ContentType.URLENC | 406                  | null
+        "j"      | "/Users"    | ContentType.XML    | 406                  | null
+        "k"      | "/Users"    | "invalid"          | 406                  | null
+        "l"      | "/Users"    | "/"                | 406                  | null
     }
 
     @Unroll
@@ -108,7 +108,7 @@ class ControllerIT extends AbstractIT {
 
         http.request(Method.GET, ContentType.JSON) { req ->
             uri.path = OSIAM_ENDPOINT + "/Users"
-            uri.query = [ filter:searchString ]
+            uri.query = [filter: searchString]
             headers."Authorization" = "Bearer " + validAccessToken.getToken()
 
             // response handler for a success response code:
@@ -159,4 +159,42 @@ class ControllerIT extends AbstractIT {
         "w"      | "active lt true"      | 200                  | null                                                                                              // boolean
         "x"      | "active le true"      | 200                  | null                                                                                              // boolean
     }
+
+    def "REGT-005: A search filter String matching two users should return totalResults=2 and two unique Resource elements."() {
+        given: "a valid access token"
+        AccessToken validAccessToken = osiamConnector.retrieveAccessToken()
+
+        when: "a filter request matching two users is sent"
+        def http = new HTTPBuilder(OSIAM_ENDPOINT)
+
+        def responseStatusCode
+        def responseContent
+
+        http.request(Method.GET, ContentType.JSON) { req ->
+            uri.path = OSIAM_ENDPOINT + "/Users"
+            uri.query = [filter: '(userName eq "cmiller" or userName eq "hsimpson") and meta.created gt "2003-05-23T13:12:45.672"']
+            headers."Authorization" = "Bearer " + validAccessToken.getToken()
+
+            // response handler for a success response code:
+            response.success = { resp, json ->
+                responseStatusCode = resp.statusLine.statusCode
+                responseContent = json
+            }
+        }
+
+        then: "the response elements should be unique and as expected"
+        assert responseStatusCode == 200
+        assert responseContent.totalResults == 2
+
+        assert responseContent.Resources.size() == 2
+
+        // Check uniqueness to prevent counting faulty items. Also check userName's.
+        Collection elements = new HashSet()
+        responseContent.Resources.each {
+           assert elements.add(it) // Returns 'false' if already in HashSet.
+           assert (it.toString().contains("cmiller") || it.toString().contains("hsimpson"))
+        }
+    }
+
+
 }
