@@ -104,7 +104,9 @@ class ControllerIT extends AbstractIT {
 
         def responseStatusCode
         def responseContentType
+        def responseErrorCode
         def responseFailureText
+
 
         http.request(Method.GET, ContentType.JSON) { req ->
             uri.path = OSIAM_ENDPOINT + "/Users"
@@ -119,45 +121,47 @@ class ControllerIT extends AbstractIT {
 
             // handler for any failure status code:
             response.failure = { resp, json ->
-                responseFailureText = json
+                responseErrorCode = json.error_code
+                responseFailureText = json.description
                 responseStatusCode = resp.statusLine.statusCode
                 contentType = resp.headers."Content-Type"
             }
 
         }
 
-        then: "the response should be as expected"
+        then: "the response and possible failure codes and text should be as expected"
         assert responseStatusCode == expectedResponseCode
-
-        expect: "the response text should be as expected"
+        assert responseErrorCode == expectedResponseErrorCode
         assert responseFailureText == expectedResponseFailureText
 
         where:
-        testCase | searchString          | expectedResponseCode | expectedResponseFailureText
-        "a"      | "userName eq marissa" | 200                  | null                                                                                              // String
-        "b"      | "userName co ari"     | 200                  | null                                                                                              // String
-        "c"      | "userName sw mar"     | 200                  | null                                                                                              // String
-        "d"      | "userName pr"         | 200                  | null                                                                                              // String
-        "e"      | "userName gt l"       | 200                  | null                                                                                              // String
-        "f"      | "userName ge m"       | 200                  | null                                                                                              // String
-        "g"      | "userName lt n"       | 200                  | null                                                                                              // String
-        "h"      | "userName le m"       | 200                  | null                                                                                              // String
-        "i"      | "emails.type eq work" | 200                  | null                                                                                              // Enum
-        "j"      | "emails.type co work" | 409                  | "[error_code:CONFLICT, description:String filter operator is not applicable on Enum type.]"       // Enum
-        "k"      | "emails.type sw work" | 409                  | "[error_code:CONFLICT, description:String filter operator is not applicable on Enum type.]"       // Enum
-        "l"      | "emails.type pr work" | 200                  | null                                                                                              // Enum
-        "m"      | "emails.type gt work" | 200                  | null                                                                                              // Enum
-        "n"      | "emails.type ge work" | 200                  | null                                                                                              // Enum
-        "o"      | "emails.type lt work" | 200                  | null                                                                                              // Enum
-        "p"      | "emails.type le work" | 200                  | null                                                                                              // Enum
-        "q"      | "active eq true"      | 200                  | null                                                                                              // boolean
-        "r"      | "active co true"      | 409                  | "[error_code:CONFLICT, description:String filter operator is not applicable on Boolean type.]"    // boolean
-        "s"      | "active sw true"      | 409                  | "[error_code:CONFLICT, description:String filter operator is not applicable on Boolean type.]"    // boolean
-        "t"      | "active pr true"      | 200                  | null                                                                                              // boolean
-        "u"      | "active gt true"      | 200                  | null                                                                                              // boolean
-        "v"      | "active ge true"      | 200                  | null                                                                                              // boolean
-        "w"      | "active lt true"      | 200                  | null                                                                                              // boolean
-        "x"      | "active le true"      | 200                  | null                                                                                              // boolean
+        testCase | searchString                          | expectedResponseCode  | expectedResponseErrorCode | expectedResponseFailureText
+        "a"      | "userName eq marissa"                 | 200                   | null                      | null                                                                             // String
+        "b"      | "userName co ari"                     | 200                   | null                      | null                                                                             // String
+        "c"      | "userName sw mar"                     | 200                   | null                      | null                                                                             // String
+        "d"      | "userName pr"                         | 200                   | null                      | null                                                                             // String
+        "e"      | "userName gt l"                       | 200                   | null                      | null                                                                             // String
+        "f"      | "userName ge m"                       | 200                   | null                      | null                                                                             // String
+        "g"      | "userName lt n"                       | 200                   | null                      | null                                                                             // String
+        "h"      | "userName le m"                       | 200                   | null                      | null                                                                             // String
+        "i"      | "emails.type eq work"                 | 200                   | null                      | null                                                                             // Enum (EmailEntity)
+        "j"      | "emails.type co work"                 | 409                   | "CONFLICT"                | "String filter operators 'co' and 'sw' are not applicable on EmailEntity type."  // Enum (EmailEntity)
+        "k"      | "emails.type sw work"                 | 409                   | "CONFLICT"                | "String filter operators 'co' and 'sw' are not applicable on EmailEntity type."  // Enum (EmailEntity)
+        "l"      | "emails.type pr work"                 | 200                   | null                      | null                                                                             // Enum (EmailEntity)
+        "m"      | "emails.type gt work"                 | 200                   | null                      | null                                                                             // Enum (EmailEntity)
+        "n"      | "emails.type ge work"                 | 200                   | null                      | null                                                                             // Enum (EmailEntity)
+        "o"      | "emails.type lt work"                 | 200                   | null                      | null                                                                             // Enum (EmailEntity)
+        "p"      | "emails.type le work"                 | 200                   | null                      | null                                                                             // Enum (EmailEntity)
+        "q"      | "active eq true"                      | 200                   | null                      | null                                                                             // boolean
+        "r"      | "active co true"                      | 409                   | "CONFLICT"                | "String filter operators 'co' and 'sw' are not applicable on Boolean type."      // boolean
+        "s"      | "active sw true"                      | 409                   | "CONFLICT"                | "String filter operators 'co' and 'sw' are not applicable on Boolean type."      // boolean
+        "t"      | "active pr true"                      | 200                   | null                      | null                                                                             // boolean
+        "u"      | "active gt true"                      | 200                   | null                      | null                                                                             // boolean
+        "v"      | "active ge true"                      | 200                   | null                      | null                                                                             // boolean
+        "w"      | "active lt true"                      | 200                   | null                      | null                                                                             // boolean
+        "x"      | "active le true"                      | 200                   | null                      | null                                                                             // boolean
+        "y"      | "created co 2013-08-08 19:46:20.638"  | 409                   | "CONFLICT"                | null                                                                             // Date - TODO: Fix Error Message
+        "z"      | "created sw 2013-08-08 19:46:20.638"  | 409                   | "CONFLICT"                | null                                                                             // Date - TODO: Fix Error Message
     }
 
     def "REGT-005: A search filter String matching two users should return totalResults=2 and two unique Resource elements."() {
@@ -191,10 +195,8 @@ class ControllerIT extends AbstractIT {
         // Check uniqueness to prevent counting faulty items. Also check userName's.
         Collection elements = new HashSet()
         responseContent.Resources.each {
-           assert elements.add(it) // Returns 'false' if already in HashSet.
-           assert (it.toString().contains("cmiller") || it.toString().contains("hsimpson"))
+            assert elements.add(it) // Returns 'false' if already in HashSet.
+            assert (it.toString().contains("cmiller") || it.toString().contains("hsimpson"))
         }
     }
-
-
 }
