@@ -2,6 +2,7 @@ package de.osiam.client;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.net.URI;
@@ -29,6 +30,7 @@ import org.osiam.client.exception.ForbiddenException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
+import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -73,6 +75,14 @@ public class LoginOAuth2IT {
 		givenAuthCode();
 		givenAccessTokenUsingAuthCode();
 		assertTrue(accessToken != null);
+	}
+	
+	@Test
+	public void login_and_get_me_user() throws ClientProtocolException, IOException {
+		givenAuthCodeResponse();
+		givenAuthCode();
+		givenAccessTokenUsingAuthCode();
+		meUserIsCorrectReturned();
 	}
 	
 	@Test
@@ -228,5 +238,9 @@ public class LoginOAuth2IT {
 		}
 	}
 
+	private void meUserIsCorrectReturned(){
+		User user = oConnector.getMe(accessToken);
+		assertEquals("marissa", user.getUserName());
+	}
 
 }
