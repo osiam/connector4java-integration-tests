@@ -30,9 +30,9 @@ public class ScopeIT {
 
     static final private String VALID_USER_ID = "834b410a-943b-4c80-817a-4465aed037bc";
     static final private String VALID_GROUP_ID = "69e1a5dc-89be-4343-976c-b5541af249f4";
-    private String endpointAddress = "http://localhost:8180/osiam-server";
-    private String clientId = "example-client";
-    private String clientSecret = "secret";
+	private static String ENDPOINT_ADDRESS = "http://localhost:8180/osiam-server";
+    private static String CLIENT_ID = "example-client";
+    private static String CLIENT_SECRET = "secret";
     private OsiamConnector oConnector;
     private AccessToken accessToken;
     private OsiamConnector.Builder oConBuilder;
@@ -40,9 +40,9 @@ public class ScopeIT {
     @Before
     public void setUp() throws Exception {
 
-        oConBuilder = new OsiamConnector.Builder(endpointAddress).
-                setClientId(clientId).
-                setClientSecret(clientSecret).
+        oConBuilder = new OsiamConnector.Builder(ENDPOINT_ADDRESS).
+                setClientId(CLIENT_ID).
+                setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.PASSWORD).
                 setUserName("marissa").
                 setPassword("koala")

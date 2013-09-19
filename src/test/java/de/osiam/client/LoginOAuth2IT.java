@@ -1,0 +1,232 @@
+package de.osiam.client;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.Header;
+import org.apache.http.HeaderElement;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.params.ClientPNames;
+import org.apache.http.client.params.CookiePolicy;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.osiam.client.connector.OsiamConnector;
+import org.osiam.client.exception.ConflictException;
+import org.osiam.client.exception.ForbiddenException;
+import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.oauth.GrantType;
+import org.osiam.client.oauth.Scope;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("/context.xml")
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+		DbUnitTestExecutionListener.class })
+@DatabaseSetup("/database_seed.xml")
+public class LoginOAuth2IT {
+
+	private static String ENDPOINT_ADDRESS = "http://localhost:8180/osiam-server";
+	private static String CLIENT_ID = "example-client";
+	private static String CLIENT_SECRET = "secret";
+	private static String REDIRECT_URI = "http://localhost:5000/oauth2";
+	private OsiamConnector oConnector;
+	private URI loginUri;
+	private DefaultHttpClient defaultHttpClient;
+	private String authCode;
+	private AccessToken accessToken;
+	private HttpResponse authCodeResponse;
+
+	@Before
+	public void setUp() throws Exception {
+		oConnector = new OsiamConnector.Builder(ENDPOINT_ADDRESS)
+				.setClientId(CLIENT_ID).setClientSecret(CLIENT_SECRET)
+				.setClientRedirectUri(REDIRECT_URI)
+				.setGrantType(GrantType.AUTHORIZATION_CODE).setScope(Scope.ALL)
+				.build();
+		
+		loginUri = oConnector.getRedirectLoginUri();
+		defaultHttpClient = new DefaultHttpClient();
+	}
+
+	@Test
+	public void test_successful_login() throws ClientProtocolException, IOException {
+		givenAuthCodeResponse();
+		givenAuthCode();
+		givenAccessTokenUsingAuthCode();
+		assertTrue(accessToken != null);
+	}
+	
+	@Test
+	public void test_successful_login_while_using_httpResponse() throws ClientProtocolException, IOException {
+		givenAuthCodeResponse();
+		givenAuthCode();
+		givenAccessTokenUsingHttpResponse();
+		assertTrue(accessToken != null);
+	}
+	
+	@Test (expected = ConflictException.class)
+	public void getting_acces_token_two_times_raises_exception() throws ClientProtocolException, IOException {
+		givenAuthCodeResponse();
+		givenAuthCode();
+		givenAccessTokenUsingAuthCode();
+		givenAccessTokenUsingAuthCode();
+		fail("exception expected");
+	}
+	
+	@Test (expected = ForbiddenException.class)
+	public void user_denied_reconized_correctly() throws ClientProtocolException, IOException{
+		givenDenyResponse();
+		givenAccessTokenUsingHttpResponse();
+		fail("expected excaption ");
+	}
+	
+	private void givenAccessTokenUsingAuthCode(){
+		accessToken = oConnector.retrieveAccessToken(authCode);
+	}
+	
+	private void givenAccessTokenUsingHttpResponse(){
+		accessToken = oConnector.retrieveAccessToken(authCodeResponse);
+	}
+	
+	private void givenAuthCodeResponse() throws ClientProtocolException, IOException{
+		String currentRedirectUri;
+
+		{
+			HttpGet httpGet = new HttpGet(loginUri);
+			defaultHttpClient.execute(httpGet);
+			httpGet.releaseConnection();
+		}
+
+		{
+			HttpPost httpPost = new HttpPost(
+					"http://localhost:8180/osiam-server/login.do");
+
+			List<NameValuePair> loginCredentials = new ArrayList<>();
+			loginCredentials
+					.add(new BasicNameValuePair("j_username", "marissa"));
+			loginCredentials.add(new BasicNameValuePair("j_password", "koala"));
+			UrlEncodedFormEntity loginCredentialsEntity = new UrlEncodedFormEntity(
+					loginCredentials, "UTF-8");
+
+			httpPost.setEntity(loginCredentialsEntity);
+			HttpResponse response = defaultHttpClient.execute(httpPost);
+
+			currentRedirectUri = response.getLastHeader("Location").getValue();
+
+			httpPost.releaseConnection();
+		}
+
+		{
+			HttpGet httpGet = new HttpGet(currentRedirectUri);
+			httpGet.getParams().setParameter(ClientPNames.COOKIE_POLICY,
+					CookiePolicy.NETSCAPE);
+			defaultHttpClient.execute(httpGet);
+			httpGet.releaseConnection();
+		}
+
+		{
+			HttpPost httpPost = new HttpPost(
+					"http://localhost:8180/osiam-server/oauth/authorize");
+
+			List<NameValuePair> loginCredentials = new ArrayList<>();
+			loginCredentials.add(new BasicNameValuePair("user_oauth_approval",
+					"true"));
+			UrlEncodedFormEntity loginCredentialsEntity = new UrlEncodedFormEntity(
+					loginCredentials, "UTF-8");
+
+			httpPost.setEntity(loginCredentialsEntity);
+			authCodeResponse = defaultHttpClient.execute(httpPost);
+
+			httpPost.releaseConnection();
+		}
+	}
+	
+	private void givenDenyResponse() throws ClientProtocolException, IOException{
+		String currentRedirectUri;
+
+		{
+			HttpGet httpGet = new HttpGet(loginUri);
+			defaultHttpClient.execute(httpGet);
+			httpGet.releaseConnection();
+		}
+
+		{
+			HttpPost httpPost = new HttpPost(
+					"http://localhost:8180/osiam-server/login.do");
+
+			List<NameValuePair> loginCredentials = new ArrayList<>();
+			loginCredentials
+					.add(new BasicNameValuePair("j_username", "marissa"));
+			loginCredentials.add(new BasicNameValuePair("j_password", "koala"));
+			UrlEncodedFormEntity loginCredentialsEntity = new UrlEncodedFormEntity(
+					loginCredentials, "UTF-8");
+
+			httpPost.setEntity(loginCredentialsEntity);
+			HttpResponse response = defaultHttpClient.execute(httpPost);
+
+			currentRedirectUri = response.getLastHeader("Location").getValue();
+
+			httpPost.releaseConnection();
+		}
+
+		{
+			HttpGet httpGet = new HttpGet(currentRedirectUri);
+			defaultHttpClient.execute(httpGet);
+			httpGet.releaseConnection();
+		}
+
+		{
+			HttpPost httpPost = new HttpPost(
+					"http://localhost:8180/osiam-server/oauth/authorize");
+
+			List<NameValuePair> loginCredentials = new ArrayList<>();
+			loginCredentials.add(new BasicNameValuePair("user_oauth_approval",
+					"false"));
+			UrlEncodedFormEntity loginCredentialsEntity = new UrlEncodedFormEntity(
+					loginCredentials, "UTF-8");
+
+			httpPost.setEntity(loginCredentialsEntity);
+			authCodeResponse = defaultHttpClient.execute(httpPost);
+
+			httpPost.releaseConnection();
+		}
+	}
+	
+	private void givenAuthCode(){
+		Header header = authCodeResponse.getLastHeader("Location");
+		HeaderElement[] elements = header.getElements();
+		for (HeaderElement actHeaderElement : elements) {
+			if(actHeaderElement.getName().contains("code")){
+				authCode = actHeaderElement.getValue();
+				break;
+			}
+			if(actHeaderElement.getName().contains("error")){
+				throw new Error("The user had denied the acces to his data.");
+			}
+		}
+		if(authCode == null){
+			throw new Error("Could not find any auth code or error message in the given Response");
+		}
+	}
+
+
+}

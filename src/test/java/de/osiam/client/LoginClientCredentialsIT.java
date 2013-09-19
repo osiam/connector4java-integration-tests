@@ -21,7 +21,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
-public class LoginIT {
+public class LoginClientCredentialsIT {
 	
     protected String endpointAddress = "http://localhost:8180/osiam-server";
     protected String clientId = "example-client";

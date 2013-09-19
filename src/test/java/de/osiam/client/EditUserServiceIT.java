@@ -216,7 +216,6 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     }
 
     private void buildCompleteUser(){
-        Set<Object> any = new HashSet<Object>(Arrays.asList("anyStatement"));
         Address address = new Address.Builder()
                 .setStreetAddress("Example Street 22")
                 .setCountry("Germany")
@@ -244,7 +243,6 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
         NEW_USER = new User.Builder(IRRELEVANT)
                 .setPassword("password")
                 .setActive(true)
-                .setAny(any)
                 .setAddresses(addresses)
                 .setLocale("de")
                 .setName(name)
@@ -257,8 +255,6 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     private void assertEqualsUser(User expected, User actual){
         assertEquals(expected.getUserName(), actual.getUserName());
         assertEquals(expected.isActive(), actual.isActive());
-        assertEquals(expected.getAny().size(), actual.getAny().size());
-        assertEquals(expected.getAny(), actual.getAny());
         assertEqualsAddresses(expected.getAddresses(), actual.getAddresses());
         assertEquals(expected.getLocale(), actual.getLocale());
         assertEqualsName(expected.getName(), actual.getName());

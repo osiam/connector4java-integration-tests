@@ -121,8 +121,19 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
         fail();
     }
 
+    @Test
+    public void try_to_get_user_after_it_is_deleteted_raises_exception() throws Exception{
+    	givenAnAccessTokenForHSimpson();
+    	deleteHSimpson();
+    	whenUserIsDeserialized();
+    }
+    
     private void whenUserIsDeserialized() {
         deserializedUser = oConnector.getMe(accessToken);
+    }
+    
+    private void deleteHSimpson(){
+    	oConnector.deleteUser("7d33bcbe-a54c-43d8-867e-f6146164941e", accessToken);
     }
     
     private List<MultiValuedAttribute> sortEmails(List<MultiValuedAttribute> emails) {
