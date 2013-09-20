@@ -1,4 +1,4 @@
-package de.osiam.client;
+package org.osiam.client;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -151,7 +151,7 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
         OsiamConnector.Builder authBuilder = new OsiamConnector.Builder(endpointAddress).
                 setClientId(clientId).
                 setClientSecret(clientSecret).
-                setGrantType(GrantType.PASSWORD).
+                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
                 setUserName("bjensen").
                 setPassword("koala").
                 setScope(Scope.ALL);
@@ -163,7 +163,7 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
         OsiamConnector.Builder authBuilder = new OsiamConnector.Builder(endpointAddress).
                 setClientId(clientId).
                 setClientSecret(clientSecret).
-                setGrantType(GrantType.PASSWORD).
+                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
                 setUserName("hsimpson").
                 setPassword("koala").
                 setScope(Scope.ALL);

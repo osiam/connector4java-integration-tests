@@ -1,4 +1,4 @@
-package de.osiam.client;
+package org.osiam.client;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

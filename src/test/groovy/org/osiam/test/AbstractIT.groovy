@@ -30,7 +30,7 @@ abstract class AbstractIT extends Specification {
         OsiamConnector.Builder connectorBuilder = new OsiamConnector.Builder(OSIAM_ENDPOINT).
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
-                setGrantType(GrantType.PASSWORD).
+                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
                 setUserName(USER_NAME).
                 setPassword(USER_PASSWORD).
 				setScope(Scope.ALL)

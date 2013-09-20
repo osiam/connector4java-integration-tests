@@ -1,4 +1,4 @@
-package de.osiam.client;
+package org.osiam.client;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +43,7 @@ public class ScopeIT {
         oConBuilder = new OsiamConnector.Builder(ENDPOINT_ADDRESS).
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
-                setGrantType(GrantType.PASSWORD).
+                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
                 setUserName("marissa").
                 setPassword("koala")
                 ;

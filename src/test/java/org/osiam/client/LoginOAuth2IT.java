@@ -1,4 +1,4 @@
-package de.osiam.client;
+package org.osiam.client;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -103,7 +103,7 @@ public class LoginOAuth2IT {
 	}
 	
 	@Test (expected = ForbiddenException.class)
-	public void user_denied_reconized_correctly() throws ClientProtocolException, IOException{
+	public void user_denied_recognized_correctly() throws ClientProtocolException, IOException{
 		givenDenyResponse();
 		givenAccessTokenUsingHttpResponse();
 		fail("expected excaption ");

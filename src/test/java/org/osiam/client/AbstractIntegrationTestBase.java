@@ -1,4 +1,4 @@
-package de.osiam.client;
+package org.osiam.client;
 
 import static org.springframework.test.util.AssertionErrors.fail;
 
@@ -30,7 +30,7 @@ public abstract class AbstractIntegrationTestBase {
         OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(endpointAddress).
                 setClientId(clientId).
                 setClientSecret(clientSecret).
-                setGrantType(GrantType.PASSWORD).
+                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
                 setUserName("marissa").
                 setPassword("koala").
                 setScope(Scope.ALL);
@@ -42,7 +42,7 @@ public abstract class AbstractIntegrationTestBase {
         OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(endpointAddress).
                 setClientId("example-client-2").
                 setClientSecret("secret1").
-                setGrantType(GrantType.PASSWORD).
+                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
                 setUserName("hsimpson").
                 setPassword("koala").
                 setScope(Scope.ALL);
