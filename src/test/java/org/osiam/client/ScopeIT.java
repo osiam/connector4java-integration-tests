@@ -107,7 +107,7 @@ public class ScopeIT {
     public void try_to_update_user_raises_exception(){
     	oConnector = oConBuilder.setScope(Scope.DELETE).build();
     	accessToken = oConnector.retrieveAccessToken();
-    	UpdateUser updateUser = new UpdateUser.Builder().setActive(false).build();
+    	UpdateUser updateUser = new UpdateUser.Builder().updateActive(false).build();
     	oConnector.updateUser(VALID_USER_ID, updateUser, accessToken);
     }
     
@@ -207,7 +207,7 @@ public class ScopeIT {
     public void try_to_update_user(){
     	oConnector = oConBuilder.setScope(Scope.PATCH).build();
     	accessToken = oConnector.retrieveAccessToken();
-    	UpdateUser updateUser = new UpdateUser.Builder().updateUserName("newName").setActive(false).build();
+    	UpdateUser updateUser = new UpdateUser.Builder().updateUserName("newName").updateActive(false).build();
     	oConnector.updateUser(VALID_USER_ID, updateUser, accessToken);
     }
     

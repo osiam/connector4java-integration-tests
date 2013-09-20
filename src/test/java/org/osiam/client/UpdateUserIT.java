@@ -422,7 +422,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         					.updateUserType("UserType")
         					.updateExternalId("ExternalId")
         					.updateName(newName)
-        					.setActive(true).build();
+        					.updateActive(true).build();
     }
     
     private void createUpdateUserWithUpdateFieldsWithoutPassword(){
@@ -439,7 +439,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         					.updateTitle(IRRELEVANT)
         					.updateUserType(IRRELEVANT)
         					.updateName(newName)
-        					.setActive(true).build();
+        					.updateActive(true).build();
     }
     
     private void createUpdateUserWithJustOtherNickname(){

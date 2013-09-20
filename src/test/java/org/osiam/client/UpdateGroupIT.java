@@ -17,6 +17,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
+import org.osiam.client.exception.NotFoundException;
 import org.osiam.client.update.UpdateGroup;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Group;
@@ -73,7 +74,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
         assertNull(returnGroup.getMembers());
     }
 	
-	@Test (expected = ConflictException.class)
+	@Test (expected = NotFoundException.class)
     public void try_update_with_wrong_id_raises_exception(){
         getOriginalGroup();
         createUpdateUserWithUpdateFields();
@@ -81,7 +82,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
         updateGroup();
     }
 	
-	@Test (expected = ConflictException.class)
+	@Test (expected = NotFoundException.class)
     public void try_update_with_user_id_raises_exception(){
         getOriginalGroup();
         createUpdateUserWithUpdateFields();
@@ -110,7 +111,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
         assertNotNull(value);
     }
 	
-	@Test (expected = ConflictException.class)
+	@Test (expected = NotFoundException.class)
     public void add_invalid_mebers(){
 		getOriginalGroup();
 		createUpdateGroupWithAddingInvalidMembers();
