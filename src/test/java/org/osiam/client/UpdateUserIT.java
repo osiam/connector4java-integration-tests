@@ -9,13 +9,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -389,7 +386,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         			.setRoles(roles)
         			.setName(name)
         			.setX509Certificates(certificates)
-        			.setEntitlements(entitlements)//TODO at the second run it will fail
+        			.setEntitlements(entitlements)
         			.setExternalId("irgendwas")        			
         			;
         User newUser = userBuilder.build(); 
@@ -435,14 +432,14 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     }
     
     private void createUpdateUserWithJustOtherNickname(){
-        updateUser = new UpdateUser.Builder().updateUserName(IRRELEVANT)//TODO bug in Server
+        updateUser = new UpdateUser.Builder() 
 		.updateNickName(IRRELEVANT)
 		.build();
     }
     
     private void createUpdateUserWithInvalidEmailType(){
     	MultiValuedAttribute email = new MultiValuedAttribute.Builder().setValue("some@thing.com").setType("wrong").build();
-        updateUser = new UpdateUser.Builder().updateUserName(IRRELEVANT)//TODO bug in Server
+        updateUser = new UpdateUser.Builder()
 		.addOrUpdateEmail(email)
 		.build();
     }
@@ -464,7 +461,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     	new MultiValuedAttribute.Builder().setValue("test").setType("other").build();
     	
     	updateUser = new UpdateUser.Builder()
-    						.updateUserName(IRRELEVANT)//TODO username nur solange bug im server existiert
         					.addOrUpdateEmail(email)
         					.addOrUpdatesPhoneNumber(phoneNumber)
         					.addOrUpdatesPhoto(photo)
@@ -476,7 +472,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     
     private void createUpdateUserWithDeleteFields(){
         updateUser = new UpdateUser.Builder() 
-        					.updateUserName(IRRELEVANT)//TODO username nur solange bug im server existiert
         					.deleteDisplayName()
         					.deleteNickName()
         					.deleteLocal()
@@ -493,9 +488,8 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     private void createUpdateUserWithMultiDeleteFields(){
 
     	updateUser = new UpdateUser.Builder() 
-    						.updateUserName(IRRELEVANT)//TODO username nur solange bug im server existiert
         					.deleteEmail("hsimpson@atom-example.com")
-        					.deleteEntitlement("right2")//TODO at the second run it will fail
+        					.deleteEntitlement("right2")
         					.deleteGroup("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578")
         					.deleteIms("ims01")
         					.deletePhoneNumber("0245817964")
@@ -508,7 +502,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     private void createUpdateUserWithWrongEmail(){
 
     	updateUser = new UpdateUser.Builder() 
-    						.updateUserName(IRRELEVANT)//TODO username nur solange bug im server existiert
         					.deleteEmail("test@test.com")
         					.build();
     }
@@ -530,11 +523,10 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     	MultiValuedAttribute groupMembership = new MultiValuedAttribute.Builder().setValue("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578").build();
     	
     	updateUser = new UpdateUser.Builder()
-    						.updateUserName(IRRELEVANT)//TODO username nur solange bug im server existiert
         					.addOrUpdateEmail(email)
         					.addOrUpdatesPhoneNumber(phonenumber)
         					.addAddress(newSimpleAddress)
-        					.addOrUpdatesEntitlement(entitlement)//TODO at the second run it will fail
+        					.addOrUpdatesEntitlement(entitlement)
         					.addOrUpdateGroupMembership(groupMembership) //TODO Gruppen werden nicht gespeichert 
         					.addOrUpdatesIms(ims)
         					.addOrUpdatesPhoto(photo)
@@ -548,10 +540,9 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     private void createUpdateUserWithMultiAllDeleteFields(){
 
     	updateUser = new UpdateUser.Builder()
-    						.updateUserName(IRRELEVANT)//TODO username nur solange bug im server existiert
         					.deleteEmails()
         					.deleteAddresses()
-        					.deleteEntitlements()//TODO at the second run it will fail
+        					.deleteEntitlements()
         					.deleteGroups() //TODO Gruppen werden nicht gespeichert und können somit auch nicht gelöscht werden
         					.deleteIms()
         					.deletePhoneNumbers()
@@ -590,15 +581,19 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     }
     
 	public Address getAddress(List<Address> addresses, String formated){
+		Address returnAddress = null;
 		if(addresses != null){
 			for (Address actAddress : addresses) {
 				if(actAddress.getFormatted().equals(formated)){
-					return actAddress;
+					returnAddress = actAddress;
+					break;
 				}
 			}
 		}
-		fail("The address with the formated part of " + formated + " could not be found");
-		return null; //Can't be reached
+		if(returnAddress == null){
+			fail("The address with the formated part of " + formated + " could not be found");	
+		}
+		return returnAddress;
 	}
 
 }

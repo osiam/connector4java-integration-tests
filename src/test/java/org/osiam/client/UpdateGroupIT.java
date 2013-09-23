@@ -163,21 +163,18 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
 	
     private void createUpdateGroupWithDeleteFields(){
         updateGroup = new UpdateGroup.Builder()
-        					.updateDisplayName(IRRELEVANT)//TODO needs to be set bug in server
         					.deleteExternalId()
         					.build();
     }
     
     private void createUpdateGroupWithDeletedMembers(){
         updateGroup = new UpdateGroup.Builder()
-        					.updateDisplayName(IRRELEVANT)//TODO needs to be set bug in server
         					.deleteMembers()
         					.build();
     }
     
     private void createUpdateGroupWithAddingMembers(){
         updateGroup = new UpdateGroup.Builder()
-        					.updateDisplayName(IRRELEVANT)//TODO needs to be set bug in server
         					.addMember(ID_USER_HSIMPSON)
         					.addMember(ID_GROUP_02)
         					.build();
@@ -185,14 +182,12 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
     
     private void createUpdateGroupWithAddingInvalidMembers(){
         updateGroup = new UpdateGroup.Builder()
-        					.updateDisplayName(IRRELEVANT)//TODO needs to be set bug in server
         					.addMember(UUID.randomUUID().toString())
         					.build();
     }
     
     private void createUpdateGroupWithDeleteOneMembers(){
         updateGroup = new UpdateGroup.Builder()
-        					.updateDisplayName(IRRELEVANT)//TODO needs to be set bug in server
         					.deleteMember(ID_USER_CMILLER)
         					.deleteMember(ID_GROUP_01)
         					.build();
@@ -200,7 +195,6 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
     
     private void createUpdateGroupWithDeleteAllMembersAndAddingOneMember(){
         updateGroup = new UpdateGroup.Builder()
-        					.updateDisplayName(IRRELEVANT)//TODO needs to be set bug in server
         					.deleteMembers()
         					.addMember(ID_USER_HSIMPSON)
         					.build();
