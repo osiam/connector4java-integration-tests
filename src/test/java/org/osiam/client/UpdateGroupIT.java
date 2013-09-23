@@ -201,7 +201,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
     }
 	
     public void getOriginalGroup(){
-        Group.Builder userBuilder = new Group.Builder();
+        Group.Builder groupBuilder = new Group.Builder("irgendwas");
         
         MultiValuedAttribute member01 = new MultiValuedAttribute.Builder().setValue(ID_USER_BTHOMSON).setType("hallo").build();
         MultiValuedAttribute member02 = new MultiValuedAttribute.Builder().setValue(ID_USER_CMILLER).build();
@@ -211,12 +211,11 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
         members.add(member02);
         members.add(member03); 
 
-        		userBuilder
+        		groupBuilder
         			.setMembers(members)
-        			.setDisplayName("irgendwas")
         			.setExternalId("irgendwas")
         			;
-        Group newGroup = userBuilder.build(); 
+        Group newGroup = groupBuilder.build(); 
         
         originalGroup = oConnector.createGroup(newGroup, accessToken);
         idExistingGroup = originalGroup.getId();
