@@ -5,14 +5,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -247,7 +244,6 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
     private void updateGroup(){
        returnGroup = oConnector.updateGroup(idExistingGroup, updateGroup, accessToken);
     }
-
     
 	public Address getAddress(List<Address> addresses, String formated){
 		if(addresses != null){
@@ -261,15 +257,4 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
 		return null; //Can't be reached
 	}
 
-	private String getUpdateGroup(){
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure( SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false );
-        String userAsString = null;
-        try {
-            userAsString = mapper.writeValueAsString(updateGroup.getScimConformUpdateGroup());
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        return userAsString;
-	}
 }

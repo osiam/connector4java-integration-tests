@@ -283,18 +283,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
 	}
-	
-	private String getUpdateUser(){
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure( SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false );
-        String userAsString = null;
-        try {
-            userAsString = mapper.writeValueAsString(updateUser.getScimConformUpdateUser());
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        return userAsString;
-	}
 
 	public boolean isValuePartOfMultivalueList(List<MultiValuedAttribute> list, String value){
 		if(list != null){
@@ -575,9 +563,9 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     }
 
     private void makeNewConnectionWithNewPassword() {
-    	OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(endpointAddress).
-                setClientId(clientId).
-                setClientSecret(clientSecret).
+    	OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(ENDPOINT_ADDRESS).
+                setClientId(CLIENT_ID).
+                setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
                 setUserName("UserName").
                 setPassword("Password").
@@ -587,9 +575,9 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     }
     
     private void makeNewConnection() {
-    	OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(endpointAddress).
-                setClientId(clientId).
-                setClientSecret(clientSecret).
+    	OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(ENDPOINT_ADDRESS).
+                setClientId(CLIENT_ID).
+                setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
                 setUserName("marissa").
                 setPassword("koala").

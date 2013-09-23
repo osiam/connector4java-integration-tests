@@ -62,5 +62,4 @@ public class LoginClientCredentialsIT {
         oConnector.getMe(accessToken);
     }
 	
-
 }
