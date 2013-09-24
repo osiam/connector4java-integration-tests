@@ -13,23 +13,22 @@ import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 
 public abstract class AbstractIntegrationTestBase {
-    static final protected String VALID_USER_ID = "834b410a-943b-4c80-817a-4465aed037bc";
-    static final protected String INVALID_ID = "ffffffff-ffff-ffff-ffff-fffffffffff";
-    static final protected String INVALID_STRING = "invalid";
-    static final protected String DELETE_USER_ID = "618b398c-0110-43f2-95df-d1bc4e7d2b4a";
-    static final protected String VALID_GROUP_ID = "69e1a5dc-89be-4343-976c-b5541af249f4";
-    protected String endpointAddress = "http://localhost:8180/osiam-server";
-    protected String clientId = "example-client";
-    protected String clientSecret = "secret";
+	protected static final String VALID_USER_ID = "834b410a-943b-4c80-817a-4465aed037bc";
+    protected static final String INVALID_ID = "ffffffff-ffff-ffff-ffff-fffffffffff";
+    protected static final String INVALID_STRING = "invalid";
+    protected static final String DELETE_USER_ID = "618b398c-0110-43f2-95df-d1bc4e7d2b4a";
+    protected static final String VALID_GROUP_ID = "69e1a5dc-89be-4343-976c-b5541af249f4";
+    protected static final String ENDPOINT_ADDRESS = "http://localhost:8180/osiam-server";
+    protected static final String CLIENT_ID = "example-client";
+    protected static final String CLIENT_SECRET = "secret";
     protected OsiamConnector oConnector;
     protected AccessToken accessToken;
 
     @Before
     public void abstractSetUp() throws Exception {
-
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(endpointAddress).
-                setClientId(clientId).
-                setClientSecret(clientSecret).
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(ENDPOINT_ADDRESS).
+                setClientId(CLIENT_ID).
+                setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
                 setUserName("marissa").
                 setPassword("koala").
@@ -39,7 +38,7 @@ public abstract class AbstractIntegrationTestBase {
     }
     
     protected void givenAnAccessTokenForOneSecond() throws Exception {
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(endpointAddress).
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(ENDPOINT_ADDRESS).
                 setClientId("example-client-2").
                 setClientSecret("secret1").
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
@@ -58,18 +57,14 @@ public abstract class AbstractIntegrationTestBase {
         tokenField.setAccessible(false);
     }
 
-    protected int expectedNumberOfMembers(int expectedMembers) {
-
-        return expectedMembers;
-    }
-
     protected String encodeExpected(String string) {
-        try {
-            return URLEncoder.encode(string, "UTF-8");
+        String encoded = null;
+    	try {
+            encoded = URLEncoder.encode(string, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             fail("Unable to encode queryString");
         }
-        return ""; //can't reach
+        return encoded;
     }
 
 }

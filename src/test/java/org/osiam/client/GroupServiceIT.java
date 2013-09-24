@@ -35,7 +35,6 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
     private String idStandardGroup;
     private Date created;
         	
-    
     @Before
     public void setUp() throws Exception {
         created = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(EXPECTED_CREATED_DATE);
@@ -57,7 +56,7 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
             assertEquals(VALID_USER_ID, userId);
             memberCount++;
         }
-        assertEquals(expectedNumberOfMembers(1), memberCount);
+        assertEquals(1, memberCount);
     }
 
     @Test(expected = NoResultException.class)
@@ -74,7 +73,7 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
         fail();
     }
     
-   private void given_a_test_group_ID() {
+    private void given_a_test_group_ID() {
         idStandardGroup = VALID_GROUP_ID;
     }
     

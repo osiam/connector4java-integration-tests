@@ -33,15 +33,16 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @DatabaseSetup("/database_seed.xml")
 public class EditGroupServiceIT extends AbstractIntegrationTestBase{
 
-    private String validId = null;
+    
     private static String ID_EXISTING_GROUP = "69e1a5dc-89be-4343-976c-b5541af249f4";
     private static String NEW_ID = UUID.randomUUID().toString();
     private static String NAME_EXISTING_GROUP = "test_group01";
+    private static final String IRRELEVANT = "irrelevant";
+    private String validId = null;
     private Group newGroup;
     private Group returnGroup;
     private Group dbGroup;
-    private static final String IRRELEVANT = "irrelevant";
-    private Query QUERY;
+    private Query query;
 
     @Test  (expected = ConflictException.class)
     public void create_group_with_no_username_raises_exception(){
@@ -150,9 +151,11 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
     private void given_a_test_group_ID() {
     	validId = VALID_GROUP_ID;
     }
+    
     private void whenGroupIsDeleted() {
         oConnector.deleteGroup(validId, accessToken);
     }
+    
     private void thenGroupIsRemoveFromServer() {
     	try {
             oConnector.getGroup(validId, accessToken);
@@ -177,19 +180,19 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
     }
 
     private void initializeGroupWithEmptyDisplayName(){
-        newGroup = new Group.Builder().setDisplayName("").build();
+        newGroup = new Group.Builder("").build();
     }
 
     private void initializeSimpleGroup(){
-        newGroup = new Group.Builder().setDisplayName(IRRELEVANT).build();
+        newGroup = new Group.Builder(IRRELEVANT).build();
     }
 
     private void initializeSimpleGroupWithID(String id){
-        newGroup = new Group.Builder().setDisplayName(IRRELEVANT).setId(id).build();
+        newGroup = new Group.Builder(IRRELEVANT).setId(id).build();
     }
 
     private void initializeGroupWithExistingDisplayName(){
-        newGroup = new Group.Builder().setDisplayName(NAME_EXISTING_GROUP).build();
+        newGroup = new Group.Builder(NAME_EXISTING_GROUP).build();
     }
 
     private void returnGroupHasValidId(){
@@ -201,7 +204,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
     }
 
     private void loadSingleGroupByQuery(){
-        QueryResult<Group> result = oConnector.searchGroups(QUERY, accessToken);
+        QueryResult<Group> result = oConnector.searchGroups(query, accessToken);
         if(result.getResources().size() == 0){
             dbGroup = null;
         }else if(result.getResources().size() == 1){
@@ -224,6 +227,6 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
     }
 
     private void initialQueryToSearchGroup(){
-        QUERY = new Query.Builder(Group.class).setFilter(new Query.Filter(Group.class, Group_.displayName.equalTo(IRRELEVANT))).build();
+        query = new Query.Builder(Group.class).setFilter(new Query.Filter(Group.class, Group_.displayName.equalTo(IRRELEVANT))).build();
     }
 }

@@ -38,7 +38,6 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     @Test
     public void name_is_deserialized_correctly_for_user_bjensen() throws Exception {
         givenAnAccessTokenForBJensen();
-        
         whenUserIsDeserialized();
 
         Name name = deserializedUser.getName();
@@ -54,7 +53,6 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     @Test
     public void emails_are_deserialized_correctly_for_user_bjensen() throws Exception {
         givenAnAccessTokenForBJensen();
-
         whenUserIsDeserialized();
 
         List<MultiValuedAttribute> emails = deserializedUser.getEmails();
@@ -68,7 +66,6 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     @Test
     public void name_is_deserialized_correctly_for_user_hsimpson() throws Exception {
         givenAnAccessTokenForHSimpson();
-        
         whenUserIsDeserialized();
 
         Name name = deserializedUser.getName();
@@ -84,7 +81,6 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     @Test
     public void emails_are_deserialized_correctly_for_user_hsimpson() throws Exception {
         givenAnAccessTokenForHSimpson();
-
         whenUserIsDeserialized();
 
         List<MultiValuedAttribute> emails = sortEmails(deserializedUser.getEmails());
@@ -108,7 +104,6 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     @Test(expected = UnauthorizedException.class)
     public void provide_an_invalid_access_token_raises_exception() throws Exception {
         givenAnInvalidAccessToken();
-
         whenUserIsDeserialized();
         fail();
     }
@@ -148,9 +143,9 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     }
     
     private void givenAnAccessTokenForBJensen() throws Exception {
-        OsiamConnector.Builder authBuilder = new OsiamConnector.Builder(endpointAddress).
-                setClientId(clientId).
-                setClientSecret(clientSecret).
+        OsiamConnector.Builder authBuilder = new OsiamConnector.Builder(ENDPOINT_ADDRESS).
+                setClientId(CLIENT_ID).
+                setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
                 setUserName("bjensen").
                 setPassword("koala").
@@ -160,9 +155,9 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     private void givenAnAccessTokenForHSimpson() throws Exception {
-        OsiamConnector.Builder authBuilder = new OsiamConnector.Builder(endpointAddress).
-                setClientId(clientId).
-                setClientSecret(clientSecret).
+        OsiamConnector.Builder authBuilder = new OsiamConnector.Builder(ENDPOINT_ADDRESS).
+                setClientId(CLIENT_ID).
+                setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
                 setUserName("hsimpson").
                 setPassword("koala").
@@ -170,6 +165,5 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
         oConnector = authBuilder.build();
         accessToken = oConnector.retrieveAccessToken();
     }
-    
-    
+       
 }

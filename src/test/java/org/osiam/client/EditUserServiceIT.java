@@ -39,15 +39,17 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @DatabaseSetup("/database_seed.xml")
 public class EditUserServiceIT extends AbstractIntegrationTestBase{
 
-    private String validId = null;
+    
     private static String ID_EXISTING_USER = "7d33bcbe-a54c-43d8-867e-f6146164941e";
+    private static final String IRRELEVANT = "irrelevant";
     private String newId = UUID.randomUUID().toString();
     private String USER_NAME_EXISTING_USER = "hsimpson";
     private User NEW_USER;
     private User RETURN_USER;
     private User DB_USER;
-    private static final String IRRELEVANT = "irrelevant";
-    private Query QUERY;
+    private String validId = null;
+    
+    private Query query;
 
     @Test (expected = ConflictException.class)
     public void create_user_with_no_username_raises_exception(){
@@ -196,7 +198,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     }
 
     private void loadSingleUserByQuery(){
-        QueryResult<User> result = oConnector.searchUsers(QUERY, accessToken);
+        QueryResult<User> result = oConnector.searchUsers(query, accessToken);
         if(result.getResources().size() == 0){
             DB_USER = null;
         }else if(result.getResources().size() == 1){
@@ -215,7 +217,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     }
 
     private void initialQueryToSearchUser(){
-        QUERY = new Query.Builder(User.class).setFilter(new Query.Filter(User.class, User_.userName.equalTo(IRRELEVANT))).build();
+        query = new Query.Builder(User.class).setFilter(new Query.Filter(User.class, User_.userName.equalTo(IRRELEVANT))).build();
     }
 
     private void buildCompleteUser(){

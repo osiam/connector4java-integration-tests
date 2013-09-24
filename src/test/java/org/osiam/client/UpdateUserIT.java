@@ -9,13 +9,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,6 +47,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     private static String IRRELEVANT = "Irrelevant";
 
     @Test
+    @Ignore //ignored because of several bugs in the OSIAM server
     public void delete_multivalue_attributes(){
     	try{
 	    	getOriginalUser("dma");
@@ -59,24 +57,27 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 	        assertFalse(isValuePartOfMultivalueList(returnUser.getEmails(), "hsimpson@atom-example.com"));
 	        assertTrue(isValuePartOfMultivalueList(originalUser.getPhoneNumbers(), "0245817964"));
 	        assertFalse(isValuePartOfMultivalueList(returnUser.getPhoneNumbers(), "0245817964"));
-	       // assertTrue(isValuePartOfMultivalueList(ORIGINAL_USER.getEntitlements(), "right2"));TODO at the second run it will fail
-	       // assertFalse(isValuePartOfMultivalueList(RETURN_USER.getEntitlements(), "right2"));TODO at the second run it will fail
-	        //assertTrue(isValuePartOfMultivalueList(ORIGINAL_USER.getGroups(), "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"));TODO Gruppen werden nicht gespeicher
-	        //assertFalse(isValuePartOfMultivalueList(RETURN_USER.getGroups(), "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578")); TODO Gruppen werden nicht gespeicher
 	        assertTrue(isValuePartOfMultivalueList(originalUser.getIms(), "ims01"));
 	        assertFalse(isValuePartOfMultivalueList(returnUser.getIms(), "ims01"));
 	        assertTrue(isValuePartOfMultivalueList(originalUser.getPhotos(), "photo01.jpg"));
 	        assertFalse(isValuePartOfMultivalueList(returnUser.getPhotos(), "photo01.jpg"));
 	        assertTrue(isValuePartOfMultivalueList(originalUser.getRoles(), "role01"));
 	        assertFalse(isValuePartOfMultivalueList(returnUser.getRoles(), "role01"));
-	        //assertTrue(isValuePartOfMultivalueList(ORIGINAL_USER.getX509Certificates(), "certificate01"));//TODO at the second run it will fail
-	        //assertFalse(isValuePartOfMultivalueList(RETURN_USER.getX509Certificates(), "certificate01"));//TODO at the second run it will fail
+	        assertTrue(isValuePartOfAddressList(originalUser.getAddresses(), "formated address 01"));
+	        assertFalse(isValuePartOfAddressList(returnUser.getAddresses(), "formated address 01"));//TODO other address was deleted
+	        assertTrue(isValuePartOfMultivalueList(originalUser.getEntitlements(), "right2")); // TODO at the second run it will fail
+	        assertFalse(isValuePartOfMultivalueList(returnUser.getEntitlements(), "right2"));//TODO at the second run it will fail
+	        assertTrue(isValuePartOfMultivalueList(originalUser.getGroups(), "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"));//TODO Gruppen werden nicht gespeicher
+	        assertFalse(isValuePartOfMultivalueList(returnUser.getGroups(), "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578")); //TODO Gruppen werden nicht gespeicher
+	        assertTrue(isValuePartOfMultivalueList(originalUser.getX509Certificates(), "certificate01"));//TODO at the second run it will fail
+	        assertFalse(isValuePartOfMultivalueList(returnUser.getX509Certificates(), "certificate01"));//TODO at the second run it will fail
     	}finally{
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
     }
     
     @Test
+    @Ignore //only ok because see TODO
     public void delete_all_multivalue_attributes(){
     	try{
 	    	getOriginalUser("dama");
@@ -85,7 +86,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 	        assertNotNull(originalUser.getEmails());
 	        assertNull(returnUser.getEmails());
 	        assertNull(returnUser.getAddresses());
-	        //assertNull(RETURN_USER.getEntitlements());TODO at the second run it will fail
+	        assertNull(returnUser.getEntitlements());
 	        assertNull(returnUser.getGroups());//TODO da Gruppen nicht gespeichert werden sind sie immer null
 	        assertNull(returnUser.getIms());
 	        assertNull(returnUser.getPhoneNumbers());
@@ -109,6 +110,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     }
     
     @Test
+    @Ignore //see TODO's
     public void add_multivalue_attributes(){
     	try{
 	    	getOriginalUser("ama");
@@ -116,28 +118,29 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 	    	updateUser();
 	    	assertEquals(originalUser.getPhoneNumbers().size() + 1, returnUser.getPhoneNumbers().size());
 	    	assertTrue(isValuePartOfMultivalueList(returnUser.getPhoneNumbers(), "99999999991"));
-	    	//assertEquals(ORIGINAL_USER.getEmails().size() + 1, RETURN_USER.getEmails().size());TODO funktioniert nicht. Eine mailadresse wird von server gelöscht
+	    	assertEquals(originalUser.getEmails().size() + 1, returnUser.getEmails().size());//TODO funktioniert nicht. Eine mailadresse wird von server gelöscht
 	    	assertTrue(isValuePartOfMultivalueList(returnUser.getEmails(), "mac@muster.de"));
-	    	//assertEquals(ORIGINAL_USER.getAddresses().size() + 1, RETURN_USER.getAddresses().size());TODO neue Addresse löscht zuerst die alten
+	    	assertEquals(originalUser.getAddresses().size() + 1, returnUser.getAddresses().size());//TODO neue Addresse löscht zuerst die alten
 	    	getAddress(returnUser.getAddresses(), "new Address");
-	    	//assertEquals(ORIGINAL_USER.getEntitlements().size() + 1, RETURN_USER.getEntitlements().size());TODO at the second run it will fail
-	    	//assertTrue(isValuePartOfMultivalueList(RETURN_USER.getEntitlements(), "right3"));TODO at the second run it will fail
-	    	//assertEquals(ORIGINAL_USER.getGroups().size() + 1, RETURN_USER.getGroups().size());TODO gruppen werden aktuell nicht gespeichert
-	    	//assertTrue(isValuePartOfMultivalueList(RETURN_USER.getGroups(), "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"));TODO gruppen werden aktuell nicht gespeichert
+	    	assertEquals(originalUser.getEntitlements().size() + 1, returnUser.getEntitlements().size());//TODO at the second run it will fail
+	    	assertTrue(isValuePartOfMultivalueList(returnUser.getEntitlements(), "right3"));//TODO at the second run it will fail
+	    	assertEquals(originalUser.getGroups().size() + 1, returnUser.getGroups().size());//TODO gruppen werden aktuell nicht gespeichert
+	    	assertTrue(isValuePartOfMultivalueList(returnUser.getGroups(), "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"));//TODO gruppen werden aktuell nicht gespeichert
 	    	assertEquals(originalUser.getIms().size() + 1, returnUser.getIms().size());
-	    	//assertTrue(isValuePartOfMultivalueList(RETURN_USER.getIms(), "ims03"));//TODO der type wird nicht geändert
+	    	assertTrue(isValuePartOfMultivalueList(returnUser.getIms(), "ims03"));//TODO der type wird nicht geändert
 	    	assertEquals(originalUser.getPhotos().size() + 1, returnUser.getPhotos().size());
 	    	assertTrue(isValuePartOfMultivalueList(returnUser.getPhotos(), "photo03.jpg"));
 	    	assertEquals(originalUser.getRoles().size() + 1, returnUser.getRoles().size());
 	    	assertTrue(isValuePartOfMultivalueList(returnUser.getRoles(), "role03"));
-	    	//assertEquals(ORIGINAL_USER.getX509Certificates().size() + 1, RETURN_USER.getX509Certificates().size());//TODO at the second run it will fail
-	    	//assertTrue(isValuePartOfMultivalueList(RETURN_USER.getX509Certificates(), "certificate03"));//TODO at the second run it will fail
+	    	assertEquals(originalUser.getX509Certificates().size() + 1, returnUser.getX509Certificates().size());//TODO at the second run it will fail
+	    	assertTrue(isValuePartOfMultivalueList(returnUser.getX509Certificates(), "certificate03"));//TODO at the second run it will fail
     	}finally{
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
     }
     
     @Test
+    @Ignore //see TODO's
     public void update_multivalue_attributes(){
     	try{
 	    	getOriginalUser("uma");
@@ -145,24 +148,24 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 	    	updateUser();
 	    	//phonenumber
 	    	MultiValuedAttribute multi = getSingleMultiValueAttribute(returnUser.getPhoneNumbers(), "+497845/1157");
-	    	//assertFalse(multi.isPrimary());TODO primary wird beim telefon nicht gesetzt
+	    	assertFalse(multi.isPrimary());//TODO primary wird beim telefon nicht gesetzt
 	    	multi = getSingleMultiValueAttribute(returnUser.getPhoneNumbers(), "0245817964");
-	    	//assertTrue(multi.isPrimary());TODO primary wird beim telefon nicht gesetzt
-	    	//assertEquals("other", multi.getType());TODO der type wird nicht geändert
+	    	assertTrue(multi.isPrimary());//TODO primary wird beim telefon nicht gesetzt
+	    	assertEquals("other", multi.getType());//TODO der type wird nicht geändert
 	    	//email
-	    	//MultiValuedAttribute multi = getSingleMultiValueAttribute(RETURN_USER.getEmails(), "hsimpson@atom-example.com");
-	    	//assertFalse(multi.isPrimary());//TODO die atomadresse wird gelöscht und die andere wird nicht abgedatet
-	    	//multi = getSingleMultiValueAttribute(RETURN_USER.getEmails(), "hsimpson@home-example.com");
-	    	//assertTrue(multi.isPrimary());
-	    	//assertEquals("other", multi.getType());
+	    	multi = getSingleMultiValueAttribute(returnUser.getEmails(), "hsimpson@atom-example.com");
+	    	assertFalse(multi.isPrimary());//TODO die atomadresse wird gelöscht und die andere wird nicht abgedatet
+	    	multi = getSingleMultiValueAttribute(returnUser.getEmails(), "hsimpson@home-example.com");
+	    	assertTrue(multi.isPrimary());
+	    	assertEquals("other", multi.getType());
 	    	multi = getSingleMultiValueAttribute(returnUser.getIms(), "ims01");
-	    	//assertEquals("icq", multi.getType());//TODO der type wird nicht upgedatet
+	    	assertEquals("icq", multi.getType());//TODO der type wird nicht upgedatet
 	    	multi = getSingleMultiValueAttribute(returnUser.getPhotos(), "photo01.jpg");
-	    	//assertEquals("photo", multi.getType());//TODO der type wird nicht upgedatet
-	    	//multi = getSingleMultiValueAttribute(RETURN_USER.getRoles(), "role01");//TODO der type wird nicht gespeichert und kann somit nicht geändert werden
-	    	//assertEquals("other", multi.getType());//TODO der type wird nicht gespeichert und kann somit nicht geändert werden
-	    	//multi = getSingleMultiValueAttribute(RETURN_USER.getGroups(), "69e1a5dc-89be-4343-976c-b5541af249f4"); //TODO gruppen werden nicht angelegt
-	    	//assertEquals("indirect", multi.getType());
+	    	assertEquals("photo", multi.getType());//TODO der type wird nicht upgedatet
+	    	multi = getSingleMultiValueAttribute(returnUser.getRoles(), "role01");//TODO der type wird nicht gespeichert und kann somit nicht geändert werden
+	    	assertEquals("other", multi.getType());//TODO der type wird nicht gespeichert und kann somit nicht geändert werden
+	    	multi = getSingleMultiValueAttribute(returnUser.getGroups(), "69e1a5dc-89be-4343-976c-b5541af249f4"); //TODO gruppen werden nicht angelegt
+	    	assertEquals("indirect", multi.getType());
     	}finally{
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
@@ -283,23 +286,22 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
 	}
-	
-	private String getUpdateUser(){
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure( SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false );
-        String userAsString = null;
-        try {
-            userAsString = mapper.writeValueAsString(updateUser.getScimConformUpdateUser());
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        return userAsString;
-	}
 
 	public boolean isValuePartOfMultivalueList(List<MultiValuedAttribute> list, String value){
 		if(list != null){
 			for (MultiValuedAttribute actAttribute : list) {
 				if(actAttribute.getValue().equals(value)){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean isValuePartOfAddressList(List<Address> list, String formated){
+		if(list != null){
+			for (Address actAttribute : list) {
+				if(actAttribute.getFormatted().equals(formated)){
 					return true;
 				}
 			}
@@ -334,11 +336,11 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         phoneNumbers.add(phoneNumber01);
         phoneNumbers.add(phoneNumber02);
         
-        Address simpleAddress01 = new Address.Builder().setCountry("de").setFormatted("formated address").setLocality("Berlin").setPostalCode("111111").build();
-        Address simpleAddress02 = new Address.Builder().setCountry("en").setFormatted("address formated").setLocality("New York").setPostalCode("123456").build();
+        Address simpleAddress01 = new Address.Builder().setCountry("de").setFormatted("formated address 01").setLocality("Berlin").setPostalCode("111111").build();
+        Address simpleAddress02 = new Address.Builder().setCountry("en").setFormatted("address formated 02").setLocality("New York").setPostalCode("123456").build();
         List<Address> addresses = new ArrayList<>();
         addresses.add(simpleAddress01);
-        addresses .add(simpleAddress02);   
+        addresses.add(simpleAddress02);   
         
         MultiValuedAttribute entitlement01 = new MultiValuedAttribute.Builder().setValue("right1").build();
         MultiValuedAttribute entitlement02 = new MultiValuedAttribute.Builder().setValue("right2").build();
@@ -396,9 +398,9 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         			.setPhotos(photos)
         			.setRoles(roles)
         			.setName(name)
-        			.setExternalId("irgendwas")
-        			//.setX509Certificates(certificates)
-        			//.setEntitlements(entitlements)TODO at the second run it will fail
+        			.setX509Certificates(certificates)
+        			.setEntitlements(entitlements)
+        			.setExternalId("irgendwas")        			
         			;
         User newUser = userBuilder.build(); 
         
@@ -443,14 +445,14 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     }
     
     private void createUpdateUserWithJustOtherNickname(){
-        updateUser = new UpdateUser.Builder().updateUserName(IRRELEVANT)//TODO bug in Server
+        updateUser = new UpdateUser.Builder() 
 		.updateNickName(IRRELEVANT)
 		.build();
     }
     
     private void createUpdateUserWithInvalidEmailType(){
     	MultiValuedAttribute email = new MultiValuedAttribute.Builder().setValue("some@thing.com").setType("wrong").build();
-        updateUser = new UpdateUser.Builder().updateUserName(IRRELEVANT)//TODO bug in Server
+        updateUser = new UpdateUser.Builder()
 		.addOrUpdateEmail(email)
 		.build();
     }
@@ -461,7 +463,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     }
     
     private void createUpdateUserWithMultiUpdateFields(){
-
     	MultiValuedAttribute email = new MultiValuedAttribute.Builder()
     					.setValue("hsimpson@home-example.com").setType("other").setPrimary(true).build();
     	MultiValuedAttribute phoneNumber = new MultiValuedAttribute.Builder().setValue("0245817964").setType("other")
@@ -473,7 +474,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     	new MultiValuedAttribute.Builder().setValue("test").setType("other").build();
     	
     	updateUser = new UpdateUser.Builder()
-    						.updateUserName(IRRELEVANT)//TODO username nur solange bug im server existiert
         					.addOrUpdateEmail(email)
         					.addOrUpdatesPhoneNumber(phoneNumber)
         					.addOrUpdatesPhoto(photo)
@@ -485,7 +485,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     
     private void createUpdateUserWithDeleteFields(){
         updateUser = new UpdateUser.Builder() 
-        					.updateUserName(IRRELEVANT)//TODO username nur solange bug im server existiert
         					.deleteDisplayName()
         					.deleteNickName()
         					.deleteLocal()
@@ -501,23 +500,30 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     
     private void createUpdateUserWithMultiDeleteFields(){
 
+    	Address deleteAddress = null;
+    	for (Address actAddress : originalUser.getAddresses()) {
+    		if(actAddress.getFormatted().equals("formated address 01")){
+    			deleteAddress = actAddress;
+    			break;
+    		}
+		}
+    	
     	updateUser = new UpdateUser.Builder() 
-    						.updateUserName(IRRELEVANT)//TODO username nur solange bug im server existiert
         					.deleteEmail("hsimpson@atom-example.com")
-        					//.deleteEntitlement("right2")TODO at the second run it will fail
+        					.deleteEntitlement("right2")
         					.deleteGroup("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578")
         					.deleteIms("ims01")
         					.deletePhoneNumber("0245817964")
         					.deletePhoto("photo01.jpg")
         					.deleteRole("role01")
-        					//.deleteX509Certificate("certificate01")
+        					.deleteX509Certificate("certificate01")
+        					.deleteAddress(deleteAddress)
         					.build();
     }
     
     private void createUpdateUserWithWrongEmail(){
 
     	updateUser = new UpdateUser.Builder() 
-    						.updateUserName(IRRELEVANT)//TODO username nur solange bug im server existiert
         					.deleteEmail("test@test.com")
         					.build();
     }
@@ -539,11 +545,10 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     	MultiValuedAttribute groupMembership = new MultiValuedAttribute.Builder().setValue("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578").build();
     	
     	updateUser = new UpdateUser.Builder()
-    						.updateUserName(IRRELEVANT)//TODO username nur solange bug im server existiert
         					.addOrUpdateEmail(email)
         					.addOrUpdatesPhoneNumber(phonenumber)
         					.addAddress(newSimpleAddress)
-        					//.addEntitlement(entitlement)//TODO at the second run it will fail
+        					.addOrUpdatesEntitlement(entitlement)
         					.addOrUpdateGroupMembership(groupMembership) //TODO Gruppen werden nicht gespeichert 
         					.addOrUpdatesIms(ims)
         					.addOrUpdatesPhoto(photo)
@@ -557,10 +562,9 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     private void createUpdateUserWithMultiAllDeleteFields(){
 
     	updateUser = new UpdateUser.Builder()
-    						.updateUserName(IRRELEVANT)//TODO username nur solange bug im server existiert
         					.deleteEmails()
         					.deleteAddresses()
-        					//.deleteEntitlements()TODO at the second run it will fail
+        					.deleteEntitlements()
         					.deleteGroups() //TODO Gruppen werden nicht gespeichert und können somit auch nicht gelöscht werden
         					.deleteIms()
         					.deletePhoneNumbers()
@@ -575,9 +579,9 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     }
 
     private void makeNewConnectionWithNewPassword() {
-    	OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(endpointAddress).
-                setClientId(clientId).
-                setClientSecret(clientSecret).
+    	OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(ENDPOINT_ADDRESS).
+                setClientId(CLIENT_ID).
+                setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
                 setUserName("UserName").
                 setPassword("Password").
@@ -587,9 +591,9 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     }
     
     private void makeNewConnection() {
-    	OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(endpointAddress).
-                setClientId(clientId).
-                setClientSecret(clientSecret).
+    	OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(ENDPOINT_ADDRESS).
+                setClientId(CLIENT_ID).
+                setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
                 setUserName("marissa").
                 setPassword("koala").
@@ -599,15 +603,19 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     }
     
 	public Address getAddress(List<Address> addresses, String formated){
+		Address returnAddress = null;
 		if(addresses != null){
 			for (Address actAddress : addresses) {
 				if(actAddress.getFormatted().equals(formated)){
-					return actAddress;
+					returnAddress = actAddress;
+					break;
 				}
 			}
 		}
-		fail("The address with the formated part of " + formated + " could not be found");
-		return null; //Can't be reached
+		if(returnAddress == null){
+			fail("The address with the formated part of " + formated + " could not be found");	
+		}
+		return returnAddress;
 	}
 
 }

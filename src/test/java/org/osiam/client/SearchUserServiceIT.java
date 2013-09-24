@@ -52,7 +52,6 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         queryResultContainsOnlyValidUser();
     }
 
-
     @Test
     public void search_for_user_with_multiple_fields() throws UnsupportedEncodingException {
         Query.Filter filter = new Query.Filter(User.class, User_.title.equalTo("Dr."))
@@ -104,7 +103,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         queryBuilder.setFilter(mainFilter);
 
         queryResult = oConnector.searchUsers(queryBuilder.build(), accessToken);
-        assertEquals(expectedNumberOfMembers(2), queryResult.getTotalResults());
+        assertEquals(2, queryResult.getTotalResults());
         queryResultContainsUser("marissa");
         queryResultContainsUser("hsimpson");
     }
@@ -164,7 +163,6 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
 		for(int count = 0; count < 100; count++){
     		User user = new User.Builder("user" + count).build();
     		oConnector.createUser(user, accessToken);
-
     	}	    	
     }
     
