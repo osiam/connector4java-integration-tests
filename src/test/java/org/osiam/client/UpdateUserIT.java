@@ -1,18 +1,7 @@
 package org.osiam.client;
 
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,15 +19,18 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
-public class UpdateUserIT extends AbstractIntegrationTestBase{
+public class UpdateUserIT extends AbstractIntegrationTestBase {
 
     private String idExistingUser = "7d33bcbe-a54c-43d8-867e-f6146164941e";
     private UpdateUser updateUser;
@@ -48,8 +40,8 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 
     @Test
     @Ignore //ignored because of several bugs in the OSIAM server
-    public void delete_multivalue_attributes(){
-        try{
+    public void delete_multivalue_attributes() {
+        try {
             getOriginalUser("dma");
             createUpdateUserWithMultiDeleteFields();
             updateUser();
@@ -71,7 +63,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
             assertFalse(isValuePartOfMultivalueList(returnUser.getGroups(), "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578")); //TODO Gruppen werden nicht gespeicher
             assertTrue(isValuePartOfMultivalueList(originalUser.getX509Certificates(), "certificate01"));//TODO at the second run it will fail
             assertFalse(isValuePartOfMultivalueList(returnUser.getX509Certificates(), "certificate01"));//TODO at the second run it will fail
-        }finally{
+        } finally {
             oConnector.deleteUser(idExistingUser, accessToken);
         }
     }
@@ -103,8 +95,8 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 
     @Test
     @Ignore //only ok because see TODO
-    public void delete_all_multivalue_attributes(){
-        try{
+    public void delete_all_multivalue_attributes() {
+        try {
             getOriginalUser("dama");
             createUpdateUserWithMultiAllDeleteFields();
             updateUser();
@@ -118,26 +110,26 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
             assertNull(returnUser.getPhotos());
             assertNull(returnUser.getRoles());
             assertNull(returnUser.getX509Certificates());
-        }finally{
+        } finally {
             oConnector.deleteUser(idExistingUser, accessToken);
         }
     }
 
     @Test
-    public void delete_multivalue_attributes_which_is_not_available(){
-        try{
+    public void delete_multivalue_attributes_which_is_not_available() {
+        try {
             getOriginalUser("dma");
             createUpdateUserWithWrongEmail();
             updateUser();
-        }finally{
+        } finally {
             oConnector.deleteUser(idExistingUser, accessToken);
         }
     }
 
     @Test
     @Ignore //see TODO's
-    public void add_multivalue_attributes(){
-        try{
+    public void add_multivalue_attributes() {
+        try {
             getOriginalUser("ama");
             createUpdateUserWithMultiAddFields();
             updateUser();
@@ -159,15 +151,15 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
             assertTrue(isValuePartOfMultivalueList(returnUser.getRoles(), "role03"));
             assertEquals(originalUser.getX509Certificates().size() + 1, returnUser.getX509Certificates().size());//TODO at the second run it will fail
             assertTrue(isValuePartOfMultivalueList(returnUser.getX509Certificates(), "certificate03"));//TODO at the second run it will fail
-        }finally{
+        } finally {
             oConnector.deleteUser(idExistingUser, accessToken);
         }
     }
 
     @Test
     @Ignore //see TODO's
-    public void update_multivalue_attributes(){
-        try{
+    public void update_multivalue_attributes() {
+        try {
             getOriginalUser("uma");
             createUpdateUserWithMultiUpdateFields();
             updateUser();
@@ -191,14 +183,14 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
             assertEquals("other", multi.getType());//TODO der type wird nicht gespeichert und kann somit nicht geändert werden
             multi = getSingleMultiValueAttribute(returnUser.getGroups(), "69e1a5dc-89be-4343-976c-b5541af249f4"); //TODO gruppen werden nicht angelegt
             assertEquals("indirect", multi.getType());
-        }finally{
+        } finally {
             oConnector.deleteUser(idExistingUser, accessToken);
         }
     }
 
     @Test
-    public void update_all_single_values(){
-        try{
+    public void update_all_single_values() {
+        try {
             getOriginalUser("uasv");
             createUpdateUserWithUpdateFields();
             updateUser();
@@ -215,14 +207,14 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
             assertEquals("UserType", returnUser.getUserType());
             assertEquals("FamilyName", returnUser.getName().getFamilyName());
             assertEquals("ExternalId", returnUser.getExternalId());
-        }finally{
+        } finally {
             oConnector.deleteUser(idExistingUser, accessToken);
         }
     }
 
     @Test
-    public void delete_all_single_values(){
-        try{
+    public void delete_all_single_values() {
+        try {
             getOriginalUser("desv");
             createUpdateUserWithDeleteFields();
             updateUser();
@@ -236,38 +228,38 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
             assertNull(returnUser.getUserType());
             assertNull(returnUser.getName());
             assertNull(returnUser.getExternalId());
-        }finally{
+        } finally {
             oConnector.deleteUser(idExistingUser, accessToken);
         }
     }
 
     @Test
     public void update_password() {
-        try{
+        try {
             getOriginalUser("uasv");
             createUpdateUserWithUpdateFields();
             updateUser();
             makeNewConnectionWithNewPassword();
-        }finally{
+        } finally {
             oConnector.deleteUser(idExistingUser, accessToken);
         }
     }
 
     @Test
     public void update_attributes_doesnt_change_the_password() {
-        try{
+        try {
             getOriginalUser("uadctp");
             createUpdateUserWithUpdateFieldsWithoutPassword();
             updateUser();
             makeNewConnection();
-        }finally{
+        } finally {
             oConnector.deleteUser(idExistingUser, accessToken);
         }
     }
 
     @Test
-    public void change_one_field_and_other_attributes_are_the_same(){
-        try{
+    public void change_one_field_and_other_attributes_are_the_same() {
+        try {
             getOriginalUser("cnaoaats");
             createUpdateUserWithJustOtherNickname();
             updateUser();
@@ -282,40 +274,40 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
             assertEquals(originalUser.getTitle(), returnUser.getTitle());
             assertEquals(originalUser.getUserType(), returnUser.getUserType());
             assertEquals(originalUser.getName().getFamilyName(), returnUser.getName().getFamilyName());
-        }finally{
+        } finally {
             oConnector.deleteUser(idExistingUser, accessToken);
         }
     }
 
-    @Test (expected = ConflictException.class)
-    public void invalid_email_type_in_update_User_is_thrown_probably(){
-        try{
+    @Test(expected = ConflictException.class)
+    public void invalid_email_type_in_update_User_is_thrown_probably() {
+        try {
             getOriginalUser("ietiuuitp");
             createUpdateUserWithInvalidEmailType();
             updateUser();
             fail("exception expected");
-        }finally{
+        } finally {
             oConnector.deleteUser(idExistingUser, accessToken);
         }
     }
 
-    @Test (expected = ConflictException.class)
+    @Test(expected = ConflictException.class)
     @Ignore //no exception is thrown an the moment
-    public void username_is_set_no_empty_string_is_thrown_probably(){
-        try{
+    public void username_is_set_no_empty_string_is_thrown_probably() {
+        try {
             getOriginalUser("ietiuuitp");
             createUpdateUserWithEmptyUserName();
             updateUser();
             fail("exception expected");
-        }finally{
+        } finally {
             oConnector.deleteUser(idExistingUser, accessToken);
         }
     }
 
-    public boolean isValuePartOfMultivalueList(List<MultiValuedAttribute> list, String value){
-        if(list != null){
+    public boolean isValuePartOfMultivalueList(List<MultiValuedAttribute> list, String value) {
+        if (list != null) {
             for (MultiValuedAttribute actAttribute : list) {
-                if(actAttribute.getValue().equals(value)){
+                if (actAttribute.getValue().equals(value)) {
                     return true;
                 }
             }
@@ -323,10 +315,10 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         return false;
     }
 
-    public boolean isValuePartOfAddressList(List<Address> list, String formated){
-        if(list != null){
+    public boolean isValuePartOfAddressList(List<Address> list, String formated) {
+        if (list != null) {
             for (Address actAttribute : list) {
-                if(actAttribute.getFormatted().equals(formated)){
+                if (actAttribute.getFormatted().equals(formated)) {
                     return true;
                 }
             }
@@ -334,10 +326,10 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         return false;
     }
 
-    public MultiValuedAttribute getSingleMultiValueAttribute(List<MultiValuedAttribute> multiValues, Object value){
-        if(multiValues != null){
+    public MultiValuedAttribute getSingleMultiValueAttribute(List<MultiValuedAttribute> multiValues, Object value) {
+        if (multiValues != null) {
             for (MultiValuedAttribute actMultiValuedAttribute : multiValues) {
-                if(actMultiValuedAttribute.getValue().equals(value)){
+                if (actMultiValuedAttribute.getValue().equals(value)) {
                     return actMultiValuedAttribute;
                 }
             }
@@ -346,7 +338,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         return null; //Can't be reached
     }
 
-    public void getOriginalUser(String userName){
+    public void getOriginalUser(String userName) {
         User.Builder userBuilder = new User.Builder(userName);
 
         MultiValuedAttribute email01 = new MultiValuedAttribute.Builder().setValue("hsimpson@atom-example.com").setType("work").setPrimary(true).build();
@@ -433,7 +425,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         idExistingUser = originalUser.getId();
     }
 
-    private void createUpdateUserWithUpdateFields(){
+    private void createUpdateUserWithUpdateFields() {
         Name newName = new Name.Builder().setFamilyName("FamilyName").build();
         updateUser = new UpdateUser.Builder()
                 .updateUserName("UserName")
@@ -452,7 +444,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
                 .updateActive(true).build();
     }
 
-    private void createUpdateUserWithUpdateFieldsWithoutPassword(){
+    private void createUpdateUserWithUpdateFieldsWithoutPassword() {
         Name newName = new Name.Builder().setFamilyName("newFamilyName").build();
         updateUser = new UpdateUser.Builder()
                 .updateUserName(UUID.randomUUID().toString())
@@ -469,25 +461,25 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
                 .updateActive(true).build();
     }
 
-    private void createUpdateUserWithJustOtherNickname(){
+    private void createUpdateUserWithJustOtherNickname() {
         updateUser = new UpdateUser.Builder()
                 .updateNickName(IRRELEVANT)
                 .build();
     }
 
-    private void createUpdateUserWithInvalidEmailType(){
+    private void createUpdateUserWithInvalidEmailType() {
         MultiValuedAttribute email = new MultiValuedAttribute.Builder().setValue("some@thing.com").setType("wrong").build();
         updateUser = new UpdateUser.Builder()
                 .addOrUpdateEmail(email)
                 .build();
     }
 
-    private void createUpdateUserWithEmptyUserName(){
+    private void createUpdateUserWithEmptyUserName() {
         updateUser = new UpdateUser.Builder().updateUserName("")
                 .build();
     }
 
-    private void createUpdateUserWithMultiUpdateFields(){
+    private void createUpdateUserWithMultiUpdateFields() {
         MultiValuedAttribute email = new MultiValuedAttribute.Builder()
                 .setValue("hsimpson@home-example.com").setType("other").setPrimary(true).build();
         MultiValuedAttribute phoneNumber = new MultiValuedAttribute.Builder().setValue("0245817964").setType("other")
@@ -513,7 +505,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
                 .build();
     }
 
-    private void createUpdateUserWithDeleteFields(){
+    private void createUpdateUserWithDeleteFields() {
         updateUser = new UpdateUser.Builder()
                 .deleteDisplayName()
                 .deleteNickName()
@@ -528,11 +520,11 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
                 .build();
     }
 
-    private void createUpdateUserWithMultiDeleteFields(){
+    private void createUpdateUserWithMultiDeleteFields() {
 
         Address deleteAddress = null;
         for (Address actAddress : originalUser.getAddresses()) {
-            if(actAddress.getFormatted().equals("formated address 01")){
+            if (actAddress.getFormatted().equals("formated address 01")) {
                 deleteAddress = actAddress;
                 break;
             }
@@ -551,14 +543,14 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
                 .build();
     }
 
-    private void createUpdateUserWithWrongEmail(){
+    private void createUpdateUserWithWrongEmail() {
 
         updateUser = new UpdateUser.Builder()
                 .deleteEmail("test@test.com")
                 .build();
     }
 
-    private void createUpdateUserWithMultiAddFields(){
+    private void createUpdateUserWithMultiAddFields() {
 
         MultiValuedAttribute email = new MultiValuedAttribute.Builder()
                 .setValue("mac@muster.de").setType("home").build();
@@ -588,8 +580,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     }
 
 
-
-    private void createUpdateUserWithMultiAllDeleteFields(){
+    private void createUpdateUserWithMultiAllDeleteFields() {
 
         updateUser = new UpdateUser.Builder()
                 .deleteEmails()
@@ -604,7 +595,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
                 .build();
     }
 
-    private void updateUser(){
+    private void updateUser() {
         returnUser = oConnector.updateUser(idExistingUser, updateUser, accessToken);
     }
 
@@ -632,17 +623,17 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         oConnector.retrieveAccessToken();
     }
 
-    public Address getAddress(List<Address> addresses, String formated){
+    public Address getAddress(List<Address> addresses, String formated) {
         Address returnAddress = null;
-        if(addresses != null){
+        if (addresses != null) {
             for (Address actAddress : addresses) {
-                if(actAddress.getFormatted().equals(formated)){
+                if (actAddress.getFormatted().equals(formated)) {
                     returnAddress = actAddress;
                     break;
                 }
             }
         }
-        if(returnAddress == null){
+        if (returnAddress == null) {
             fail("The address with the formated part of " + formated + " could not be found");
         }
         return returnAddress;
