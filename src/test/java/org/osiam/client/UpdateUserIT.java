@@ -523,6 +523,8 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         MultiValuedAttribute photo = new MultiValuedAttribute.Builder().setValue("photo01.jpg").setType("photo").build();
         MultiValuedAttribute role = new MultiValuedAttribute.Builder().setValue("role01").setType("other").build();
         MultiValuedAttribute group = new MultiValuedAttribute.Builder().setValue("69e1a5dc-89be-4343-976c-b5541af249f4").setType("indirect").build();
+        MultiValuedAttribute entitlement = new MultiValuedAttribute.Builder().setValue("right1").setType("some").build();
+        MultiValuedAttribute certificate = new MultiValuedAttribute.Builder().setValue("certificate01").setType("some").build();
 
         new MultiValuedAttribute.Builder().setValue("test").setType("other").build();
 
@@ -533,6 +535,8 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
                 .addOrUpdatesIms(ims)
                 .addOrUpdateRole(role)
                 .addOrUpdateGroupMembership(group)
+                .addOrUpdatesEntitlement(entitlement)
+                .addOrUpdateX509Certificate(certificate)
                 .build();
     }
 
