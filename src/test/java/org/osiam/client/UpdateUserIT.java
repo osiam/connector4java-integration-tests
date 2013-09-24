@@ -77,6 +77,31 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     }
 
     @Test
+    public void REGT_015_delete_multivalue_attributes_twice() {
+        try {
+            getOriginalUser("dma");
+            createUpdateUserWithMultiDeleteFields();
+
+            try {
+                // try to delete twice
+                updateUser();
+                updateUser();
+            } catch (Exception ex) {
+                // should run without exception
+                fail("Expected no exception, but got: " + ex.getMessage());
+            }
+
+            // entitlements and certificates available in the update user should be deleted
+            assertTrue(isValuePartOfMultivalueList(originalUser.getEntitlements(), "right2"));
+            assertFalse(isValuePartOfMultivalueList(returnUser.getEntitlements(), "right2"));
+            assertTrue(isValuePartOfMultivalueList(originalUser.getX509Certificates(), "certificate01"));
+            assertFalse(isValuePartOfMultivalueList(returnUser.getX509Certificates(), "certificate01"));
+        } finally {
+            oConnector.deleteUser(idExistingUser, accessToken);
+        }
+    }
+
+    @Test
     @Ignore //only ok because see TODO
     public void delete_all_multivalue_attributes(){
         try{
@@ -471,6 +496,9 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         MultiValuedAttribute photo = new MultiValuedAttribute.Builder().setValue("photo01.jpg").setType("photo").build();
         MultiValuedAttribute role = new MultiValuedAttribute.Builder().setValue("role01").setType("other").build();
         MultiValuedAttribute group = new MultiValuedAttribute.Builder().setValue("69e1a5dc-89be-4343-976c-b5541af249f4").setType("indirect").build();
+        MultiValuedAttribute entitlement = new MultiValuedAttribute.Builder().setValue("right1").setType("some").build();
+        MultiValuedAttribute certificate = new MultiValuedAttribute.Builder().setValue("certificate01").setType("some").build();
+
         new MultiValuedAttribute.Builder().setValue("test").setType("other").build();
 
         updateUser = new UpdateUser.Builder()
@@ -480,6 +508,8 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
                 .addOrUpdatesIms(ims)
                 .addOrUpdateRole(role)
                 .addOrUpdateGroupMembership(group)
+                .addOrUpdatesEntitlement(entitlement)
+                .addOrUpdateX509Certificate(certificate)
                 .build();
     }
 
