@@ -188,6 +188,41 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         }
     }
 
+
+    @Test
+    @Ignore("Ignored due to update user problem.")
+    public void REGT_015_update_multivalue_attributes_twice() throws InterruptedException {
+        try {
+            getOriginalUser("uma");
+
+            Thread.sleep(1000); // wait to grant different modification datetime
+
+            createUpdateUserWithMultiUpdateFields();
+
+            try {
+                // try to update twice
+                updateUser();
+                updateUser();
+            } catch (Exception ex) {
+                // should run without exception
+                fail("Expected no exception, but got: " + ex.getMessage());
+            }
+
+            // entitlements and certificates available in the update user should be updated
+            MultiValuedAttribute entitlementBefore = getSingleMultiValueAttribute(originalUser.getEntitlements(), "right1");
+            MultiValuedAttribute entitlementAfter = getSingleMultiValueAttribute(returnUser.getEntitlements(), "right1");
+            assertEquals(entitlementBefore.getValue(), entitlementAfter.getValue());
+
+            MultiValuedAttribute certificateBefore = getSingleMultiValueAttribute(originalUser.getX509Certificates(), "certificate01");
+            MultiValuedAttribute certificateAfter = getSingleMultiValueAttribute(returnUser.getX509Certificates(), "certificate01");
+            assertEquals(certificateBefore.getValue(), certificateAfter.getValue());
+
+            assertNotEquals(originalUser.getMeta().getLastModified(), returnUser.getMeta().getLastModified());
+        } finally {
+            oConnector.deleteUser(idExistingUser, accessToken);
+        }
+    }
+
     @Test
     public void update_all_single_values() {
         try {
