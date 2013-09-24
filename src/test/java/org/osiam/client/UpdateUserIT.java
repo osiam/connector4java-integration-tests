@@ -57,16 +57,18 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 	        assertFalse(isValuePartOfMultivalueList(returnUser.getEmails(), "hsimpson@atom-example.com"));
 	        assertTrue(isValuePartOfMultivalueList(originalUser.getPhoneNumbers(), "0245817964"));
 	        assertFalse(isValuePartOfMultivalueList(returnUser.getPhoneNumbers(), "0245817964"));
-	        assertTrue(isValuePartOfMultivalueList(originalUser.getEntitlements(), "right2")); // TODO at the second run it will fail
-	        assertFalse(isValuePartOfMultivalueList(returnUser.getEntitlements(), "right2"));//TODO at the second run it will fail
-	        assertTrue(isValuePartOfMultivalueList(originalUser.getGroups(), "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"));//TODO Gruppen werden nicht gespeicher
-	        assertFalse(isValuePartOfMultivalueList(returnUser.getGroups(), "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578")); //TODO Gruppen werden nicht gespeicher
 	        assertTrue(isValuePartOfMultivalueList(originalUser.getIms(), "ims01"));
 	        assertFalse(isValuePartOfMultivalueList(returnUser.getIms(), "ims01"));
 	        assertTrue(isValuePartOfMultivalueList(originalUser.getPhotos(), "photo01.jpg"));
 	        assertFalse(isValuePartOfMultivalueList(returnUser.getPhotos(), "photo01.jpg"));
 	        assertTrue(isValuePartOfMultivalueList(originalUser.getRoles(), "role01"));
 	        assertFalse(isValuePartOfMultivalueList(returnUser.getRoles(), "role01"));
+	        assertTrue(isValuePartOfAddressList(originalUser.getAddresses(), "formated address 01"));
+	        assertFalse(isValuePartOfAddressList(returnUser.getAddresses(), "formated address 01"));//TODO other address was deleted
+	        assertTrue(isValuePartOfMultivalueList(originalUser.getEntitlements(), "right2")); // TODO at the second run it will fail
+	        assertFalse(isValuePartOfMultivalueList(returnUser.getEntitlements(), "right2"));//TODO at the second run it will fail
+	        assertTrue(isValuePartOfMultivalueList(originalUser.getGroups(), "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"));//TODO Gruppen werden nicht gespeicher
+	        assertFalse(isValuePartOfMultivalueList(returnUser.getGroups(), "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578")); //TODO Gruppen werden nicht gespeicher
 	        assertTrue(isValuePartOfMultivalueList(originalUser.getX509Certificates(), "certificate01"));//TODO at the second run it will fail
 	        assertFalse(isValuePartOfMultivalueList(returnUser.getX509Certificates(), "certificate01"));//TODO at the second run it will fail
     	}finally{
@@ -296,6 +298,17 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 		return false;
 	}
 	
+	public boolean isValuePartOfAddressList(List<Address> list, String formated){
+		if(list != null){
+			for (Address actAttribute : list) {
+				if(actAttribute.getFormatted().equals(formated)){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	public MultiValuedAttribute getSingleMultiValueAttribute(List<MultiValuedAttribute> multiValues, Object value){
 		if(multiValues != null){
 			for (MultiValuedAttribute actMultiValuedAttribute : multiValues) {
@@ -323,11 +336,11 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         phoneNumbers.add(phoneNumber01);
         phoneNumbers.add(phoneNumber02);
         
-        Address simpleAddress01 = new Address.Builder().setCountry("de").setFormatted("formated address").setLocality("Berlin").setPostalCode("111111").build();
-        Address simpleAddress02 = new Address.Builder().setCountry("en").setFormatted("address formated").setLocality("New York").setPostalCode("123456").build();
+        Address simpleAddress01 = new Address.Builder().setCountry("de").setFormatted("formated address 01").setLocality("Berlin").setPostalCode("111111").build();
+        Address simpleAddress02 = new Address.Builder().setCountry("en").setFormatted("address formated 02").setLocality("New York").setPostalCode("123456").build();
         List<Address> addresses = new ArrayList<>();
         addresses.add(simpleAddress01);
-        addresses .add(simpleAddress02);   
+        addresses.add(simpleAddress02);   
         
         MultiValuedAttribute entitlement01 = new MultiValuedAttribute.Builder().setValue("right1").build();
         MultiValuedAttribute entitlement02 = new MultiValuedAttribute.Builder().setValue("right2").build();
@@ -487,6 +500,14 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     
     private void createUpdateUserWithMultiDeleteFields(){
 
+    	Address deleteAddress = null;
+    	for (Address actAddress : originalUser.getAddresses()) {
+    		if(actAddress.getFormatted().equals("formated address 01")){
+    			deleteAddress = actAddress;
+    			break;
+    		}
+		}
+    	
     	updateUser = new UpdateUser.Builder() 
         					.deleteEmail("hsimpson@atom-example.com")
         					.deleteEntitlement("right2")
@@ -496,6 +517,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         					.deletePhoto("photo01.jpg")
         					.deleteRole("role01")
         					.deleteX509Certificate("certificate01")
+        					.deleteAddress(deleteAddress)
         					.build();
     }
     
