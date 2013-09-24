@@ -82,7 +82,7 @@
     <scim_name id="48" familyname="Jensen" formatted="Ms. Barbara J Jensen III" givenname="Barbara"/>
     <scim_name id="51" familyname="Erick" formatted="Erick Willey" givenname="Willey"/>
 
-    <scim_roles value="USER"/>
+    <scim_roles multiValueId="90" value="USER"/>
 
     <scim_user password="42db3b474c2a54f6b1c3c352e4436274de6b0239432c9a6c2d51c62e54b28ad1e3ecbb306f7748890934e3dae4292e339189c8bb7af55f68de9855ca455f19e4"
                displayname="BarbaraJ." locale="de" nickname="Barbara" preferredlanguage="de" profileurl="http://babaraJ.com" timezone="UTC" title="Dr."
@@ -131,20 +131,17 @@
 
     <scim_group_scim_id  scim_group_internal_id="52" members_internal_id="46" />
 
-    <scim_email value="adavies@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="9"/>
-    <scim_email value="bjensen@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="46"/>
-    <scim_email value="bthomson@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="5"/>
-    <scim_email value="cmiller@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="13"/>
-    <scim_email value="dcooper@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="21"/>
-    <scim_email value="epalmer@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="25"/>
-    <scim_email value="ewilley@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="49"/>
-    <scim_email value="gbarker@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="29"/>
-    <scim_email value="hsimpson@atom-example.com" postgresql_does_not_like_primary="false" type="work"
-                user_internal_id="33"/>
-    <scim_email value="hsimpson@phome-example.com" postgresql_does_not_like_primary="false" type="home"
-                user_internal_id="33"/>
-    <scim_email value="kmorris@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="42"/>
-
+    <scim_email multiValueId="91" value="adavies@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="9"/>
+    <scim_email multiValueId="92" value="bjensen@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="46"/>
+    <scim_email multiValueId="93" value="bthomson@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="5"/>
+    <scim_email multiValueId="94" value="cmiller@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="13"/>
+    <scim_email multiValueId="95" value="dcooper@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="21"/>
+    <scim_email multiValueId="96" value="epalmer@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="25"/>
+    <scim_email multiValueId="97" value="ewilley@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="49"/>
+    <scim_email multiValueId="98" value="gbarker@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="29"/>
+    <scim_email multiValueId="99" value="hsimpson@atom-example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="33"/>
+    <scim_email multiValueId="100" value="hsimpson@phome-example.com" postgresql_does_not_like_primary="false" type="home" user_internal_id="33"/>
+    <scim_email multiValueId="101" value="kmorris@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="42"/>
 
     <scim_address id="8" country="Germany" locality="Germany" postalcode="66222"
                   postgresql_does_not_like_primary="false" region="Germany" streetaddress="example street 62"
@@ -172,22 +169,21 @@
                   postgresql_does_not_like_primary="false" region="Germany" streetaddress="example street 60"
                   type="work"/>
 
+    <scim_photo multiValueId="102" value="http://example.com/barbara.jpg" type="photo" user_internal_id="46"/>
 
-    <scim_photo value="http://example.com/barbara.jpg" type="photo" user_internal_id="46"/>
+    <scim_im multiValueId="103" value="barbara" type="xmpp" user_internal_id="46"/>
 
-    <scim_im value="barbara" type="xmpp" user_internal_id="46"/>
-
-    <scim_phonenumber value="555-555-8377" type="work" user_internal_id="46"/>
-    <scim_phonenumber value="555-555-8399" type="work" user_internal_id="49"/>
-    <scim_phonenumber value="600-555-8377" type="work" user_internal_id="42"/>
-    <scim_phonenumber value="622-555-8377" type="work" user_internal_id="5"/>
-    <scim_phonenumber value="633-555-8377" type="work" user_internal_id="9"/>
-    <scim_phonenumber value="644-555-8377" type="work" user_internal_id="13"/>
-    <scim_phonenumber value="655-111-8377" type="work" user_internal_id="33"/>
-    <scim_phonenumber value="655-222-8377" type="home" user_internal_id="33"/>
-    <scim_phonenumber value="666-555-8377" type="work" user_internal_id="21"/>
-    <scim_phonenumber value="677-555-8377" type="work" user_internal_id="25"/>
-    <scim_phonenumber value="688-555-8377" type="work" user_internal_id="29"/>
+    <scim_phonenumber multiValueId="104" value="555-555-8377" type="work" user_internal_id="46"/>
+    <scim_phonenumber multiValueId="105" value="555-555-8399" type="work" user_internal_id="49"/>
+    <scim_phonenumber multiValueId="106" value="600-555-8377" type="work" user_internal_id="42"/>
+    <scim_phonenumber multiValueId="107" value="622-555-8377" type="work" user_internal_id="5"/>
+    <scim_phonenumber multiValueId="108" value="633-555-8377" type="work" user_internal_id="9"/>
+    <scim_phonenumber multiValueId="109" value="644-555-8377" type="work" user_internal_id="13"/>
+    <scim_phonenumber multiValueId="110" value="655-111-8377" type="work" user_internal_id="33"/>
+    <scim_phonenumber multiValueId="111" value="655-222-8377" type="home" user_internal_id="33"/>
+    <scim_phonenumber multiValueId="112" value="666-555-8377" type="work" user_internal_id="21"/>
+    <scim_phonenumber multiValueId="113" value="677-555-8377" type="work" user_internal_id="25"/>
+    <scim_phonenumber multiValueId="114" value="688-555-8377" type="work" user_internal_id="29"/>
 
     <scim_user_scim_address scim_user_internal_id="5" addresses_id="8"/>
     <scim_user_scim_address scim_user_internal_id="9" addresses_id="12"/>
@@ -198,5 +194,6 @@
     <scim_user_scim_address scim_user_internal_id="33" addresses_id="36"/>
     <scim_user_scim_address scim_user_internal_id="33" addresses_id="37"/>
     <scim_user_scim_address scim_user_internal_id="42" addresses_id="45"/>
-    <scim_user_scim_roles scim_user_internal_id="1" roles_value="USER"/>
+
+    <scim_user_scim_roles scim_user_internal_id="1" roles_multiValueId="90"/>
 </dataset>
