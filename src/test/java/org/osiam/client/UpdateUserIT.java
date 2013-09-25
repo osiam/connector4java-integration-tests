@@ -34,12 +34,30 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
     private String idExistingUser = "7d33bcbe-a54c-43d8-867e-f6146164941e";
     private UpdateUser updateUser;
-    private User returnUser;
     private User originalUser;
+    private User returnUser;
+    private User databaseUser;
     private static String IRRELEVANT = "Irrelevant";
 
     @Test
-    @Ignore //ignored because of several bugs in the OSIAM server
+    @Ignore("Return user and database user not consistent yet. Check this always in updateUser() once consistency is reached and delete this test. Also should implement equals on User.")
+    public void compare_returned_user_with_database_user() {
+        try {
+            // create test user
+            getOriginalUser("dma");
+            // create update user
+            createUpdateUserWithMultiDeleteFields();
+            // update test user with update user
+            updateUser();
+            // check consistency of update return value and user in database and expect equality
+            assertTrue(returnUser.equals(databaseUser));
+        } finally {
+            oConnector.deleteUser(idExistingUser, accessToken);
+        }
+    }
+
+    @Test
+    @Ignore("Ignored because of several bugs in the OSIAM server.")
     public void delete_multivalue_attributes() {
         try {
             getOriginalUser("dma");
@@ -69,7 +87,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    @Ignore("Ignored due to duplicate user problem.")
+    @Ignore("Ignored due to single deletion is currently not working!")
     public void REGT_015_delete_multivalue_attributes_twice() {
         try {
             getOriginalUser("dma");
@@ -78,24 +96,28 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
             try {
                 // try to delete twice
                 updateUser();
-                updateUser();
+                // updateUser();
             } catch (Exception ex) {
                 // should run without exception
                 fail("Expected no exception, but got: " + ex.getMessage());
             }
 
-            // entitlements and certificates available in the update user should be deleted
+            // entitlements and certificates available in the returned user should be deleted, even in the database
             assertTrue(isValuePartOfMultivalueList(originalUser.getEntitlements(), "right2"));
             assertFalse(isValuePartOfMultivalueList(returnUser.getEntitlements(), "right2"));
+            assertFalse(isValuePartOfMultivalueList(databaseUser.getEntitlements(), "right2"));
+
             assertTrue(isValuePartOfMultivalueList(originalUser.getX509Certificates(), "certificate01"));
             assertFalse(isValuePartOfMultivalueList(returnUser.getX509Certificates(), "certificate01"));
+            assertFalse(isValuePartOfMultivalueList(databaseUser.getX509Certificates(), "certificate01"));
+
         } finally {
-            oConnector.deleteUser(idExistingUser, accessToken);
+            oConnector.deleteUser(originalUser.getId(), accessToken);
         }
     }
 
     @Test
-    @Ignore //only ok because see TODO
+    @Ignore("Only ok because see TODO")
     public void delete_all_multivalue_attributes() {
         try {
             getOriginalUser("dama");
@@ -128,7 +150,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    @Ignore //see TODO's
+    @Ignore("see TODO's")
     public void add_multivalue_attributes() {
         try {
             getOriginalUser("ama");
@@ -158,7 +180,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    @Ignore //see TODO's
+    @Ignore("see TODO's")
     public void update_multivalue_attributes() {
         try {
             getOriginalUser("uma");
@@ -328,7 +350,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     @Test(expected = ConflictException.class)
-    @Ignore //no exception is thrown an the moment
+    @Ignore("No exception is thrown an the moment")
     public void username_is_set_no_empty_string_is_thrown_probably() {
         try {
             getOriginalUser("ietiuuitp");
@@ -633,6 +655,13 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
     private void updateUser() {
         returnUser = oConnector.updateUser(idExistingUser, updateUser, accessToken);
+        // also get user again from database to be able to compare with return object
+        databaseUser = oConnector.getUser(returnUser.getId(), accessToken);
+        /*
+        TODO: Uncomment once returnUser and databaseUser are consistent!
+         */
+        // assertTrue(returnUser.equals(databaseUser));
+
     }
 
     private void makeNewConnectionWithNewPassword() {
