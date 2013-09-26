@@ -1,18 +1,7 @@
 package org.osiam.client;
 
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,24 +32,28 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
-public class UpdateUserIT extends AbstractIntegrationTestBase{
+public class UpdateUserIT extends AbstractIntegrationTestBase {
 
     private String idExistingUser = "7d33bcbe-a54c-43d8-867e-f6146164941e";
     private UpdateUser updateUser;
-    private User returnUser;
     private User originalUser;
+    private User returnUser;
+    private User databaseUser;
     private static String IRRELEVANT = "Irrelevant";
 
     @Test
-    @Ignore //ignored because of several bugs in the OSIAM server
+    @Ignore ("Ignored because of several bugs in the OSIAM server.")
     public void delete_multivalue_attributes(){
     	try{
 	    	getOriginalUser("dma");
@@ -88,42 +81,77 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
     }
-    
-    @Test
-    @Ignore //only ok because see TODO
-    public void delete_all_multivalue_attributes(){
-    	try{
-	    	getOriginalUser("dama");
-	        createUpdateUserWithMultiAllDeleteFields();
-	        updateUser();
-	        assertNotNull(originalUser.getEmails());
-	        assertNull(returnUser.getEmails());
-	        assertNull(returnUser.getAddresses());
-	        assertNull(returnUser.getEntitlements());
-	        assertNull(returnUser.getGroups());//TODO da Gruppen nicht gespeichert werden sind sie immer null
-	        assertNull(returnUser.getIms());
-	        assertNull(returnUser.getPhoneNumbers());
-	        assertNull(returnUser.getPhotos());
-	        assertNull(returnUser.getRoles());
-	        assertNull(returnUser.getX509Certificates());
-    	}finally{
-    		oConnector.deleteUser(idExistingUser, accessToken);
-    	}
+
+    @Ignore("Return user and database user not consistent yet. Check this always in updateUser() once consistency is reached and delete this test. Also should implement equals on User.")
+    public void compare_returned_user_with_database_user() {
+        try {
+            // create test user
+            getOriginalUser("dma");
+            // create update user
+            createUpdateUserWithMultiDeleteFields();
+            // update test user with update user
+            updateUser();
+            // check consistency of update return value and user in database and expect equality
+            assertTrue(returnUser.equals(databaseUser));
+        } finally {
+            oConnector.deleteUser(idExistingUser, accessToken);
+        }
     }
-    
+
     @Test
-    public void delete_multivalue_attributes_which_is_not_available(){
-    	try{
-	    	getOriginalUser("dma");
-	    	createUpdateUserWithWrongEmail();
-	        updateUser();
-    	}finally{
-    		oConnector.deleteUser(idExistingUser, accessToken);
-    	}
+    @Ignore("Ignored due to single deletion is currently not working!")
+    public void REGT_015_delete_multivalue_attributes_twice() {
+        try {
+            getOriginalUser("dma");
+            createUpdateUserWithMultiDeleteFields();
+
+            try {
+                // try to delete twice
+                updateUser();
+                // updateUser();
+            } catch (Exception ex) {
+                // should run without exception
+                fail("Expected no exception, but got: " + ex.getMessage());
+            }
+
+            // entitlements and certificates available in the returned user should be deleted, even in the database
+            assertTrue(isValuePartOfMultivalueList(Entitlement.class, originalUser.getEntitlements(), "right2"));
+            assertFalse(isValuePartOfMultivalueList(Entitlement.class, returnUser.getEntitlements(), "right2"));
+            assertFalse(isValuePartOfMultivalueList(Entitlement.class, databaseUser.getEntitlements(), "right2"));
+
+            assertTrue(isValuePartOfMultivalueList(X509Certificate.class, originalUser.getX509Certificates(), "certificate01"));
+            assertFalse(isValuePartOfMultivalueList(X509Certificate.class, returnUser.getX509Certificates(), "certificate01"));
+            assertFalse(isValuePartOfMultivalueList(X509Certificate.class, databaseUser.getX509Certificates(), "certificate01"));
+
+        } finally {
+            oConnector.deleteUser(originalUser.getId(), accessToken);
+        }
     }
-    
+
     @Test
-    @Ignore //see TODO's
+    @Ignore("Only ok because see TODO")
+    public void delete_all_multivalue_attributes() {
+        try {
+            getOriginalUser("dama");
+            createUpdateUserWithMultiAllDeleteFields();
+            updateUser();
+            assertNotNull(originalUser.getEmails());
+            assertNull(returnUser.getEmails());
+            assertNull(returnUser.getAddresses());
+            assertNull(returnUser.getEntitlements());
+            assertNull(returnUser.getGroups());//TODO da Gruppen nicht gespeichert werden sind sie immer null
+            assertNull(returnUser.getIms());
+            assertNull(returnUser.getPhoneNumbers());
+            assertNull(returnUser.getPhotos());
+            assertNull(returnUser.getRoles());
+            assertNull(returnUser.getX509Certificates());
+        } finally {
+            oConnector.deleteUser(idExistingUser, accessToken);
+        }
+    }
+
+    @Test
+    @Ignore ("see TODO's")
     public void add_multivalue_attributes(){
     	try{
 	    	getOriginalUser("ama");
@@ -151,9 +179,9 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
     }
-    
+
     @Test
-    @Ignore //see TODO's
+    @Ignore ("see TODO's")
     public void update_multivalue_attributes(){
     	try{
 	    	getOriginalUser("uma");
@@ -207,7 +235,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
     }
-		
+	
 	@Test
     public void delete_all_single_values(){
 		try{
@@ -240,19 +268,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
 	}
-	
-	@Test
-	public void update_attributes_doesnt_change_the_password() {
-		try{
-			getOriginalUser("uadctp");
-	        createUpdateUserWithUpdateFieldsWithoutPassword();
-	        updateUser();
-	        makeNewConnection();
-		}finally{
-    		oConnector.deleteUser(idExistingUser, accessToken);
-    	}
-	}
-	
+		
 	@Test
 	public void change_one_field_and_other_attributes_are_the_same(){
 		try{
@@ -276,7 +292,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 	}
 	
 	@Test (expected = ConflictException.class)
-	@Ignore //no exception is thrown an the moment
+	@Ignore ("No exception is thrown an the moment")
 	public void username_is_set_no_empty_string_is_thrown_probably(){
 		try{
 			getOriginalUser("ietiuuitp");
@@ -325,21 +341,82 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 		return null; //Can't be reached
 	}
 	
-    public void getOriginalUser(String userName){
+    public void delete_multivalue_attributes_which_is_not_available() {
+        try {
+            getOriginalUser("dma");
+            createUpdateUserWithWrongEmail();
+            updateUser();
+        } finally {
+            oConnector.deleteUser(idExistingUser, accessToken);
+        }
+    }
+
+
+
+
+
+
+    @Test
+    @Ignore("Ignored due to update user problem.")
+    public void REGT_015_update_multivalue_attributes_twice() throws InterruptedException {
+        try {
+            getOriginalUser("uma");
+
+            Thread.sleep(1000); // wait to grant different modification datetime
+
+            createUpdateUserWithMultiUpdateFields();
+
+            try {
+                // try to update twice
+                updateUser();
+                updateUser();
+            } catch (Exception ex) {
+                // should run without exception
+                fail("Expected no exception, but got: " + ex.getMessage());
+            }
+
+            // entitlements and certificates available in the update user should be updated
+            Entitlement entitlementBefore = getSingleMultiValueAttribute(Entitlement.class, originalUser.getEntitlements(), "right1");
+            Entitlement entitlementAfter = getSingleMultiValueAttribute(Entitlement.class, returnUser.getEntitlements(), "right1");
+            assertEquals(entitlementBefore.getValue(), entitlementAfter.getValue());
+
+            X509Certificate certificateBefore = getSingleMultiValueAttribute(X509Certificate.class, originalUser.getX509Certificates(), "certificate01");
+            X509Certificate certificateAfter = getSingleMultiValueAttribute(X509Certificate.class, returnUser.getX509Certificates(), "certificate01");
+            assertEquals(certificateBefore.getValue(), certificateAfter.getValue());
+
+            assertNotEquals(originalUser.getMeta().getLastModified(), returnUser.getMeta().getLastModified());
+        } finally {
+            oConnector.deleteUser(idExistingUser, accessToken);
+        }
+    }
+
+    @Test
+    public void update_attributes_doesnt_change_the_password() {
+        try {
+            getOriginalUser("uadctp");
+            createUpdateUserWithUpdateFieldsWithoutPassword();
+            updateUser();
+            makeNewConnection();
+        } finally {
+            oConnector.deleteUser(idExistingUser, accessToken);
+        }
+    }
+
+    public void getOriginalUser(String userName) {
         User.Builder userBuilder = new User.Builder(userName);
-        
+
         Email email01 = new Email.Builder().setValue("hsimpson@atom-example.com").setType(EmailType.WORK).setPrimary(true).build();
         Email email02 = new Email.Builder().setValue("hsimpson@home-example.com").setType(EmailType.WORK).build();
         List<Email> emails = new ArrayList<>();
         emails.add(email01);
-        emails.add(email02);        
-        
+        emails.add(email02);
+
         PhoneNumber phoneNumber01 = new PhoneNumber.Builder().setValue("+497845/1157").setType(PhoneNumberType.WORK).setPrimary(true).build();
         PhoneNumber phoneNumber02 = new PhoneNumber.Builder().setValue("0245817964").setType(PhoneNumberType.HOME).build();
         List<PhoneNumber> phoneNumbers = new ArrayList<>();
         phoneNumbers.add(phoneNumber01);
         phoneNumbers.add(phoneNumber02);
-        
+
         Address simpleAddress01 = new Address.Builder().setCountry("de").setFormatted("formated address 01").setLocality("Berlin").setPostalCode("111111").build();
         Address simpleAddress02 = new Address.Builder().setCountry("en").setFormatted("address formated 02").setLocality("New York").setPostalCode("123456").build();
         List<Address> addresses = new ArrayList<>();
@@ -385,56 +462,57 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         
         Name name = new Name.Builder().setFamilyName("familiyName").setFormatted("formatted Name").setGivenName("givenName").build();
 
-        		userBuilder.setNickName("irgendwas")
-        			.setEmails(emails)
-        			.setPhoneNumbers(phoneNumbers)
-        			.setActive(false)
-        			.setDisplayName("irgendwas")
-        			.setLocale("de")
-        			.setPassword("geheim")
-        			.setPreferredLanguage("de")
-        			.setProfileUrl("irgendwas")
-        			.setTimezone("irgendwas")
-        			.setTitle("irgendwas")
-        			.setUserType("irgendwas")
-        			.setAddresses(addresses)
-        			.setGroups(groups)
-        			.setIms(ims)
-        			.setPhotos(photos)
-        			.setRoles(roles)
-        			.setName(name)
-        			.setX509Certificates(certificates)
-        			.setEntitlements(entitlements)
-        			.setExternalId("irgendwas")        			
-        			;
-        User newUser = userBuilder.build(); 
-        
+        userBuilder.setNickName("irgendwas")
+                .setEmails(emails)
+                .setPhoneNumbers(phoneNumbers)
+                .setActive(false)
+                .setDisplayName("irgendwas")
+                .setLocale("de")
+                .setPassword("geheim")
+                .setPreferredLanguage("de")
+                .setProfileUrl("irgendwas")
+                .setTimezone("irgendwas")
+                .setTitle("irgendwas")
+                .setUserType("irgendwas")
+                .setAddresses(addresses)
+                .setGroups(groups)
+                .setIms(ims)
+                .setPhotos(photos)
+                .setRoles(roles)
+                .setName(name)
+                .setX509Certificates(certificates)
+                .setEntitlements(entitlements)
+                .setExternalId("irgendwas")
+        ;
+        User newUser = userBuilder.build();
+
         originalUser = oConnector.createUser(newUser, accessToken);
         idExistingUser = originalUser.getId();
     }
 
-    private void createUpdateUserWithUpdateFields(){
-    	Name newName = new Name.Builder().setFamilyName("FamilyName").build();
+    private void createUpdateUserWithUpdateFields() {
+        Name newName = new Name.Builder().setFamilyName("FamilyName").build();
         updateUser = new UpdateUser.Builder()
-        					.updateUserName("UserName")
-        					.updateNickName("NickName")
-        					.updateExternalId("ExternalId")
-        					.updateDisplayName("DisplayName")
-        					.updatePassword("Password")
-        					.updateLocale("Locale")
-        					.updatePreferredLanguage("PreferredLanguage")
-        					.updateProfileUrl("ProfileUrl")
-        					.updateTimezone("Timezone")
-        					.updateTitle("Title")
-        					.updateUserType("UserType")
-        					.updateExternalId("ExternalId")
-        					.updateName(newName)
-        					.updateActive(true).build();
+                .updateUserName("UserName")
+                .updateNickName("NickName")
+                .updateExternalId("ExternalId")
+                .updateDisplayName("DisplayName")
+                .updatePassword("Password")
+                .updateLocale("Locale")
+                .updatePreferredLanguage("PreferredLanguage")
+                .updateProfileUrl("ProfileUrl")
+                .updateTimezone("Timezone")
+                .updateTitle("Title")
+                .updateUserType("UserType")
+                .updateExternalId("ExternalId")
+                .updateName(newName)
+                .updateActive(true).build();
     }
-    
-    private void createUpdateUserWithUpdateFieldsWithoutPassword(){
-    	Name newName = new Name.Builder().setFamilyName("newFamilyName").build();
+
+    private void createUpdateUserWithUpdateFieldsWithoutPassword() {
+        Name newName = new Name.Builder().setFamilyName("newFamilyName").build();
         updateUser = new UpdateUser.Builder()
+
         					.updateUserName(UUID.randomUUID().toString())
         					.updateNickName(IRRELEVANT)
         					.updateExternalId(IRRELEVANT)
@@ -447,17 +525,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         					.updateUserType(IRRELEVANT)
         					.updateName(newName)
         					.updateActive(true).build();
-    }
-    
-    private void createUpdateUserWithJustOtherNickname(){
-        updateUser = new UpdateUser.Builder() 
-		.updateNickName(IRRELEVANT)
-		.build();
-    }
-    
-    private void createUpdateUserWithEmptyUserName(){
-        updateUser = new UpdateUser.Builder().updateUserName("")
-		.build();
     }
     
     private void createUpdateUserWithMultiUpdateFields(){
@@ -571,12 +638,29 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         					.build();
     }
 
-    private void updateUser(){
-       returnUser = oConnector.updateUser(idExistingUser, updateUser, accessToken);
+    private void createUpdateUserWithJustOtherNickname() {
+        updateUser = new UpdateUser.Builder()
+                .updateNickName(IRRELEVANT)
+                .build();
+    }
+
+    private void createUpdateUserWithEmptyUserName() {
+        updateUser = new UpdateUser.Builder().updateUserName("")
+                .build();
+    }
+
+    private void updateUser() {
+        returnUser = oConnector.updateUser(idExistingUser, updateUser, accessToken);
+        // also get user again from database to be able to compare with return object
+        databaseUser = oConnector.getUser(returnUser.getId(), accessToken);
+        /*
+        TODO: Uncomment once returnUser and databaseUser are consistent!
+         */
+        // assertTrue(returnUser.equals(databaseUser));
     }
 
     private void makeNewConnectionWithNewPassword() {
-    	OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(ENDPOINT_ADDRESS).
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(ENDPOINT_ADDRESS).
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
@@ -586,9 +670,9 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         oConnector = oConBuilder.build();
         oConnector.retrieveAccessToken();
     }
-    
+
     private void makeNewConnection() {
-    	OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(ENDPOINT_ADDRESS).
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(ENDPOINT_ADDRESS).
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
@@ -598,21 +682,21 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         oConnector = oConBuilder.build();
         oConnector.retrieveAccessToken();
     }
-    
-	public Address getAddress(List<Address> addresses, String formated){
-		Address returnAddress = null;
-		if(addresses != null){
-			for (Address actAddress : addresses) {
-				if(actAddress.getFormatted().equals(formated)){
-					returnAddress = actAddress;
-					break;
-				}
-			}
-		}
-		if(returnAddress == null){
-			fail("The address with the formated part of " + formated + " could not be found");	
-		}
-		return returnAddress;
-	}
+
+    public Address getAddress(List<Address> addresses, String formated) {
+        Address returnAddress = null;
+        if (addresses != null) {
+            for (Address actAddress : addresses) {
+                if (actAddress.getFormatted().equals(formated)) {
+                    returnAddress = actAddress;
+                    break;
+                }
+            }
+        }
+        if (returnAddress == null) {
+            fail("The address with the formated part of " + formated + " could not be found");
+        }
+        return returnAddress;
+    }
 
 }
