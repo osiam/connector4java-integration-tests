@@ -22,9 +22,22 @@ import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.update.UpdateUser;
 import org.osiam.resources.scim.Address;
-import org.osiam.resources.scim.MultiValuedAttribute;
+import org.osiam.resources.scim.BasicMultiValuedAttribute;
+import org.osiam.resources.scim.Email;
+import org.osiam.resources.scim.Entitlement;
+import org.osiam.resources.scim.Ims;
 import org.osiam.resources.scim.Name;
+import org.osiam.resources.scim.PhoneNumber;
+import org.osiam.resources.scim.Photo;
+import org.osiam.resources.scim.Role;
 import org.osiam.resources.scim.User;
+import org.osiam.resources.scim.GroupRef;
+import org.osiam.resources.scim.X509Certificate;
+import org.osiam.resources.type.EmailType;
+import org.osiam.resources.type.GroupRefType;
+import org.osiam.resources.type.ImsType;
+import org.osiam.resources.type.PhoneNumberType;
+import org.osiam.resources.type.PhotoType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -53,24 +66,24 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 	    	getOriginalUser("dma");
 	        createUpdateUserWithMultiDeleteFields();
 	        updateUser();
-	        assertTrue(isValuePartOfMultivalueList(originalUser.getEmails(), "hsimpson@atom-example.com"));
-	        assertFalse(isValuePartOfMultivalueList(returnUser.getEmails(), "hsimpson@atom-example.com"));
-	        assertTrue(isValuePartOfMultivalueList(originalUser.getPhoneNumbers(), "0245817964"));
-	        assertFalse(isValuePartOfMultivalueList(returnUser.getPhoneNumbers(), "0245817964"));
-	        assertTrue(isValuePartOfMultivalueList(originalUser.getIms(), "ims01"));
-	        assertFalse(isValuePartOfMultivalueList(returnUser.getIms(), "ims01"));
-	        assertTrue(isValuePartOfMultivalueList(originalUser.getPhotos(), "photo01.jpg"));
-	        assertFalse(isValuePartOfMultivalueList(returnUser.getPhotos(), "photo01.jpg"));
-	        assertTrue(isValuePartOfMultivalueList(originalUser.getRoles(), "role01"));
-	        assertFalse(isValuePartOfMultivalueList(returnUser.getRoles(), "role01"));
+	        assertTrue(isValuePartOfMultivalueList(Email.class, originalUser.getEmails(), "hsimpson@atom-example.com"));
+	        assertFalse(isValuePartOfMultivalueList(Email.class, returnUser.getEmails(), "hsimpson@atom-example.com"));
+	        assertTrue(isValuePartOfMultivalueList(PhoneNumber.class, originalUser.getPhoneNumbers(), "0245817964"));
+	        assertFalse(isValuePartOfMultivalueList(PhoneNumber.class, returnUser.getPhoneNumbers(), "0245817964"));
+	        assertTrue(isValuePartOfMultivalueList(Ims.class, originalUser.getIms(), "ims01"));
+	        assertFalse(isValuePartOfMultivalueList(Ims.class, returnUser.getIms(), "ims01"));
+	        assertTrue(isValuePartOfMultivalueList(Photo.class, originalUser.getPhotos(), "photo01.jpg"));
+	        assertFalse(isValuePartOfMultivalueList(Photo.class,returnUser.getPhotos(), "photo01.jpg"));
+	        assertTrue(isValuePartOfMultivalueList(Role.class, originalUser.getRoles(), "role01"));
+	        assertFalse(isValuePartOfMultivalueList(Role.class, returnUser.getRoles(), "role01"));
 	        assertTrue(isValuePartOfAddressList(originalUser.getAddresses(), "formated address 01"));
 	        assertFalse(isValuePartOfAddressList(returnUser.getAddresses(), "formated address 01"));//TODO other address was deleted
-	        assertTrue(isValuePartOfMultivalueList(originalUser.getEntitlements(), "right2")); // TODO at the second run it will fail
-	        assertFalse(isValuePartOfMultivalueList(returnUser.getEntitlements(), "right2"));//TODO at the second run it will fail
-	        assertTrue(isValuePartOfMultivalueList(originalUser.getGroups(), "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"));//TODO Gruppen werden nicht gespeicher
-	        assertFalse(isValuePartOfMultivalueList(returnUser.getGroups(), "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578")); //TODO Gruppen werden nicht gespeicher
-	        assertTrue(isValuePartOfMultivalueList(originalUser.getX509Certificates(), "certificate01"));//TODO at the second run it will fail
-	        assertFalse(isValuePartOfMultivalueList(returnUser.getX509Certificates(), "certificate01"));//TODO at the second run it will fail
+	        assertTrue(isValuePartOfMultivalueList(Entitlement.class, originalUser.getEntitlements(), "right2")); // TODO at the second run it will fail
+	        assertFalse(isValuePartOfMultivalueList(Entitlement.class, returnUser.getEntitlements(), "right2"));//TODO at the second run it will fail
+	        assertTrue(isValuePartOfMultivalueList(GroupRef.class, originalUser.getGroups(), "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"));//TODO Gruppen werden nicht gespeicher
+	        assertFalse(isValuePartOfMultivalueList(GroupRef.class, returnUser.getGroups(), "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578")); //TODO Gruppen werden nicht gespeicher
+	        assertTrue(isValuePartOfMultivalueList(X509Certificate.class, originalUser.getX509Certificates(), "certificate01"));//TODO at the second run it will fail
+	        assertFalse(isValuePartOfMultivalueList(X509Certificate.class, returnUser.getX509Certificates(), "certificate01"));//TODO at the second run it will fail
     	}finally{
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
@@ -117,23 +130,23 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 	    	createUpdateUserWithMultiAddFields();
 	    	updateUser();
 	    	assertEquals(originalUser.getPhoneNumbers().size() + 1, returnUser.getPhoneNumbers().size());
-	    	assertTrue(isValuePartOfMultivalueList(returnUser.getPhoneNumbers(), "99999999991"));
+	    	assertTrue(isValuePartOfMultivalueList(PhoneNumber.class, returnUser.getPhoneNumbers(), "99999999991"));
 	    	assertEquals(originalUser.getEmails().size() + 1, returnUser.getEmails().size());//TODO funktioniert nicht. Eine mailadresse wird von server gelöscht
-	    	assertTrue(isValuePartOfMultivalueList(returnUser.getEmails(), "mac@muster.de"));
+	    	assertTrue(isValuePartOfMultivalueList(Email.class, returnUser.getEmails(), "mac@muster.de"));
 	    	assertEquals(originalUser.getAddresses().size() + 1, returnUser.getAddresses().size());//TODO neue Addresse löscht zuerst die alten
 	    	getAddress(returnUser.getAddresses(), "new Address");
 	    	assertEquals(originalUser.getEntitlements().size() + 1, returnUser.getEntitlements().size());//TODO at the second run it will fail
-	    	assertTrue(isValuePartOfMultivalueList(returnUser.getEntitlements(), "right3"));//TODO at the second run it will fail
+	    	assertTrue(isValuePartOfMultivalueList(Entitlement.class, returnUser.getEntitlements(), "right3"));//TODO at the second run it will fail
 	    	assertEquals(originalUser.getGroups().size() + 1, returnUser.getGroups().size());//TODO gruppen werden aktuell nicht gespeichert
-	    	assertTrue(isValuePartOfMultivalueList(returnUser.getGroups(), "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"));//TODO gruppen werden aktuell nicht gespeichert
+	    	assertTrue(isValuePartOfMultivalueList(GroupRef.class, returnUser.getGroups(), "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"));//TODO gruppen werden aktuell nicht gespeichert
 	    	assertEquals(originalUser.getIms().size() + 1, returnUser.getIms().size());
-	    	assertTrue(isValuePartOfMultivalueList(returnUser.getIms(), "ims03"));//TODO der type wird nicht geändert
+	    	assertTrue(isValuePartOfMultivalueList(Ims.class, returnUser.getIms(), "ims03"));//TODO der type wird nicht geändert
 	    	assertEquals(originalUser.getPhotos().size() + 1, returnUser.getPhotos().size());
-	    	assertTrue(isValuePartOfMultivalueList(returnUser.getPhotos(), "photo03.jpg"));
+	    	assertTrue(isValuePartOfMultivalueList(Photo.class, returnUser.getPhotos(), "photo03.jpg"));
 	    	assertEquals(originalUser.getRoles().size() + 1, returnUser.getRoles().size());
-	    	assertTrue(isValuePartOfMultivalueList(returnUser.getRoles(), "role03"));
+	    	assertTrue(isValuePartOfMultivalueList(Role.class, returnUser.getRoles(), "role03"));
 	    	assertEquals(originalUser.getX509Certificates().size() + 1, returnUser.getX509Certificates().size());//TODO at the second run it will fail
-	    	assertTrue(isValuePartOfMultivalueList(returnUser.getX509Certificates(), "certificate03"));//TODO at the second run it will fail
+	    	assertTrue(isValuePartOfMultivalueList(X509Certificate.class, returnUser.getX509Certificates(), "certificate03"));//TODO at the second run it will fail
     	}finally{
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
@@ -147,25 +160,25 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 	    	createUpdateUserWithMultiUpdateFields();
 	    	updateUser();
 	    	//phonenumber
-	    	MultiValuedAttribute multi = getSingleMultiValueAttribute(returnUser.getPhoneNumbers(), "+497845/1157");
-	    	assertFalse(multi.isPrimary());//TODO primary wird beim telefon nicht gesetzt
-	    	multi = getSingleMultiValueAttribute(returnUser.getPhoneNumbers(), "0245817964");
-	    	assertTrue(multi.isPrimary());//TODO primary wird beim telefon nicht gesetzt
-	    	assertEquals("other", multi.getType());//TODO der type wird nicht geändert
+	    	PhoneNumber phoneNumber = getSingleMultiValueAttribute(PhoneNumber.class, returnUser.getPhoneNumbers(), "+497845/1157");
+	    	assertFalse(phoneNumber.isPrimary());//TODO primary wird beim telefon nicht gesetzt
+	    	phoneNumber = getSingleMultiValueAttribute(PhoneNumber.class, returnUser.getPhoneNumbers(), "0245817964");
+	    	assertTrue(phoneNumber.isPrimary());//TODO primary wird beim telefon nicht gesetzt
+	    	assertEquals(PhoneNumberType.OTHER, phoneNumber.getType());//TODO der type wird nicht geändert
 	    	//email
-	    	multi = getSingleMultiValueAttribute(returnUser.getEmails(), "hsimpson@atom-example.com");
-	    	assertFalse(multi.isPrimary());//TODO die atomadresse wird gelöscht und die andere wird nicht abgedatet
-	    	multi = getSingleMultiValueAttribute(returnUser.getEmails(), "hsimpson@home-example.com");
-	    	assertTrue(multi.isPrimary());
-	    	assertEquals("other", multi.getType());
-	    	multi = getSingleMultiValueAttribute(returnUser.getIms(), "ims01");
-	    	assertEquals("icq", multi.getType());//TODO der type wird nicht upgedatet
-	    	multi = getSingleMultiValueAttribute(returnUser.getPhotos(), "photo01.jpg");
-	    	assertEquals("photo", multi.getType());//TODO der type wird nicht upgedatet
-	    	multi = getSingleMultiValueAttribute(returnUser.getRoles(), "role01");//TODO der type wird nicht gespeichert und kann somit nicht geändert werden
-	    	assertEquals("other", multi.getType());//TODO der type wird nicht gespeichert und kann somit nicht geändert werden
-	    	multi = getSingleMultiValueAttribute(returnUser.getGroups(), "69e1a5dc-89be-4343-976c-b5541af249f4"); //TODO gruppen werden nicht angelegt
-	    	assertEquals("indirect", multi.getType());
+	    	Email email = getSingleMultiValueAttribute(Email.class, returnUser.getEmails(), "hsimpson@atom-example.com");
+	    	assertFalse(email.isPrimary());//TODO die atomadresse wird gelöscht und die andere wird nicht abgedatet
+	    	email = getSingleMultiValueAttribute(Email.class, returnUser.getEmails(), "hsimpson@home-example.com");
+	    	assertTrue(email.isPrimary());
+	    	assertEquals(EmailType.OTHER, email.getType());
+	    	Ims ims = getSingleMultiValueAttribute(Ims.class, returnUser.getIms(), "ims01");
+	    	assertEquals(ImsType.ICQ, ims.getType());//TODO der type wird nicht upgedatet
+	    	Photo photo = getSingleMultiValueAttribute(Photo.class, returnUser.getPhotos(), "photo01.jpg");
+	    	assertEquals(PhotoType.PHOTO, photo.getType());//TODO der type wird nicht upgedatet
+	    	Role role = getSingleMultiValueAttribute(Role.class, returnUser.getRoles(), "role01");//TODO der type wird nicht gespeichert und kann somit nicht geändert werden
+	    	assertEquals("other", role.getType());//TODO der type wird nicht gespeichert und kann somit nicht geändert werden
+	    	GroupRef userGroup = getSingleMultiValueAttribute(GroupRef.class, returnUser.getGroups(), "69e1a5dc-89be-4343-976c-b5541af249f4"); //TODO gruppen werden nicht angelegt
+	    	assertEquals(GroupRefType.INDIRECT, userGroup.getType());
     	}finally{
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
@@ -263,18 +276,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 	}
 	
 	@Test (expected = ConflictException.class)
-	public void invalid_email_type_in_update_User_is_thrown_probably(){
-		try{
-			getOriginalUser("ietiuuitp");
-			createUpdateUserWithInvalidEmailType();
-			updateUser();
-			fail("exception expected");
-		}finally{
-    		oConnector.deleteUser(idExistingUser, accessToken);
-    	}
-	}
-	
-	@Test (expected = ConflictException.class)
 	@Ignore //no exception is thrown an the moment
 	public void username_is_set_no_empty_string_is_thrown_probably(){
 		try{
@@ -287,10 +288,12 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     	}
 	}
 
-	public boolean isValuePartOfMultivalueList(List<MultiValuedAttribute> list, String value){
+	
+	public <T extends BasicMultiValuedAttribute> boolean isValuePartOfMultivalueList(Class<T> clazz, List<T> list, String value){
 		if(list != null){
-			for (MultiValuedAttribute actAttribute : list) {
-				if(actAttribute.getValue().equals(value)){
+			for (Object actAttribute : list) {
+				BasicMultiValuedAttribute real = clazz.cast(actAttribute);
+				if(real.getValue().equals(value)){
 					return true;
 				}
 			}
@@ -309,11 +312,12 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 		return false;
 	}
 	
-	public MultiValuedAttribute getSingleMultiValueAttribute(List<MultiValuedAttribute> multiValues, Object value){
+	public <T extends BasicMultiValuedAttribute> T getSingleMultiValueAttribute(Class<T> clazz, List<T> multiValues, Object value){
 		if(multiValues != null){
-			for (MultiValuedAttribute actMultiValuedAttribute : multiValues) {
-				if(actMultiValuedAttribute.getValue().equals(value)){
-					return actMultiValuedAttribute;
+			for (Object actMultiValuedAttribute : multiValues) {
+				BasicMultiValuedAttribute real = clazz.cast(actMultiValuedAttribute);
+				if(real.getValue().equals(value)){
+					return (T) real;
 				}
 			}
 		}
@@ -324,15 +328,15 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     public void getOriginalUser(String userName){
         User.Builder userBuilder = new User.Builder(userName);
         
-        MultiValuedAttribute email01 = new MultiValuedAttribute.Builder().setValue("hsimpson@atom-example.com").setType("work").setPrimary(true).build();
-        MultiValuedAttribute email02 = new MultiValuedAttribute.Builder().setValue("hsimpson@home-example.com").setType("work").build();
-        List<MultiValuedAttribute> emails = new ArrayList<>();
+        Email email01 = new Email.Builder().setValue("hsimpson@atom-example.com").setType(EmailType.WORK).setPrimary(true).build();
+        Email email02 = new Email.Builder().setValue("hsimpson@home-example.com").setType(EmailType.WORK).build();
+        List<Email> emails = new ArrayList<>();
         emails.add(email01);
         emails.add(email02);        
         
-        MultiValuedAttribute phoneNumber01 = new MultiValuedAttribute.Builder().setValue("+497845/1157").setType("work").setPrimary(true).build();
-        MultiValuedAttribute phoneNumber02 = new MultiValuedAttribute.Builder().setValue("0245817964").setType("home").build();
-        List<MultiValuedAttribute> phoneNumbers = new ArrayList<>();
+        PhoneNumber phoneNumber01 = new PhoneNumber.Builder().setValue("+497845/1157").setType(PhoneNumberType.WORK).setPrimary(true).build();
+        PhoneNumber phoneNumber02 = new PhoneNumber.Builder().setValue("0245817964").setType(PhoneNumberType.HOME).build();
+        List<PhoneNumber> phoneNumbers = new ArrayList<>();
         phoneNumbers.add(phoneNumber01);
         phoneNumbers.add(phoneNumber02);
         
@@ -342,39 +346,40 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
         addresses.add(simpleAddress01);
         addresses.add(simpleAddress02);   
         
-        MultiValuedAttribute entitlement01 = new MultiValuedAttribute.Builder().setValue("right1").build();
-        MultiValuedAttribute entitlement02 = new MultiValuedAttribute.Builder().setValue("right2").build();
-        List<MultiValuedAttribute> entitlements = new ArrayList<>();
+        Entitlement entitlement01 = new Entitlement.Builder().setValue("right1").build();
+        Entitlement entitlement02 = new Entitlement.Builder().setValue("right2").build();
+        List<Entitlement> entitlements = new ArrayList<>();
         entitlements.add(entitlement01);
         entitlements.add(entitlement02);
         
-        MultiValuedAttribute group01 = new MultiValuedAttribute.Builder().setValue("69e1a5dc-89be-4343-976c-b5541af249f4").setType("direct").build();
-        MultiValuedAttribute group02 = new MultiValuedAttribute.Builder().setValue("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578").build();
-        List<MultiValuedAttribute> groups = new ArrayList<>();
+        GroupRef group01 = new GroupRef.Builder().setValue("69e1a5dc-89be-4343-976c-b5541af249f4").setType(GroupRefType.DIRECT).build();
+        GroupRef group02 = new GroupRef.Builder().setValue("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578").build();
+        List<GroupRef> groups = new ArrayList<>();
         groups.add(group01);
         groups.add(group02);
         
-        MultiValuedAttribute ims01 = new MultiValuedAttribute.Builder().setValue("ims01").setType("skype").build();
-        MultiValuedAttribute ims02 = new MultiValuedAttribute.Builder().setValue("ims02").build();
-        List<MultiValuedAttribute> ims = new ArrayList<>();
+        Ims ims01 = new Ims.Builder().setValue("ims01").setType(ImsType.SKYPE).build();
+        Ims ims02 = new Ims.Builder().setValue("ims02").build();
+        List<Ims> ims = new ArrayList<>();
         ims.add(ims01);
         ims.add(ims02);
         
-        MultiValuedAttribute photo01 = new MultiValuedAttribute.Builder().setValue("photo01.jpg").setType("thumbnail").build();
-        MultiValuedAttribute photo02 = new MultiValuedAttribute.Builder().setValue("photo02.jpg").build();
-        List<MultiValuedAttribute> photos = new ArrayList<>();
+        Photo photo01 = new Photo.Builder().setValue("photo01.jpg").setType(PhotoType.THUMBNAIL).build();
+        Photo photo02 = new Photo.Builder().setValue("photo02.jpg").build();
+        List<Photo> photos = new ArrayList<>();
         photos.add(photo01);
         photos.add(photo02);
         
-        MultiValuedAttribute role01 = new MultiValuedAttribute.Builder().setValue("role01").setType("some").build();
-        MultiValuedAttribute role02 = new MultiValuedAttribute.Builder().setValue("role02").build();
-        List<MultiValuedAttribute> roles = new ArrayList<>();
+        
+        Role role01 = new Role.Builder().setValue("role01").setType("some").build();
+        Role role02 = new Role.Builder().setValue("role02").build();
+        List<Role> roles = new ArrayList<>();
         roles.add(role01);
         roles.add(role02);
         
-        MultiValuedAttribute certificate01 = new MultiValuedAttribute.Builder().setValue("certificate01").setType("some").build();
-        MultiValuedAttribute certificate02 = new MultiValuedAttribute.Builder().setValue("certificate02").build();
-        List<MultiValuedAttribute> certificates = new ArrayList<>();
+        X509Certificate certificate01 = new X509Certificate.Builder().setValue("certificate01").setType("some").build();
+        X509Certificate certificate02 = new X509Certificate.Builder().setValue("certificate02").build();
+        List<X509Certificate> certificates = new ArrayList<>();
         certificates.add(certificate01);
         certificates.add(certificate02);
         
@@ -450,28 +455,20 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
 		.build();
     }
     
-    private void createUpdateUserWithInvalidEmailType(){
-    	MultiValuedAttribute email = new MultiValuedAttribute.Builder().setValue("some@thing.com").setType("wrong").build();
-        updateUser = new UpdateUser.Builder()
-		.addOrUpdateEmail(email)
-		.build();
-    }
-    
     private void createUpdateUserWithEmptyUserName(){
         updateUser = new UpdateUser.Builder().updateUserName("")
 		.build();
     }
     
     private void createUpdateUserWithMultiUpdateFields(){
-    	MultiValuedAttribute email = new MultiValuedAttribute.Builder()
-    					.setValue("hsimpson@home-example.com").setType("other").setPrimary(true).build();
-    	MultiValuedAttribute phoneNumber = new MultiValuedAttribute.Builder().setValue("0245817964").setType("other")
+    	Email email = new Email.Builder()
+    					.setValue("hsimpson@home-example.com").setType(EmailType.OTHER).setPrimary(true).build();
+    	PhoneNumber phoneNumber = new PhoneNumber.Builder().setValue("0245817964").setType(PhoneNumberType.OTHER)
     			.setPrimary(true).build(); //Now the other should not be primary anymore
-    	MultiValuedAttribute ims = new MultiValuedAttribute.Builder().setValue("ims01").setType("icq").build();
-    	MultiValuedAttribute photo = new MultiValuedAttribute.Builder().setValue("photo01.jpg").setType("photo").build(); 
-    	MultiValuedAttribute role = new MultiValuedAttribute.Builder().setValue("role01").setType("other").build();
-    	MultiValuedAttribute group = new MultiValuedAttribute.Builder().setValue("69e1a5dc-89be-4343-976c-b5541af249f4").setType("indirect").build();
-    	new MultiValuedAttribute.Builder().setValue("test").setType("other").build();
+    	Ims ims = new Ims.Builder().setValue("ims01").setType(ImsType.ICQ).build();
+    	Photo photo = new Photo.Builder().setValue("photo01.jpg").setType(PhotoType.PHOTO).build(); 
+    	Role role = new Role.Builder().setValue("role01").setType("other").build();
+    	GroupRef group = new GroupRef.Builder().setValue("69e1a5dc-89be-4343-976c-b5541af249f4").setType(GroupRefType.INDIRECT).build();
     	
     	updateUser = new UpdateUser.Builder()
         					.addOrUpdateEmail(email)
@@ -530,19 +527,19 @@ public class UpdateUserIT extends AbstractIntegrationTestBase{
     
     private void createUpdateUserWithMultiAddFields(){
 
-    	MultiValuedAttribute email = new MultiValuedAttribute.Builder()
-    					.setValue("mac@muster.de").setType("home").build();
+    	Email email = new Email.Builder()
+    					.setValue("mac@muster.de").setType(EmailType.HOME).build();
     	
-    	MultiValuedAttribute phonenumber = new MultiValuedAttribute.Builder()
-		.setValue("99999999991").setType("home").build();
+    	PhoneNumber phonenumber = new PhoneNumber.Builder()
+		.setValue("99999999991").setType(PhoneNumberType.HOME).build();
     	
     	Address newSimpleAddress = new Address.Builder().setCountry("fr").setFormatted("new Address").setLocality("New City").setPostalCode("66666").build();
-    	MultiValuedAttribute entitlement = new MultiValuedAttribute.Builder().setValue("right3").build();
-    	MultiValuedAttribute ims = new MultiValuedAttribute.Builder().setValue("ims03").build();
-    	MultiValuedAttribute photo = new MultiValuedAttribute.Builder().setValue("photo03.jpg").build();
-    	MultiValuedAttribute role = new MultiValuedAttribute.Builder().setValue("role03").build();
-    	MultiValuedAttribute certificate = new MultiValuedAttribute.Builder().setValue("certificate03").setType("some").build();
-    	MultiValuedAttribute groupMembership = new MultiValuedAttribute.Builder().setValue("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578").build();
+    	Entitlement entitlement = new Entitlement.Builder().setValue("right3").build();
+    	Ims ims = new Ims.Builder().setValue("ims03").build();
+    	Photo photo = new Photo.Builder().setValue("photo03.jpg").build();
+    	Role role = new Role.Builder().setValue("role03").build();
+    	X509Certificate certificate = new X509Certificate.Builder().setValue("certificate03").setType("some").build();
+    	GroupRef groupMembership = new GroupRef.Builder().setValue("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578").build();
     	
     	updateUser = new UpdateUser.Builder()
         					.addOrUpdateEmail(email)

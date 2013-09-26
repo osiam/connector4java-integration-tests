@@ -14,9 +14,10 @@ import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
-import org.osiam.resources.scim.MultiValuedAttribute;
+import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.Name;
 import org.osiam.resources.scim.User;
+import org.osiam.resources.type.EmailType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -55,12 +56,12 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
         givenAnAccessTokenForBJensen();
         whenUserIsDeserialized();
 
-        List<MultiValuedAttribute> emails = deserializedUser.getEmails();
+        List<Email> emails = deserializedUser.getEmails();
         assertEquals(1, emails.size());
-        MultiValuedAttribute email = emails.get(0);
+        Email email = emails.get(0);
 
         assertEquals("bjensen@example.com", email.getValue().toString());
-        assertEquals("work", email.getType());
+        assertEquals(EmailType.WORK, email.getType());
     }
     
     @Test
@@ -83,16 +84,16 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
         givenAnAccessTokenForHSimpson();
         whenUserIsDeserialized();
 
-        List<MultiValuedAttribute> emails = sortEmails(deserializedUser.getEmails());
+        List<Email> emails = sortEmails(deserializedUser.getEmails());
         assertEquals(2, emails.size());
 
-        MultiValuedAttribute email1 = emails.get(1);
+        Email email1 = emails.get(0);
         assertEquals("hsimpson@atom-example.com", email1.getValue().toString());
-        assertEquals("work", email1.getType());
+        assertEquals(EmailType.WORK, email1.getType());
 
-        MultiValuedAttribute email2 = emails.get(0);
+        Email email2 = emails.get(1);
         assertEquals("hsimpson@phome-example.com", email2.getValue().toString());
-        assertEquals("home", email2.getType());
+        assertEquals(EmailType.HOME, email2.getType());
     }
 
     @Test
@@ -131,10 +132,10 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     	oConnector.deleteUser("7d33bcbe-a54c-43d8-867e-f6146164941e", accessToken);
     }
     
-    private List<MultiValuedAttribute> sortEmails(List<MultiValuedAttribute> emails) {
-        Collections.sort(emails, new Comparator<MultiValuedAttribute>() {
+    private List<Email> sortEmails(List<Email> emails) {
+        Collections.sort(emails, new Comparator<Email>() {
             @Override
-            public int compare(MultiValuedAttribute o1, MultiValuedAttribute o2) {
+            public int compare(Email o1, Email o2) {
                 return o1.getType().compareTo(o2.getType());
             }
         });

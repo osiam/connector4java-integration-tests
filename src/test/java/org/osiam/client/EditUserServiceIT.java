@@ -21,9 +21,11 @@ import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryResult;
 import org.osiam.client.query.metamodel.User_;
 import org.osiam.resources.scim.Address;
-import org.osiam.resources.scim.MultiValuedAttribute;
+import org.osiam.resources.scim.BasicMultiValuedAttribute;
+import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.Name;
 import org.osiam.resources.scim.User;
+import org.osiam.resources.type.EmailType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -231,9 +233,9 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
                 .build();
         List<Address> addresses = new ArrayList<>();
         addresses.add(address);
-        MultiValuedAttribute email01 = new MultiValuedAttribute.Builder().setValue("example@example.de").setPrimary(true).setType("work").build();
-        MultiValuedAttribute email02 = new MultiValuedAttribute.Builder().setValue("example02@example.de").setPrimary(false).setType("home").build();
-        List<MultiValuedAttribute> emails = new ArrayList<>();
+        Email email01 = new Email.Builder().setValue("example@example.de").setPrimary(true).setType(EmailType.WORK).build();
+        Email email02 = new Email.Builder().setValue("example02@example.de").setPrimary(false).setType(EmailType.HOME).build();
+        List<Email> emails = new ArrayList<>();
         emails.add(email01);
         emails.add(email02);
 
@@ -265,19 +267,19 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
         assertEqualsName(expected.getName(), actual.getName());
         assertEquals(expected.getNickName(), actual.getNickName());
         assertEquals(expected.getTitle(), actual.getTitle());
-        assertEqualsMultiValuedAttribute(expected.getEmails(), actual.getEmails());
+        assertEqualsEmailAttribute(expected.getEmails(), actual.getEmails());
 
     }
 
-    private void assertEqualsMultiValuedAttribute(List<MultiValuedAttribute> expectedMultiValuedAttributes, List<MultiValuedAttribute> actualMultiValuedAttributes){
-        if((expectedMultiValuedAttributes == null || expectedMultiValuedAttributes.size() == 0)
+    private void assertEqualsEmailAttribute(List<Email> expectedMultiValuedAttributes, List<Email> actualMultiValuedAttributes){
+    	if((expectedMultiValuedAttributes == null || expectedMultiValuedAttributes.size() == 0)
                 && (actualMultiValuedAttributes == null || actualMultiValuedAttributes.size() == 0)){
             return;
         }
         assertEquals(expectedMultiValuedAttributes.size(), actualMultiValuedAttributes.size());
         for(int count = 0; count < expectedMultiValuedAttributes.size(); count++){
-            MultiValuedAttribute expectedAttribute = expectedMultiValuedAttributes.get(count);
-            MultiValuedAttribute actualAttribute = getMultiAttributeWithValue(actualMultiValuedAttributes, expectedAttribute.getValue().toString());
+            Email expectedAttribute = expectedMultiValuedAttributes.get(count);
+            Email actualAttribute = getMultiAttributeWithValue(Email.class, actualMultiValuedAttributes, expectedAttribute.getValue().toString());
             if(actualAttribute == null){
                 fail("MultiValueAttribute " + expectedAttribute.getValue() + " could not be found");
             }
@@ -287,14 +289,14 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
             assertEquals(expectedAttribute.getType(), actualAttribute.getType());
             assertEquals(expectedAttribute.getValue(), actualAttribute.getValue());
         }
-
     }
-
-    private MultiValuedAttribute getMultiAttributeWithValue(List<MultiValuedAttribute> multiValuedAttributes, String expectedValue){
-        MultiValuedAttribute mutliVal = null;
-        for(MultiValuedAttribute actAttribute : multiValuedAttributes){
-            if(actAttribute.getValue().toString().equals(expectedValue)){
-                mutliVal = actAttribute;
+    
+    private <T extends BasicMultiValuedAttribute> T getMultiAttributeWithValue(Class<T> clazz,  List<T> multiValuedAttributes, String expectedValue){
+        T mutliVal = null;
+        for(Object actAttribute : multiValuedAttributes){
+        	T real = clazz.cast(actAttribute);
+            if(real.getValue().toString().equals(expectedValue)){
+                mutliVal = real;
                 break;
             }
         }

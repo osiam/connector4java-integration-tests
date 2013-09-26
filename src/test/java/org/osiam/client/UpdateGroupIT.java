@@ -17,8 +17,9 @@ import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.NotFoundException;
 import org.osiam.client.update.UpdateGroup;
 import org.osiam.resources.scim.Address;
+import org.osiam.resources.scim.BasicMultiValuedAttribute;
 import org.osiam.resources.scim.Group;
-import org.osiam.resources.scim.MultiValuedAttribute;
+import org.osiam.resources.scim.Member;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -40,7 +41,6 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
     private static String ID_USER_HSIMPSON = "7d33bcbe-a54c-43d8-867e-f6146164941e";
     private static String ID_GROUP_01 = "69e1a5dc-89be-4343-976c-b5541af249f4";
     private static String ID_GROUP_02 = "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578";
-    private static String IRRELEVANT = "Irrelevant";
     private UpdateGroup updateGroup;
     private Group returnGroup;
     private Group originalGroup;
@@ -102,9 +102,9 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
 		createUpdateGroupWithAddingMembers();
         updateGroup();
         assertEquals(originalGroup.getMembers().size() + 2, returnGroup.getMembers().size()); 
-        MultiValuedAttribute value = getSingleMultiValueAttribute(returnGroup.getMembers(), ID_USER_HSIMPSON);
+        Member value = getSingleMember(returnGroup.getMembers(), ID_USER_HSIMPSON);
         assertNotNull(value);
-        value = getSingleMultiValueAttribute(returnGroup.getMembers(), ID_GROUP_02);
+        value = getSingleMember(returnGroup.getMembers(), ID_GROUP_02);
         assertNotNull(value);
     }
 	
@@ -121,9 +121,9 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
 		createUpdateGroupWithDeleteOneMembers();
         updateGroup();
         assertEquals(originalGroup.getMembers().size() - 2, returnGroup.getMembers().size()); 
-        MultiValuedAttribute value = getSingleMultiValueAttribute(returnGroup.getMembers(), ID_USER_HSIMPSON);
+        Member value = getSingleMember(returnGroup.getMembers(), ID_USER_HSIMPSON);
         assertNull(value);
-        value = getSingleMultiValueAttribute(returnGroup.getMembers(), ID_GROUP_01);
+        value = getSingleMember(returnGroup.getMembers(), ID_GROUP_01);
         assertNull(value);
     }
 
@@ -135,13 +135,13 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
 		updateGroup();
 		assertNotNull(returnGroup.getMembers());
 		assertEquals(1,returnGroup.getMembers().size());
-		MultiValuedAttribute value = getSingleMultiValueAttribute(returnGroup.getMembers(), ID_USER_HSIMPSON);
+		Member value = getSingleMember(returnGroup.getMembers(), ID_USER_HSIMPSON);
         assertNotNull(value);
 	}
 	
-	public boolean isValuePartOfMultivalueList(List<MultiValuedAttribute> list, String value){
+	public boolean isValuePartOfMultivalueList(List<BasicMultiValuedAttribute> list, String value){
 		if(list != null){
-			for (MultiValuedAttribute actAttribute : list) {
+			for (BasicMultiValuedAttribute actAttribute : list) {
 				if(actAttribute.getValue().equals(value)){
 					return true;
 				}
@@ -150,9 +150,21 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
 		return false;
 	}
 	
-	public MultiValuedAttribute getSingleMultiValueAttribute(Set<MultiValuedAttribute> multiValues, Object value){
+	public <T extends BasicMultiValuedAttribute> T getSingleMultiValueAttribute(Class<T> clazz, Set<T> multiValues, Object value){
 		if(multiValues != null){
-			for (MultiValuedAttribute actMultiValuedAttribute : multiValues) {
+			for (Object actMultiValuedAttribute : multiValues) {
+				T real = clazz.cast(actMultiValuedAttribute);
+				if(real.getValue().toString().equals(value.toString())){
+					return real;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public  Member getSingleMember(Set<Member> multiValues, Object value){
+		if(multiValues != null){
+			for (Member actMultiValuedAttribute : multiValues) {
 				if(actMultiValuedAttribute.getValue().toString().equals(value.toString())){
 					return actMultiValuedAttribute;
 				}
@@ -203,10 +215,10 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
     public void getOriginalGroup(){
         Group.Builder groupBuilder = new Group.Builder("irgendwas");
         
-        MultiValuedAttribute member01 = new MultiValuedAttribute.Builder().setValue(ID_USER_BTHOMSON).setType("hallo").build();
-        MultiValuedAttribute member02 = new MultiValuedAttribute.Builder().setValue(ID_USER_CMILLER).build();
-        MultiValuedAttribute member03 = new MultiValuedAttribute.Builder().setValue(ID_GROUP_01).build();
-        Set<MultiValuedAttribute> members = new HashSet<>();
+        Member member01 = new Member.Builder().setValue(ID_USER_BTHOMSON).build();
+        Member member02 = new Member.Builder().setValue(ID_USER_CMILLER).build();
+        Member member03 = new Member.Builder().setValue(ID_GROUP_01).build();
+        Set<Member> members = new HashSet<>();
         members.add(member01);
         members.add(member02);
         members.add(member03); 
