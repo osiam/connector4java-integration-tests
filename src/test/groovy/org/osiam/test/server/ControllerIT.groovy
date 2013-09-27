@@ -205,7 +205,7 @@ class ControllerIT extends AbstractIT {
         }
     }
 
-    def "REGT-OSNG-141: E-Mail address should not be unique. So two different users should be able to add the same address and getting displayed only the own entry"() {
+    def "REGT-OSNG-141: E-Mail address should not be unique. So two different users should be able to add the same address and getting displayed only the own entry."() {
 
         given: "a valid access token and two users with the same E-Mail address"
         AccessToken validAccessToken = osiamConnector.retrieveAccessToken()
