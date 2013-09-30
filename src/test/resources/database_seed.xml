@@ -82,7 +82,7 @@
     <scim_name id="48" familyname="Jensen" formatted="Ms. Barbara J Jensen III" givenname="Barbara"/>
     <scim_name id="51" familyname="Erick" formatted="Erick Willey" givenname="Willey"/>
 
-    <scim_roles multiValueId="90" value="USER"/>
+    <scim_roles multivalueid="90" value="USER"/>
 
     <scim_user password="42db3b474c2a54f6b1c3c352e4436274de6b0239432c9a6c2d51c62e54b28ad1e3ecbb306f7748890934e3dae4292e339189c8bb7af55f68de9855ca455f19e4"
                displayname="BarbaraJ." locale="de" nickname="Barbara" preferredlanguage="de" profileurl="http://babaraJ.com" timezone="UTC" title="Dr."

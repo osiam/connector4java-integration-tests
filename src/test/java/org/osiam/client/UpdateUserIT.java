@@ -203,8 +203,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 	    	assertEquals(ImsType.ICQ, ims.getType());//TODO der type wird nicht upgedatet
 	    	Photo photo = getSingleMultiValueAttribute(Photo.class, returnUser.getPhotos(), "photo01.jpg");
 	    	assertEquals(PhotoType.PHOTO, photo.getType());//TODO der type wird nicht upgedatet
-	    	Role role = getSingleMultiValueAttribute(Role.class, returnUser.getRoles(), "role01");//TODO der type wird nicht gespeichert und kann somit nicht geändert werden
-	    	assertEquals("other", role.getType());//TODO der type wird nicht gespeichert und kann somit nicht geändert werden
 	    	GroupRef userGroup = getSingleMultiValueAttribute(GroupRef.class, returnUser.getGroups(), "69e1a5dc-89be-4343-976c-b5541af249f4"); //TODO gruppen werden nicht angelegt
 	    	assertEquals(GroupRefType.INDIRECT, userGroup.getType());
     	}finally{
@@ -448,13 +446,13 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         photos.add(photo02);
         
         
-        Role role01 = new Role.Builder().setValue("role01").setType("some").build();
+        Role role01 = new Role.Builder().setValue("role01").build();
         Role role02 = new Role.Builder().setValue("role02").build();
         List<Role> roles = new ArrayList<>();
         roles.add(role01);
         roles.add(role02);
         
-        X509Certificate certificate01 = new X509Certificate.Builder().setValue("certificate01").setType("some").build();
+        X509Certificate certificate01 = new X509Certificate.Builder().setValue("certificate01").build();
         X509Certificate certificate02 = new X509Certificate.Builder().setValue("certificate02").build();
         List<X509Certificate> certificates = new ArrayList<>();
         certificates.add(certificate01);
@@ -534,7 +532,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     			.setPrimary(true).build(); //Now the other should not be primary anymore
     	Ims ims = new Ims.Builder().setValue("ims01").setType(ImsType.ICQ).build();
     	Photo photo = new Photo.Builder().setValue("photo01.jpg").setType(PhotoType.PHOTO).build(); 
-    	Role role = new Role.Builder().setValue("role01").setType("other").build();
+    	Role role = new Role.Builder().setValue("role01").build();
     	GroupRef group = new GroupRef.Builder().setValue("69e1a5dc-89be-4343-976c-b5541af249f4").setType(GroupRefType.INDIRECT).build();
     	
     	updateUser = new UpdateUser.Builder()
@@ -605,7 +603,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     	Ims ims = new Ims.Builder().setValue("ims03").build();
     	Photo photo = new Photo.Builder().setValue("photo03.jpg").build();
     	Role role = new Role.Builder().setValue("role03").build();
-    	X509Certificate certificate = new X509Certificate.Builder().setValue("certificate03").setType("some").build();
+    	X509Certificate certificate = new X509Certificate.Builder().setValue("certificate03").build();
     	GroupRef groupMembership = new GroupRef.Builder().setValue("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578").build();
     	
     	updateUser = new UpdateUser.Builder()

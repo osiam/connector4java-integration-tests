@@ -11,7 +11,6 @@ import org.dbunit.dataset.xml.FlatXmlDataSetBuilder
 import org.dbunit.operation.DatabaseOperation
 import org.osiam.client.oauth.AccessToken
 import org.osiam.resources.scim.Email
-import org.osiam.resources.scim.MultiValuedAttribute
 import org.osiam.resources.scim.User
 import org.osiam.resources.type.EmailType;
 import org.osiam.test.AbstractIT
