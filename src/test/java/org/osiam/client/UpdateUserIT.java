@@ -108,7 +108,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
             try {
                 // try to delete twice
                 updateUser();
-                // updateUser();
+                updateUser();
             } catch (Exception ex) {
                 // should run without exception
                 fail("Expected no exception, but got: " + ex.getMessage());
