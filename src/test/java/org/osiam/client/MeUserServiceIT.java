@@ -50,6 +50,21 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
         assertNull(name.getHonorificSuffix());
         assertNull(name.getMiddleName());
     }
+    
+    @Test
+    public void get_basic_me_returns_user() throws Exception {
+        givenAnAccessTokenForBJensen();
+        whenBasicUserIsDeserialized();
+
+        Name name = deserializedUser.getName();
+
+        assertEquals("Jensen", name.getFamilyName());
+        assertEquals("Ms. Barbara J Jensen III", name.getFormatted());
+        assertEquals("Barbara", name.getGivenName());
+        assertNull(name.getHonorificPrefix());
+        assertNull(name.getHonorificSuffix());
+        assertNull(name.getMiddleName());
+    }
 
     @Test
     public void emails_are_deserialized_correctly_for_user_bjensen() throws Exception {
@@ -122,6 +137,10 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     	givenAnAccessTokenForHSimpson();
     	deleteHSimpson();
     	whenUserIsDeserialized();
+    }
+    
+    private void whenBasicUserIsDeserialized() {
+        deserializedUser = oConnector.getMe(accessToken);
     }
     
     private void whenUserIsDeserialized() {

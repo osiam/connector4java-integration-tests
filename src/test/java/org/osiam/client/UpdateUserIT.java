@@ -427,7 +427,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         entitlements.add(entitlement01);
         entitlements.add(entitlement02);
         
-        GroupRef group01 = new GroupRef.Builder().setValue("69e1a5dc-89be-4343-976c-b5541af249f4").setType(GroupRefType.DIRECT).build();
+        GroupRef group01 = new GroupRef.Builder().setValue("69e1a5dc-89be-4343-976c-b5541af249f4").build();
         GroupRef group02 = new GroupRef.Builder().setValue("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578").build();
         List<GroupRef> groups = new ArrayList<>();
         groups.add(group01);
@@ -533,7 +533,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     	Ims ims = new Ims.Builder().setValue("ims01").setType(ImsType.ICQ).build();
     	Photo photo = new Photo.Builder().setValue("photo01.jpg").setType(PhotoType.PHOTO).build(); 
     	Role role = new Role.Builder().setValue("role01").build();
-    	GroupRef group = new GroupRef.Builder().setValue("69e1a5dc-89be-4343-976c-b5541af249f4").setType(GroupRefType.INDIRECT).build();
+    	GroupRef group = new GroupRef.Builder().setValue("69e1a5dc-89be-4343-976c-b5541af249f4").build();
     	
     	updateUser = new UpdateUser.Builder()
         					.addOrUpdateEmail(email)
