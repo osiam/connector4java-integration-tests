@@ -92,7 +92,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
             // update test user with update user
             updateUser();
             // check consistency of update return value and user in database and expect equality
-            assertTrue(returnUser.equals(databaseUser));
+            assertTrue(returnUser.equals(databaseUser));                                           
         } finally {
             oConnector.deleteUser(idExistingUser, accessToken);
         }
@@ -536,12 +536,12 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     	GroupRef group = new GroupRef.Builder().setValue("69e1a5dc-89be-4343-976c-b5541af249f4").build();
     	
     	updateUser = new UpdateUser.Builder()
-        					.addOrUpdateEmail(email)
-        					.addOrUpdatesPhoneNumber(phoneNumber)
-        					.addOrUpdatesPhoto(photo)
-        					.addOrUpdatesIms(ims)
-        					.addOrUpdateRole(role)
-        					.addOrUpdateGroupMembership(group)
+        					.addEmail(email)
+        					.addPhoneNumber(phoneNumber)
+        					.addPhoto(photo)
+        					.addIms(ims)
+        					.addRole(role)
+        					.addGroupMembership(group)
         					.build();
     }
     
@@ -570,23 +570,30 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     		}
 		}
     	
+    	Email email = new Email.Builder().setValue("hsimpson@atom-example.com").build();
+    	Entitlement entitlement = new Entitlement.Builder().setValue("right2").build();
+    	Ims ims = new Ims.Builder().setValue("ims01").build();
+    	PhoneNumber phoneNumber = new PhoneNumber.Builder().setValue("0245817964").build();
+    	Photo photo = new Photo.Builder().setValue("photo01.jpg").build();
+    	X509Certificate x509Certificate = new X509Certificate.Builder().setValue("certificate01").build();
     	updateUser = new UpdateUser.Builder() 
-        					.deleteEmail("hsimpson@atom-example.com")
-        					.deleteEntitlement("right2")
+        					.deleteEmail(email)
+        					.deleteEntitlement(entitlement)
         					.deleteGroup("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578")
-        					.deleteIms("ims01")
-        					.deletePhoneNumber("0245817964")
-        					.deletePhoto("photo01.jpg")
+        					.deleteIms(ims)
+        					.deletePhoneNumber(phoneNumber)
+        					.deletePhoto(photo)
         					.deleteRole("role01")
-        					.deleteX509Certificate("certificate01")
+        					.deleteX509Certificate(x509Certificate)
         					.deleteAddress(deleteAddress)
         					.build();
     }
     
     private void createUpdateUserWithWrongEmail(){
-
+    	
+    	Email email = new Email.Builder().setValue("test@test.com").build();
     	updateUser = new UpdateUser.Builder() 
-        					.deleteEmail("test@test.com")
+        					.deleteEmail(email)
         					.build();
     }
     
@@ -607,15 +614,15 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     	GroupRef groupMembership = new GroupRef.Builder().setValue("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578").build();
     	
     	updateUser = new UpdateUser.Builder()
-        					.addOrUpdateEmail(email)
-        					.addOrUpdatesPhoneNumber(phonenumber)
+        					.addEmail(email)
+        					.addPhoneNumber(phonenumber)
         					.addAddress(newSimpleAddress)
-        					.addOrUpdatesEntitlement(entitlement)
-        					.addOrUpdateGroupMembership(groupMembership) //TODO Gruppen werden nicht gespeichert 
-        					.addOrUpdatesIms(ims)
-        					.addOrUpdatesPhoto(photo)
-        					.addOrUpdateRole(role)
-        					.addOrUpdateX509Certificate(certificate)//TODO at the second run it will fail
+        					.addEntitlement(entitlement)
+        					.addGroupMembership(groupMembership) //TODO Gruppen werden nicht gespeichert 
+        					.addIms(ims)
+        					.addPhoto(photo)
+        					.addRole(role)
+        					.addX509Certificate(certificate)//TODO at the second run it will fail
         					.build();
     }
     
