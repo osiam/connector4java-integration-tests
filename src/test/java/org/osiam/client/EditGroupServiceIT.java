@@ -180,19 +180,19 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
     }
 
     private void initializeGroupWithEmptyDisplayName(){
-        newGroup = new Group.Builder("").build();
+        newGroup = new Group.Builder().setDisplayName("").build();
     }
 
     private void initializeSimpleGroup(){
-        newGroup = new Group.Builder(IRRELEVANT).build();
+        newGroup = new Group.Builder().setDisplayName(IRRELEVANT).build();
     }
 
     private void initializeSimpleGroupWithID(String id){
-        newGroup = new Group.Builder(IRRELEVANT).setId(id).build();
+        newGroup = new Group.Builder().setDisplayName(IRRELEVANT).setId(id).build();
     }
 
     private void initializeGroupWithExistingDisplayName(){
-        newGroup = new Group.Builder(NAME_EXISTING_GROUP).build();
+        newGroup = new Group.Builder().setDisplayName(NAME_EXISTING_GROUP).build();
     }
 
     private void returnGroupHasValidId(){

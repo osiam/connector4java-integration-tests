@@ -9,11 +9,9 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.UnauthorizedException;
-import org.osiam.resources.scim.BasicMultiValuedAttribute;
-import org.osiam.resources.scim.Email;
+import org.osiam.resources.scim.MultiValuedAttribute;
 import org.osiam.resources.scim.Name;
 import org.osiam.resources.scim.User;
-import org.osiam.resources.type.EmailType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -53,12 +51,12 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
         givenAValidUserID();
         whenUserIsDeserialized();
 
-        List<Email> emails = deserializedUser.getEmails();
+        List<MultiValuedAttribute> emails = deserializedUser.getEmails();
         assertEquals(1, emails.size());
-        Email email = emails.get(0);
+        MultiValuedAttribute email = emails.get(0);
 
         assertEquals("bjensen@example.com", email.getValue().toString());
-        assertEquals(EmailType.WORK, email.getType());
+        assertEquals("work", email.getType());
     }
 
     @Test
