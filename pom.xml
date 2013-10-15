@@ -46,7 +46,7 @@
         <spock.version>0.7-groovy-2.0</spock.version>
 
         <!-- OSIAM -->
-        <osiam.version>0.9-SNAPSHOT</osiam.version>
+        <osiam.version>0.10-SNAPSHOT</osiam.version>
         <osiam.connector4java.version>0.6-SNAPSHOT</osiam.connector4java.version>
         <scim.schema.version>0.22</scim.schema.version>
     </properties>
@@ -258,10 +258,17 @@
                     <scanIntervalSeconds>10</scanIntervalSeconds>
                     <stopPort>8005</stopPort>
                     <stopKey>STOP</stopKey>
-                    <war>${project.build.directory}/osiam-server-${osiam.version}</war>
+                    <contextHandlers>
+                        <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
+                            <war>${project.build.directory}/osiam-auth-server-${osiam.version}</war>
+                            <contextPath>/osiam-server</contextPath>
+                        </contextHandler>
+                    </contextHandlers>
+                    <war>${project.build.directory}/osiam-resource-server-${osiam.version}</war>
                     <webAppConfig>
-                        <contextPath>/osiam-server</contextPath>
+                        <contextPath>/osiam-resource-server</contextPath>
                     </webAppConfig>
+                    <jettyXml>src/test/resources/jetty.xml</jettyXml>
                 </configuration>
                 <executions>
                     <execution>
@@ -289,7 +296,7 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>download-osiam</id>
+                        <id>download-osiam-resource-server</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack</goal>
@@ -298,12 +305,31 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.osiam</groupId>
-                                    <artifactId>osiam-server</artifactId>
+                                    <artifactId>osiam-resource-server</artifactId>
                                     <version>${osiam.version}</version>
                                     <type>war</type>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/osiam-server-${osiam.version}</outputDirectory>
+                            <outputDirectory>${project.build.directory}/osiam-resource-server-${osiam.version}</outputDirectory>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>download-osiam-auth-server</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.osiam</groupId>
+                                    <artifactId>osiam-auth-server</artifactId>
+                                    <version>${osiam.version}</version>
+                                    <type>war</type>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/osiam-auth-server-${osiam.version}</outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
                     </execution>
@@ -322,7 +348,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                ${project.build.directory}/osiam-server-${osiam.version}/WEB-INF/
+                                ${project.build.directory}/osiam-resource-server-${osiam.version}/WEB-INF/
                             </outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>
@@ -343,7 +369,10 @@
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                ${project.build.directory}/osiam-server-${osiam.version}/WEB-INF/classes
+                                ${project.build.directory}/osiam-resource-server-${osiam.version}/WEB-INF/classes
+                            </outputDirectory>
+                            <outputDirectory>
+                                ${project.build.directory}/osiam-auth-server-${osiam.version}/WEB-INF/classes
                             </outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>
