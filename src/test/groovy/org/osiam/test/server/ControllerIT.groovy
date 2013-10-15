@@ -10,9 +10,8 @@ import org.dbunit.dataset.IDataSet
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder
 import org.dbunit.operation.DatabaseOperation
 import org.osiam.client.oauth.AccessToken
-import org.osiam.resources.scim.Email
+import org.osiam.resources.scim.MultiValuedAttribute
 import org.osiam.resources.scim.User
-import org.osiam.resources.type.EmailType;
 import org.osiam.test.AbstractIT
 import org.springframework.context.ApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext
@@ -208,8 +207,8 @@ class ControllerIT extends AbstractIT {
 
         given: "a valid access token and two users with the same E-Mail address"
         AccessToken validAccessToken = osiamConnector.retrieveAccessToken()
-        def emailUserOne = new Email.Builder().setType(EmailType.WORK).setValue("sameMail@osiam.de").build()
-        def emailUserTwo = new Email.Builder().setType(EmailType.HOME).setValue("sameMail@osiam.de").build()
+        def emailUserOne = new MultiValuedAttribute.Builder().setType("work").setValue("sameMail@osiam.de").build()
+        def emailUserTwo = new MultiValuedAttribute.Builder().setType("home").setValue("sameMail@osiam.de").build()
         def user1 = new User.Builder("UserOne").setEmails([emailUserOne] as List).setExternalId("pew1").build()
         def user2 = new User.Builder("UserTwo").setEmails([emailUserTwo] as List).setExternalId("pew2").build()
 

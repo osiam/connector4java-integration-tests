@@ -245,7 +245,7 @@ public class ScopeIT {
     }
     
     private void createTestGroup(){
-    	Group group = new Group.Builder("test").build();
+    	Group group = new Group.Builder().setDisplayName("test").build();
     	oConnector.createGroup(group, accessToken);
     }
     
