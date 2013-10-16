@@ -261,7 +261,7 @@
                     <contextHandlers>
                         <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
                             <war>${project.build.directory}/osiam-auth-server-${osiam.version}</war>
-                            <contextPath>/osiam-server</contextPath>
+                            <contextPath>/osiam-auth-server</contextPath>
                         </contextHandler>
                     </contextHandlers>
                     <war>${project.build.directory}/osiam-resource-server-${osiam.version}</war>

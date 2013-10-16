@@ -79,7 +79,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
             // update test user with update user
             updateUser();
             // check consistency of update return value and user in database and expect equality
-            assertTrue(returnUser.equals(databaseUser));                                           
+            assertTrue(returnUser.equals(databaseUser));
         } finally {
             oConnector.deleteUser(idExistingUser, accessToken);
         }
@@ -196,7 +196,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
     }
-    
+
 	@Test
     public void update_all_single_values(){
 		try{
@@ -220,7 +220,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
     }
-	
+
 	@Test
     public void delete_all_single_values(){
 		try{
@@ -241,7 +241,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
     }
-	
+
 	@Test
 	public void update_password() {
 		try{
@@ -253,7 +253,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
 	}
-		
+
 	@Test
 	public void change_one_field_and_other_attributes_are_the_same(){
 		try{
@@ -275,7 +275,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
 	}
-	
+
 	@Test (expected = ConflictException.class)
 	@Ignore ("No exception is thrown an the moment")
 	public void username_is_set_no_empty_string_is_thrown_probably(){
@@ -288,7 +288,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
 	}
-	
+
 	public boolean isValuePartOfMultivalueList(List<MultiValuedAttribute> list, String value){
 		if(list != null){
 			for (MultiValuedAttribute actAttribute : list) {
@@ -299,7 +299,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 		}
 		return false;
 	}
-	
+
 	public boolean isValuePartOfAddressList(List<Address> list, String formated){
 		if(list != null){
 			for (Address actAttribute : list) {
@@ -310,7 +310,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 		}
 		return false;
 	}
-	
+
 	public MultiValuedAttribute getSingleMultiValueAttribute(List<MultiValuedAttribute> multiValues, Object value){
 		if(multiValues != null){
 			for (MultiValuedAttribute actMultiValuedAttribute : multiValues) {
@@ -322,7 +322,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 		fail("The value " + value + " could not be found");
 		return null; //Can't be reached
 	}
-	
+
     public void delete_multivalue_attributes_which_is_not_available() {
         try {
             getOriginalUser("dma");
@@ -403,45 +403,45 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         Address simpleAddress02 = new Address.Builder().setCountry("en").setFormatted("address formated 02").setLocality("New York").setPostalCode("123456").build();
         List<Address> addresses = new ArrayList<>();
         addresses.add(simpleAddress01);
-        addresses.add(simpleAddress02);   
-        
+        addresses.add(simpleAddress02);
+
         MultiValuedAttribute entitlement01 = new MultiValuedAttribute.Builder().setValue("right1").build();
         MultiValuedAttribute entitlement02 = new MultiValuedAttribute.Builder().setValue("right2").build();
         List<MultiValuedAttribute> entitlements = new ArrayList<>();
         entitlements.add(entitlement01);
         entitlements.add(entitlement02);
-        
+
         MultiValuedAttribute group01 = new MultiValuedAttribute.Builder().setValue("69e1a5dc-89be-4343-976c-b5541af249f4").build();
         MultiValuedAttribute group02 = new MultiValuedAttribute.Builder().setValue("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578").build();
         List<MultiValuedAttribute> groups = new ArrayList<>();
         groups.add(group01);
         groups.add(group02);
-        
+
         MultiValuedAttribute ims01 = new MultiValuedAttribute.Builder().setValue("ims01").setType("skype").build();
         MultiValuedAttribute ims02 = new MultiValuedAttribute.Builder().setValue("ims02").build();
         List<MultiValuedAttribute> ims = new ArrayList<>();
         ims.add(ims01);
         ims.add(ims02);
-        
+
         MultiValuedAttribute photo01 = new MultiValuedAttribute.Builder().setValue("photo01.jpg").setType("thumbnail").build();
         MultiValuedAttribute photo02 = new MultiValuedAttribute.Builder().setValue("photo02.jpg").build();
         List<MultiValuedAttribute> photos = new ArrayList<>();
         photos.add(photo01);
         photos.add(photo02);
-        
-        
+
+
         MultiValuedAttribute role01 = new MultiValuedAttribute.Builder().setValue("role01").build();
         MultiValuedAttribute role02 = new MultiValuedAttribute.Builder().setValue("role02").build();
         List<MultiValuedAttribute> roles = new ArrayList<>();
         roles.add(role01);
         roles.add(role02);
-        
+
         MultiValuedAttribute certificate01 = new MultiValuedAttribute.Builder().setValue("certificate01").build();
         MultiValuedAttribute certificate02 = new MultiValuedAttribute.Builder().setValue("certificate02").build();
         List<MultiValuedAttribute> certificates = new ArrayList<>();
         certificates.add(certificate01);
         certificates.add(certificate02);
-        
+
         Name name = new Name.Builder().setFamilyName("familiyName").setFormatted("formatted Name").setGivenName("givenName").build();
 
         userBuilder.setNickName("irgendwas")
@@ -508,17 +508,17 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         					.updateName(newName)
         					.updateActive(true).build();
     }
-    
+
     private void createUpdateUserWithMultiUpdateFields(){
     	MultiValuedAttribute email = new MultiValuedAttribute.Builder()
     					.setValue("hsimpson@home-example.com").setType("other").setPrimary(true).build();
     	MultiValuedAttribute phoneNumber = new MultiValuedAttribute.Builder().setValue("0245817964").setType("other")
     			.setPrimary(true).build(); //Now the other should not be primary anymore
     	MultiValuedAttribute ims = new MultiValuedAttribute.Builder().setValue("ims01").setType("icq").build();
-    	MultiValuedAttribute photo = new MultiValuedAttribute.Builder().setValue("photo01.jpg").setType("photo").build(); 
+    	MultiValuedAttribute photo = new MultiValuedAttribute.Builder().setValue("photo01.jpg").setType("photo").build();
     	MultiValuedAttribute role = new MultiValuedAttribute.Builder().setValue("role01").build();
     	MultiValuedAttribute group = new MultiValuedAttribute.Builder().setValue("69e1a5dc-89be-4343-976c-b5541af249f4").build();
-    	
+
     	updateUser = new UpdateUser.Builder()
         					.addEmail(email)
         					.addPhoneNumber(phoneNumber)
@@ -528,9 +528,9 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         					.addGroupMembership(group)
         					.build();
     }
-    
+
     private void createUpdateUserWithDeleteFields(){
-        updateUser = new UpdateUser.Builder() 
+        updateUser = new UpdateUser.Builder()
         					.deleteDisplayName()
         					.deleteNickName()
         					.deleteLocal()
@@ -543,7 +543,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         					.deleteExternalId()
         					.build();
     }
-    
+
     private void createUpdateUserWithMultiDeleteFields(){
 
     	Address deleteAddress = null;
@@ -553,14 +553,14 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     			break;
     		}
 		}
-    	
+
     	MultiValuedAttribute email = new MultiValuedAttribute.Builder().setValue("hsimpson@atom-example.com").build();
     	MultiValuedAttribute entitlement = new MultiValuedAttribute.Builder().setValue("right2").build();
     	MultiValuedAttribute ims = new MultiValuedAttribute.Builder().setValue("ims01").build();
     	MultiValuedAttribute phoneNumber = new MultiValuedAttribute.Builder().setValue("0245817964").build();
     	MultiValuedAttribute photo = new MultiValuedAttribute.Builder().setValue("photo01.jpg").build();
     	MultiValuedAttribute x509Certificate = new MultiValuedAttribute.Builder().setValue("certificate01").build();
-    	updateUser = new UpdateUser.Builder() 
+    	updateUser = new UpdateUser.Builder()
         					.deleteEmail(email)
         					.deleteEntitlement(entitlement)
         					.deleteGroup("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578")
@@ -572,23 +572,23 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         					.deleteAddress(deleteAddress)
         					.build();
     }
-    
+
     private void createUpdateUserWithWrongEmail(){
-    	
+
     	MultiValuedAttribute email = new MultiValuedAttribute.Builder().setValue("test@test.com").build();
-    	updateUser = new UpdateUser.Builder() 
+    	updateUser = new UpdateUser.Builder()
         					.deleteEmail(email)
         					.build();
     }
-    
+
     private void createUpdateUserWithMultiAddFields(){
 
     	MultiValuedAttribute email = new MultiValuedAttribute.Builder()
     					.setValue("mac@muster.de").setType("home").build();
-    	
+
     	MultiValuedAttribute phonenumber = new MultiValuedAttribute.Builder()
 		.setValue("99999999991").setType("home").build();
-    	
+
     	Address newSimpleAddress = new Address.Builder().setCountry("fr").setFormatted("new Address").setLocality("New City").setPostalCode("66666").build();
     	MultiValuedAttribute entitlement = new MultiValuedAttribute.Builder().setValue("right3").build();
     	MultiValuedAttribute ims = new MultiValuedAttribute.Builder().setValue("ims03").build();
@@ -596,22 +596,22 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     	MultiValuedAttribute role = new MultiValuedAttribute.Builder().setValue("role03").build();
     	MultiValuedAttribute certificate = new MultiValuedAttribute.Builder().setValue("certificate03").build();
     	MultiValuedAttribute groupMembership = new MultiValuedAttribute.Builder().setValue("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578").build();
-    	
+
     	updateUser = new UpdateUser.Builder()
         					.addEmail(email)
         					.addPhoneNumber(phonenumber)
         					.addAddress(newSimpleAddress)
         					.addEntitlement(entitlement)
-        					.addGroupMembership(groupMembership) //TODO Gruppen werden nicht gespeichert 
+        					.addGroupMembership(groupMembership) //TODO Gruppen werden nicht gespeichert
         					.addIms(ims)
         					.addPhoto(photo)
         					.addRole(role)
         					.addX509Certificate(certificate)//TODO at the second run it will fail
         					.build();
     }
-    
 
-    
+
+
     private void createUpdateUserWithMultiAllDeleteFields(){
 
     	updateUser = new UpdateUser.Builder()
@@ -649,7 +649,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     private void makeNewConnectionWithNewPassword() {
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(ENDPOINT_ADDRESS).
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(AUTH_ENDPOINT_ADDRESS).
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
@@ -661,7 +661,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     private void makeNewConnection() {
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(ENDPOINT_ADDRESS).
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(AUTH_ENDPOINT_ADDRESS).
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).

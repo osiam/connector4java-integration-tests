@@ -22,15 +22,18 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
 public class LoginClientCredentialsIT {
-	
-    protected String endpointAddress = "http://localhost:8180/osiam-server";
+
+    protected static final String AUTH_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-auth-server";
+    protected static final String RESOURCE_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-resource-server";
     protected String clientId = "example-client";
     protected String clientSecret = "secret";
     protected OsiamConnector oConnector;
-    
+
 	@Test
 	public void login_with_client_credentials(){
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(endpointAddress).
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
+                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
+                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId(clientId).
                 setClientSecret(clientSecret).
                 setGrantType(GrantType.CLIENT_CREDENTIALS).
@@ -41,7 +44,9 @@ public class LoginClientCredentialsIT {
 
 	@Test (expected = UnauthorizedException.class)
 	public void login_with_wrong_client_credentials(){
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(endpointAddress).
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
+                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
+                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId(clientId).
                 setClientSecret("wrong" + clientSecret).
                 setGrantType(GrantType.CLIENT_CREDENTIALS).
@@ -49,10 +54,12 @@ public class LoginClientCredentialsIT {
         oConnector = oConBuilder.build();
         oConnector.retrieveAccessToken();
 	}
-	
+
     @Test (expected = ConflictException.class)
     public void get_actual_user_rasies_exception(){
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(endpointAddress).
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
+                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
+                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId(clientId).
                 setClientSecret(clientSecret).
                 setGrantType(GrantType.CLIENT_CREDENTIALS).
@@ -61,5 +68,5 @@ public class LoginClientCredentialsIT {
         AccessToken accessToken = oConnector.retrieveAccessToken();
         oConnector.getMe(accessToken);
     }
-	
+
 }

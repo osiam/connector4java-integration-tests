@@ -1,6 +1,5 @@
 package org.osiam.test.server
 
-import groovyx.net.http.ContentEncoding
 import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
@@ -52,13 +51,13 @@ class ControllerIT extends AbstractIT {
         AccessToken validAccessToken = osiamConnector.retrieveAccessToken()
 
         when: "a request is sent"
-        def http = new HTTPBuilder(OSIAM_ENDPOINT)
+        def http = new HTTPBuilder(RESOURCE_ENDPOINT)
 
         def responseStatusCode
         def responseContentType
 
         http.request(Method.GET, contentType) { req ->
-            uri.path = OSIAM_ENDPOINT + requestPath
+            uri.path = RESOURCE_ENDPOINT + requestPath
             headers."Authorization" = "Bearer " + validAccessToken.getToken()
 
             // response handler for a success response code:
@@ -103,7 +102,7 @@ class ControllerIT extends AbstractIT {
         AccessToken validAccessToken = osiamConnector.retrieveAccessToken()
 
         when: "a request is sent"
-        def http = new HTTPBuilder(OSIAM_ENDPOINT)
+        def http = new HTTPBuilder(RESOURCE_ENDPOINT)
 
         def responseStatusCode
         def responseContentType
@@ -112,7 +111,7 @@ class ControllerIT extends AbstractIT {
 
 
         http.request(Method.GET, ContentType.JSON) { req ->
-            uri.path = OSIAM_ENDPOINT + "/Users"
+            uri.path = RESOURCE_ENDPOINT + "/Users"
             uri.query = [filter: searchString]
             headers."Authorization" = "Bearer " + validAccessToken.getToken()
 
@@ -172,13 +171,13 @@ class ControllerIT extends AbstractIT {
         AccessToken validAccessToken = osiamConnector.retrieveAccessToken()
 
         when: "a filter request matching two users is sent"
-        def http = new HTTPBuilder(OSIAM_ENDPOINT)
+        def http = new HTTPBuilder(RESOURCE_ENDPOINT)
 
         def responseStatusCode
         def responseContent
 
         http.request(Method.GET, ContentType.JSON) { req ->
-            uri.path = OSIAM_ENDPOINT + "/Users"
+            uri.path = RESOURCE_ENDPOINT + "/Users"
             uri.query = [filter: '(userName eq "cmiller" or userName eq "hsimpson") and meta.created gt "2003-05-23T13:12:45.672"']
             headers."Authorization" = "Bearer " + validAccessToken.getToken()
 
@@ -213,7 +212,7 @@ class ControllerIT extends AbstractIT {
         def user2 = new User.Builder("UserTwo").setEmails([emailUserTwo] as List).setExternalId("pew2").build()
 
         when: "a add user request is sent"
-        def http = new HTTPBuilder(OSIAM_ENDPOINT)
+        def http = new HTTPBuilder(RESOURCE_ENDPOINT)
 
         def responseStatusCodeUser1
         def responseStatusCodeUser2
@@ -223,7 +222,7 @@ class ControllerIT extends AbstractIT {
 
         //Adding user one
         http.request(Method.POST, ContentType.JSON) { req ->
-            uri.path = OSIAM_ENDPOINT + "/Users"
+            uri.path = RESOURCE_ENDPOINT + "/Users"
             body = user1
 
             headers."Authorization" = "Bearer " + validAccessToken.getToken()
@@ -235,7 +234,7 @@ class ControllerIT extends AbstractIT {
         }
         //Adding user two
         http.request(Method.POST, ContentType.JSON) { req ->
-            uri.path = OSIAM_ENDPOINT + "/Users"
+            uri.path = RESOURCE_ENDPOINT + "/Users"
             body = user2
 
             headers."Authorization" = "Bearer " + validAccessToken.getToken()

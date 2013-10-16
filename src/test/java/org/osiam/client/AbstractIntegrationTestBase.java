@@ -18,7 +18,8 @@ public abstract class AbstractIntegrationTestBase {
     protected static final String INVALID_STRING = "invalid";
     protected static final String DELETE_USER_ID = "618b398c-0110-43f2-95df-d1bc4e7d2b4a";
     protected static final String VALID_GROUP_ID = "69e1a5dc-89be-4343-976c-b5541af249f4";
-    protected static final String ENDPOINT_ADDRESS = "http://localhost:8180/osiam-server";
+    protected static final String AUTH_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-auth-server";
+    protected static final String RESOURCE_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-resource-server";
     protected static final String CLIENT_ID = "example-client";
     protected static final String CLIENT_SECRET = "secret";
     protected OsiamConnector oConnector;
@@ -26,7 +27,9 @@ public abstract class AbstractIntegrationTestBase {
 
     @Before
     public void abstractSetUp() throws Exception {
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(ENDPOINT_ADDRESS).
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
+                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
+                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
@@ -36,9 +39,11 @@ public abstract class AbstractIntegrationTestBase {
         oConnector = oConBuilder.build();
         accessToken = oConnector.retrieveAccessToken();
     }
-    
+
     protected void givenAnAccessTokenForOneSecond() throws Exception {
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(ENDPOINT_ADDRESS).
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
+                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
+                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId("example-client-2").
                 setClientSecret("secret1").
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).

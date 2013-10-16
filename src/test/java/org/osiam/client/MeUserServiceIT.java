@@ -49,7 +49,7 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
         assertNull(name.getHonorificSuffix());
         assertNull(name.getMiddleName());
     }
-    
+
     @Test
     public void get_basic_me_returns_user() throws Exception {
         givenAnAccessTokenForBJensen();
@@ -77,7 +77,7 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
         assertEquals("bjensen@example.com", email.getValue().toString());
         assertEquals("work", email.getType());
     }
-    
+
     @Test
     public void name_is_deserialized_correctly_for_user_hsimpson() throws Exception {
         givenAnAccessTokenForHSimpson();
@@ -122,7 +122,7 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
         whenUserIsDeserialized();
         fail();
     }
-    
+
     @Test(expected = UnauthorizedException.class)
     public void access_token_is_expired() throws Exception {
         givenAnAccessTokenForOneSecond();
@@ -137,19 +137,19 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     	deleteHSimpson();
     	whenUserIsDeserialized();
     }
-    
+
     private void whenBasicUserIsDeserialized() {
         deserializedUser = oConnector.getMe(accessToken);
     }
-    
+
     private void whenUserIsDeserialized() {
         deserializedUser = oConnector.getMe(accessToken);
     }
-    
+
     private void deleteHSimpson(){
     	oConnector.deleteUser("7d33bcbe-a54c-43d8-867e-f6146164941e", accessToken);
     }
-    
+
     private List<MultiValuedAttribute> sortEmails(List<MultiValuedAttribute> emails) {
         Collections.sort(emails, new Comparator<MultiValuedAttribute>() {
             @Override
@@ -157,12 +157,12 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
                 return o1.getType().compareTo(o2.getType());
             }
         });
-        
+
         return emails;
     }
-    
+
     private void givenAnAccessTokenForBJensen() throws Exception {
-        OsiamConnector.Builder authBuilder = new OsiamConnector.Builder(ENDPOINT_ADDRESS).
+        OsiamConnector.Builder authBuilder = new OsiamConnector.Builder(AUTH_ENDPOINT_ADDRESS).
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
@@ -174,7 +174,7 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     private void givenAnAccessTokenForHSimpson() throws Exception {
-        OsiamConnector.Builder authBuilder = new OsiamConnector.Builder(ENDPOINT_ADDRESS).
+        OsiamConnector.Builder authBuilder = new OsiamConnector.Builder(AUTH_ENDPOINT_ADDRESS).
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
@@ -184,5 +184,5 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
         oConnector = authBuilder.build();
         accessToken = oConnector.retrieveAccessToken();
     }
-       
+
 }
