@@ -6,7 +6,6 @@ import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -70,7 +69,7 @@ public class LoginOAuth2IT {
     }
 
     @Test
-    public void test_successful_login() throws ClientProtocolException, IOException {
+    public void test_successful_login() throws IOException {
         givenAuthCodeResponse();
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
@@ -78,7 +77,7 @@ public class LoginOAuth2IT {
     }
 
     @Test
-    public void login_and_get_me_user() throws ClientProtocolException, IOException {
+    public void login_and_get_me_user() throws IOException {
         givenAuthCodeResponse();
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
@@ -86,7 +85,7 @@ public class LoginOAuth2IT {
     }
 
     @Test
-    public void test_successful_login_while_using_httpResponse() throws ClientProtocolException, IOException {
+    public void test_successful_login_while_using_httpResponse() throws IOException {
         givenAuthCodeResponse();
         givenAuthCode();
         givenAccessTokenUsingHttpResponse();
@@ -94,7 +93,7 @@ public class LoginOAuth2IT {
     }
 
     @Test(expected = ConflictException.class)
-    public void getting_acces_token_two_times_raises_exception() throws ClientProtocolException, IOException {
+    public void getting_acces_token_two_times_raises_exception() throws IOException {
         givenAuthCodeResponse();
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
@@ -103,7 +102,7 @@ public class LoginOAuth2IT {
     }
 
     @Test(expected = ForbiddenException.class)
-    public void user_denied_recognized_correctly() throws ClientProtocolException, IOException {
+    public void user_denied_recognized_correctly() throws IOException {
         givenDenyResponse();
         givenAccessTokenUsingHttpResponse();
         fail("expected excaption ");
@@ -117,7 +116,7 @@ public class LoginOAuth2IT {
         accessToken = oConnector.retrieveAccessToken(authCodeResponse);
     }
 
-    private void givenAuthCodeResponse() throws ClientProtocolException, IOException {
+    private void givenAuthCodeResponse() throws IOException {
         String currentRedirectUri;
 
         {
@@ -170,7 +169,7 @@ public class LoginOAuth2IT {
         }
     }
 
-    private void givenDenyResponse() throws ClientProtocolException, IOException {
+    private void givenDenyResponse() throws IOException {
         String currentRedirectUri;
 
         {
