@@ -1,5 +1,6 @@
 package org.osiam.client;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.connector.OsiamConnector;
@@ -56,6 +57,7 @@ public class LoginClientCredentialsIT {
 	}
 
     @Test (expected = ConflictException.class)
+    @Ignore("Users/me is not available at this time")
     public void get_actual_user_rasies_exception(){
         OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
                 setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).

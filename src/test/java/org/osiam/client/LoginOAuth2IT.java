@@ -148,6 +148,7 @@ public class LoginOAuth2IT {
             HttpGet httpGet = new HttpGet(currentRedirectUri);
             httpGet.getParams().setParameter(ClientPNames.COOKIE_POLICY,
                     CookiePolicy.NETSCAPE);
+            httpGet.getParams().setBooleanParameter("http.protocol.handle-redirects",false);
             defaultHttpClient.execute(httpGet);
             httpGet.releaseConnection();
         }
