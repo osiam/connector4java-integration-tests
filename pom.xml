@@ -426,7 +426,7 @@
                         </dependencies>
                         <configuration>
                             <driver>org.h2.Driver</driver>
-                            <url>jdbc:h2:tcp://localhost/${project.build.directory}/osiam</url>
+                            <url>jdbc:h2:tcp://localhost/mem:osiam;DB_CLOSE_DELAY=-1</url>
                             <username>sa</username>
                             <password>sa</password>
                             <src>src/test/resources/database_seed.xml</src>
@@ -439,7 +439,7 @@
                                     <goal>operation</goal>
                                 </goals>
                                 <configuration>
-                                    <url>jdbc:h2:tcp://localhost/${project.build.directory}/osiam</url>
+                                    <url>jdbc:h2:tcp://localhost/mem:osiam;DB_CLOSE_DELAY=-1</url>
                                     <format>flat</format>
                                 </configuration>
                             </execution>
@@ -449,7 +449,7 @@
                                     <goal>export</goal>
                                 </goals>
                                 <configuration>
-                                    <url>jdbc:h2:tcp://localhost/${project.build.directory}/osiam</url>
+                                    <url>jdbc:h2:tcp://localhost/mem:osiam;DB_CLOSE_DELAY=-1</url>
                                     <dest>src/test/resources/database_dump.xml</dest>
                                     <format>flat</format>
                                 </configuration>
