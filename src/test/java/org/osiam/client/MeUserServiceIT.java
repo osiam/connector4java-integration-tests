@@ -162,7 +162,9 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     private void givenAnAccessTokenForBJensen() throws Exception {
-        OsiamConnector.Builder authBuilder = new OsiamConnector.Builder(AUTH_ENDPOINT_ADDRESS).
+        OsiamConnector.Builder authBuilder = new OsiamConnector.Builder().
+                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
+                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
@@ -174,7 +176,9 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     private void givenAnAccessTokenForHSimpson() throws Exception {
-        OsiamConnector.Builder authBuilder = new OsiamConnector.Builder(AUTH_ENDPOINT_ADDRESS).
+        OsiamConnector.Builder authBuilder = new OsiamConnector.Builder().
+                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
+                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).

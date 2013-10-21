@@ -649,7 +649,9 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     private void makeNewConnectionWithNewPassword() {
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(AUTH_ENDPOINT_ADDRESS).
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
+                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
+                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
@@ -661,7 +663,9 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     private void makeNewConnection() {
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder(AUTH_ENDPOINT_ADDRESS).
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
+                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
+                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
