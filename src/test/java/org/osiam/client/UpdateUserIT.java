@@ -40,7 +40,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     private static String IRRELEVANT = "Irrelevant";
 
     @Test
-    @Ignore ("Ignored because of several bugs in the OSIAM server.")
+    @Ignore ("Not yet implemented")
     public void delete_multivalue_attributes(){
     	try{
 	    	getOriginalUser("dma");
@@ -69,7 +69,8 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     	}
     }
 
-    @Ignore("Return user and database user not consistent yet. Check this always in updateUser() once consistency is reached and delete this test. Also should implement equals on User.")
+    @Test
+    @Ignore("Returned user and database user are not consistent yet. Check this always in updateUser() once consistency is reached and delete this test. Also should implement equals on User.")
     public void compare_returned_user_with_database_user() {
         try {
             // create test user
@@ -86,7 +87,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    @Ignore("Ignored due to single deletion is currently not working!")
+    @Ignore("Single deletion is currently not working!")
     public void REGT_015_delete_multivalue_attributes_twice() {
         try {
             getOriginalUser("dma");
@@ -126,7 +127,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
             assertNull(returnUser.getEmails());
             assertNull(returnUser.getAddresses());
             assertNull(returnUser.getEntitlements());
-            assertNull(returnUser.getGroups());//TODO da Gruppen nicht gespeichert werden sind sie immer null
+            assertNull(returnUser.getGroups());//TODO Since Groups are not stored, they are always null
             assertNull(returnUser.getIms());
             assertNull(returnUser.getPhoneNumbers());
             assertNull(returnUser.getPhotos());

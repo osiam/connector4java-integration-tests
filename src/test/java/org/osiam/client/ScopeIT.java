@@ -1,6 +1,7 @@
 package org.osiam.client;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.connector.OsiamConnector;
@@ -186,6 +187,7 @@ public class ScopeIT {
     }
 
     @Test
+    @Ignore("/User/me is no longer available and '/me' is not yet supported by connector")
     public void try_to_get_actual_user(){
     	oConnector = oConBuilder.setScope(Scope.GET).build();
     	retrieveAccessToken();
@@ -236,6 +238,7 @@ public class ScopeIT {
     }
 
     @Test
+    @Ignore("/User/me is no longer available and '/me' is not yet supported by connector")
     public void try_to_get_actual_user_with_string_scope(){
     	oConnector = oConBuilder.setScope("GET").build();
     	retrieveAccessToken();

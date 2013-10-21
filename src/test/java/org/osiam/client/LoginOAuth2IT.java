@@ -14,6 +14,7 @@ import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.connector.OsiamConnector;
@@ -70,23 +71,24 @@ public class LoginOAuth2IT {
 
     @Test
     public void test_successful_login() throws IOException {
-        givenAuthCodeResponse();
+        givenValidAuthCode();
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
         assertTrue(accessToken != null);
     }
 
     @Test
+    @Ignore("/User/me is no longer available and '/me' is not yet supported by connector")
     public void login_and_get_me_user() throws IOException {
-        givenAuthCodeResponse();
+        givenValidAuthCode();
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
-        meUserIsCorrectReturned();
+        meUserIsCorrectlyReturned();
     }
 
     @Test
     public void test_successful_login_while_using_httpResponse() throws IOException {
-        givenAuthCodeResponse();
+        givenValidAuthCode();
         givenAuthCode();
         givenAccessTokenUsingHttpResponse();
         assertTrue(accessToken != null);
@@ -94,7 +96,7 @@ public class LoginOAuth2IT {
 
     @Test(expected = ConflictException.class)
     public void getting_acces_token_two_times_raises_exception() throws IOException {
-        givenAuthCodeResponse();
+        givenValidAuthCode();
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
         givenAccessTokenUsingAuthCode();
@@ -105,7 +107,7 @@ public class LoginOAuth2IT {
     public void user_denied_recognized_correctly() throws IOException {
         givenDenyResponse();
         givenAccessTokenUsingHttpResponse();
-        fail("expected excaption ");
+        fail("exception expected");
     }
 
     private void givenAccessTokenUsingAuthCode() {
@@ -116,7 +118,7 @@ public class LoginOAuth2IT {
         accessToken = oConnector.retrieveAccessToken(authCodeResponse);
     }
 
-    private void givenAuthCodeResponse() throws IOException {
+    private void givenValidAuthCode() throws IOException {
         String currentRedirectUri;
 
         {
@@ -148,7 +150,7 @@ public class LoginOAuth2IT {
             HttpGet httpGet = new HttpGet(currentRedirectUri);
             httpGet.getParams().setParameter(ClientPNames.COOKIE_POLICY,
                     CookiePolicy.NETSCAPE);
-            httpGet.getParams().setBooleanParameter("http.protocol.handle-redirects",false);
+            httpGet.getParams().setBooleanParameter("http.protocol.handle-redirects", false);
             defaultHttpClient.execute(httpGet);
             httpGet.releaseConnection();
         }
@@ -181,7 +183,7 @@ public class LoginOAuth2IT {
 
         {
             HttpPost httpPost = new HttpPost(
-                    "http://localhost:8180/osiam-server/login.do");
+                    AUTH_ENDPOINT_ADDRESS + "/login.do");
 
             List<NameValuePair> loginCredentials = new ArrayList<>();
             loginCredentials
@@ -206,7 +208,7 @@ public class LoginOAuth2IT {
 
         {
             HttpPost httpPost = new HttpPost(
-                    "http://localhost:8180/osiam-server/oauth/authorize");
+                    AUTH_ENDPOINT_ADDRESS + "/oauth/authorize");
 
             List<NameValuePair> loginCredentials = new ArrayList<>();
             loginCredentials.add(new BasicNameValuePair("user_oauth_approval",
@@ -238,7 +240,7 @@ public class LoginOAuth2IT {
         }
     }
 
-    private void meUserIsCorrectReturned() {
+    private void meUserIsCorrectlyReturned() {
         User user = oConnector.getMe(accessToken);
         assertEquals("marissa", user.getUserName());
     }
