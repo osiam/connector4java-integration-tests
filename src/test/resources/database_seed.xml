@@ -3,7 +3,7 @@
     <database_scheme_version version="0.02"/>
     <osiam_client internal_id="3" id="example-client" redirect_uri="http://localhost:5000/oauth2" client_secret="secret"
                   accesstokenvalidityseconds="2342" refreshtokenvalidityseconds="2342" validityinseconds="1337"
-                  implicit_approval="false" expiry="2014-12-31 23:59:59.999"/>
+                  implicit_approval="false" expiry="1970-01-01 00:00:01"/>
     <osiam_client_grants id="3" grants="authorization_code"/>
     <osiam_client_grants id="3" grants="refresh-token"/>
     <osiam_client_grants id="3" grants="password"/>
@@ -16,7 +16,7 @@
 
     <osiam_client internal_id="80" id="example-client-2" redirect_uri="http://localhost:5001/oauth2" client_secret="secret1"
                   accesstokenvalidityseconds="1" refreshtokenvalidityseconds="1" validityinseconds="1"
-                  implicit_approval="false" expiry="2014-12-31 23:59:59.999" />
+                  implicit_approval="false" expiry="1970-01-01 00:00:01" />
     <osiam_client_grants id="80" grants="authorization_code"/>
     <osiam_client_grants id="80" grants="refresh-token"/>
     <osiam_client_grants id="80" grants="password"/>
