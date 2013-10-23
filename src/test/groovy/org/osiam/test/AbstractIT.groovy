@@ -14,7 +14,7 @@ import spock.lang.Specification
  */
 abstract class AbstractIT extends Specification {
 
-    private static final String CLIENT_ID = "example-client"
+    protected static final String CLIENT_ID = "example-client"
     private static final String CLIENT_SECRET = "secret"
 
     private static final String USER_NAME = "marissa"
@@ -26,8 +26,10 @@ abstract class AbstractIT extends Specification {
     protected OsiamConnector osiamConnector;
     protected AccessToken accessToken;
 
+    protected OsiamConnector osiamConnectorForClientCredentialsGrant;
+
     def setup() {
-        OsiamConnector.Builder connectorBuilder = new OsiamConnector.Builder().
+        osiamConnector = new OsiamConnector.Builder().
                 setAuthServiceEndpoint(AUTH_ENDPOINT).
                 setResourceEndpoint(RESOURCE_ENDPOINT).
                 setClientId(CLIENT_ID).
@@ -35,7 +37,15 @@ abstract class AbstractIT extends Specification {
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
                 setUserName(USER_NAME).
                 setPassword(USER_PASSWORD).
-                setScope(Scope.ALL)
-        osiamConnector = connectorBuilder.build()
+                setScope(Scope.ALL).build()
+
+        osiamConnectorForClientCredentialsGrant = new OsiamConnector.Builder().
+                setAuthServiceEndpoint(AUTH_ENDPOINT).
+                setResourceEndpoint(RESOURCE_ENDPOINT).
+                setClientId(CLIENT_ID).
+                setClientSecret(CLIENT_SECRET).
+                setGrantType(GrantType.CLIENT_CREDENTIALS).
+                setScope(Scope.ALL).build()
     }
+
 }

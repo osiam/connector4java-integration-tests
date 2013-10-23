@@ -26,7 +26,7 @@ import javax.sql.DataSource
  */
 class ControllerIT extends AbstractIT {
 
-    def setupSpec() {
+/*    def setupSpec() {
         // Load Spring context configuration.
         ApplicationContext ac = new ClassPathXmlApplicationContext("context.xml")
         // Get dataSource configuration.
@@ -43,7 +43,7 @@ class ControllerIT extends AbstractIT {
         finally {
             connection.close();
         }
-    }
+    }*/
 
     @Unroll
     def "REGT-001-#testCase: An API request missing an accept header with scope #scope and content type #contentType on path #requestPath should return HTTP status code #expectedResponseCode and content type #expectedResponseType."() {
@@ -253,5 +253,35 @@ class ControllerIT extends AbstractIT {
         assert responseContentUser1.emails[0].value == responseContentUser2.emails[0].value
         assert responseContentUser1.emails[0].type != responseContentUser2.emails[0].type
         assert responseContentUser1.emails[0].primary == responseContentUser2.emails[0].primary
+    }
+
+    def "REGT-OSNG-37: The token validation should not raise an exception in case of the OAuth2 client credentials grant because of missing user authentication"() {
+
+        given: "a valid access token"
+        AccessToken validAccessToken = osiamConnectorForClientCredentialsGrant.retrieveAccessToken()
+        def responseStatusCode
+        def responseContent
+
+        when: "retrieving a client"
+        def http = new HTTPBuilder(RESOURCE_ENDPOINT)
+
+        http.request(Method.GET, ContentType.JSON) { req ->
+            uri.path = RESOURCE_ENDPOINT + "/Client/" + CLIENT_ID
+
+            headers."Authorization" = "Bearer " + validAccessToken.getToken()
+
+            response.success = { resp, json ->
+                responseStatusCode = resp.statusLine.statusCode
+                responseContent = json
+            }
+
+            response.failure = { resp ->
+                responseStatusCode = resp.statusLine.statusCode
+            }
+        }
+
+        then: "the client should be retrieved without triggering an exception"
+        assert responseStatusCode == 200
+        assert responseContent.id == CLIENT_ID
     }
 }
