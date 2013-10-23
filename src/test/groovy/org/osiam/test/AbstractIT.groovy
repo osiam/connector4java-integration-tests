@@ -1,10 +1,19 @@
 package org.osiam.test
 
+import org.dbunit.database.DatabaseDataSourceConnection
+import org.dbunit.database.IDatabaseConnection
+import org.dbunit.dataset.IDataSet
+import org.dbunit.dataset.xml.FlatXmlDataSetBuilder
+import org.dbunit.operation.DatabaseOperation
 import org.osiam.client.connector.OsiamConnector
 import org.osiam.client.oauth.AccessToken
 import org.osiam.client.oauth.GrantType
 import org.osiam.client.oauth.Scope
+import org.springframework.context.ApplicationContext
+import org.springframework.context.support.ClassPathXmlApplicationContext
 import spock.lang.Specification
+
+import javax.sql.DataSource
 
 /**
  * Base class for integration tests.
@@ -48,4 +57,23 @@ abstract class AbstractIT extends Specification {
                 setScope(Scope.ALL).build()
     }
 
+
+    def setupSpec() {
+        // Load Spring context configuration.
+        ApplicationContext ac = new ClassPathXmlApplicationContext("context.xml")
+        // Get dataSource configuration.
+        DataSource dataSource = (DataSource) ac.getBean("dataSource")
+        // Establish database connection.
+        IDatabaseConnection connection = new DatabaseDataSourceConnection(dataSource)
+        // Load the initialization data from file.
+        IDataSet initData = new FlatXmlDataSetBuilder().build(ac.getResource("database_seed.xml").getFile())
+
+        // Insert initialization data into database.
+        try {
+            DatabaseOperation.CLEAN_INSERT.execute(connection, initData)
+        }
+        finally {
+            connection.close();
+        }
+    }
 }

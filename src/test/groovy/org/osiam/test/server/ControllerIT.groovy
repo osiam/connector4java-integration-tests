@@ -3,20 +3,11 @@ package org.osiam.test.server
 import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
-import org.dbunit.database.DatabaseDataSourceConnection
-import org.dbunit.database.IDatabaseConnection
-import org.dbunit.dataset.IDataSet
-import org.dbunit.dataset.xml.FlatXmlDataSetBuilder
-import org.dbunit.operation.DatabaseOperation
 import org.osiam.client.oauth.AccessToken
 import org.osiam.resources.scim.MultiValuedAttribute
 import org.osiam.resources.scim.User
 import org.osiam.test.AbstractIT
-import org.springframework.context.ApplicationContext
-import org.springframework.context.support.ClassPathXmlApplicationContext
 import spock.lang.Unroll
-
-import javax.sql.DataSource
 
 /**
  * Base class for server integration tests.
@@ -25,25 +16,6 @@ import javax.sql.DataSource
  * @version: 1.0
  */
 class ControllerIT extends AbstractIT {
-
-/*    def setupSpec() {
-        // Load Spring context configuration.
-        ApplicationContext ac = new ClassPathXmlApplicationContext("context.xml")
-        // Get dataSource configuration.
-        DataSource dataSource = (DataSource) ac.getBean("dataSource")
-        // Establish database connection.
-        IDatabaseConnection connection = new DatabaseDataSourceConnection(dataSource)
-        // Load the initialization data from file.
-        IDataSet initData = new FlatXmlDataSetBuilder().build(ac.getResource("database_seed.xml").getFile())
-
-        // Insert initialization data into database.
-        try {
-            DatabaseOperation.CLEAN_INSERT.execute(connection, initData)
-        }
-        finally {
-            connection.close();
-        }
-    }*/
 
     @Unroll
     def "REGT-001-#testCase: An API request missing an accept header with scope #scope and content type #contentType on path #requestPath should return HTTP status code #expectedResponseCode and content type #expectedResponseType."() {
