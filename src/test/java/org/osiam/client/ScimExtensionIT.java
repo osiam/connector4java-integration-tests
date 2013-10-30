@@ -13,15 +13,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DbUnitTestExecutionListener.class })
-@DatabaseSetup(value="/database_seed.xml", type=DatabaseOperation.INSERT)
-@DatabaseTearDown(value="/database_seed.xml",type=DatabaseOperation.DELETE_ALL)
+@DatabaseSetup(value="/database_seed.xml")
 public class ScimExtensionIT extends AbstractIntegrationTestBase {
 
     private static final String URN = "extension";
