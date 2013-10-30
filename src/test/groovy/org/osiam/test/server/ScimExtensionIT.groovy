@@ -13,6 +13,8 @@ import spock.lang.Ignore
 
 class ScimExtensionIT extends AbstractIT {
 
+    def static URN = 'extension'
+    
     def setupUser(user) {
 
         AccessToken validAccessToken = osiamConnector.retrieveAccessToken()
@@ -42,27 +44,19 @@ class ScimExtensionIT extends AbstractIT {
     def "Acceptance-Test: HTTP-POST: Adding a scim user with extension schema data to the database"() {
         given:
         AccessToken validAccessToken = osiamConnector.retrieveAccessToken()
-        def extension = new Extension('extension', [gender:'male', size:'1334', birth:new Date().toString(), newsletter:'false',married:'false'])
+        def extension = new Extension(URN, [gender: 'male', size: '1334', birth: new Date().toString(), newsletter: 'false', married:'false'])
         def user = new User.Builder("userName")
                 .setPassword("password")
-                .addExtension('extension', extension)
+                .addExtension(URN, extension)
                 .build();
 
         when:
-        def userCreated = osiamConnector.createUser(user, validAccessToken)
+        User userCreated = osiamConnector.createUser(user, validAccessToken)
 
         then:
         userCreated.userName == user.userName
-
-        /*assert responseContent.userName == "George Alexander"
-        assert responseContent.schemas.size() == 2
-        assert responseContent.id != null
-        assert responseContent.meta != null
-        assert responseContent.extension.gender == "male"
-        assert responseContent.extension.size == 1334
-        assert responseContent.extension.birth == date
-        assert responseContent.extension.newsletter == false
-        assert responseContent.extension.married == false*/
+        userCreated.extensions.size() == 1
+        userCreated.extensions[URN].fields.size() == 5
     }
 
     def "Acceptance-Test: HTTP-GET: Retrieving complete data with minimum 0f 5 additional attributes on a single user record"() {
