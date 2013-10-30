@@ -48,7 +48,7 @@
         <!-- OSIAM -->
         <osiam.version>0.11-SNAPSHOT</osiam.version>
         <osiam.connector4java.version>0.6-SNAPSHOT</osiam.connector4java.version>
-        <scim.schema.version>0.23-SNAPSHOT</scim.schema.version>
+        <scim.schema.version>0.30-SNAPSHOT</scim.schema.version>
     </properties>
 
     <repositories>
@@ -431,12 +431,16 @@
                             </dependency>
                         </dependencies>
                         <configuration>
+                            <dataTypeFactoryName>org.dbunit.ext.h2.H2DataTypeFactory</dataTypeFactoryName>
                             <driver>org.h2.Driver</driver>
-                            <url>jdbc:h2:tcp://localhost/mem:osiam;DB_CLOSE_DELAY=-1</url>
+                            <url>jdbc:h2:tcp://localhost/mem:osiam</url>
                             <username>sa</username>
                             <password>sa</password>
                             <src>src/test/resources/database_seed.xml</src>
                             <type>CLEAN_INSERT</type>
+                            <format>flat</format>
+                            <ordered>true</ordered>
+                            <dest>src/test/resources/database_dump.xml</dest>
                         </configuration>
                         <executions>
                             <execution>
@@ -444,21 +448,12 @@
                                 <goals>
                                     <goal>operation</goal>
                                 </goals>
-                                <configuration>
-                                    <url>jdbc:h2:tcp://localhost/mem:osiam;DB_CLOSE_DELAY=-1</url>
-                                    <format>flat</format>
-                                </configuration>
                             </execution>
                             <execution>
                                 <id>dump</id>
                                 <goals>
                                     <goal>export</goal>
                                 </goals>
-                                <configuration>
-                                    <url>jdbc:h2:tcp://localhost/mem:osiam;DB_CLOSE_DELAY=-1</url>
-                                    <dest>src/test/resources/database_dump.xml</dest>
-                                    <format>flat</format>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

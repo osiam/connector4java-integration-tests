@@ -3,19 +3,48 @@ package org.osiam.test.server
 import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
+
+import javax.sql.DataSource
+
+import org.dbunit.database.DatabaseDataSourceConnection
+import org.dbunit.database.IDatabaseConnection
+import org.dbunit.dataset.IDataSet
+import org.dbunit.dataset.xml.FlatXmlDataSetBuilder
+import org.dbunit.operation.DatabaseOperation
 import org.osiam.client.oauth.AccessToken
+import org.osiam.resources.scim.Extension
+import org.osiam.resources.scim.User
 import org.osiam.test.AbstractIT
+import org.springframework.context.ApplicationContext
+import org.springframework.context.support.ClassPathXmlApplicationContext
+
 import spock.lang.Ignore
 
-/**
- * Base class for scim extension integration tests.
- * User: Jochen Todea
- * Date: 23.10.13
- * Time: 09:24
- * Created: with Intellij IDEA
- */
+
+@Ignore('migrating to java junit tests')
 class ScimExtensionIT extends AbstractIT {
 
+    def static URN = 'extension'
+    
+    def setupSpec() {
+        // Load Spring context configuration.
+        ApplicationContext ac = new ClassPathXmlApplicationContext("context.xml")
+        // Get dataSource configuration.
+        DataSource dataSource = (DataSource) ac.getBean("dataSource")
+        // Establish database connection.
+        IDatabaseConnection connection = new DatabaseDataSourceConnection(dataSource)
+        // Load the initialization data from file.
+        IDataSet initData = new FlatXmlDataSetBuilder().build(ac.getResource("database_seed_extension.xml").getFile())
+
+        // Insert initialization data into database.
+        try {
+            DatabaseOperation.CLEAN_INSERT.execute(connection, initData)
+        }
+        finally {
+            connection.close();
+        }
+    }
+    
     def setupUser(user) {
 
         AccessToken validAccessToken = osiamConnector.retrieveAccessToken()
@@ -43,45 +72,21 @@ class ScimExtensionIT extends AbstractIT {
     }
 
     def "Acceptance-Test: HTTP-POST: Adding a scim user with extension schema data to the database"() {
-
         given:
         AccessToken validAccessToken = osiamConnector.retrieveAccessToken()
-        def date = new Date()
-        def user = '{"userName":"George Alexander","password":"topSecret!","extension":{"gender":"male","size":"1334","birth":' + date + ',"newsletter":false,"married":false}}'
+        def extension = new Extension(URN, [gender: 'male', size: '1334', birth: new Date().toString(), newsletter: 'false', married:'false'])
+        def user = new User.Builder("userName")
+                .setPassword("password")
+                .addExtension(URN, extension)
+                .build();
 
         when:
-        def http = new HTTPBuilder(RESOURCE_ENDPOINT)
-
-        def responseStatusCode
-        def responseContent
-
-        http.request(Method.POST, ContentType.JSON) { req ->
-            uri.path = RESOURCE_ENDPOINT + "/Users"
-            body = user
-            headers."Authorization" = "Bearer " + validAccessToken.getToken()
-
-            response.success = { resp, json ->
-                responseStatusCode = resp.statusLine.statusCode
-                responseContent = json
-            }
-
-            response.failure = { resp ->
-                responseStatusCode = resp.statusLine.statusCode
-            }
-
-        }
+        User userCreated = osiamConnector.createUser(user, validAccessToken)
 
         then:
-        assert responseStatusCode == 200
-        assert responseContent.userName == "George Alexander"
-        assert responseContent.schemas.size() == 2
-        assert responseContent.id != null
-        assert responseContent.meta != null
-        assert responseContent.extension.gender == "male"
-        assert responseContent.extension.size == 1334
-        assert responseContent.extension.birth == date
-        assert responseContent.extension.newsletter == false
-        assert responseContent.extension.married == false
+        userCreated.userName == user.userName
+        userCreated.extensions.size() == 1
+        userCreated.extensions[URN].fields.size() == 5
     }
 
     def "Acceptance-Test: HTTP-GET: Retrieving complete data with minimum 0f 5 additional attributes on a single user record"() {

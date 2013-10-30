@@ -39,7 +39,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @DatabaseSetup("/database_seed.xml")
 public class EditUserServiceIT extends AbstractIntegrationTestBase{
 
-    
+
     private static String ID_EXISTING_USER = "7d33bcbe-a54c-43d8-867e-f6146164941e";
     private static final String IRRELEVANT = "irrelevant";
     private String newId = UUID.randomUUID().toString();
@@ -48,7 +48,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     private User RETURN_USER;
     private User DB_USER;
     private String validId = null;
-    
+
     private Query query;
 
     @Test (expected = ConflictException.class)
@@ -61,13 +61,6 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     @Test (expected = ConflictException.class)
     public void create_user_with_existing_username_raises_exception(){
         initializeUserWithExistingUserName();
-        createUser();
-        fail("Exception excpected");
-    }
-
-    @Test (expected = ConflictException.class)
-    public void create_empty_user_raises_exception(){
-        initializeUserWithEmptyUserName();
         createUser();
         fail("Exception excpected");
     }
@@ -136,22 +129,21 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
             }
       }
     }
-    
+
     @Test
     public void user_is_deleted() throws Exception {
     	givenAValidUserIDForDeletion();
         whenUserIsDeleted();
         thenUserIsRemoveFromServer();
     }
-    
-    
+
     @Test (expected = NoResultException.class)
     public void group_is_not_deleted() throws Exception {
     	givenAValidGroupIDForDeletion();
         whenGroupIsDeleted();
         fail();
     }
-    
+
     @Test (expected = NoResultException.class)
     public void delete_user_two_times() throws Exception {
     	givenAValidUserIDForDeletion();
@@ -160,7 +152,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
         whenUserIsDeleted();
         fail();
     }
-    
+
     @Test(expected = UnauthorizedException.class)
     public void provide_an_invalid_access_token_raises_exception() throws Exception {
     	givenAValidUserIDForDeletion();
@@ -171,10 +163,6 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
 
     private void initializeUserWithNoUserName(){
         NEW_USER = new User.Builder().build();
-    }
-
-    private void initializeUserWithEmptyUserName(){
-        NEW_USER = new User.Builder("").build();
     }
 
     private void initializeSimpleUser(){
@@ -288,7 +276,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
             assertEquals(expectedAttribute.getValue(), actualAttribute.getValue());
         }
     }
-    
+
     private MultiValuedAttribute getMultiAttributeWithValue(List<MultiValuedAttribute> multiValuedAttributes, String expectedValue){
         MultiValuedAttribute mutliVal = null;
         for(MultiValuedAttribute actAttribute : multiValuedAttributes){
@@ -323,19 +311,19 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
             assertEquals(expectedAddress.getStreetAddress(), actualAddress.getStreetAddress());
         }
     }
-    
+
     private void whenUserIsDeleted() {
         oConnector.deleteUser(validId, accessToken);
     }
-    
+
     private void givenAValidUserIDForDeletion() throws Exception {
         validId = DELETE_USER_ID;
     }
-    
+
     private void givenAValidGroupIDForDeletion() throws Exception {
         validId = VALID_GROUP_ID;
     }
-    
+
     private void whenGroupIsDeleted() {
         oConnector.deleteUser(validId, accessToken);
     }
@@ -343,7 +331,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     private void returnAndDbUserHaveSameUserName(){
         assertEquals(NEW_USER.getUserName(), DB_USER.getUserName());
     }
-    
+
     private void thenUserIsRemoveFromServer() {
     	try {
             oConnector.getUser(validId, accessToken);
