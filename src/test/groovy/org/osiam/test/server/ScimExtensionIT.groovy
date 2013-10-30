@@ -42,10 +42,10 @@ class ScimExtensionIT extends AbstractIT {
     def "Acceptance-Test: HTTP-POST: Adding a scim user with extension schema data to the database"() {
         given:
         AccessToken validAccessToken = osiamConnector.retrieveAccessToken()
-        def extension = new Extension([gender:'male', size:'1334', birth:new Date().toString(), newsletter:'false',married:'false'])
+        def extension = new Extension('extension', [gender:'male', size:'1334', birth:new Date().toString(), newsletter:'false',married:'false'])
         def user = new User.Builder("userName")
                 .setPassword("password")
-                .addExtension("extension", extension)
+                .addExtension('extension', extension)
                 .build();
 
         when:
