@@ -3,6 +3,10 @@ package org.osiam.client;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.resources.scim.Extension;
@@ -18,12 +22,14 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DbUnitTestExecutionListener.class })
-@DatabaseSetup(value="/database_seed.xml")
+@DatabaseSetup(value = "/database_seed_extensions.xml")
+@DatabaseTearDown(value = "/database_seed_extensions.xml", type = DatabaseOperation.DELETE_ALL)
 public class ScimExtensionIT extends AbstractIntegrationTestBase {
 
     private static final String URN = "extension";
 
     @Test
+  //  @ExpectedDatabase(value = "/database_expected_extensions.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void adding_a_user_with_extension_data_to_database_works() {
         // given
         Map<String,String> extensionData = new HashMap<>();
@@ -40,7 +46,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
 
         //when:
         User userCreated = oConnector.createUser(user, accessToken);
-        
+
         //then
         userCreated.getUserName().equals("userName");
     }
