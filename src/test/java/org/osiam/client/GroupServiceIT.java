@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
 
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +29,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
+@DatabaseTearDown(value = "/database_seed.xml", type = DatabaseOperation.DELETE_ALL)
 public class GroupServiceIT extends AbstractIntegrationTestBase {
 
     private static final String EXPECTED_GROUPNAME = "test_group01";
@@ -34,7 +37,7 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
 	static final private String EXPECTED_CREATED_DATE = "2013-07-31 21:43:18";
     private String idStandardGroup;
     private Date created;
-        	
+
     @Before
     public void setUp() throws Exception {
         created = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(EXPECTED_CREATED_DATE);
@@ -44,7 +47,7 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
     public void ensure_all_values_are_deserialized_correctly() throws Exception {
         given_a_test_group_ID();
         Group actualGroup = oConnector.getGroup(idStandardGroup, accessToken);
-        
+
         assertEquals(created, actualGroup.getMeta().getCreated());
         assertEquals(created, actualGroup.getMeta().getLastModified());
         assertEquals(VALID_GROUP_ID, actualGroup.getId());
@@ -63,7 +66,7 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
     public void get_an_invalid_group_raises_exception() throws Exception {
         oConnector.getGroup(INVALID_ID, accessToken);
     }
-    
+
     @Test(expected = UnauthorizedException.class)
     public void access_token_is_expired() throws Exception {
     	given_a_test_group_ID();
@@ -72,9 +75,9 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
         oConnector.getGroup(INVALID_ID, accessToken);
         fail();
     }
-    
+
     private void given_a_test_group_ID() {
         idStandardGroup = VALID_GROUP_ID;
     }
-    
+
 }

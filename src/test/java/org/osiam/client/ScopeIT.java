@@ -1,5 +1,7 @@
 package org.osiam.client;
 
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -27,6 +29,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
+@DatabaseTearDown(value = "/database_seed.xml", type = DatabaseOperation.DELETE_ALL)
 public class ScopeIT {
 
     static final private String VALID_USER_ID = "834b410a-943b-4c80-817a-4465aed037bc";

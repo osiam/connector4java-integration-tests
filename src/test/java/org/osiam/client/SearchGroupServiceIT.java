@@ -5,6 +5,8 @@ import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
 
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.query.Query;
@@ -24,6 +26,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
+@DatabaseTearDown(value = "/database_seed.xml", type = DatabaseOperation.DELETE_ALL)
 public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
 
     private static final String EXPECTED_GROUP_NAME = "test_group01";
