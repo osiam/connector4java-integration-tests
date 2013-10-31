@@ -23,7 +23,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DbUnitTestExecutionListener.class })
 @DatabaseSetup(value = "/database_seed_extensions.xml")
-@DatabaseTearDown(value = "/database_seed_extensions.xml", type = DatabaseOperation.DELETE_ALL)
+//@DatabaseTearDown(value = "/database_seed_extensions.xml", type = DatabaseOperation.DELETE_ALL)
 public class ScimExtensionIT extends AbstractIntegrationTestBase {
 
     private static final String URN = "extension";
@@ -50,4 +50,22 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
         //then
         userCreated.getUserName().equals("userName");
     }
+
+    @Test
+    //  @ExpectedDatabase(value = "/database_expected_extensions.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
+    public void updating_a_user_with_extension_data_to_database_works() {
+        // given
+        User existingUser = oConnector.getUser("df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d4",accessToken);
+
+        Extension extension = existingUser.getExtension(URN);
+        extension.setField("gender", "female");
+
+        oConnector.updateUser(existingUser, accessToken);
+
+
+
+
+    }
+
+
 }
