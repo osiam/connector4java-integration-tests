@@ -6,6 +6,8 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.UnauthorizedException;
@@ -26,6 +28,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
+@DatabaseTearDown(value = "/database_seed.xml", type = DatabaseOperation.DELETE_ALL)
 public class UserServiceIT extends AbstractIntegrationTestBase {
 
     private String validID = null;
@@ -83,7 +86,7 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
         whenUserIsDeserialized();
         fail();
     }
-    
+
     private void whenUserIsDeserialized() {
         deserializedUser = oConnector.getUser(validID, accessToken);
     }

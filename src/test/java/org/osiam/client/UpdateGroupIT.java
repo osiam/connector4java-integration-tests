@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +34,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
+@DatabaseTearDown(value = "/database_seed.xml", type = DatabaseOperation.DELETE_ALL)
 public class UpdateGroupIT extends AbstractIntegrationTestBase{
 
     private static String idExistingGroup = "7d33bcbe-a54c-43d8-867e-f6146164941e";
@@ -52,7 +55,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
         assertEquals("DisplayName", returnGroup.getDisplayName());
         assertEquals("ExternalId", returnGroup.getExternalId());
     }
-	
+
 	@Test
     public void delete_all_single_values(){
 		getOriginalGroup();
@@ -60,7 +63,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
         updateGroup();
         assertNull(returnGroup.getExternalId());
     }
-	
+
 	@Test
     public void delete_all_members(){
 		getOriginalGroup();
@@ -69,7 +72,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
         assertNotNull(originalGroup.getMembers());
         assertNull(returnGroup.getMembers());
     }
-	
+
 	@Test (expected = NotFoundException.class)
     public void try_update_with_wrong_id_raises_exception(){
         getOriginalGroup();
@@ -77,7 +80,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
         idExistingGroup = UUID.randomUUID().toString();
         updateGroup();
     }
-	
+
 	@Test (expected = NotFoundException.class)
     public void try_update_with_user_id_raises_exception(){
         getOriginalGroup();
@@ -85,7 +88,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
         idExistingGroup = ID_USER_HSIMPSON;
         updateGroup();
     }
-	
+
 	@Test (expected = ConflictException.class)
 	@Ignore //not exception is thrown at the moment
     public void set_display_name_to_empty_string_to_raise_exception(){
@@ -94,32 +97,32 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
         updateGroup();
         fail("exception expected");
     }
-	
-	@Test 
+
+	@Test
     public void add_new_mebers(){
 		getOriginalGroup();
 		createUpdateGroupWithAddingMembers();
         updateGroup();
-        assertEquals(originalGroup.getMembers().size() + 2, returnGroup.getMembers().size()); 
+        assertEquals(originalGroup.getMembers().size() + 2, returnGroup.getMembers().size());
         MultiValuedAttribute value = getSingleMember(returnGroup.getMembers(), ID_USER_HSIMPSON);
         assertNotNull(value);
         value = getSingleMember(returnGroup.getMembers(), ID_GROUP_02);
         assertNotNull(value);
     }
-	
+
 	@Test (expected = NotFoundException.class)
     public void add_invalid_mebers(){
 		getOriginalGroup();
 		createUpdateGroupWithAddingInvalidMembers();
         updateGroup();
     }
-	
+
 	@Test
     public void delete_one_user_and_one_group_member(){
 		getOriginalGroup();
 		createUpdateGroupWithDeleteOneMembers();
         updateGroup();
-        assertEquals(originalGroup.getMembers().size() - 2, returnGroup.getMembers().size()); 
+        assertEquals(originalGroup.getMembers().size() - 2, returnGroup.getMembers().size());
         MultiValuedAttribute value = getSingleMember(returnGroup.getMembers(), ID_USER_HSIMPSON);
         assertNull(value);
         value = getSingleMember(returnGroup.getMembers(), ID_GROUP_01);
@@ -137,7 +140,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
 		MultiValuedAttribute value = getSingleMember(returnGroup.getMembers(), ID_USER_HSIMPSON);
         assertNotNull(value);
 	}
-	
+
 	public boolean isValuePartOfMultivalueList(List<MultiValuedAttribute> list, String value){
 		if(list != null){
 			for (MultiValuedAttribute actAttribute : list) {
@@ -148,7 +151,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
 		}
 		return false;
 	}
-	
+
 	public MultiValuedAttribute getSingleMultiValueAttribute(Set<MultiValuedAttribute> multiValues, Object value){
 		if(multiValues != null){
 			for (MultiValuedAttribute actMultiValuedAttribute : multiValues) {
@@ -159,7 +162,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
 		}
 		return null;
 	}
-	
+
 	public  MultiValuedAttribute getSingleMember(Set<MultiValuedAttribute> multiValues, Object value){
 		if(multiValues != null){
 			for (MultiValuedAttribute actMultiValuedAttribute : multiValues) {
@@ -170,63 +173,63 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
 		}
 		return null;
 	}
-	
+
     private void createUpdateGroupWithDeleteFields(){
         updateGroup = new UpdateGroup.Builder()
         					.deleteExternalId()
         					.build();
     }
-    
+
     private void createUpdateGroupWithDeletedMembers(){
         updateGroup = new UpdateGroup.Builder()
         					.deleteMembers()
         					.build();
     }
-    
+
     private void createUpdateGroupWithAddingMembers(){
         updateGroup = new UpdateGroup.Builder()
         					.addMember(ID_USER_HSIMPSON)
         					.addMember(ID_GROUP_02)
         					.build();
     }
-    
+
     private void createUpdateGroupWithAddingInvalidMembers(){
         updateGroup = new UpdateGroup.Builder()
         					.addMember(UUID.randomUUID().toString())
         					.build();
     }
-    
+
     private void createUpdateGroupWithDeleteOneMembers(){
         updateGroup = new UpdateGroup.Builder()
         					.deleteMember(ID_USER_CMILLER)
         					.deleteMember(ID_GROUP_01)
         					.build();
     }
-    
+
     private void createUpdateGroupWithDeleteAllMembersAndAddingOneMember(){
         updateGroup = new UpdateGroup.Builder()
         					.deleteMembers()
         					.addMember(ID_USER_HSIMPSON)
         					.build();
     }
-	
+
     public void getOriginalGroup(){
         Group.Builder groupBuilder = new Group.Builder().setDisplayName("irgendwas");
-        
+
         MultiValuedAttribute member01 = new MultiValuedAttribute.Builder().setValue(ID_USER_BTHOMSON).build();
         MultiValuedAttribute member02 = new MultiValuedAttribute.Builder().setValue(ID_USER_CMILLER).build();
         MultiValuedAttribute member03 = new MultiValuedAttribute.Builder().setValue(ID_GROUP_01).build();
         Set<MultiValuedAttribute> members = new HashSet<>();
         members.add(member01);
         members.add(member02);
-        members.add(member03); 
+        members.add(member03);
 
         		groupBuilder
         			.setMembers(members)
         			.setExternalId("irgendwas")
         			;
-        Group newGroup = groupBuilder.build(); 
-        
+        Group newGroup = groupBuilder.build();
+
         originalGroup = oConnector.createGroup(newGroup, accessToken);
         idExistingGroup = originalGroup.getId();
     }
@@ -237,17 +240,17 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase{
         					.updateExternalId("ExternalId")
         					.build();
     }
-    
+
     private void createUpdateUserWithEmptyDisplayName(){
         updateGroup = new UpdateGroup.Builder()
         					.updateDisplayName("")
         					.build();
     }
-        
+
     private void updateGroup(){
        returnGroup = oConnector.updateGroup(idExistingGroup, updateGroup, accessToken);
     }
-    
+
 	public Address getAddress(List<Address> addresses, String formated){
 		if(addresses != null){
 			for (Address actAddress : addresses) {

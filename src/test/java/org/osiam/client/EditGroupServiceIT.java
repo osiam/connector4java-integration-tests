@@ -10,6 +10,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.UUID;
 
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
@@ -30,10 +32,11 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
-@DatabaseSetup("/database_seed.xml")
+@DatabaseSetup(value = "/database_seed.xml")
+@DatabaseTearDown(value = "/database_seed.xml", type = DatabaseOperation.DELETE_ALL)
 public class EditGroupServiceIT extends AbstractIntegrationTestBase{
 
-    
+
     private static String ID_EXISTING_GROUP = "69e1a5dc-89be-4343-976c-b5541af249f4";
     private static String NEW_ID = UUID.randomUUID().toString();
     private static String NAME_EXISTING_GROUP = "test_group01";
@@ -112,14 +115,14 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
         assertNotNull(dbGroup);
         assertEquals(returnGroup.getId(), dbGroup.getId());
     }
-    
+
     @Test
     public void group_is_deleted() throws Exception {
     	given_a_test_group_ID();
     	whenGroupIsDeleted();
     	thenGroupIsRemoveFromServer();
     }
-    
+
     @Test (expected = NoResultException.class)
     public void user_is_not_deleted() throws Exception {
     	givenAValidUserIDForDeletion();
@@ -147,15 +150,15 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
             fail("Exception excpected");
         }catch (NoResultException e){}
     }
-    
+
     private void given_a_test_group_ID() {
     	validId = VALID_GROUP_ID;
     }
-    
+
     private void whenGroupIsDeleted() {
         oConnector.deleteGroup(validId, accessToken);
     }
-    
+
     private void thenGroupIsRemoveFromServer() {
     	try {
             oConnector.getGroup(validId, accessToken);
@@ -166,11 +169,11 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
     	}
     	fail();
     }
-    
+
     private void givenAValidUserIDForDeletion() throws Exception {
         validId = DELETE_USER_ID;
     }
-    
+
     private void whenUserIsDeleted() {
         oConnector.deleteGroup(validId, accessToken);
     }

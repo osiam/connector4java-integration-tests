@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
@@ -36,7 +38,9 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
-@DatabaseSetup("/database_seed.xml")
+@DatabaseSetup(value = "/database_seed.xml")
+@DatabaseTearDown(value = "/database_seed.xml", type = DatabaseOperation.DELETE_ALL)
+
 public class EditUserServiceIT extends AbstractIntegrationTestBase{
 
 
@@ -137,6 +141,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
         thenUserIsRemoveFromServer();
     }
 
+
     @Test (expected = NoResultException.class)
     public void group_is_not_deleted() throws Exception {
     	givenAValidGroupIDForDeletion();
@@ -163,6 +168,10 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
 
     private void initializeUserWithNoUserName(){
         NEW_USER = new User.Builder().build();
+    }
+
+    private void initializeUserWithEmptyUserName(){
+        NEW_USER = new User.Builder("").build();
     }
 
     private void initializeSimpleUser(){

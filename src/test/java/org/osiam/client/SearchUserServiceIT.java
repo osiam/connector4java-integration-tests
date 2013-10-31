@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -32,6 +34,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
+@DatabaseTearDown(value = "/database_seed.xml", type = DatabaseOperation.DELETE_ALL)
 public class SearchUserServiceIT extends AbstractIntegrationTestBase {
 
     private static final int ITEMS_PER_PAGE = 3;
@@ -151,21 +154,21 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
             assertEquals(sortedUserNames.get(count++), actUser.getUserName());
         }
     }
-    
+
     @Test
     public void get_all_user_if_over_hundert_user_exists(){
     	create100NewUser();
     	List<User> allUsers = oConnector.getAllUsers(accessToken);
     	assertEquals(111, allUsers.size());
     }
-    
+
     private void create100NewUser(){
 		for(int count = 0; count < 100; count++){
     		User user = new User.Builder("user" + count).build();
     		oConnector.createUser(user, accessToken);
-    	}	    	
+    	}
     }
-    
+
     private void queryResultContainsUser(String userName) {
         assertTrue(queryResult != null);
         for (User actUser : queryResult.getResources()) {
