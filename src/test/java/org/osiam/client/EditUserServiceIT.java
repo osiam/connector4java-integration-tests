@@ -44,13 +44,15 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 public class EditUserServiceIT extends AbstractIntegrationTestBase{
 
 
-    private static String ID_EXISTING_USER = "7d33bcbe-a54c-43d8-867e-f6146164941e";
+    private static final String ID_EXISTING_USER = "7d33bcbe-a54c-43d8-867e-f6146164941e";
     private static final String IRRELEVANT = "irrelevant";
-    private String newId = UUID.randomUUID().toString();
-    private String USER_NAME_EXISTING_USER = "hsimpson";
-    private User NEW_USER;
-    private User RETURN_USER;
-    private User DB_USER;
+    private static final String USER_NAME_EXISTING_USER = "hsimpson";
+
+    private String NEW_ID = UUID.randomUUID().toString();
+
+    private User newUser;
+    private User returnedUser;
+    private User dbUser;
     private String validId = null;
 
     private Query query;
@@ -74,7 +76,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
         initializeSimpleUser();
         createUser();
         returnUserHasValidId();
-        loadUser(RETURN_USER.getId());
+        loadUser(returnedUser.getId());
         returnAndDbUserHaveSameUserName();
     }
 
@@ -88,32 +90,32 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
 
     @Test
     public void given_id_to_new_user_has_changed_after_saving(){
-        initializeSimpleUserWithID(newId.toString());
+        initializeSimpleUserWithID(NEW_ID.toString());
         createUser();
-        assertNotSame(newId.toString(), RETURN_USER.getId());
+        assertNotSame(NEW_ID.toString(), returnedUser.getId());
     }
 
     @Test
     public void created_user_can_be_found(){
         initialQueryToSearchUser();
         loadSingleUserByQuery();
-        assertNull(DB_USER);
+        assertNull(dbUser);
 
         initializeSimpleUser();
         createUser();
         loadSingleUserByQuery();
-        assertNotNull(DB_USER);
-        assertNotSame(IRRELEVANT, DB_USER.getUserName());
+        assertNotNull(dbUser);
+        assertNotSame(IRRELEVANT, dbUser.getUserName());
     }
 
     @Test
     public void id_return_user_same_as_new_loaded_id(){
-        initializeSimpleUserWithID(newId.toString());
+        initializeSimpleUserWithID(NEW_ID.toString());
         createUser();
         initialQueryToSearchUser();
         loadSingleUserByQuery();
-        assertNotNull(DB_USER);
-        assertEquals(RETURN_USER.getId(), DB_USER.getId());
+        assertNotNull(dbUser);
+        assertEquals(returnedUser.getId(), dbUser.getId());
     }
 
     @Test
@@ -124,12 +126,12 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
             createUser();
             initialQueryToSearchUser();
             loadSingleUserByQuery();
-            assertNotNull(DB_USER);
-            assertEquals(RETURN_USER.getId(), DB_USER.getId());
-            assertEqualsUser(NEW_USER, DB_USER);
+            assertNotNull(dbUser);
+            assertEquals(returnedUser.getId(), dbUser.getId());
+            assertEqualsUser(newUser, dbUser);
       }finally {
-            if(RETURN_USER != null){
-                oConnector.deleteUser(RETURN_USER.getId(), accessToken);
+            if(returnedUser != null){
+                oConnector.deleteUser(returnedUser.getId(), accessToken);
             }
       }
     }
@@ -167,50 +169,50 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     }
 
     private void initializeUserWithNoUserName(){
-        NEW_USER = new User.Builder().build();
+        newUser = new User.Builder().build();
     }
 
     private void initializeUserWithEmptyUserName(){
-        NEW_USER = new User.Builder("").build();
+        newUser = new User.Builder("").build();
     }
 
     private void initializeSimpleUser(){
-        NEW_USER = new User.Builder(IRRELEVANT).build();
+        newUser = new User.Builder(IRRELEVANT).build();
     }
 
     private void initializeSimpleUserWithID(String id){
-        NEW_USER = new User.Builder(IRRELEVANT).setId(id).build();
+        newUser = new User.Builder(IRRELEVANT).setId(id).build();
     }
 
     private void initializeUserWithExistingUserName(){
-        NEW_USER = new User.Builder(USER_NAME_EXISTING_USER).build();
+        newUser = new User.Builder(USER_NAME_EXISTING_USER).build();
     }
 
     private void returnUserHasValidId(){
-        assertTrue(RETURN_USER.getId().length() > 0);
+        assertTrue(returnedUser.getId().length() > 0);
     }
 
     private void loadUser(String id){
-        DB_USER = oConnector.getUser(id, accessToken);
+        dbUser = oConnector.getUser(id, accessToken);
     }
 
     private void loadSingleUserByQuery(){
         QueryResult<User> result = oConnector.searchUsers(query, accessToken);
         if(result.getResources().size() == 0){
-            DB_USER = null;
+            dbUser = null;
         }else if(result.getResources().size() == 1){
-            DB_USER = result.getResources().get(0);
+            dbUser = result.getResources().get(0);
         }else{
              fail("No or one user should be found");
         }
     }
 
     private void existingUserNameHasNotChanged(){
-        assertEquals(USER_NAME_EXISTING_USER, DB_USER.getUserName());
+        assertEquals(USER_NAME_EXISTING_USER, dbUser.getUserName());
     }
 
     private void createUser(){
-        RETURN_USER = oConnector.createUser(NEW_USER, accessToken);
+        returnedUser = oConnector.createUser(newUser, accessToken);
     }
 
     private void initialQueryToSearchUser(){
@@ -242,7 +244,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
                 .setHonorificPrefix("HPre")
                 .setHonorificSuffix("HSu").build();
 
-        NEW_USER = new User.Builder(IRRELEVANT)
+        newUser = new User.Builder(IRRELEVANT)
                 .setPassword("password")
                 .setActive(true)
                 .setAddresses(addresses)
@@ -338,7 +340,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     }
 
     private void returnAndDbUserHaveSameUserName(){
-        assertEquals(NEW_USER.getUserName(), DB_USER.getUserName());
+        assertEquals(newUser.getUserName(), dbUser.getUserName());
     }
 
     private void thenUserIsRemoveFromServer() {
