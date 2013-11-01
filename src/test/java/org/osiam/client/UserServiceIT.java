@@ -66,7 +66,7 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
     public void password_is_not_transferred() throws Exception {
         givenAValidUserID();
         whenUserIsDeserialized();
-        assertNull(deserializedUser.getPassword());
+        assertEquals("",deserializedUser.getPassword());
     }
 
     @Test(expected = UnauthorizedException.class)
