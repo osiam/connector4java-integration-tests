@@ -199,14 +199,14 @@ public class ScopeIT {
 
     @Test
     public void try_to_update_user(){
-    	oConnector = oConBuilder.setScope(Scope.PUT).build();
+    	oConnector = oConBuilder.setScope(Scope.PATCH).build();
     	retrieveAccessToken();
     	tryToUpdateUser();
     }
 
     @Test
     public void try_to_update_group(){
-    	oConnector = oConBuilder.setScope(Scope.PUT).build();
+    	oConnector = oConBuilder.setScope(Scope.PATCH).build();
     	retrieveAccessToken();
     	tryToUpdateGroup();
     }
