@@ -74,7 +74,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
         Extension extension = existingUser.getExtension(URN);
         extension.setField("gender", "female");
 
-        oConnector.updateUser(existingUser, accessToken);
+        oConnector.replaceUser(existingUser, accessToken);
 
         User storedUser = oConnector.getUser(EXISTING_USER_UUID, accessToken);
         Extension storedExtension = storedUser.getExtension(URN);

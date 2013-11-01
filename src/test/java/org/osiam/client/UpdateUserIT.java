@@ -33,7 +33,6 @@ import static org.junit.Assert.*;
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
 @DatabaseTearDown(value = "/database_seed.xml", type = DatabaseOperation.DELETE_ALL)
-@Ignore
 public class UpdateUserIT extends AbstractIntegrationTestBase {
 
     private String idExistingUser = "7d33bcbe-a54c-43d8-867e-f6146164941e";
@@ -248,7 +247,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
 	@Test
-    @Ignore("Update does not work at the moment")
+
 	public void update_password() {
 		try{
 			getOriginalUser("uasv");
@@ -682,18 +681,18 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         oConnector.retrieveAccessToken();
     }
 
-    public Address getAddress(List<Address> addresses, String formated) {
+    public Address getAddress(List<Address> addresses, String formatted) {
         Address returnAddress = null;
         if (addresses != null) {
             for (Address actAddress : addresses) {
-                if (actAddress.getFormatted().equals(formated)) {
+                if (actAddress.getFormatted().equals(formatted)) {
                     returnAddress = actAddress;
                     break;
                 }
             }
         }
         if (returnAddress == null) {
-            fail("The address with the formated part of " + formated + " could not be found");
+            fail("The address with the formatted part of " + formatted + " could not be found");
         }
         return returnAddress;
     }
