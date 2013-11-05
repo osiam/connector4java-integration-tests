@@ -47,7 +47,7 @@
 
         <!-- OSIAM -->
         <osiam.version>0.12-SNAPSHOT</osiam.version>
-        <osiam.connector4java.version>0.6-SNAPSHOT</osiam.connector4java.version>
+        <osiam.connector4java.version>0.8-SNAPSHOT</osiam.connector4java.version>
     </properties>
 
     <repositories>
