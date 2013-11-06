@@ -43,14 +43,15 @@ class RegistrationIT extends AbstractIT{
         when:
         def httpClient = new HTTPBuilder(AUTH_ENDPOINT)
 
-        httpClient.request(Method.GET) { req ->
+        httpClient.request(Method.GET, ContentType.TEXT) { req ->
             uri.path = AUTH_ENDPOINT + "/register"
             headers."Authorization" = "Bearer " + accessToken.getToken()
+            headers.Accept = 'text/html'
 
             response.success = { resp, html ->
                 responseStatus = resp.statusLine.statusCode
                 responseContentType = resp.headers.'Content-Type'
-                responseContent = html
+                responseContent = html.text
             }
 
             response.failure = { resp ->
@@ -60,11 +61,11 @@ class RegistrationIT extends AbstractIT{
 
         then:
         responseStatus == 200
-        responseContentType == ContentType.HTML
+        responseContentType == ContentType.HTML.toString()
         //ensure that the content is HTML
-        responseContent."**".findAll {it.toString().contains("<!doctype html>")}.size() != 0
+        responseContent.contains("<form>")
         //HTML should contain only required fields (3 from database_seed_registration.xml + 3 for: UserName, PW, E-Mail)
-        responseContent."**".findAll {it.toString().contains("ng-model")}.size() != 6
+        responseContent.count("ng-model") == 6
     }
 
     def "The registration controller should complete the registration process if a POST request was issued to his '/create' path with an access token in the header"() {

@@ -71,7 +71,7 @@ abstract class AbstractIT extends Specification {
         // Insert initialization data into database.
         try {
             //Deletes all tables before inserting maybe smaller seed, to avoid constraint violations
-            DatabaseOperation.DELETE_ALL.execute(connection, new FlatXmlDataSetBuilder().build(ac.getResource("database_seed.xml").getFile()))
+            DatabaseOperation.DELETE_ALL.execute(connection, new FlatXmlDataSetBuilder().build(ac.getResource("database_seed_cleanup.xml").getFile()))
             DatabaseOperation.INSERT.execute(connection, initData)
         }
         finally {
