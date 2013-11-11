@@ -31,6 +31,7 @@ abstract class AbstractIT extends Specification {
 
     protected static final String AUTH_ENDPOINT = "http://localhost:8180/osiam-auth-server"
     protected static final String RESOURCE_ENDPOINT = "http://localhost:8180/osiam-resource-server"
+    protected static final String REGISTRATION_ENDPOINT = "http://localhost:8180/osiam-registration-module"
 
     protected OsiamConnector osiamConnector;
     protected AccessToken accessToken;

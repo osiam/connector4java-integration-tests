@@ -41,10 +41,10 @@ class RegistrationIT extends AbstractIT{
         def responseStatus
 
         when:
-        def httpClient = new HTTPBuilder(AUTH_ENDPOINT)
+        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
         httpClient.request(Method.GET, ContentType.TEXT) { req ->
-            uri.path = AUTH_ENDPOINT + "/register"
+            uri.path = REGISTRATION_ENDPOINT + "/register"
             headers."Authorization" = "Bearer " + accessToken.getToken()
             headers.Accept = 'text/html'
 
@@ -77,10 +77,10 @@ class RegistrationIT extends AbstractIT{
         def createdUserId
 
         when:
-        def httpClient = new HTTPBuilder(AUTH_ENDPOINT)
+        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
         httpClient.request(Method.POST, ContentType.JSON) { req ->
-            uri.path = AUTH_ENDPOINT + "/register/create"
+            uri.path = REGISTRATION_ENDPOINT + "/register/create"
             body = userToRegister
             headers."Authorization" = "Bearer " + accessToken.getToken()
 
@@ -152,10 +152,10 @@ class RegistrationIT extends AbstractIT{
         }
 
         when:
-        def httpClient2 = new HTTPBuilder(AUTH_ENDPOINT)
+        def httpClient2 = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
         httpClient2.request(Method.GET) { req ->
-            uri.path = AUTH_ENDPOINT + "/register/activate"
+            uri.path = REGISTRATION_ENDPOINT + "/register/activate"
             uri.query = [user:'George', token:activationCode]
             headers."Authorization" = "Bearer " + accessToken.getToken()
 

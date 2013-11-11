@@ -263,6 +263,10 @@
                             <war>${project.build.directory}/osiam-auth-server-${osiam.version}</war>
                             <contextPath>/osiam-auth-server</contextPath>
                         </contextHandler>
+                        <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
+                            <war>${project.build.directory}/osiam-registration-module-${osiam.version}</war>
+                            <contextPath>/osiam-registration-module</contextPath>
+                        </contextHandler>
                     </contextHandlers>
                     <war>${project.build.directory}/osiam-resource-server-${osiam.version}</war>
                     <webAppConfig>
