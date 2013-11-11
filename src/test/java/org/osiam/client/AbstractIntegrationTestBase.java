@@ -25,6 +25,7 @@ public abstract class AbstractIntegrationTestBase {
     protected OsiamConnector oConnector;
     protected AccessToken accessToken;
 
+
     @Before
     public void abstractSetUp() throws Exception {
         OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
@@ -60,6 +61,20 @@ public abstract class AbstractIntegrationTestBase {
         tokenField.setAccessible(true);
         tokenField.set(accessToken, AbstractIntegrationTestBase.INVALID_ID);
         tokenField.setAccessible(false);
+    }
+
+    protected OsiamConnector getAccessTokenForUser(String name, String password) {
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
+                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
+                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
+                setClientId("example-client-2").
+                setClientSecret("secret1").
+                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
+                setUserName(name).
+                setPassword(password).
+                setScope(Scope.ALL);
+
+        return oConBuilder.build();
     }
 
     protected String encodeExpected(String string) {
