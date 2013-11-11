@@ -19,18 +19,10 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
-@DatabaseSetup(value = "/database_seed_bugfixing.xml")
-@DatabaseTearDown(value = "/database_seed_bugfixing.xml", type = DatabaseOperation.DELETE_ALL)
-public class BugFixingIT extends AbstractIntegrationTestBase {
+@DatabaseSetup(value = "/database_seed_group_membership.xml")
+@DatabaseTearDown(value = "/database_seed_group_membership.xml", type = DatabaseOperation.DELETE_ALL)
+public class GroupMembershipIT extends AbstractIntegrationTestBase {
 
-    /*
-     * This test will FAIL due to FOREIGN KEY CONSTRAINT on scim_group_scim_id (members_internal_id) REFERENCES scim_id(internal_id)
-     * In hibernate the ON DELETE CASCADE is missing, and the DB is generated through the entities.
-     *
-     * In the real environment the sql script looks like that below and the test will pass.
-     * ALTER TABLE ONLY scim_group_scim_id
-     * ADD CONSTRAINT fk8d2c327bc347d0ba FOREIGN KEY (members_internal_id) REFERENCES scim_id(internal_id) ON DELETE CASCADE;
-     */
     @Test
     public void user_should_be_deletable_as_member_of_a_group(){
         //given: user id, group id, add user to group

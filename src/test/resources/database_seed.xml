@@ -129,7 +129,7 @@
     <scim_group displayname="test_group09" internal_id="70"/>
     <scim_group displayname="test_group10" internal_id="72"/>
 
-    <scim_group_scim_id  scim_group_internal_id="52" members_internal_id="46" />
+    <scim_group_scim_id  groups_internal_id="52" members_internal_id="46" />
 
     <scim_email multiValueId="91" value="adavies@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="9"/>
     <scim_email multiValueId="92" value="bjensen@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="46"/>

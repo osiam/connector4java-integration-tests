@@ -52,8 +52,6 @@
     <scim_group displayname="test_group03" internal_id="56"/>
     <scim_group displayname="test_group04" internal_id="58"/>
 
-    <scim_user_scim_group/>
-
     <scim_group_scim_id/>
 
     <scim_user_scim_roles scim_user_internal_id="1" roles_multiValueId="90"/>
