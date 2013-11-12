@@ -129,34 +129,17 @@ class RegistrationIT extends AbstractIT{
         given:
         def responseStatus
 
-        def createdUserId
-        def activationCode
+        def createdUserId = "cef9452e-00a9-4cec-a086-d171374febef"
+        def activationCode = "cef9452e-00a9-4cec-a086-a171374febef"
 
         def accessToken = osiamConnector.retrieveAccessToken()
 
-        def httpClient = new HTTPBuilder(RESOURCE_ENDPOINT)
-
-        httpClient.request(Method.GET, ContentType.JSON) { req ->
-            uri.path = RESOURCE_ENDPOINT + "/Users"
-            headers."Authorization" = "Bearer " + accessToken.getToken()
-
-            response.success = { resp, json ->
-                responseStatus = resp.statusLine.statusCode
-                json.Resources.each {
-                    if(it.userName == "George") {
-                        createdUserId = it.id
-                        activationCode = it.activation
-                    }
-                }
-            }
-        }
-
         when:
-        def httpClient2 = new HTTPBuilder(REGISTRATION_ENDPOINT)
+        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
-        httpClient2.request(Method.GET) { req ->
+        httpClient.request(Method.GET) { req ->
             uri.path = REGISTRATION_ENDPOINT + "/register/activate"
-            uri.query = [user:'George', token:activationCode]
+            uri.query = [user:createdUserId, token:activationCode]
             headers."Authorization" = "Bearer " + accessToken.getToken()
 
             response.success = { resp ->
@@ -180,7 +163,7 @@ class RegistrationIT extends AbstractIT{
             response.success = { resp, json ->
                 assert resp.statusLine.statusCode == 200
                 //verify that the activation token was deleted and user is active
-                assert json.activation == null
+                assert json.'urn:scim:schemas:osiam:1.0:Registration'.activationToken == null
                 assert json.active == true
             }
         }
