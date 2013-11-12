@@ -127,12 +127,14 @@ class RegistrationIT extends AbstractIT{
 
     def "The registration controller should activate the user if a GET request was issued to his '/activate' path with an access token in the header and the activation code as parameter"() {
         given:
-        def responseStatus
-
         def createdUserId = "cef9452e-00a9-4cec-a086-d171374febef"
         def activationCode = "cef9452e-00a9-4cec-a086-a171374febef"
 
         def accessToken = osiamConnector.retrieveAccessToken()
+
+        def responseStatus
+        def activeFlag
+        def token
 
         when:
         def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
@@ -161,11 +163,15 @@ class RegistrationIT extends AbstractIT{
             headers."Authorization" = "Bearer " + accessToken.getToken()
 
             response.success = { resp, json ->
-                assert resp.statusLine.statusCode == 200
+                responseStatus = resp.statusLine.statusCode
                 //verify that the activation token was deleted and user is active
-                assert json.'urn:scim:schemas:osiam:1.0:Registration'.activationToken == null
-                assert json.active == true
+                token = json.'urn:scim:schemas:osiam:1.0:Registration'.activationToken
+                activeFlag = json.active
             }
         }
+
+        responseStatus == 200
+        activeFlag
+        token == ""
     }
 }
