@@ -424,6 +424,27 @@
                             </resources>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>copy-osiam-registration-resources</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${project.build.directory}/osiam-registration-module-${osiam.version}/WEB-INF/classes
+                            </outputDirectory>
+                            <overwrite>true</overwrite>
+                            <resources>
+                                <resource>
+                                    <directory>src/test/resources/</directory>
+                                    <filtering>true</filtering>
+                                    <include>osiam-registration.properties</include>
+                                    <include>osiam.properties</include>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>

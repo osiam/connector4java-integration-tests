@@ -8,6 +8,7 @@ import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
 import org.osiam.resources.helper.UserDeserializer
 import org.osiam.resources.scim.Extension
+import org.osiam.resources.scim.MultiValuedAttribute
 import org.osiam.resources.scim.User
 import org.osiam.test.AbstractIT
 import spock.lang.Shared
@@ -65,7 +66,7 @@ class RegistrationIT extends AbstractIT{
         //ensure that the content is HTML
         responseContent.contains("</form>")
         //HTML should contain only required fields
-        responseContent.count("ng-model") == 10
+        responseContent.count("ng-model") == 11
     }
 
     def "The registration controller should complete the registration process if a POST request was issued to his '/create' path with an access token in the header"() {
@@ -113,13 +114,11 @@ class RegistrationIT extends AbstractIT{
     }
 
     def getUserAsStringWithExtension() {
-        def urn = "extension"
-        def extensionData = ["gender":"male","birth":"Wed Oct 30 16:54:00 CET 1985","newsletter":"false"]
+        def email = new MultiValuedAttribute(primary: true, value: "email@example.org")
 
-        Extension extension = new Extension(urn, extensionData)
         def user = new User.Builder("George")
                 .setPassword("password")
-                .addExtension(urn, extension)
+                .setEmails([email])
                 .build()
 
         return mapper.writeValueAsString(user)
