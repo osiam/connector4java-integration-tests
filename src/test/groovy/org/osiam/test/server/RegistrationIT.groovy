@@ -98,25 +98,16 @@ class RegistrationIT extends AbstractIT{
         then:
         responseStatus == 200
 
-        def httpClient2 = new HTTPBuilder(RESOURCE_ENDPOINT)
-
-        httpClient2.request(Method.GET, ContentType.JSON) { req ->
-            uri.path = RESOURCE_ENDPOINT + "/Users/" + createdUserId
-            headers."Authorization" = "Bearer " + accessToken.getToken()
-
-            response.success = { resp, json ->
-                assert resp.statusLine.statusCode == 200
-                //verify that an activation token was generated on server side and the user is inactive
-                assert json.activation != null
-                assert json.active == false
-            }
-        }
+        User user = osiamConnector.getUser(createdUserId, accessToken)
+        !user.isActive()
+        Extension extension = user.getExtension('urn:scim:schemas:osiam:1.0:Registration')
+        extension.getField('activationToken') != null
     }
 
     def getUserAsStringWithExtension() {
         def email = new MultiValuedAttribute(primary: true, value: "email@example.org")
 
-        def user = new User.Builder("George")
+        def user = new User.Builder("George Alexander")
                 .setPassword("password")
                 .setEmails([email])
                 .build()
