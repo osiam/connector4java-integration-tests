@@ -247,7 +247,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
 	@Test
-
 	public void update_password() {
 		try{
 			getOriginalUser("uasv");
