@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.resources.scim.Group;
+import org.osiam.resources.scim.MemberRef;
 import org.osiam.resources.scim.MultiValuedAttribute;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -52,7 +53,7 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
         assertEquals(created, actualGroup.getMeta().getLastModified());
         assertEquals(VALID_GROUP_ID, actualGroup.getId());
         assertEquals(EXPECTED_GROUPNAME, actualGroup.getDisplayName());
-        Set<MultiValuedAttribute> members = actualGroup.getMembers();
+        Set<MemberRef> members = actualGroup.getMembers();
         int memberCount = 0;
         for (MultiValuedAttribute actMember : members) {
             String userId = (String) actMember.getValue();
