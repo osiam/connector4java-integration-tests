@@ -16,22 +16,14 @@
 
 
     <scim_meta id="4" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
-    <scim_meta id="6" created="2013-08-08 19:45:20.816" lastmodified="2013-08-08 19:45:20.816" resourcetype="User"/>
     <scim_meta id="47" created="2013-08-08 19:51:34.498" lastmodified="2013-08-08 19:51:34.498" resourcetype="User"/>
     <scim_meta id="53" created="2013-07-31 21:43:18.0" lastmodified="2013-07-31 21:43:18.0" resourcetype="Group"/>
     <scim_meta id="55" created="2013-08-08 19:59:54.612" lastmodified="2013-08-08 19:59:54.612" resourcetype="Group"/>
-    <scim_meta id="57" created="2013-08-08 19:59:56.681" lastmodified="2013-08-08 19:59:56.681" resourcetype="Group"/>
-    <scim_meta id="60" created="2013-08-08 19:59:56.681" lastmodified="2013-08-08 19:59:56.681" resourcetype="Group"/>
 
-
-    <scim_id internal_id="5" externalid="bthomson" meta_id="6" id="618b398c-0110-43f2-95df-d1bc4e7d2b4a"/>
     <scim_id internal_id="46" externalid="bjensen" meta_id="47" id="834b410a-943b-4c80-817a-4465aed037bc"/>
     <scim_id internal_id="1" meta_id="4" id="cef9452e-00a9-4cec-a086-d171374ffbef"/>
     <scim_id internal_id="52" meta_id="53" id="69e1a5dc-89be-4343-976c-b5541af249f4"/>
     <scim_id internal_id="54" meta_id="55" id="d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"/>
-    <scim_id internal_id="56" meta_id="57" id="d30a77eb-d7cf-4cd1-9fb3-cc990ef09578"/>
-    <scim_id internal_id="58" meta_id="60" id="d30a77eb-d7cf-4cd1-9fb3-cc980ef09578"/>
-
 
     <scim_roles multivalueid="90" value="USER"/>
 
@@ -39,20 +31,16 @@
                displayname="BarbaraJ." locale="de" nickname="Barbara" preferredlanguage="de" profileurl="http://babaraJ.com" timezone="UTC" title="Dr."
                username="bjensen" usertype="user" internal_id="46" active="false"/>
 
-    <scim_user displayname="BeccyT." locale="de" nickname="Beccy"
-               password="908661cbdcd4795f95926b57e9979a80969f7ef55cec4c3dcfccabcae55d32f2a1eae227a91fd41df1462c2bb7b60c136beb75666d7bb60ff859ff886788a349"
-               title="Dr." username="jcambell" internal_id="5" active="false"/>
 
     <scim_user
             password="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
             username="marissa" internal_id="1" active="true"/>
 
-    <scim_group displayname="test_group01" internal_id="52"/>
-    <scim_group displayname="test_group02" internal_id="54"/>
-    <scim_group displayname="test_group03" internal_id="56"/>
-    <scim_group displayname="test_group04" internal_id="58"/>
+    <scim_group displayname="parent_group" internal_id="52"/>
+    <scim_group displayname="member_group" internal_id="54"/>
 
-    <scim_group_scim_id/>
+    <scim_group_scim_id groups_internal_id="52" members_internal_id="46" />
+    <scim_group_scim_id groups_internal_id="52" members_internal_id="54" />
 
     <scim_user_scim_roles scim_user_internal_id="1" roles_multiValueId="90"/>
 
