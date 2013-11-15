@@ -7,13 +7,19 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.NoResultException;
-import org.osiam.client.update.UpdateGroup;
 import org.osiam.resources.scim.Group;
+import org.osiam.resources.scim.MemberRef;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+
+import java.util.Set;
+
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -23,72 +29,73 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 @DatabaseTearDown(value = "/database_seed_group_membership.xml", type = DatabaseOperation.DELETE_ALL)
 public class GroupMembershipIT extends AbstractIntegrationTestBase {
 
+    private static final String USER_UUID = "834b410a-943b-4c80-817a-4465aed037bc";
+    private static final String PARENT_GROUP_UUID = "69e1a5dc-89be-4343-976c-b5541af249f4";
+    private static final String MEMBER_GROUP_UUID = "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578";
+
     @Test
-    public void user_should_be_deletable_as_member_of_a_group(){
-        //given: user id, group id, add user to group
-        String userIdForDeletion = "834b410a-943b-4c80-817a-4465aed037bc";
-        String groupId = "69e1a5dc-89be-4343-976c-b5541af249f4";
-        oConnector.updateGroup("69e1a5dc-89be-4343-976c-b5541af249f4",
-                new UpdateGroup.Builder().addMember("834b410a-943b-4c80-817a-4465aed037bc").build(), accessToken);
+    public void deleting_a_user_who_is_member_of_a_group_works() {
 
-        //when: user is deleted
-        oConnector.deleteUser(userIdForDeletion, accessToken);
+        oConnector.deleteUser(USER_UUID, accessToken);
 
-        //then: no error should occur and user is deleted
         try {
-            oConnector.getUser(userIdForDeletion, accessToken);
+            oConnector.getUser(USER_UUID, accessToken);
         } catch (NoResultException e) {
-            assert e.getMessage().equals("Resource 834b410a-943b-4c80-817a-4465aed037bc not found.");
+            assertThat(e.getMessage(), containsString(USER_UUID));
         }
-
-        Group group = oConnector.getGroup(groupId, accessToken);
-        assert group != null;
-        assert group.getId().equals("69e1a5dc-89be-4343-976c-b5541af249f4");
     }
 
     @Test
-    public void user_should_not_be_deleted_if_the_group_he_belongs_to_is_deleted(){
-        //given: group id for deletion, user id, add user to group
-        String groupIdForDeletion = "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578";
-        String userId = "618b398c-0110-43f2-95df-d1bc4e7d2b4a";
-        oConnector.updateGroup("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578",
-                new UpdateGroup.Builder().addMember("618b398c-0110-43f2-95df-d1bc4e7d2b4a").build(), accessToken);
-
-        //when: group is deleted
-        oConnector.deleteGroup(groupIdForDeletion, accessToken);
-
-        //then: no error should occur and the user is still in the database
-        try {
-            oConnector.getGroup(groupIdForDeletion, accessToken);
-        } catch (NoResultException e) {
-            assert e.getMessage().equals("Resource d30a77eb-d7cf-4cd1-9fb3-cc640ef09578 not found.");
-        }
-
-        User user = oConnector.getUser(userId, accessToken);
-        assert user != null;
-        assert user.getId().equals("618b398c-0110-43f2-95df-d1bc4e7d2b4a");
+    public void deleting_a_user_who_is_member_of_a_group_does_not_delete_the_parent_group(){
+        oConnector.deleteUser(USER_UUID, accessToken);
+        oConnector.getGroup(PARENT_GROUP_UUID, accessToken);
     }
 
     @Test
-    public void member_group_should_not_be_deleted_if_master_group_is_deleted(){
-        //given: the group id for deletion, group member id, add group as member to group
-        String groupIdForDeletion = "d30a77eb-d7cf-4cd1-9fb3-cc990ef09578";
-        String memberId = "d30a77eb-d7cf-4cd1-9fb3-cc980ef09578";
-        oConnector.updateGroup("d30a77eb-d7cf-4cd1-9fb3-cc990ef09578",
-                new UpdateGroup.Builder().addMember("d30a77eb-d7cf-4cd1-9fb3-cc980ef09578").build(), accessToken);
+    public void deleting_a_group_which_is_member_of_a_group_works() {
 
-        //when: the group is deleted
-        oConnector.deleteGroup(groupIdForDeletion, accessToken);
+        oConnector.deleteGroup(MEMBER_GROUP_UUID, accessToken);
 
-        //then: the member group should be present in the database
         try {
-            oConnector.getGroup(groupIdForDeletion, accessToken);
+            oConnector.getGroup(MEMBER_GROUP_UUID, accessToken);
         } catch (NoResultException e) {
-            assert e.getMessage().equals("Resource d30a77eb-d7cf-4cd1-9fb3-cc990ef09578 not found.");
+            assertThat(e.getMessage(), containsString(MEMBER_GROUP_UUID));
+        }
+    }
+
+    @Test
+    public void deleting_a_group_which_is_member_of_a_group_does_not_delete_the_parent_group(){
+        oConnector.deleteGroup(MEMBER_GROUP_UUID, accessToken);
+        oConnector.getGroup(PARENT_GROUP_UUID, accessToken);
+    }
+
+    @Test
+    public void deleting_a_parent_group_does_not_delete_its_members() {
+
+        oConnector.deleteGroup(PARENT_GROUP_UUID, accessToken);
+
+        try {
+            oConnector.getGroup(PARENT_GROUP_UUID, accessToken);
+        } catch (NoResultException e) {
+            assertThat(e.getMessage(), containsString(PARENT_GROUP_UUID));
         }
 
-        Group memberGroup = oConnector.getGroup(memberId, accessToken);
-        assert memberGroup != null;
-        assert memberGroup.getId().equals("d30a77eb-d7cf-4cd1-9fb3-cc980ef09578");
+        oConnector.getUser(USER_UUID, accessToken);
+        oConnector.getGroup(MEMBER_GROUP_UUID, accessToken);
     }
+
+    @Test
+    /*
+       Todo: Scim-Schema does not yet support getGroups() on a Group. As soon as it does this test should be extended
+             to verify that the memberGroup is contained in exactly one group.
+     */
+    public void group_memberships_are_visible_in_member_and_parent(){
+
+        Group parentGroup = oConnector.getGroup(PARENT_GROUP_UUID, accessToken);
+        User  user = oConnector.getUser(USER_UUID, accessToken);
+        assertThat(parentGroup.getMembers().size(), is(2));
+        assertThat(user.getGroups().size(), is(1));
+
+    }
+
 }
