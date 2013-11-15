@@ -8,17 +8,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.resources.scim.Group;
-import org.osiam.resources.scim.MemberRef;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import java.util.Set;
-
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -46,7 +43,7 @@ public class GroupMembershipIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void deleting_a_user_who_is_member_of_a_group_does_not_delete_the_parent_group(){
+    public void deleting_a_user_who_is_member_of_a_group_does_not_delete_the_parent_group() {
         oConnector.deleteUser(USER_UUID, accessToken);
         oConnector.getGroup(PARENT_GROUP_UUID, accessToken);
     }
@@ -64,7 +61,7 @@ public class GroupMembershipIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void deleting_a_group_which_is_member_of_a_group_does_not_delete_the_parent_group(){
+    public void deleting_a_group_which_is_member_of_a_group_does_not_delete_the_parent_group() {
         oConnector.deleteGroup(MEMBER_GROUP_UUID, accessToken);
         oConnector.getGroup(PARENT_GROUP_UUID, accessToken);
     }
@@ -89,12 +86,12 @@ public class GroupMembershipIT extends AbstractIntegrationTestBase {
        Todo: Scim-Schema does not yet support getGroups() on a Group. As soon as it does this test should be extended
              to verify that the memberGroup is contained in exactly one group.
      */
-    public void group_memberships_are_visible_in_member_and_parent(){
-
+    public void group_memberships_are_visible_in_member_and_parent() {
         Group parentGroup = oConnector.getGroup(PARENT_GROUP_UUID, accessToken);
-        User  user = oConnector.getUser(USER_UUID, accessToken);
-        assertThat(parentGroup.getMembers().size(), is(2));
-        assertThat(user.getGroups().size(), is(1));
+        User user = oConnector.getUser(USER_UUID, accessToken);
+
+        assertThat(parentGroup.getMembers(), hasSize(2));
+        assertThat(user.getGroups(), hasSize(1));
 
     }
 
