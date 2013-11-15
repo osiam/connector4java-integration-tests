@@ -7,8 +7,10 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.connector.OsiamConnector;
+import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.update.UpdateUser;
+import org.osiam.client.oauth.GrantType;
+import org.osiam.client.oauth.Scope;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -20,27 +22,24 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
         DbUnitTestExecutionListener.class})
 @DatabaseSetup(value = "/database_seed_activation.xml")
 @DatabaseTearDown(value = "/database_seed_activation.xml", type = DatabaseOperation.DELETE_ALL)
-public class UserActivationLoginIT extends AbstractIntegrationTestBase{
+public class UserActivationLoginIT extends AbstractIntegrationTestBase {
 
-    @Test
-    public void should_only_be_possible_to_login_with_a_user_if_he_is_activated() {
-        //given: trying to get an access token with deactivated user should fail
-        AccessToken accessTokenForTest = null;
-        try {
-            OsiamConnector connector = getAccessTokenForUser("hsimpson", "koala");
-            accessTokenForTest = connector.retrieveAccessToken();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        assert accessTokenForTest == null;
+    @Test(expected = ConnectionInitializationException.class)
+    public void log_in_as_an_deactivated_user_is_impossible() {
+        getAccessToken("hsimpson", "koala");
+    }
 
-        //when: activating an already existing user
-        oConnector.updateUser("7d33bcbe-a54c-43d8-867e-f6146164941e",
-                new UpdateUser.Builder().updateActive(true).build(), accessToken);
-
-        //then: getting an access token with the activated user should be possible
-        OsiamConnector connector = getAccessTokenForUser("hsimpson", "koala");
-        accessTokenForTest = connector.retrieveAccessToken();
-        assert accessTokenForTest != null;
+    private AccessToken getAccessToken(String userName, String password) {
+        return new OsiamConnector.Builder()
+                .setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setClientId("example-client")
+                .setClientSecret("secret")
+                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
+                .setUserName(userName)
+                .setPassword(password)
+                .setScope(Scope.ALL)
+                .build()
+                .retrieveAccessToken();
     }
 }
