@@ -16,6 +16,8 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
+import static org.junit.Assert.fail;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
@@ -27,6 +29,7 @@ public class UserActivationLoginIT extends AbstractIntegrationTestBase {
     @Test(expected = ConnectionInitializationException.class)
     public void log_in_as_an_deactivated_user_is_impossible() {
         getAccessToken("hsimpson", "koala");
+        fail("Exception expected");
     }
 
     private AccessToken getAccessToken(String userName, String password) {
