@@ -34,7 +34,6 @@ abstract class AbstractIT extends Specification {
     protected static final String REGISTRATION_ENDPOINT = "http://localhost:8180/osiam-registration-module"
 
     protected OsiamConnector osiamConnector;
-    protected AccessToken accessToken;
 
     protected OsiamConnector osiamConnectorForClientCredentialsGrant;
 
