@@ -48,7 +48,7 @@ public abstract class AbstractIntegrationTestBase {
                 setClientId("short-living-client").
                 setClientSecret("other-secret").
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
-                setUserName("hsimpson").
+                setUserName("marissa").
                 setPassword("koala").
                 setScope(Scope.ALL);
         oConnector = oConBuilder.build();
