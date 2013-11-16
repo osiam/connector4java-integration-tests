@@ -7,6 +7,7 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.MultiValuedAttribute;
 import org.osiam.resources.scim.Name;
 import org.osiam.resources.scim.User;
@@ -17,8 +18,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.isEmptyString;
 import static org.hamcrest.core.Is.is;
@@ -30,26 +30,11 @@ import static org.junit.Assert.fail;
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
-@DatabaseSetup("/database_seed.xml")
-@DatabaseTearDown(value = "/database_seed.xml", type = DatabaseOperation.DELETE_ALL)
+@DatabaseSetup("/database_seed_users.xml")
+@DatabaseTearDown(value = "/database_seed_users.xml", type = DatabaseOperation.DELETE_ALL)
 public class UserServiceIT extends AbstractIntegrationTestBase {
 
     private User deserializedUser;
-
-    @Test
-    public void name_is_deserialized_correctly() throws Exception {
-
-        whenAValidUserIsDeserialized();
-
-        Name name = deserializedUser.getName();
-
-        assertThat(name.getFamilyName(), is(equalTo("Jensen")));
-        assertThat(name.getFormatted(), is(equalTo("Ms. Barbara J Jensen III")));
-        assertThat(name.getGivenName(), is(equalTo("Barbara")));
-        assertThat(name.getHonorificPrefix(), is(nullValue()));
-        assertThat(name.getHonorificSuffix(), is(nullValue()));
-        assertThat(name.getMiddleName(), is(nullValue()));
-    }
 
     @Test
     public void all_emails_are_transmitted() {
@@ -69,6 +54,43 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
 
         assertThat(email.getValue(), is(equalTo("bjensen@example.com")));
         assertThat(email.getType(), is(equalTo("work")));
+    }
+
+    @Test
+    public void name_is_deserialized_correctly() throws Exception {
+
+        whenAValidUserIsDeserialized();
+
+        Name name = deserializedUser.getName();
+
+        assertThat(name.getFamilyName(), is(equalTo("Jensen")));
+        assertThat(name.getFormatted(), is(equalTo("Ms. Barbara J Jensen III")));
+        assertThat(name.getGivenName(), is(equalTo("Barbara")));
+        assertThat(name.getHonorificPrefix(), is(nullValue()));
+        assertThat(name.getHonorificSuffix(), is(nullValue()));
+        assertThat(name.getMiddleName(), is(nullValue()));
+    }
+
+    @Test
+    public void all_addresses_are_transmitted() {
+
+        whenAValidUserIsDeserialized();
+        List<Address> addresses = deserializedUser.getAddresses();
+
+        assertThat(addresses, hasSize(2));
+    }
+
+    @Test
+    public void address_is_deserialized_correctly() {
+
+        whenAValidUserIsDeserialized();
+
+        Address address = deserializedUser.getAddresses().get(0);
+        assertThat(address.getCountry(), is(equalTo("Germany")));
+        assertThat(address.getLocality(), is(equalTo("Berlin")));
+        assertThat(address.getRegion(), is(equalTo("Berlin")));
+        assertThat(address.getPostalCode(), is(equalTo("10777")));
+        assertThat(address.getStreetAddress(), is(startsWith("Hauptstr. ")));
     }
 
     @Test
