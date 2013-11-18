@@ -16,9 +16,7 @@ import org.osiam.client.query.QueryResult;
 import org.osiam.resources.scim.Extension;
 import org.osiam.resources.scim.Extension.Field;
 import org.osiam.resources.scim.ExtensionFieldType;
-import org.osiam.resources.scim.ExtensionFieldTypeSpec;
 import org.osiam.resources.scim.User;
-import org.spockframework.runtime.model.FieldMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -32,10 +30,11 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.CoreMatchers.is;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -51,19 +50,9 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
 
     @Autowired
     private DataSource dataSource;
-    private Extension extensionFixture;
 
     @Before
     public void setUp() {
-        extensionFixture = new Extension(URN);
-        /*extensionFixture.addOrUpdateField("", "", ExtensionFieldType.);
-        extensionFixture.addOrUpdateField("", "", ExtensionFieldType.);
-        extensionFixture.addOrUpdateField("", "", ExtensionFieldType.);
-        extensionFixture.addOrUpdateField("", "", ExtensionFieldType.);
-        extensionFixture.addOrUpdateField("", "", ExtensionFieldType.);
-        extensionFixture.addOrUpdateField("", "", ExtensionFieldType.);
-        extensionFixture.addOrUpdateField("", "", ExtensionFieldType.);
-        */
         extensionData = new HashMap<>();
         extensionData.put("gender", new Extension.Field(ExtensionFieldType.STRING, "male"));
         extensionData.put("newsletter", new Extension.Field(ExtensionFieldType.BOOLEAN, "true"));
