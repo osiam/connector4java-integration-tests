@@ -3,8 +3,10 @@ package org.osiam.test.server
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
 import org.osiam.resources.scim.Extension
+import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.resources.scim.User
 import org.osiam.test.AbstractIT
+import static groovyx.net.http.ContentType.URLENC
 
 /**
  * Integration test for lost password controller
@@ -46,7 +48,7 @@ class LostPasswordIT extends AbstractIT {
         statusCode == 201
         User user = osiamConnector.getUser(userId, accessToken)
         Extension extension = user.getExtension(urn)
-        extension.getField("oneTimePassword") != null
+        extension.getField("oneTimePassword", ExtensionFieldType.STRING) != null
     }
 
     def "URI: /password/lostForm with GET method to get a form for new password submission"() {
@@ -94,10 +96,9 @@ class LostPasswordIT extends AbstractIT {
         when:
         def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
-        httpClient.request(Method.POST) { req ->
+        httpClient.request(Method.POST) {
             uri.path = REGISTRATION_ENDPOINT + "/password/change"
-            uri.query = [otp: otp, userId: userId]
-            body= newPassword
+            send URLENC, [otp : otp, userId : userId, newPassword : newPassword]
             headers.'Authorization' = 'Bearer ' + accessToken.getToken()
 
             response.success = { resp, json ->
@@ -115,6 +116,6 @@ class LostPasswordIT extends AbstractIT {
         savedUserId == userId
         User user = osiamConnector.getUser(userId, accessToken)
         Extension extension = user.getExtension(urn)
-        extension.getField("oneTimePassword") == ""
+        extension.getField("oneTimePassword", ExtensionFieldType.STRING) == ""
     }
 }

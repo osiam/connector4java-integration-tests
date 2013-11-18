@@ -8,6 +8,7 @@ import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
 import org.osiam.resources.helper.UserDeserializer
 import org.osiam.resources.scim.Extension
+import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.resources.scim.MultiValuedAttribute
 import org.osiam.resources.scim.User
 import org.osiam.test.AbstractIT
@@ -101,7 +102,7 @@ class RegistrationIT extends AbstractIT{
         User user = osiamConnector.getUser(createdUserId, accessToken)
         !user.isActive()
         Extension extension = user.getExtension('urn:scim:schemas:osiam:1.0:Registration')
-        extension.getField('activationToken') != null
+        extension.getField('activationToken', ExtensionFieldType.STRING) != null
     }
 
     def getUserAsStringWithExtension() {

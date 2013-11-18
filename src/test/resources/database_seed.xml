@@ -14,9 +14,10 @@
     <osiam_client_scopes id="3" scope="PATCH"/>
     <osiam_client_scopes id="3" scope="DELETE"/>
 
-    <osiam_client internal_id="80" id="example-client-2" redirect_uri="http://localhost:5001/oauth2" client_secret="secret1"
+    <osiam_client internal_id="80" id="short-living-client" redirect_uri="http://localhost:5001/oauth2"
+                  client_secret="other-secret"
                   accesstokenvalidityseconds="1" refreshtokenvalidityseconds="1" validityinseconds="1"
-                  implicit_approval="false" expiry="1970-01-01 00:00:01" />
+                  implicit_approval="false" expiry="1970-01-01 00:00:01"/>
     <osiam_client_grants id="80" grants="authorization_code"/>
     <osiam_client_grants id="80" grants="refresh-token"/>
     <osiam_client_grants id="80" grants="password"/>
@@ -84,9 +85,11 @@
 
     <scim_roles multivalueid="90" value="USER"/>
 
-    <scim_user password="42db3b474c2a54f6b1c3c352e4436274de6b0239432c9a6c2d51c62e54b28ad1e3ecbb306f7748890934e3dae4292e339189c8bb7af55f68de9855ca455f19e4"
-               displayname="BarbaraJ." locale="de" nickname="Barbara" preferredlanguage="de" profileurl="http://babaraJ.com" timezone="UTC" title="Dr."
-               username="bjensen" usertype="user" internal_id="46" name_id="48" active="false"/>
+    <scim_user
+            password="42db3b474c2a54f6b1c3c352e4436274de6b0239432c9a6c2d51c62e54b28ad1e3ecbb306f7748890934e3dae4292e339189c8bb7af55f68de9855ca455f19e4"
+            displayname="BarbaraJ." locale="de" nickname="Barbara" preferredlanguage="de"
+            profileurl="http://babaraJ.com" timezone="UTC" title="Dr."
+            username="bjensen" usertype="user" internal_id="46" name_id="48" active="false"/>
     <scim_user displayname="BeccyT." locale="de" nickname="Beccy"
                password="908661cbdcd4795f95926b57e9979a80969f7ef55cec4c3dcfccabcae55d32f2a1eae227a91fd41df1462c2bb7b60c136beb75666d7bb60ff859ff886788a349"
                title="Dr." username="jcambell" internal_id="5" name_id="7" active="false"/>
@@ -129,19 +132,30 @@
     <scim_group displayname="test_group09" internal_id="70"/>
     <scim_group displayname="test_group10" internal_id="72"/>
 
-    <scim_group_scim_id  scim_group_internal_id="52" members_internal_id="46" />
+    <scim_group_scim_id groups_internal_id="52" members_internal_id="46"/>
 
-    <scim_email multiValueId="91" value="adavies@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="9"/>
-    <scim_email multiValueId="92" value="bjensen@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="46"/>
-    <scim_email multiValueId="93" value="bthomson@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="5"/>
-    <scim_email multiValueId="94" value="cmiller@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="13"/>
-    <scim_email multiValueId="95" value="dcooper@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="21"/>
-    <scim_email multiValueId="96" value="epalmer@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="25"/>
-    <scim_email multiValueId="97" value="ewilley@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="49"/>
-    <scim_email multiValueId="98" value="gbarker@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="29"/>
-    <scim_email multiValueId="99" value="hsimpson@atom-example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="33"/>
-    <scim_email multiValueId="100" value="hsimpson@phome-example.com" postgresql_does_not_like_primary="false" type="home" user_internal_id="33"/>
-    <scim_email multiValueId="101" value="kmorris@example.com" postgresql_does_not_like_primary="false" type="work" user_internal_id="42"/>
+    <scim_email multiValueId="91" value="adavies@example.com" postgresql_does_not_like_primary="false" type="work"
+                user_internal_id="9"/>
+    <scim_email multiValueId="92" value="bjensen@example.com" postgresql_does_not_like_primary="false" type="work"
+                user_internal_id="46"/>
+    <scim_email multiValueId="93" value="bthomson@example.com" postgresql_does_not_like_primary="false" type="work"
+                user_internal_id="5"/>
+    <scim_email multiValueId="94" value="cmiller@example.com" postgresql_does_not_like_primary="false" type="work"
+                user_internal_id="13"/>
+    <scim_email multiValueId="95" value="dcooper@example.com" postgresql_does_not_like_primary="false" type="work"
+                user_internal_id="21"/>
+    <scim_email multiValueId="96" value="epalmer@example.com" postgresql_does_not_like_primary="false" type="work"
+                user_internal_id="25"/>
+    <scim_email multiValueId="97" value="ewilley@example.com" postgresql_does_not_like_primary="false" type="work"
+                user_internal_id="49"/>
+    <scim_email multiValueId="98" value="gbarker@example.com" postgresql_does_not_like_primary="false" type="work"
+                user_internal_id="29"/>
+    <scim_email multiValueId="99" value="hsimpson@atom-example.com" postgresql_does_not_like_primary="false" type="work"
+                user_internal_id="33"/>
+    <scim_email multiValueId="100" value="hsimpson@phome-example.com" postgresql_does_not_like_primary="false"
+                type="home" user_internal_id="33"/>
+    <scim_email multiValueId="101" value="kmorris@example.com" postgresql_does_not_like_primary="false" type="work"
+                user_internal_id="42"/>
 
     <scim_address id="8" country="Germany" locality="Germany" postalcode="66222"
                   postgresql_does_not_like_primary="false" region="Germany" streetaddress="example street 62"

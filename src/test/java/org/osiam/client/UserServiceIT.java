@@ -1,16 +1,13 @@
 package org.osiam.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
-import java.util.List;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.MultiValuedAttribute;
 import org.osiam.resources.scim.Name;
 import org.osiam.resources.scim.User;
@@ -19,79 +16,108 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.isEmptyString;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
-@DatabaseSetup("/database_seed.xml")
-@DatabaseTearDown(value = "/database_seed.xml", type = DatabaseOperation.DELETE_ALL)
+@DatabaseSetup("/database_seed_users.xml")
+@DatabaseTearDown(value = "/database_seed_users.xml", type = DatabaseOperation.DELETE_ALL)
 public class UserServiceIT extends AbstractIntegrationTestBase {
 
-    private String validID = null;
     private User deserializedUser;
 
     @Test
-    public void name_is_deserialized_correctly() throws Exception {
-        givenAValidUserID();
-        whenUserIsDeserialized();
+    public void all_emails_are_transmitted() {
 
-        Name name = deserializedUser.getName();
+        whenAValidUserIsDeserialized();
+        List<MultiValuedAttribute> emails = deserializedUser.getEmails();
 
-        assertEquals("Jensen", name.getFamilyName());
-        assertEquals("Ms. Barbara J Jensen III", name.getFormatted());
-        assertEquals("Barbara", name.getGivenName());
-        assertNull(name.getHonorificPrefix());
-        assertNull(name.getHonorificSuffix());
-        assertNull(name.getMiddleName());
+        assertThat(emails, hasSize(1));
     }
 
     @Test
     public void emails_are_deserialized_correctly() throws Exception {
-        givenAValidUserID();
-        whenUserIsDeserialized();
 
-        List<MultiValuedAttribute> emails = deserializedUser.getEmails();
-        assertEquals(1, emails.size());
-        MultiValuedAttribute email = emails.get(0);
+        whenAValidUserIsDeserialized();
 
-        assertEquals("bjensen@example.com", email.getValue().toString());
-        assertEquals("work", email.getType());
+        MultiValuedAttribute email = deserializedUser.getEmails().get(0);
+
+        assertThat(email.getValue(), is(equalTo("bjensen@example.com")));
+        assertThat(email.getType(), is(equalTo("work")));
     }
 
     @Test
-    public void password_is_not_transferred() throws Exception {
-        givenAValidUserID();
-        whenUserIsDeserialized();
-        assertEquals("",deserializedUser.getPassword());
+    public void name_is_deserialized_correctly() throws Exception {
+
+        whenAValidUserIsDeserialized();
+
+        Name name = deserializedUser.getName();
+
+        assertThat(name.getFamilyName(), is(equalTo("Jensen")));
+        assertThat(name.getFormatted(), is(equalTo("Ms. Barbara J Jensen III")));
+        assertThat(name.getGivenName(), is(equalTo("Barbara")));
+        assertThat(name.getHonorificPrefix(), is(nullValue()));
+        assertThat(name.getHonorificSuffix(), is(nullValue()));
+        assertThat(name.getMiddleName(), is(nullValue()));
+    }
+
+    @Test
+    public void all_addresses_are_transmitted() {
+
+        whenAValidUserIsDeserialized();
+        List<Address> addresses = deserializedUser.getAddresses();
+
+        assertThat(addresses, hasSize(2));
+    }
+
+    @Test
+    public void address_is_deserialized_correctly() {
+
+        whenAValidUserIsDeserialized();
+
+        Address address = deserializedUser.getAddresses().get(0);
+        assertThat(address.getCountry(), is(equalTo("Germany")));
+        assertThat(address.getLocality(), is(equalTo("Berlin")));
+        assertThat(address.getRegion(), is(equalTo("Berlin")));
+        assertThat(address.getPostalCode(), is(equalTo("10777")));
+        assertThat(address.getStreetAddress(), is(startsWith("Hauptstr. ")));
+    }
+
+    @Test
+    public void password_is_not_transmitted() throws Exception {
+        whenAValidUserIsDeserialized();
+
+        assertThat(deserializedUser.getPassword(), isEmptyString());
     }
 
     @Test(expected = UnauthorizedException.class)
     public void provide_an_invalid_access_token_raises_exception() throws Exception {
-        givenAValidUserID();
         givenAnInvalidAccessToken();
 
-        whenUserIsDeserialized();
-        fail();
+        whenAValidUserIsDeserialized();
+        fail("Exception expected");
     }
 
     @Test(expected = UnauthorizedException.class)
     public void access_token_is_expired() throws Exception {
-    	givenAValidUserID();
-    	givenAnAccessTokenForOneSecond();
-    	Thread.sleep(1000);
-        whenUserIsDeserialized();
-        fail();
+        givenAnAccessTokenForOneSecond();
+        Thread.sleep(1000);
+        whenAValidUserIsDeserialized();
+        fail("Exception expected");
     }
 
-    private void whenUserIsDeserialized() {
-        deserializedUser = oConnector.getUser(validID, accessToken);
+    private void whenAValidUserIsDeserialized() {
+        deserializedUser = oConnector.getUser(VALID_USER_ID, accessToken);
     }
 
-    private void givenAValidUserID() throws Exception {
-        validID = VALID_USER_ID;
-    }
 }

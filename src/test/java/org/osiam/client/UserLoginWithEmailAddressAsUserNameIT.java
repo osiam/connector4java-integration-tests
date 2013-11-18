@@ -7,7 +7,6 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.connector.OsiamConnector;
-import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
@@ -16,20 +15,17 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import static org.junit.Assert.fail;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
-@DatabaseSetup(value = "/database_seed_activation.xml")
-@DatabaseTearDown(value = "/database_seed_activation.xml", type = DatabaseOperation.DELETE_ALL)
-public class UserActivationLoginIT extends AbstractIntegrationTestBase {
+@DatabaseSetup(value = "/database_seed_login_with_email_address_as_username.xml")
+@DatabaseTearDown(value = "/database_seed_login_with_email_address_as_username.xml", type = DatabaseOperation.DELETE_ALL)
+public class UserLoginWithEmailAddressAsUserNameIT extends AbstractIntegrationTestBase {
 
-    @Test(expected = ConnectionInitializationException.class)
-    public void log_in_as_an_deactivated_user_is_impossible() {
-        getAccessToken("hsimpson", "koala");
-        fail("Exception expected");
+    @Test
+    public void log_in_with_an_email_address_as_user_name_is_possible() {
+        getAccessToken("chunkylover53@aol.com", "koala");
     }
 
     private AccessToken getAccessToken(String userName, String password) {

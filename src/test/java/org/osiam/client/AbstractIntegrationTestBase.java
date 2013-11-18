@@ -1,19 +1,19 @@
 package org.osiam.client;
 
-import static org.springframework.test.util.AssertionErrors.fail;
-
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.net.URLEncoder;
-
 import org.junit.Before;
 import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
+import java.net.URLEncoder;
+
+import static org.springframework.test.util.AssertionErrors.fail;
+
 public abstract class AbstractIntegrationTestBase {
-	protected static final String VALID_USER_ID = "834b410a-943b-4c80-817a-4465aed037bc";
+    protected static final String VALID_USER_ID = "834b410a-943b-4c80-817a-4465aed037bc";
     protected static final String INVALID_ID = "ffffffff-ffff-ffff-ffff-fffffffffff";
     protected static final String INVALID_STRING = "invalid";
     protected static final String DELETE_USER_ID = "618b398c-0110-43f2-95df-d1bc4e7d2b4a";
@@ -45,10 +45,10 @@ public abstract class AbstractIntegrationTestBase {
         OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
                 setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
                 setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
-                setClientId("example-client-2").
-                setClientSecret("secret1").
+                setClientId("short-living-client").
+                setClientSecret("other-secret").
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
-                setUserName("hsimpson").
+                setUserName("marissa").
                 setPassword("koala").
                 setScope(Scope.ALL);
         oConnector = oConBuilder.build();
@@ -79,7 +79,7 @@ public abstract class AbstractIntegrationTestBase {
 
     protected String encodeExpected(String string) {
         String encoded = null;
-    	try {
+        try {
             encoded = URLEncoder.encode(string, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             fail("Unable to encode queryString");
