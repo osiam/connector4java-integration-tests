@@ -51,38 +51,6 @@ class LostPasswordIT extends AbstractIT {
         extension.getField("oneTimePassword", ExtensionFieldType.STRING) != null
     }
 
-    def "URI: /password/lostForm with GET method to get a form for new password submission"() {
-        given:
-        def statusCode
-        def content
-        def otp = "cef9452e-00a9-4cec-a086-a171374febef"
-        def userId = "cef9452e-00a9-4cec-a086-d171374febef"
-
-        when:
-        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
-
-        httpClient.request(Method.GET) { req ->
-            uri.path = REGISTRATION_ENDPOINT + "/password/lostForm"
-            uri.query = [otp: otp, userId: userId]
-            headers.Accept = 'text/html'
-
-            response.success = { resp, html ->
-                statusCode = resp.statusLine.statusCode
-                content = html.text
-            }
-
-            response.failure = { resp ->
-                statusCode = resp.statusLine.statusCode
-            }
-        }
-
-        then:
-        statusCode == 200
-        content.contains("</form>")
-        content.contains("cef9452e-00a9-4cec-a086-a171374febef")
-        content.contains("cef9452e-00a9-4cec-a086-d171374febef")
-    }
-
     def "URI: /password/change with POST method to change the old with the new password and validating the user"() {
         given:
         def urn = "urn:scim:schemas:osiam:1.0:Registration"
@@ -112,7 +80,7 @@ class LostPasswordIT extends AbstractIT {
         }
 
         then:
-        statusCode == 200
+        statusCode == 201
         savedUserId == userId
         User user = osiamConnector.getUser(userId, accessToken)
         Extension extension = user.getExtension(urn)
