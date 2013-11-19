@@ -46,8 +46,8 @@
         <spock.version>0.7-groovy-2.0</spock.version>
 
         <!-- OSIAM -->
-        <osiam.version>0.12</osiam.version>
-        <osiam.connector4java.version>0.8</osiam.connector4java.version>
+        <osiam.version>0.13-SNAPSHOT</osiam.version>
+        <osiam.connector4java.version>0.9-SNAPSHOT</osiam.connector4java.version>
     </properties>
 
     <repositories>
