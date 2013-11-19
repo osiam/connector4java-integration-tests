@@ -74,7 +74,8 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
         createGroup();
         returnGroupHasValidId();
         loadGroup(returnGroup.getId());
-        returnAndDbGroupHaveSameDislplayName();
+        
+        assertEquals(newGroup.getDisplayName(), dbGroup.getDisplayName());
     }
 
     @Test
@@ -82,7 +83,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
         initializeSimpleGroupWithID(ID_EXISTING_GROUP.toString());
         createGroup();
         loadGroup(ID_EXISTING_GROUP);
-        existingGroupDislpayNameHasNotChanged();
+        assertEquals(NAME_EXISTING_GROUP, dbGroup.getDisplayName());
     }
 
     @Test
@@ -215,14 +216,6 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase{
         }else{
             fail("No or one user should be found");
         }
-    }
-
-    private void existingGroupDislpayNameHasNotChanged(){
-        assertEquals(NAME_EXISTING_GROUP, dbGroup.getDisplayName());
-    }
-
-    private void returnAndDbGroupHaveSameDislplayName(){
-        assertEquals(newGroup.getDisplayName(), dbGroup.getDisplayName());
     }
 
     private void createGroup(){

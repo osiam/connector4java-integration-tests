@@ -2,6 +2,7 @@ package org.osiam.client;
 
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +19,11 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -43,7 +49,9 @@ public class LoginClientCredentialsIT {
                 setGrantType(GrantType.CLIENT_CREDENTIALS).
                 setScope(Scope.ALL);
         oConnector = oConBuilder.build();
-        oConnector.retrieveAccessToken();
+        AccessToken at = oConnector.retrieveAccessToken();
+        
+        assertThat(at, is(notNullValue()));
 	}
 
 	@Test (expected = UnauthorizedException.class)
@@ -56,7 +64,9 @@ public class LoginClientCredentialsIT {
                 setGrantType(GrantType.CLIENT_CREDENTIALS).
                 setScope(Scope.ALL);
         oConnector = oConBuilder.build();
-        oConnector.retrieveAccessToken();
+        AccessToken at = oConnector.retrieveAccessToken();
+        
+        assertThat(at, is(notNullValue()));
 	}
 
     @Test (expected = ConflictException.class)
