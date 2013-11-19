@@ -80,7 +80,7 @@ class LostPasswordIT extends AbstractIT {
         }
 
         then:
-        statusCode == 201
+        statusCode == 200
         savedUserId == userId
         User user = osiamConnector.getUser(userId, accessToken)
         Extension extension = user.getExtension(urn)
