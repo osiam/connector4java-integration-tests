@@ -132,7 +132,7 @@ class RegistrationIT extends AbstractIT{
 
         httpClient.request(Method.GET) { req ->
             uri.path = REGISTRATION_ENDPOINT + "/register/activate"
-            uri.query = [user:createdUserId, token:activationCode]
+            uri.query = [userId:createdUserId, activationToken:activationCode]
             headers."Authorization" = "Bearer " + accessToken.getToken()
 
             response.success = { resp ->
