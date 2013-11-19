@@ -36,8 +36,6 @@ class RegistrationIT extends AbstractIT{
 
     def "The registration controller should return an HTML page if a GET request was issued to his '/' path with an access token in the header"() {
         given:
-        def accessToken = osiamConnector.retrieveAccessToken()
-
         def responseContent
         def responseContentType
         def responseStatus
@@ -47,7 +45,6 @@ class RegistrationIT extends AbstractIT{
 
         httpClient.request(Method.GET, ContentType.TEXT) { req ->
             uri.path = REGISTRATION_ENDPOINT + "/register"
-            headers."Authorization" = "Bearer " + accessToken.getToken()
             headers.Accept = 'text/html'
 
             response.success = { resp, html ->
