@@ -25,8 +25,6 @@
     <scim_id internal_id="54" meta_id="55" id="d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"/>
     <scim_id internal_id="56" meta_id="57" id="d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"/>
 
-    <scim_name id="48" familyname="Jensen" formatted="Ms. Barbara J Jensen III" givenname="Barbara"/>
-
     <scim_roles multivalueid="90" value="USER"/>
 
     <scim_user
