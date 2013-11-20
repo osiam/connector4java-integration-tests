@@ -27,7 +27,7 @@ import static org.junit.Assert.fail;
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DbUnitTestExecutionListener.class })
 @DatabaseSetup(value = "/database_seed_group_membership.xml")
-@DatabaseTearDown(value = "/database_seed_group_membership.xml", type = DatabaseOperation.DELETE_ALL)
+@DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class GroupMembershipIT extends AbstractIntegrationTestBase {
 
     private static final String USER_UUID = "834b410a-943b-4c80-817a-4465aed037bc";

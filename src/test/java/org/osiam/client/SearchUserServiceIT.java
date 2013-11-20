@@ -34,7 +34,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
-@DatabaseTearDown(value = "/database_seed.xml", type = DatabaseOperation.DELETE_ALL)
+@DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class SearchUserServiceIT extends AbstractIntegrationTestBase {
 
     private static final int ITEMS_PER_PAGE = 3;

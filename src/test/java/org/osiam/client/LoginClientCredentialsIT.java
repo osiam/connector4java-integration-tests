@@ -30,7 +30,7 @@ import static org.junit.Assert.assertThat;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
-@DatabaseTearDown(value = "/database_seed.xml", type = DatabaseOperation.DELETE_ALL)
+@DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class LoginClientCredentialsIT {
 
     protected static final String AUTH_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-auth-server";

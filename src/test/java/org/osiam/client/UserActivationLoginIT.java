@@ -23,7 +23,7 @@ import static org.junit.Assert.fail;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup(value = "/database_seed_activation.xml")
-@DatabaseTearDown(value = "/database_seed_activation.xml", type = DatabaseOperation.DELETE_ALL)
+@DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class UserActivationLoginIT extends AbstractIntegrationTestBase {
 
     @Test(expected = ConnectionInitializationException.class)

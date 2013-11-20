@@ -38,7 +38,7 @@ import static org.junit.Assert.fail;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed_scope.xml")
-@DatabaseTearDown(value = "/database_seed_scope.xml", type = DatabaseOperation.DELETE_ALL)
+@DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class ScopeIT {
 
     private static final String VALID_USER_ID = "834b410a-943b-4c80-817a-4465aed037bc";

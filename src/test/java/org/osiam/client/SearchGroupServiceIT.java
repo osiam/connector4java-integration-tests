@@ -26,7 +26,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
-@DatabaseTearDown(value = "/database_seed.xml", type = DatabaseOperation.DELETE_ALL)
+@DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
 
     private static final String EXPECTED_GROUP_NAME = "test_group01";

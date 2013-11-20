@@ -31,7 +31,7 @@ import static org.junit.Assert.fail;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed_users.xml")
-@DatabaseTearDown(value = "/database_seed_users.xml", type = DatabaseOperation.DELETE_ALL)
+@DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class UserServiceIT extends AbstractIntegrationTestBase {
 
     private User deserializedUser;
