@@ -18,6 +18,7 @@ import spock.lang.Unroll
  * @author: Andreas Grau, tarent solutions GmbH, 10.09.13
  * @version: 1.0
  */
+@Ignore('need to be rewritten in Java')
 class ControllerIT extends AbstractIT {
 
     @Unroll
