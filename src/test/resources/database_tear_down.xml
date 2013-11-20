@@ -4,7 +4,7 @@
     
     <osiam_client />
     <osiam_client_grants />
-	<osiam_client_scopes />
+    <osiam_client_scopes />
     <scim_meta />
     <scim_id />
     <scim_name />
@@ -17,8 +17,12 @@
     <scim_photo />
     <scim_im />
     <scim_phonenumber />
+    <scim_certificate />
+    <scim_enterprise />
     <scim_user_scim_address />
     <scim_user_scim_roles />
+    <scim_user_scim_entitlements />
+    <scim_user_scim_extension />
     <scim_extension />
     <scim_extension_field />
     <scim_extension_field_value />    
