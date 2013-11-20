@@ -20,7 +20,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup(value = "/database_seed_login_with_email_address_as_username.xml")
-@DatabaseTearDown(value = "/database_seed_login_with_email_address_as_username.xml", type = DatabaseOperation.DELETE_ALL)
+@DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class UserLoginWithEmailAddressAsUserNameIT extends AbstractIntegrationTestBase {
 
     @Test
