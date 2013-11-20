@@ -162,4 +162,56 @@ class RegistrationIT extends AbstractIT{
         activeFlag
         token == ""
     }
+
+    def "Registration of user with client defined extensions"() {
+        given:
+        def accessToken = osiamConnector.retrieveAccessToken()
+
+        def email = new MultiValuedAttribute(primary: true, value: "email@example.org")
+        def extension = new Extension('urn:scim:schemas:osiam:1.0:Test')
+        extension.addOrUpdateField("field1", "value1")
+        extension.addOrUpdateField("field2", "value2")
+        extension.addOrUpdateField("field3", "value3")
+
+        def extMap = ['urn:scim:schemas:osiam:1.0:Test':extension] as Map
+
+        def user = new User.Builder("George der II")
+                .setPassword("password")
+                .setEmails([email])
+                .addExtensions(extMap)
+                .build()
+
+        def userToRegister = mapper.writeValueAsString(user)
+
+        def responseStatus
+        def createdUserId
+
+        when:
+        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.POST, ContentType.JSON) { req ->
+            uri.path = REGISTRATION_ENDPOINT + "/register/create"
+            body = userToRegister
+            headers."Authorization" = "Bearer " + accessToken.getToken()
+
+            response.success = { resp, json ->
+                responseStatus = resp.statusLine.statusCode
+                createdUserId = json.id
+            }
+
+            response.failure = { resp ->
+                responseStatus = resp.statusLine.statusCode
+            }
+        }
+
+        then:
+        responseStatus == 200
+
+        User registeredUser = osiamConnector.getUser(createdUserId, accessToken)
+        !registeredUser.isActive()
+        Extension registeredExtension1 = registeredUser.getExtension('urn:scim:schemas:osiam:1.0:Registration')
+        registeredExtension1.getField('activationToken', ExtensionFieldType.STRING) != null
+        Extension registeredExtension2 = registeredUser.getExtension('urn:scim:schemas:osiam:1.0:Test')
+        registeredExtension2.getField('field1', ExtensionFieldType.STRING) != null
+    }
 }
