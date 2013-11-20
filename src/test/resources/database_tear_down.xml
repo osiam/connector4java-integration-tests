@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-    <database_scheme_version version="0.02"/>
-    
+    <database_scheme_version/>
     <osiam_client />
     <osiam_client_grants />
     <osiam_client_scopes />
@@ -22,9 +21,9 @@
     <scim_user_scim_address />
     <scim_user_scim_roles />
     <scim_user_scim_entitlements />
-    <scim_user_scim_extension />
     <scim_extension />
     <scim_extension_field />
     <scim_extension_field_value />    
+    <scim_user_scim_extension />
 
 </dataset>
