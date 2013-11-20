@@ -76,4 +76,23 @@ abstract class AbstractIT extends Specification {
             connection.close();
         }
     }
+    
+    def cleanupSpec() {
+        // Load Spring context configuration.
+        ApplicationContext ac = new ClassPathXmlApplicationContext("context.xml")
+        // Get dataSource configuration.
+        DataSource dataSource = (DataSource) ac.getBean("dataSource")
+        // Establish database connection.
+        IDatabaseConnection connection = new DatabaseDataSourceConnection(dataSource)
+        // Load the initialization data from file.
+        IDataSet initData = new FlatXmlDataSetBuilder().build(ac.getResource("database_tear_down.xml").getFile())
+
+        // Insert initialization data into database.
+        try {
+            DatabaseOperation.DELETE_ALL.execute(connection, initData)
+        }
+        finally {
+            connection.close();
+        }
+    } 
 }
