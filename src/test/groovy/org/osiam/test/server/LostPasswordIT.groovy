@@ -66,7 +66,7 @@ class LostPasswordIT extends AbstractIT {
 
         httpClient.request(Method.POST) {
             uri.path = REGISTRATION_ENDPOINT + "/password/change"
-            send URLENC, [otp : otp, userId : userId, newPassword : newPassword]
+            send URLENC, [oneTimePassword : otp, userId : userId, newPassword : newPassword]
             headers.'Authorization' = 'Bearer ' + accessToken.getToken()
 
             response.success = { resp, json ->

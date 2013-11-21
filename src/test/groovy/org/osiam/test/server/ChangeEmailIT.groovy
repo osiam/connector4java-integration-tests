@@ -54,7 +54,7 @@ class ChangeEmailIT extends AbstractIT {
         User user = osiamConnector.getUser(userId, accessToken)
         Extension extension = user.getExtension(urn)
         extension.getField("emailConfirmToken", ExtensionFieldType.STRING) != null
-        extension.getField("tempEmail", ExtensionFieldType.STRING) == newEmailValue
+        extension.getField("tempMail", ExtensionFieldType.STRING) == newEmailValue
     }
 
     def "The /confirm endpoint with HTTP method POST should verify the confirmation token, saving the email as primary email and sending an email to the old address"() {
@@ -92,7 +92,7 @@ class ChangeEmailIT extends AbstractIT {
         User user = osiamConnector.getUser(userId, accessToken)
         Extension extension = user.getExtension(urn)
         extension.getField("emailConfirmToken", ExtensionFieldType.STRING) == ""
-        extension.getField("tempEmail", ExtensionFieldType.STRING) == ""
+        extension.getField("tempMail", ExtensionFieldType.STRING) == ""
         user.getEmails()[0].isPrimary()
         user.getEmails()[0].getValue() == newEmailValue
     }
