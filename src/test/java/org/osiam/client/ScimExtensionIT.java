@@ -112,7 +112,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
     @ExpectedDatabase(value = "/database_seeds/ScimExtensionIT/expected_extensions.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void adding_a_user_with_extension_data_to_database_works() {
         Extension extension = createExtensionWithData(URN, extensionData);
-        User user = new User.Builder("userName").setPassword("password").addExtension(URN, extension).build();
+        User user = new User.Builder("userName").setPassword("password").addExtension(extension).build();
 
         String uuid = oConnector.createUser(user, accessToken).getId();
 
@@ -143,7 +143,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
     @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/extensions.xml")
     public void updating_a_user_with_extension_data_to_database_works() {
         Extension extension = createExtensionWithData(URN, extensionDataToPatch);
-        User patchUser = new User.Builder().addExtension(URN, extension).build();
+        User patchUser = new User.Builder().addExtension(extension).build();
 
         oConnector.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
 
@@ -169,7 +169,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
     @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/extensions_with_less_values.xml")
     public void updating_a_user_with_less_extension_data_to_database_works() {
         Extension extension = createExtensionWithData(URN, extensionDataToPatch);
-        User patchUser = new User.Builder().addExtension(URN, extension).build();
+        User patchUser = new User.Builder().addExtension(extension).build();
 
         oConnector.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
 
