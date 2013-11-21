@@ -1,5 +1,7 @@
 package org.osiam.test
 
+import javax.sql.DataSource
+
 import org.dbunit.database.DatabaseDataSourceConnection
 import org.dbunit.database.IDatabaseConnection
 import org.dbunit.dataset.IDataSet
@@ -11,9 +13,8 @@ import org.osiam.client.oauth.GrantType
 import org.osiam.client.oauth.Scope
 import org.springframework.context.ApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext
-import spock.lang.Specification
 
-import javax.sql.DataSource
+import spock.lang.Specification
 
 /**
  * Base class for integration tests.
@@ -38,6 +39,24 @@ abstract class AbstractIT extends Specification {
     protected OsiamConnector osiamConnectorForClientCredentialsGrant;
 
     def setup() {
+		
+		// Load Spring context configuration.
+		ApplicationContext ac = new ClassPathXmlApplicationContext("context.xml")
+		// Get dataSource configuration.
+		DataSource dataSource = (DataSource) ac.getBean("dataSource")
+		// Establish database connection.
+		IDatabaseConnection connection = new DatabaseDataSourceConnection(dataSource)
+		// Load the initialization data from file.
+		IDataSet initData = new FlatXmlDataSetBuilder().build(ac.getResource("database_seed.xml").getFile())
+
+		// Insert initialization data into database.
+		try {
+			DatabaseOperation.CLEAN_INSERT.execute(connection, initData)
+		}
+		finally {
+			connection.close();
+		}
+		
         osiamConnector = new OsiamConnector.Builder().
                 setAuthServiceEndpoint(AUTH_ENDPOINT).
                 setResourceEndpoint(RESOURCE_ENDPOINT).
@@ -56,28 +75,8 @@ abstract class AbstractIT extends Specification {
                 setGrantType(GrantType.CLIENT_CREDENTIALS).
                 setScope(Scope.ALL).build()
     }
-
-
-    def setupSpec() {
-        // Load Spring context configuration.
-        ApplicationContext ac = new ClassPathXmlApplicationContext("context.xml")
-        // Get dataSource configuration.
-        DataSource dataSource = (DataSource) ac.getBean("dataSource")
-        // Establish database connection.
-        IDatabaseConnection connection = new DatabaseDataSourceConnection(dataSource)
-        // Load the initialization data from file.
-        IDataSet initData = new FlatXmlDataSetBuilder().build(ac.getResource("database_seed.xml").getFile())
-
-        // Insert initialization data into database.
-        try {
-            DatabaseOperation.CLEAN_INSERT.execute(connection, initData)
-        }
-        finally {
-            connection.close();
-        }
-    }
     
-    def cleanupSpec() {
+    def cleanup() {
         // Load Spring context configuration.
         ApplicationContext ac = new ClassPathXmlApplicationContext("context.xml")
         // Get dataSource configuration.
