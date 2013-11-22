@@ -5,21 +5,21 @@ import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
 
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.query.Query;
-import org.osiam.client.query.QueryResult;
 import org.osiam.client.query.metamodel.Group_;
 import org.osiam.resources.scim.Group;
+import org.osiam.resources.scim.SCIMSearchResult;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -31,7 +31,7 @@ public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
 
     private static final String EXPECTED_GROUP_NAME = "test_group01";
     private static String VALID_GROUP_ID = "69e1a5dc-89be-4343-976c-b5541af249f4";
-    private QueryResult<Group> queryResult;
+    private SCIMSearchResult<Group> queryResult;
 
     @Test
     public void search_for_group_by_string() {
