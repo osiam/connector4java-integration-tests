@@ -1,11 +1,5 @@
 package org.osiam.client;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 import java.util.UUID;
 
@@ -15,9 +9,9 @@ import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.query.Query;
-import org.osiam.client.query.QueryResult;
 import org.osiam.client.query.metamodel.Group_;
 import org.osiam.resources.scim.Group;
+import org.osiam.resources.scim.SCIMSearchResult;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -29,6 +23,14 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -120,7 +122,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
     }
 
     private Group findSingleGroupByQuery(Query query) {
-        QueryResult<Group> result = oConnector.searchGroups(query, accessToken);
+        SCIMSearchResult<Group> result = oConnector.searchGroups(query, accessToken);
         if (result.getResources().size() == 1) {
             return result.getResources().get(0);
         }

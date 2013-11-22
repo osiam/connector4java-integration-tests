@@ -12,19 +12,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.query.Query;
-import org.osiam.client.query.QueryResult;
 import org.osiam.client.query.metamodel.User_;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.MultiValuedAttribute;
 import org.osiam.resources.scim.Name;
+import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -32,7 +30,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -196,7 +196,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase{
     }
 
     private void loadSingleUserByQuery(){
-        QueryResult<User> result = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
         if(result.getResources().size() == 0){
             dbUser = null;
         }else if(result.getResources().size() == 1){
