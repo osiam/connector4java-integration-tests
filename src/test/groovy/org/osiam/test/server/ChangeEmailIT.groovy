@@ -67,6 +67,7 @@ class ChangeEmailIT extends AbstractIT {
 
         def savedUserId
         def responseStatusCode
+        def temp
 
         when:
         def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
@@ -93,7 +94,11 @@ class ChangeEmailIT extends AbstractIT {
         Extension extension = user.getExtension(urn)
         extension.getField("emailConfirmToken", ExtensionFieldType.STRING) == ""
         extension.getField("tempMail", ExtensionFieldType.STRING) == ""
-        user.getEmails()[0].isPrimary()
-        user.getEmails()[0].getValue() == newEmailValue
+        user.getEmails().size() == 2
+        user.getEmails().each {
+            if (it.isPrimary())
+                temp = it.getValue()
+        }
+        temp == newEmailValue
     }
 }
