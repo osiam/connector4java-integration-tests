@@ -38,7 +38,7 @@ abstract class AbstractIT extends Specification {
 
     protected OsiamConnector osiamConnectorForClientCredentialsGrant;
 
-    def setup() {
+    def testSetup(String seedFileName) {
 		
 		// Load Spring context configuration.
 		ApplicationContext ac = new ClassPathXmlApplicationContext("context.xml")
@@ -47,7 +47,7 @@ abstract class AbstractIT extends Specification {
 		// Establish database connection.
 		IDatabaseConnection connection = new DatabaseDataSourceConnection(dataSource)
 		// Load the initialization data from file.
-		IDataSet initData = new FlatXmlDataSetBuilder().build(ac.getResource("database_seed.xml").getFile())
+		IDataSet initData = new FlatXmlDataSetBuilder().build(ac.getResource(seedFileName).getFile())
 
 		// Insert initialization data into database.
 		try {
