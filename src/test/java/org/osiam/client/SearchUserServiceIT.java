@@ -1,14 +1,9 @@
 package org.osiam.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -24,10 +19,15 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -42,17 +42,27 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     private SCIMSearchResult<User> queryResult;
 
     @Test
-    public void search_for_user_by_username() {
-        String searchString = encodeExpected("userName eq bjensen");
-        whenSearchIsDoneByString(searchString);
-        queryResultContainsOnlyValidUser();
+    public void search_for_user_by_username_with_query_string() {
+        String userName = "bjensen";
+        String query = encodeExpected("userName eq " + userName);
+
+        SCIMSearchResult<User> result = oConnector.searchUsers("filter=" + query, accessToken);
+
+        assertThat(result.getTotalResults(), is(equalTo(1L)));
+        User transmittedUser = result.getResources().get(0);
+        assertThat(transmittedUser.getUserName(), is(equalTo(userName)));
     }
 
     @Test
-    public void search_for_user_by_emails_value() {
-        String searchString = encodeExpected("emails.value eq bjensen@example.com");
-        whenSearchIsDoneByString(searchString);
-        queryResultContainsOnlyValidUser();
+    public void search_for_user_by_emails_value_with_query_string() {
+        String email = "bjensen@example.com";
+        String query = encodeExpected("emails.value eq " + email);
+
+        SCIMSearchResult<User> result = oConnector.searchUsers("filter=" + query, accessToken);
+
+        assertThat(result.getTotalResults(), is(equalTo(1L)));
+        User transmittedUser = result.getResources().get(0);
+        assertThat(transmittedUser.getEmails().get(0).getValue(), is(equalTo(email)));
     }
 
     @Test
@@ -156,17 +166,17 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void get_all_user_if_over_hundert_user_exists(){
-    	create100NewUser();
-    	List<User> allUsers = oConnector.getAllUsers(accessToken);
-    	assertEquals(111, allUsers.size());
+    public void get_all_user_if_over_hundert_user_exists() {
+        create100NewUser();
+        List<User> allUsers = oConnector.getAllUsers(accessToken);
+        assertEquals(111, allUsers.size());
     }
 
-    private void create100NewUser(){
-		for(int count = 0; count < 100; count++){
-    		User user = new User.Builder("user" + count).build();
-    		oConnector.createUser(user, accessToken);
-    	}
+    private void create100NewUser() {
+        for (int count = 0; count < 100; count++) {
+            User user = new User.Builder("user" + count).build();
+            oConnector.createUser(user, accessToken);
+        }
     }
 
     private void queryResultContainsUser(String userName) {
@@ -194,6 +204,10 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         queryResult = oConnector.searchUsers("filter=" + queryString, accessToken);
     }
 
+    private void whenSearchedIsDoneByQuery(Query query) {
+        queryResult = oConnector.searchUsers(query, accessToken);
+    }
+
     private void queryResultContainsValidUser() {
         assertTrue(queryResult != null);
         for (User actUser : queryResult.getResources()) {
@@ -202,10 +216,6 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
             }
         }
         fail("Valid user could not be found.");
-    }
-
-    private void whenSearchedIsDoneByQuery(Query query) {
-        queryResult = oConnector.searchUsers(query, accessToken);
     }
 
 }
