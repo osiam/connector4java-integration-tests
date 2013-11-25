@@ -1,21 +1,14 @@
 package org.osiam.client;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.query.Query;
@@ -33,11 +26,19 @@ import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
-@DatabaseSetup("/database_seed.xml")
+//@DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class SearchUserServiceIT extends AbstractIntegrationTestBase {
 
@@ -46,7 +47,8 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     private SCIMSearchResult<User> queryResult;
 
     @Test
-    public void search_for_user_by_username_with_query_string() {
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_username.xml")
+    public void search_for_user_by_username_with_query_string_works() {
         String userName = "bjensen";
         String query = encodeExpected("userName eq " + userName);
 
@@ -58,7 +60,44 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void search_for_user_by_emails_value_with_query_string() {
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_username.xml")
+    public void search_for_user_by_nonexistent_username_with_query_string_fails() {
+        String query = encodeExpected("userName eq " + INVALID_STRING);
+        SCIMSearchResult<User> result = oConnector.searchUsers("filter=" + query, accessToken);
+        assertThat(result.getTotalResults(), is(equalTo(0L)));
+    }
+
+    @Test
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_username.xml")
+    public void search_for_all_users_ordered_by_user_name_with_query_builder_works() throws UnsupportedEncodingException {
+        Query.Builder queryBuilder = new Query.Builder(User.class);
+        queryBuilder.setSortBy(User_.userName).setSortOrder(SortOrder.ASCENDING);
+        queryResult = oConnector.searchUsers(queryBuilder.build(), accessToken);
+
+        ArrayList<String> sortedUserNames = new ArrayList<>();
+        sortedUserNames.add("bjensen");
+        sortedUserNames.add("jcambell");
+        sortedUserNames.add("adavies");
+        sortedUserNames.add("cmiller");
+        sortedUserNames.add("dcooper");
+        sortedUserNames.add("epalmer");
+        sortedUserNames.add("gparker");
+        sortedUserNames.add("hsimpson");
+        sortedUserNames.add("kmorris");
+        sortedUserNames.add("ewilley");
+        sortedUserNames.add("marissa");
+        Collections.sort(sortedUserNames);
+
+        assertEquals(sortedUserNames.size(), queryResult.getTotalResults());
+        int count = 0;
+        for (User actUser : queryResult.getResources()) {
+            assertEquals(sortedUserNames.get(count++), actUser.getUserName());
+        }
+    }
+
+    @Test
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_email.xml")
+    public void search_for_user_by_emails_value_with_query_string_works() {
         String email = "bjensen@example.com";
         String query = encodeExpected("emails.value eq " + email);
 
@@ -70,6 +109,29 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     @Test
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_last_modified.xml")
+    public void search_for_all_users_ordered_by_last_modified_with_query_builder_works() throws UnsupportedEncodingException {
+        Query.Builder queryBuilder = new Query.Builder(User.class);
+        queryBuilder.setSortBy(User_.Meta.lastModified).setSortOrder(SortOrder.ASCENDING);
+        SCIMSearchResult<User> result = oConnector.searchUsers(queryBuilder.build(), accessToken);
+
+        ArrayList<String> sortedUserNames = new ArrayList<>();
+        sortedUserNames.add("marissa");
+        sortedUserNames.add("adavies");
+        sortedUserNames.add("bjensen");
+        sortedUserNames.add("cmiller");
+        sortedUserNames.add("dcooper");
+        sortedUserNames.add("epalmer");
+
+        assertThat(result.getTotalResults(), is(equalTo((long) sortedUserNames.size())));
+
+        int count = 0;
+        for (User currentUser : result.getResources()) {
+            Assert.assertThat(currentUser.getUserName(), is(equalTo(sortedUserNames.get(count++))));
+        }
+    }
+
+    @Test
     public void search_for_user_with_multiple_fields() throws UnsupportedEncodingException {
         Query.Filter filter = new Query.Filter(User.class, User_.title.equalTo("Dr."))
                 .and(User_.nickName.equalTo("Barbara")).and(User_.displayName.equalTo("BarbaraJ."));
@@ -78,12 +140,6 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         queryResultContainsOnlyValidUser();
     }
 
-    @Test
-    public void search_for_user_by_non_used_username() {
-        String searchString = encodeExpected("userName eq " + INVALID_STRING);
-        whenSearchIsDoneByString(searchString);
-        queryResultDoesNotContainValidUsers();
-    }
 
     @Test
     public void search_for_3_users_by_username_using_and() {
@@ -142,33 +198,6 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         Query query = builder.build().previousPage();
         whenSearchedIsDoneByQuery(query);
         assertEquals(1, queryResult.getStartIndex());
-    }
-
-    @Test
-    public void sorted_search() throws UnsupportedEncodingException {
-        Query.Builder queryBuilder = new Query.Builder(User.class);
-        queryBuilder.setSortBy(User_.userName).setSortOrder(SortOrder.ASCENDING);
-        queryResult = oConnector.searchUsers(queryBuilder.build(), accessToken);
-
-        ArrayList<String> sortedUserNames = new ArrayList<>();
-        sortedUserNames.add("bjensen");
-        sortedUserNames.add("jcambell");
-        sortedUserNames.add("adavies");
-        sortedUserNames.add("cmiller");
-        sortedUserNames.add("dcooper");
-        sortedUserNames.add("epalmer");
-        sortedUserNames.add("gparker");
-        sortedUserNames.add("hsimpson");
-        sortedUserNames.add("kmorris");
-        sortedUserNames.add("ewilley");
-        sortedUserNames.add("marissa");
-        Collections.sort(sortedUserNames);
-
-        assertEquals(sortedUserNames.size(), queryResult.getTotalResults());
-        int count = 0;
-        for (User actUser : queryResult.getResources()) {
-            assertEquals(sortedUserNames.get(count++), actUser.getUserName());
-        }
     }
 
     @Test

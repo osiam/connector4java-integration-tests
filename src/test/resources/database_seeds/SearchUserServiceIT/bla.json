@@ -1,0 +1,95 @@
+{"totalResults": 6, "itemsPerPage": 100, "startIndex": 1, "schemas": ["urn:scim:schemas:core:2.0:User"], "Resources": [
+    {
+        "id": "cef9452e-00a9-4cec-a086-d171374ffbef",
+        "meta": {
+            "created": "2011-10-10T00:00:00.000+02:00",
+            "lastModified": "2007-08-08T00:00:00.000+02:00",
+            "resourceType": "User"
+        },
+        "schemas": ["urn:scim:schemas:core:2.0:User"],
+        "userName": "marissa",
+        "active": true,
+        "roles": [
+            {
+                "value": "USER"
+            }
+        ]
+    },
+    {
+        "id": "618b398c-0110-43f2-95df-d1bc4e7d2b4a",
+        "meta": {
+            "created": "2013-08-08T19:45:20.816+02:00",
+            "lastModified": "2008-08-08T19:45:20.816+02:00",
+            "resourceType": "User"
+        },
+        "schemas": ["urn:scim:schemas:core:2.0:User"],
+        "externalId": "bthomson",
+        "userName": "jcambell",
+        "displayName": "BeccyT.",
+        "nickName": "Beccy",
+        "title": "Dr.",
+        "locale": "de",
+        "active": false
+    },
+    {
+        "id": "03dc8f50-acaa-44d6-9401-bdfc5e10e821",
+        "meta": {
+            "created": "2013-08-08T19:45:37.407+02:00",
+            "lastModified": "2009-08-08T19:45:37.407+02:00",
+            "resourceType": "User"
+        },
+        "schemas": ["urn:scim:schemas:core:2.0:User"],
+        "externalId": "adavies",
+        "userName": "adavies",
+        "displayName": "AdelineD.",
+        "nickName": "Adeline",
+        "title": "Prof.",
+        "locale": "de",
+        "active": false
+    },
+    {
+        "id": "ac3bacc9-915d-4bab-9145-9eb600d5e5bf",
+        "meta": {
+            "created": "2013-08-08T19:45:47.180+02:00",
+            "lastModified": "2010-08-08T19:45:47.180+02:00",
+            "resourceType": "User"
+        },
+        "schemas": ["urn:scim:schemas:core:2.0:User"],
+        "externalId": "cmiller",
+        "userName": "cmiller",
+        "displayName": "CarolinaM.",
+        "nickName": "Carolina",
+        "locale": "de",
+        "active": false
+    },
+    {
+        "id": "d6f323e2-c717-4ab6-af9c-e639b50a948c",
+        "meta": {
+            "created": "2013-08-08T19:46:12.738+02:00",
+            "lastModified": "2011-08-08T19:46:12.738+02:00",
+            "resourceType": "User"
+        },
+        "schemas": ["urn:scim:schemas:core:2.0:User"],
+        "externalId": "dcooper",
+        "userName": "dcooper",
+        "displayName": "DanielC.",
+        "nickName": "Daniel",
+        "locale": "de",
+        "active": false
+    },
+    {
+        "id": "db566580-08a7-44fa-be0f-d30f1c0ff2df",
+        "meta": {
+            "created": "2013-08-08T19:46:20.638+02:00",
+            "lastModified": "2012-08-08T19:46:20.638+02:00",
+            "resourceType": "User"
+        },
+        "schemas": ["urn:scim:schemas:core:2.0:User"],
+        "externalId": "epalmer",
+        "userName": "epalmer",
+        "displayName": "EmilP.",
+        "nickName": "Emil",
+        "locale": "de",
+        "active": false
+    }
+]}
