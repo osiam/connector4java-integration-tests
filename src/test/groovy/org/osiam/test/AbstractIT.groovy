@@ -38,7 +38,6 @@ abstract class AbstractIT extends Specification {
 
     protected OsiamConnector osiamConnectorForClientCredentialsGrant;
 
-<<<<<<< HEAD
     def testSetup(String seedFileName) {
 		
 		// Load Spring context configuration.
