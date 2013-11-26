@@ -20,6 +20,10 @@ import spock.lang.Unroll
  */
 class ControllerIT extends AbstractIT {
 
+	def setup() {
+		testSetup('database_seed.xml')	
+	}
+	
     @Unroll
     def "REGT-001-#testCase: An API request missing an accept header with scope #scope and content type #contentType on path #requestPath should return HTTP status code #expectedResponseCode and content type #expectedResponseType."() {
         given: "a valid access token"
