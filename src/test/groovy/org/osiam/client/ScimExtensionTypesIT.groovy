@@ -12,7 +12,7 @@ import org.osiam.test.AbstractIT
 import spock.lang.Unroll
 
 
-class ScimExtensionNegativIT extends AbstractIT {
+class ScimExtensionTypesIT extends AbstractIT {
 
 	private static final String URN = "extension"
 	
