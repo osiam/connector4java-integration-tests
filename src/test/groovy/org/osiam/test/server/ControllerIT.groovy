@@ -142,7 +142,7 @@ class ControllerIT extends AbstractIT {
         "y"      | "meta.created co 2013-08-08T19:46:20.638" | 409                  | "CONFLICT"                // Date
         "z"      | "meta.created sw 2013-08-08T1"            | 409                  | "CONFLICT"                // Date
     }
-
+    
     def "REGT-005: A search filter String matching two users should return totalResults=2 and two unique Resource elements."() {
         given: "a valid access token"
         AccessToken validAccessToken = osiamConnector.retrieveAccessToken()
