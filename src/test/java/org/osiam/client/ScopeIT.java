@@ -312,12 +312,12 @@ public class ScopeIT {
     }
 
     private SCIMSearchResult<User> searchForUsers() {
-        Query query = new Query.Builder(User.class).setStartIndex(0).build();
+        Query query = new Query.Builder(User.class).setStartIndex(1).build();
         return oConnector.searchUsers(query, accessToken);
     }
 
     private SCIMSearchResult<Group> searchForGroups() {
-        Query query = new Query.Builder(Group.class).setStartIndex(0).build();
+        Query query = new Query.Builder(Group.class).setStartIndex(1).build();
         return oConnector.searchGroups(query, accessToken);
     }
 

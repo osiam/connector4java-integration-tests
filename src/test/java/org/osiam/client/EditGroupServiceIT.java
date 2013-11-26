@@ -101,12 +101,12 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
     @Test
     public void created_group_can_be_found_via_query() {
         Query query = queryToSearchForGroupWithName(IRRELEVANT);
-        assertThat(findSingleGroupByQuery(query), is(nullValue()));
-
         group = new Group.Builder().setDisplayName(IRRELEVANT).build();
         createGroup();
-
-        assertThat(findSingleGroupByQuery(query).getDisplayName(), is(equalTo(IRRELEVANT)));
+        
+        Group foundGroup = findSingleGroupByQuery(query);
+        
+        assertThat(foundGroup.getDisplayName(), is(equalTo(IRRELEVANT)));
     }
 
     @Test

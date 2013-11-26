@@ -75,7 +75,7 @@ abstract class AbstractIT extends Specification {
                 setGrantType(GrantType.CLIENT_CREDENTIALS).
                 setScope(Scope.ALL).build()
     }
-    
+
     def cleanup() {
         // Load Spring context configuration.
         ApplicationContext ac = new ClassPathXmlApplicationContext("context.xml")
@@ -93,5 +93,5 @@ abstract class AbstractIT extends Specification {
         finally {
             connection.close();
         }
-    } 
+    }
 }
