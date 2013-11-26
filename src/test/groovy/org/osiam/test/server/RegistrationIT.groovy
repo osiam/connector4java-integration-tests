@@ -65,6 +65,7 @@ class RegistrationIT extends AbstractIT{
         responseContent.contains("</form>")
         //HTML should contain the fields for registration
         responseContent.count("ng-model") == 7
+        responseContent.contains('url: \'http://test\'')
     }
 
     def "The registration controller should complete the registration process if a POST request was issued to his '/create' path with an access token in the header"() {

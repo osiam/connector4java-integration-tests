@@ -1,5 +1,6 @@
 package org.osiam.test.server
 
+import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
 import org.osiam.resources.scim.Extension
@@ -85,5 +86,42 @@ class LostPasswordIT extends AbstractIT {
         User user = osiamConnector.getUser(userId, accessToken)
         Extension extension = user.getExtension(urn)
         extension.getField("oneTimePassword", ExtensionFieldType.STRING) == ""
+    }
+
+    def "URI: /password/lostForm with GET method to get an html form with input field for the new password including known values as otp and userId"() {
+        given:
+        def otp = "otpVal"
+        def userId = "userIdVal"
+
+        def statusCode
+        def responseContentType
+        def responseContent
+
+        when:
+        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.GET, ContentType.TEXT) {
+            uri.path = REGISTRATION_ENDPOINT + "/password/lostForm"
+            uri.query = [oneTimePassword : otp, userId : userId]
+            headers.Accept = "text/html"
+
+            response.success = {resp, html ->
+                statusCode = resp.statusLine.statusCode
+                responseContentType = resp.headers.'Content-Type'
+                responseContent = html.text
+            }
+
+            response.failure = { resp ->
+                statusCode = resp.statusLine.statusCode
+            }
+        }
+
+        then:
+        statusCode == 200
+        responseContentType == ContentType.HTML.toString()
+        responseContent.contains('\$scope.otp = \'otpVal\'')
+        responseContent.contains('\$scope.userId = \'userIdVal\'')
+        responseContent.count("ng-model") == 2
+        responseContent.contains('url: \'http://test\'')
     }
 }
