@@ -1,10 +1,5 @@
 package org.osiam.client;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-
 import java.util.List;
 
 import org.junit.Before;
@@ -33,6 +28,12 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
+
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
+
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -247,10 +248,6 @@ public class ScopeIT {
         assertThat(searchForGroups(), is(notNullValue()));
     }
 
-    private void setScope(Scope scope) {
-        oConnector = oConBuilder.setScope(scope).build();
-    }
-
     @Test
     @ExpectedDatabase(value = "/database_expected_scope_delete_user.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void delete_user_in_DELETE_scope_works() {
@@ -265,6 +262,10 @@ public class ScopeIT {
         setScope(Scope.DELETE);
         retrieveAccessToken();
         oConnector.deleteGroup(VALID_GROUP_ID, accessToken);
+    }
+
+    private void setScope(Scope scope) {
+        oConnector = oConBuilder.setScope(scope).build();
     }
 
     private User createUser() {

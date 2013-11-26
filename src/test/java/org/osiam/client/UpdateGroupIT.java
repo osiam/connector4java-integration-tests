@@ -1,16 +1,15 @@
 package org.osiam.client;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.NotFoundException;
 import org.osiam.client.update.UpdateGroup;
-import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.MemberRef;
 import org.springframework.test.context.ContextConfiguration;
@@ -18,12 +17,15 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -76,6 +78,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
         createUpdateUserWithUpdateFields();
         idExistingGroup = UUID.randomUUID().toString();
         updateGroup();
+        fail("Exception expected");
     }
 
     @Test(expected = NotFoundException.class)
@@ -84,6 +87,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
         createUpdateUserWithUpdateFields();
         idExistingGroup = ID_USER_HSIMPSON;
         updateGroup();
+        fail("Exception expected");
     }
 
     @Test(expected = ConflictException.class)
@@ -112,6 +116,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
         getOriginalGroup();
         createUpdateGroupWithAddingInvalidMembers();
         updateGroup();
+        fail("Exception expected");
     }
 
     @Test
@@ -127,7 +132,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    @Ignore //the new member is not been added at the moment
+    @Ignore("the new member is not been added at the moment")
     public void delete_all_members_and_add_one_member() {
         getOriginalGroup();
         createUpdateGroupWithDeleteAllMembersAndAddingOneMember();
@@ -138,29 +143,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
         assertNotNull(value);
     }
 
-    public boolean isValuePartOfMultivalueList(List<MemberRef> list, String value) {
-        if (list != null) {
-            for (MemberRef actAttribute : list) {
-                if (actAttribute.getValue().equals(value)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public MemberRef getSingleMultiValueAttribute(Set<MemberRef> multiValues, Object value) {
-        if (multiValues != null) {
-            for (MemberRef actMemberRef : multiValues) {
-                if (actMemberRef.getValue().equals(value.toString())) {
-                    return actMemberRef;
-                }
-            }
-        }
-        return null;
-    }
-
-    public MemberRef getSingleMember(Set<MemberRef> multiValues, Object value) {
+    private MemberRef getSingleMember(Set<MemberRef> multiValues, Object value) {
         if (multiValues != null) {
             for (MemberRef actMemberRef : multiValues) {
                 if (actMemberRef.getValue().equals(value.toString())) {
@@ -210,7 +193,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
                 .build();
     }
 
-    public void getOriginalGroup() {
+    private void getOriginalGroup() {
         Group.Builder groupBuilder = new Group.Builder().setDisplayName("irgendwas");
 
         MemberRef member01 = new MemberRef.Builder().setValue(ID_USER_BTHOMSON).build();
@@ -246,18 +229,6 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
 
     private void updateGroup() {
         returnGroup = oConnector.updateGroup(idExistingGroup, updateGroup, accessToken);
-    }
-
-    public Address getAddress(List<Address> addresses, String formated) {
-        if (addresses != null) {
-            for (Address actAddress : addresses) {
-                if (actAddress.getFormatted().equals(formated)) {
-                    return actAddress;
-                }
-            }
-        }
-        fail("The address with the formated part of " + formated + " could not be found");
-        return null; //Can't be reached
     }
 
 }

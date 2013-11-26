@@ -138,7 +138,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
                 .and(User_.nickName.equalTo("Barbara")).and(User_.displayName.equalTo("BarbaraJ."));
         Query query = new Query.Builder(User.class).setFilter(filter).build();
         whenSearchedIsDoneByQuery(query);
-        queryResultContainsOnlyValidUser();
+        assertThatQueryResultContainsOnlyValidUser();
     }
 
 
@@ -150,7 +150,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         String user03 = "kmorris";
         String searchString = encodeExpected("userName eq " + user01 + " and userName eq " + user02 + "and userName eq " + user03);
         whenSearchIsDoneByString(searchString);
-        queryResultDoesNotContainValidUsers();
+        assertThatQueryResultDoesNotContainValidUsers();
     }
 
     @Test
@@ -161,9 +161,9 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         String user03 = "kmorris";
         String searchString = encodeExpected("userName eq " + user01 + " or userName eq " + user02 + " or userName eq " + user03);
         whenSearchIsDoneByString(searchString);
-        queryResultContainsUser(user01);
-        queryResultContainsUser(user02);
-        queryResultContainsUser(user03);
+        assertThatQueryResultContainsUser(user01);
+        assertThatQueryResultContainsUser(user02);
+        assertThatQueryResultContainsUser(user03);
     }
 
     @Test
@@ -183,8 +183,8 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
 
         queryResult = oConnector.searchUsers(queryBuilder.build(), accessToken);
         assertEquals(2, queryResult.getTotalResults());
-        queryResultContainsUser("marissa");
-        queryResultContainsUser("hsimpson");
+        assertThatQueryResultContainsUser("marissa");
+        assertThatQueryResultContainsUser("hsimpson");
     }
 
     @Test
@@ -221,7 +221,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         }
     }
 
-    private void queryResultContainsUser(String userName) {
+    private void assertThatQueryResultContainsUser(String userName) {
         assertTrue(queryResult != null);
         for (User actUser : queryResult.getResources()) {
             if (actUser.getUserName().equals(userName)) {
@@ -231,13 +231,13 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         fail("User " + userName + " could not be found.");
     }
 
-    private void queryResultContainsOnlyValidUser() {
+    private void assertThatQueryResultContainsOnlyValidUser() {
         assertTrue(queryResult != null);
         assertEquals(1, queryResult.getTotalResults());
-        queryResultContainsValidUser();
+        assertThatQueryResultContainsValidUser();
     }
 
-    private void queryResultDoesNotContainValidUsers() {
+    private void assertThatQueryResultDoesNotContainValidUsers() {
         assertTrue(queryResult != null);
         assertEquals(0, queryResult.getTotalResults());
     }
@@ -250,7 +250,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         queryResult = oConnector.searchUsers(query, accessToken);
     }
 
-    private void queryResultContainsValidUser() {
+    private void assertThatQueryResultContainsValidUser() {
         assertTrue(queryResult != null);
         for (User actUser : queryResult.getResources()) {
             if (actUser.getId().equals(VALID_USER_ID)) {

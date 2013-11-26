@@ -1,9 +1,9 @@
 package org.osiam.client;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,11 +21,18 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -293,55 +300,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     	}
 	}
 
-	public boolean isValuePartOfMultivalueList(List<MultiValuedAttribute> list, String value){
-		if(list != null){
-			for (MultiValuedAttribute actAttribute : list) {
-					if(actAttribute.getValue().equals(value)){
-						return true;
-					}
-			}
-		}
-		return false;
-	}
-
-	public boolean isValuePartOfAddressList(List<Address> list, String formated){
-		if(list != null){
-			for (Address actAttribute : list) {
-				if(actAttribute.getFormatted().equals(formated)){
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	public MultiValuedAttribute getSingleMultiValueAttribute(List<MultiValuedAttribute> multiValues, Object value){
-		if(multiValues != null){
-			for (MultiValuedAttribute actMultiValuedAttribute : multiValues) {
-				if(actMultiValuedAttribute.getValue().equals(value)){
-					return actMultiValuedAttribute;
-				}
-			}
-		}
-		fail("The value " + value + " could not be found");
-		return null; //Can't be reached
-	}
-
-    public void delete_multivalue_attributes_which_is_not_available() {
-        try {
-            getOriginalUser("dma");
-            createUpdateUserWithWrongEmail();
-            updateUser();
-        } finally {
-            oConnector.deleteUser(idExistingUser, accessToken);
-        }
-    }
-
-
-
-
-
-
     @Test
     @Ignore("Ignored due to update user problem.")
     public void REGT_015_update_multivalue_attributes_twice() throws InterruptedException {
@@ -388,7 +346,41 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         }
     }
 
-    public void getOriginalUser(String userName) {
+    private boolean isValuePartOfMultivalueList(List<MultiValuedAttribute> list, String value) {
+        if (list != null) {
+            for (MultiValuedAttribute actAttribute : list) {
+                if (actAttribute.getValue().equals(value)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isValuePartOfAddressList(List<Address> list, String formated) {
+        if (list != null) {
+            for (Address actAttribute : list) {
+                if (actAttribute.getFormatted().equals(formated)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private MultiValuedAttribute getSingleMultiValueAttribute(List<MultiValuedAttribute> multiValues, Object value) {
+        if (multiValues != null) {
+            for (MultiValuedAttribute actMultiValuedAttribute : multiValues) {
+                if (actMultiValuedAttribute.getValue().equals(value)) {
+                    return actMultiValuedAttribute;
+                }
+            }
+        }
+        fail("The value " + value + " could not be found");
+        return null; // Can't be reached
+    }
+
+    private void getOriginalUser(String userName) {
         User.Builder userBuilder = new User.Builder(userName);
 
         MultiValuedAttribute email01 = new MultiValuedAttribute.Builder().setValue("hsimpson@atom-example.com").setType("work").setPrimary(true).build();
@@ -577,14 +569,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         					.build();
     }
 
-    private void createUpdateUserWithWrongEmail(){
-
-    	MultiValuedAttribute email = new MultiValuedAttribute.Builder().setValue("test@test.com").build();
-    	updateUser = new UpdateUser.Builder()
-        					.deleteEmail(email)
-        					.build();
-    }
-
     private void createUpdateUserWithMultiAddFields(){
 
     	MultiValuedAttribute email = new MultiValuedAttribute.Builder()
@@ -680,7 +664,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         oConnector.retrieveAccessToken();
     }
 
-    public Address getAddress(List<Address> addresses, String formatted) {
+    private Address getAddress(List<Address> addresses, String formatted) {
         Address returnAddress = null;
         if (addresses != null) {
             for (Address actAddress : addresses) {
