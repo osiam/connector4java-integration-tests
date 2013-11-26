@@ -132,6 +132,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     @Test
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
     public void search_for_user_with_multiple_fields() throws UnsupportedEncodingException {
         Query.Filter filter = new Query.Filter(User.class, User_.title.equalTo("Dr."))
                 .and(User_.nickName.equalTo("Barbara")).and(User_.displayName.equalTo("BarbaraJ."));
@@ -142,6 +143,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
 
 
     @Test
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
     public void search_for_3_users_by_username_using_and() {
         String user01 = "cmiller";
         String user02 = "hsimpson";
@@ -152,6 +154,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     @Test
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
     public void search_for_3_users_by_username_using_or() {
         String user01 = "cmiller";
         String user02 = "hsimpson";
@@ -164,6 +167,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     @Test
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
     public void search_with_braces() throws Exception {
         Query.Filter innerFilter = new Query.Filter(User.class, User_.userName.equalTo("marissa"))
                 .or(User_.userName.equalTo("hsimpson"));
@@ -184,6 +188,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     @Test
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
     public void nextPage_scrolls_forward() throws UnsupportedEncodingException {
         Query.Builder builder = new Query.Builder(User.class).setCountPerPage(ITEMS_PER_PAGE);
         Query query = builder.build().nextPage();
@@ -192,6 +197,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     @Test
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
     public void prevPage_scrolls_backward() throws UnsupportedEncodingException {
         // since OSIAMs default startIndex is wrongly '0' using ITEMS_PER_PAGE works here.
         Query.Builder builder = new Query.Builder(User.class).setCountPerPage(ITEMS_PER_PAGE).setStartIndex(STARTINDEX_SECOND_PAGE);
@@ -201,6 +207,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     @Test
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
     public void get_all_user_if_over_hundert_user_exists() {
         create100NewUser();
         List<User> allUsers = oConnector.getAllUsers(accessToken);
