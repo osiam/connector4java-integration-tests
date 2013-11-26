@@ -1,8 +1,5 @@
 package org.osiam.client;
 
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
-
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,12 +15,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -50,7 +50,7 @@ public class LoginClientCredentialsIT {
                 setScope(Scope.ALL);
         oConnector = oConBuilder.build();
         AccessToken at = oConnector.retrieveAccessToken();
-        
+
         assertThat(at, is(notNullValue()));
 	}
 
@@ -65,7 +65,7 @@ public class LoginClientCredentialsIT {
                 setScope(Scope.ALL);
         oConnector = oConBuilder.build();
         AccessToken at = oConnector.retrieveAccessToken();
-        
+
         assertThat(at, is(notNullValue()));
 	}
 
@@ -82,6 +82,7 @@ public class LoginClientCredentialsIT {
         oConnector = oConBuilder.build();
         AccessToken accessToken = oConnector.retrieveAccessToken();
         oConnector.getMe(accessToken);
+        fail("Exception expected");
     }
 
 }

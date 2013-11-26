@@ -37,14 +37,14 @@ public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
     public void search_for_group_by_string() {
         String searchString = encodeExpected("displayName eq "+ EXPECTED_GROUP_NAME);
         whenSingleGroupIsSearchedByQueryString(searchString);
-        queryResultContainsOnlyValidGroup();
+        assertThatQueryResultContainsOnlyValidGroup();
     }
 
     @Test
     public void search_for_group_by_non_used_displayName() {
         String searchString = encodeExpected("displayName eq " + INVALID_STRING);
         whenSingleGroupIsSearchedByQueryString(searchString);
-        queryResultContainsNoValidUser();
+        assertThatQueryResultContainsNoValidUser();
     }
 
     @Test
@@ -54,15 +54,15 @@ public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
                 .setFilter(filter).build();
 
         whenSingleGroupIsSearchedByQueryBuilder(query);
-        queryResultContainsOnlyValidGroup();
+        assertThatQueryResultContainsOnlyValidGroup();
     }
 
-    private void queryResultContainsOnlyValidGroup() {
+    private void assertThatQueryResultContainsOnlyValidGroup() {
         assertEquals(queryResult.getTotalResults(), 1);
-        queryResultContainsValidGroup();
+        assertThatQueryResultContainsValidGroup();
     }
 
-    private void queryResultContainsValidGroup() {
+    private void assertThatQueryResultContainsValidGroup() {
         for (Group actGroup : queryResult.getResources()) {
             if (actGroup.getId().equals(VALID_GROUP_ID)) {
                 return; // OK
@@ -71,7 +71,7 @@ public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
         fail("Valid group could not be found.");
     }
 
-    private void queryResultContainsNoValidUser() {
+    private void assertThatQueryResultContainsNoValidUser() {
         assertEquals(queryResult.getTotalResults(), 0);
     }
 

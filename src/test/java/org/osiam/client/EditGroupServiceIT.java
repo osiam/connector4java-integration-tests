@@ -1,6 +1,5 @@
 package org.osiam.client;
 
-
 import java.util.UUID;
 
 import org.junit.Before;
@@ -27,19 +26,17 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
 
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class })
 @DatabaseSetup(value = "/database_seeds/EditGroupServiceIT/groups.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class EditGroupServiceIT extends AbstractIntegrationTestBase {
-
 
     private String newId;
     private static final String IRRELEVANT = "irrelevant";
@@ -103,9 +100,9 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
         Query query = queryToSearchForGroupWithName(IRRELEVANT);
         group = new Group.Builder().setDisplayName(IRRELEVANT).build();
         createGroup();
-        
+
         Group foundGroup = findSingleGroupByQuery(query);
-        
+
         assertThat(foundGroup.getDisplayName(), is(equalTo(IRRELEVANT)));
     }
 
@@ -115,9 +112,9 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
         oConnector.deleteGroup(VALID_GROUP_ID, accessToken);
     }
 
-   @Test(expected = NoResultException.class)
+    @Test(expected = NoResultException.class)
     public void delete_nonexistant_group_raises_exception() throws Exception {
-       oConnector.deleteGroup(INVALID_ID, accessToken);
+        oConnector.deleteGroup(INVALID_ID, accessToken);
         fail("Exception ");
     }
 
@@ -138,6 +135,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
     }
 
     private Query queryToSearchForGroupWithName(String name) {
-        return new Query.Builder(Group.class).setFilter(new Query.Filter(Group.class, Group_.displayName.equalTo(name))).build();
+        return new Query.Builder(Group.class)
+                .setFilter(new Query.Filter(Group.class, Group_.displayName.equalTo(name))).build();
     }
 }

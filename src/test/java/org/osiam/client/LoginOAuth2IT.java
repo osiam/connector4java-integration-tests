@@ -1,9 +1,10 @@
 package org.osiam.client;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpResponse;
@@ -31,12 +32,14 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -86,7 +89,8 @@ public class LoginOAuth2IT {
         givenValidAuthCode();
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
-        meUserIsCorrectlyReturned();
+        User user = oConnector.getMe(accessToken);
+        assertEquals("marissa", user.getUserName());
     }
 
     @Test
@@ -241,11 +245,6 @@ public class LoginOAuth2IT {
         if (authCode == null) {
             throw new Error("Could not find any auth code or error message in the given Response");
         }
-    }
-
-    private void meUserIsCorrectlyReturned() {
-        User user = oConnector.getMe(accessToken);
-        assertEquals("marissa", user.getUserName());
     }
 
 }
