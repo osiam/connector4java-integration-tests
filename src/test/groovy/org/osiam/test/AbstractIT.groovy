@@ -29,7 +29,7 @@ abstract class AbstractIT extends Specification {
     private static final String USER_NAME = "marissa"
     private static final String USER_PASSWORD = "koala"
 
-    private static final String USER_NAME_EMAIL_CHANGE = "George Alexander"
+    private static final String USER_NAME_EMAIL_CHANGE = "GeorgeAlexander"
     private static final String USER_PASSWORD_EMAIL_CHANGE = "koala"
 
     protected static final String AUTH_ENDPOINT = "http://localhost:8180/osiam-auth-server"
