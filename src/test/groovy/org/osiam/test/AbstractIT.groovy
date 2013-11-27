@@ -29,13 +29,16 @@ abstract class AbstractIT extends Specification {
     private static final String USER_NAME = "marissa"
     private static final String USER_PASSWORD = "koala"
 
+    private static final String USER_NAME_EMAIL_CHANGE = "George Alexander"
+    private static final String USER_PASSWORD_EMAIL_CHANGE = "koala"
+
     protected static final String AUTH_ENDPOINT = "http://localhost:8180/osiam-auth-server"
     protected static final String RESOURCE_ENDPOINT = "http://localhost:8180/osiam-resource-server"
     protected static final String REGISTRATION_ENDPOINT = "http://localhost:8180/osiam-registration-module"
 
     protected OsiamConnector osiamConnector;
-
     protected OsiamConnector osiamConnectorForClientCredentialsGrant;
+    protected OsiamConnector osiamConnectorForEmailChange;
 
     def setup() {
         osiamConnector = new OsiamConnector.Builder().
@@ -54,6 +57,16 @@ abstract class AbstractIT extends Specification {
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.CLIENT_CREDENTIALS).
+                setScope(Scope.ALL).build()
+
+        osiamConnectorForEmailChange = new OsiamConnector.Builder().
+                setAuthServiceEndpoint(AUTH_ENDPOINT).
+                setResourceEndpoint(RESOURCE_ENDPOINT).
+                setClientId(CLIENT_ID).
+                setClientSecret(CLIENT_SECRET).
+                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
+                setUserName(USER_NAME_EMAIL_CHANGE).
+                setPassword(USER_PASSWORD_EMAIL_CHANGE).
                 setScope(Scope.ALL).build()
     }
 
