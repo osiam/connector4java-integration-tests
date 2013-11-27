@@ -36,7 +36,7 @@ class ChangeEmailIT extends AbstractIT {
 
         httpClient.request(Method.POST) {
             uri.path = REGISTRATION_ENDPOINT + "/email/change"
-            send URLENC, [userId:userId, newEmailValue: newEmailValue]
+            send URLENC, [newEmailValue: newEmailValue]
             headers.'Authorization' = "Bearer " + accessToken.getToken()
 
             response.success = { resp ->
