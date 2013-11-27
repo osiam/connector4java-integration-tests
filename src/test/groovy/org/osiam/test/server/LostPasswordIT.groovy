@@ -120,7 +120,7 @@ class LostPasswordIT extends AbstractIT {
         statusCode == 200
         responseContentType == ContentType.HTML.toString()
         responseContent.contains('\$scope.otp = \'otpVal\'')
-        responseContent.contains('\$scope.userId = \'userIdVal\'')
+        responseContent.contains('\$scope.id = \'userIdVal\'')
         responseContent.count("ng-model") == 2
         responseContent.contains('url: \'http://test\'')
     }
