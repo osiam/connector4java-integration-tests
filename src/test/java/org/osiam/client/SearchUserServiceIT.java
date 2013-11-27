@@ -132,6 +132,41 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     @Test
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_extension.xml")
+    public void search_for_user_by_string_extension_field_with_query_string_works(){
+        String query = encodeExpected("extension.gender eq female");
+
+        SCIMSearchResult<User>  result = oConnector.searchUsers("filter=" + query, accessToken);
+
+        assertThat(result.getTotalResults(), is(equalTo(3L)));
+        User transmittedUser = result.getResources().get(0);
+        Assert.assertThat(transmittedUser.getUserName(), is(equalTo("adavies")));
+    }
+
+    @Test
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_extension.xml")
+    public void search_for_user_by_boolean_extension_field_with_query_string_works(){
+        String query = encodeExpected("extension.newsletter eq true");
+
+        SCIMSearchResult<User>  result = oConnector.searchUsers("filter=" + query, accessToken);
+
+        assertThat(result.getTotalResults(), is(equalTo(3L)));
+        User transmittedUser = result.getResources().get(0);
+        Assert.assertThat(transmittedUser.getUserName(), is(equalTo("adavies")));
+    }
+
+    @Test
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_extension.xml")
+    public void search_for_user_by_integer_extension_field_with_query_string_works(){
+        String query = encodeExpected("extension.age lt 30");
+
+        SCIMSearchResult<User>  result = oConnector.searchUsers("filter=" + query, accessToken);
+
+        assertThat(result.getTotalResults(), is(equalTo(3L)));
+    }
+
+
+    @Test
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
     public void search_for_user_with_multiple_fields() throws UnsupportedEncodingException {
         Query.Filter filter = new Query.Filter(User.class, User_.title.equalTo("Dr."))
