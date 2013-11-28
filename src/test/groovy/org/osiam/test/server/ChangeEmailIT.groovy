@@ -1,5 +1,6 @@
 package org.osiam.test.server
 
+import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
 import org.osiam.resources.scim.Extension
@@ -22,7 +23,39 @@ class ChangeEmailIT extends AbstractIT {
         setupDatabase("database_seed_change_email.xml")
     }
 
-    def "The /change endpoint with HTTP method POST should generate confirmation token, saving the new email temporary and sending an email to the new address"() {
+    def "The /email endpoint with HTTP method GET should provide an HTML form for change email purpose"() {
+        given:
+        def statusCode
+        def responseContent
+        def responseContentType
+
+        when:
+        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.GET, ContentType.TEXT) {
+            uri.path = REGISTRATION_ENDPOINT + "/email"
+            headers.Accept = 'text/html'
+
+            response.success = { resp, html ->
+                statusCode = resp.statusLine.statusCode
+                responseContentType = resp.headers.'Content-Type'
+                responseContent = html.text
+            }
+
+            response.failure = { resp ->
+                statusCode = resp.statusLine.statusCode
+            }
+        }
+
+        then:
+        statusCode == 200
+        responseContentType == ContentType.HTML.toString()
+        responseContent.contains("</form>")
+        responseContent.count("ng-model") == 2
+        responseContent.contains('url: \'http://test\'')
+    }
+
+    def "The /email/change endpoint with HTTP method POST should generate confirmation token, saving the new email temporary and sending an email to the new address"() {
         given:
         def accessToken = osiamConnectorForEmailChange.retrieveAccessToken()
         def userId = "7d33bcbe-a54c-43d8-867e-f6146164941e"
@@ -57,7 +90,7 @@ class ChangeEmailIT extends AbstractIT {
         extension.getField("tempMail", ExtensionFieldType.STRING) == newEmailValue
     }
 
-    def "The /confirm endpoint with HTTP method POST should verify the confirmation token, saving the email as primary email and sending an email to the old address"() {
+    def "The /email/confirm endpoint with HTTP method POST should verify the confirmation token, saving the email as primary email and sending an email to the old address"() {
         given:
         def accessToken = osiamConnector.retrieveAccessToken()
         def userId = "cef9452e-00a9-4cec-a086-d171374febef"
