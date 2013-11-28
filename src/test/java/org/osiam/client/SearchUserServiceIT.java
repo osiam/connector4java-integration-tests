@@ -1,10 +1,9 @@
 package org.osiam.client;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -21,18 +20,15 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -130,41 +126,6 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
             Assert.assertThat(currentUser.getUserName(), is(equalTo(sortedUserNames.get(count++))));
         }
     }
-
-    @Test
-    @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_extension.xml")
-    public void search_for_user_by_string_extension_field_with_query_string_works(){
-        String query = encodeExpected("extension.gender eq female");
-
-        SCIMSearchResult<User>  result = oConnector.searchUsers("filter=" + query, accessToken);
-
-        assertThat(result.getTotalResults(), is(equalTo(3L)));
-        User transmittedUser = result.getResources().get(0);
-        Assert.assertThat(transmittedUser.getUserName(), is(equalTo("adavies")));
-    }
-
-    @Test
-    @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_extension.xml")
-    public void search_for_user_by_boolean_extension_field_with_query_string_works(){
-        String query = encodeExpected("extension.newsletter eq true");
-
-        SCIMSearchResult<User>  result = oConnector.searchUsers("filter=" + query, accessToken);
-
-        assertThat(result.getTotalResults(), is(equalTo(3L)));
-        User transmittedUser = result.getResources().get(0);
-        Assert.assertThat(transmittedUser.getUserName(), is(equalTo("adavies")));
-    }
-
-    @Test
-    @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_extension.xml")
-    public void search_for_user_by_integer_extension_field_with_query_string_works(){
-        String query = encodeExpected("extension.age lt 30");
-
-        SCIMSearchResult<User>  result = oConnector.searchUsers("filter=" + query, accessToken);
-
-        assertThat(result.getTotalResults(), is(equalTo(3L)));
-    }
-
 
     @Test
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
