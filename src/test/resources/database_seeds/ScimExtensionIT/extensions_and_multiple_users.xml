@@ -1,102 +1,103 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-    <DATABASE_SCHEME_VERSION VERSION="0.02" />
-    <OSIAM_CLIENT INTERNAL_ID="3" ACCESSTOKENVALIDITYSECONDS="2342" CLIENT_SECRET="secret" EXPIRY="1970-01-01 00:00:01.0"
-        ID="example-client" IMPLICIT_APPROVAL="false" REDIRECT_URI="http://localhost:5000/oauth2"
-        REFRESHTOKENVALIDITYSECONDS="2342" VALIDITYINSECONDS="1337" />
-    <OSIAM_CLIENT_GRANTS ID="3" GRANTS="authorization_code" />
-    <OSIAM_CLIENT_GRANTS ID="3" GRANTS="refresh-token" />
-    <OSIAM_CLIENT_GRANTS ID="3" GRANTS="password" />
-    <OSIAM_CLIENT_GRANTS ID="3" GRANTS="client_credentials" />
-    <OSIAM_CLIENT_SCOPES ID="3" SCOPE="GET" />
-    <OSIAM_CLIENT_SCOPES ID="3" SCOPE="POST" />
-    <OSIAM_CLIENT_SCOPES ID="3" SCOPE="PUT" />
-    <OSIAM_CLIENT_SCOPES ID="3" SCOPE="PATCH" />
-    <OSIAM_CLIENT_SCOPES ID="3" SCOPE="DELETE" />
+    <database_scheme_version version="0.02"/>
+    <osiam_client internal_id="3" accesstokenvalidityseconds="2342" client_secret="secret"
+                  expiry="1970-01-01 00:00:01.0"
+                  id="example-client" implicit_approval="false" redirect_uri="http://localhost:5000/oauth2"
+                  refreshtokenvalidityseconds="2342" validityinseconds="1337"/>
+    <osiam_client_grants id="3" grants="authorization_code"/>
+    <osiam_client_grants id="3" grants="refresh-token"/>
+    <osiam_client_grants id="3" grants="password"/>
+    <osiam_client_grants id="3" grants="client_credentials"/>
+    <osiam_client_scopes id="3" scope="GET"/>
+    <osiam_client_scopes id="3" scope="POST"/>
+    <osiam_client_scopes id="3" scope="PUT"/>
+    <osiam_client_scopes id="3" scope="PATCH"/>
+    <osiam_client_scopes id="3" scope="DELETE"/>
 
-    <SCIM_META ID="4" CREATED="2011-10-10 00:00:00.0" LASTMODIFIED="2011-10-10 00:00:00.0" RESOURCETYPE="User" />
-    <SCIM_META ID="5" CREATED="2013-10-30 23:18:06.408" LASTMODIFIED="2013-10-30 23:18:06.408" RESOURCETYPE="User" />
-    <SCIM_META ID="6" CREATED="2013-10-30 23:18:06.408" LASTMODIFIED="2013-10-30 23:18:06.408" RESOURCETYPE="User" />
-    <SCIM_META ID="7" CREATED="2013-10-30 23:18:06.408" LASTMODIFIED="2013-10-30 23:18:06.408" RESOURCETYPE="User" />
+    <scim_meta id="4" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
+    <scim_meta id="5" created="2013-10-30 23:18:06.408" lastmodified="2013-10-30 23:18:06.408" resourcetype="User"/>
+    <scim_meta id="6" created="2013-10-30 23:18:06.408" lastmodified="2013-10-30 23:18:06.408" resourcetype="User"/>
+    <scim_meta id="7" created="2013-10-30 23:18:06.408" lastmodified="2013-10-30 23:18:06.408" resourcetype="User"/>
 
-    <SCIM_ID INTERNAL_ID="1" ID="cef9452e-00a9-4cec-a086-d171374ffbef" META_ID="4" />
-    <SCIM_ID INTERNAL_ID="2" ID="df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d4" META_ID="5" />
-    <SCIM_ID INTERNAL_ID="3" ID="df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d5" META_ID="6" />
-    <SCIM_ID INTERNAL_ID="4" ID="df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d6" META_ID="7" />
+    <scim_id internal_id="1" id="cef9452e-00a9-4cec-a086-d171374ffbef" meta_id="4"/>
+    <scim_id internal_id="2" id="df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d4" meta_id="5"/>
+    <scim_id internal_id="3" id="df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d5" meta_id="6"/>
+    <scim_id internal_id="4" id="df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d6" meta_id="7"/>
 
-    <SCIM_USER
-        PASSWORD="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
-        USERNAME="marissa" INTERNAL_ID="1" active="true" />
-    <SCIM_USER
-        PASSWORD="b5b9fbac6ae8e0911ff47d59c91a64d05e2a3ee6fa3aa22e85d21d4b05ba51ec750f56d73a76eed27344638f3b2cefebd70d0b735dd8f657770b038ca9825652"
-        USERNAME="existing1" INTERNAL_ID="2" active="false" />
-    <SCIM_USER
-        PASSWORD="b5b9fbac6ae8e0911ff47d59c91a64d05e2a3ee6fa3aa22e85d21d4b05ba51ec750f56d73a76eed27344638f3b2cefebd70d0b735dd8f657770b038ca9825652"
-        USERNAME="existing2" INTERNAL_ID="3" active="false" />
-    <SCIM_USER
-        PASSWORD="b5b9fbac6ae8e0911ff47d59c91a64d05e2a3ee6fa3aa22e85d21d4b05ba51ec750f56d73a76eed27344638f3b2cefebd70d0b735dd8f657770b038ca9825652"
-        USERNAME="existing3" INTERNAL_ID="4" active="false" />
+    <scim_user
+            password="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
+            username="marissa" internal_id="1" active="true"/>
+    <scim_user
+            password="b5b9fbac6ae8e0911ff47d59c91a64d05e2a3ee6fa3aa22e85d21d4b05ba51ec750f56d73a76eed27344638f3b2cefebd70d0b735dd8f657770b038ca9825652"
+            username="existing1" internal_id="2" active="false"/>
+    <scim_user
+            password="b5b9fbac6ae8e0911ff47d59c91a64d05e2a3ee6fa3aa22e85d21d4b05ba51ec750f56d73a76eed27344638f3b2cefebd70d0b735dd8f657770b038ca9825652"
+            username="existing2" internal_id="3" active="false"/>
+    <scim_user
+            password="b5b9fbac6ae8e0911ff47d59c91a64d05e2a3ee6fa3aa22e85d21d4b05ba51ec750f56d73a76eed27344638f3b2cefebd70d0b735dd8f657770b038ca9825652"
+            username="existing3" internal_id="4" active="false"/>
 
-    <SCIM_EXTENSION INTERNAL_ID="81" URN="extension" />
+    <scim_extension internal_id="81" urn="extension"/>
 
-    <SCIM_EXTENSION_FIELD INTERNAL_ID="82" IS_REQUIRED="false" NAME="gender" TYPE="STRING"
-        EXTENSION_INTERNAL_ID="81" />
-    <SCIM_EXTENSION_FIELD INTERNAL_ID="83" IS_REQUIRED="false" NAME="newsletter" TYPE="BOOLEAN"
-        EXTENSION_INTERNAL_ID="81" />
-    <SCIM_EXTENSION_FIELD INTERNAL_ID="84" IS_REQUIRED="false" NAME="age" TYPE="INTEGER"
-        EXTENSION_INTERNAL_ID="81" />
-    <SCIM_EXTENSION_FIELD INTERNAL_ID="85" IS_REQUIRED="false" NAME="weight" TYPE="DECIMAL"
-        EXTENSION_INTERNAL_ID="81" />
-    <SCIM_EXTENSION_FIELD INTERNAL_ID="86" IS_REQUIRED="false" NAME="birthday" TYPE="DATE_TIME"
-        EXTENSION_INTERNAL_ID="81" />
-    <SCIM_EXTENSION_FIELD INTERNAL_ID="87" IS_REQUIRED="false" NAME="photo" TYPE="BINARY"
-        EXTENSION_INTERNAL_ID="81" />
-    <SCIM_EXTENSION_FIELD INTERNAL_ID="88" IS_REQUIRED="false" NAME="mother" TYPE="REFERENCE"
-        EXTENSION_INTERNAL_ID="81" />
+    <scim_extension_field internal_id="82" is_required="false" name="gender" type="STRING"
+                          extension_internal_id="81"/>
+    <scim_extension_field internal_id="83" is_required="false" name="newsletter" type="BOOLEAN"
+                          extension_internal_id="81"/>
+    <scim_extension_field internal_id="84" is_required="false" name="age" type="INTEGER"
+                          extension_internal_id="81"/>
+    <scim_extension_field internal_id="85" is_required="false" name="weight" type="DECIMAL"
+                          extension_internal_id="81"/>
+    <scim_extension_field internal_id="86" is_required="false" name="birthday" type="DATE_TIME"
+                          extension_internal_id="81"/>
+    <scim_extension_field internal_id="87" is_required="false" name="photo" type="BINARY"
+                          extension_internal_id="81"/>
+    <scim_extension_field internal_id="88" is_required="false" name="mother" type="REFERENCE"
+                          extension_internal_id="81"/>
 
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="1" VALUE="male" EXTENSION_FIELD_INTERNAL_ID="82"
-        USER_INTERNAL_ID="2" />
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="2" VALUE="true" EXTENSION_FIELD_INTERNAL_ID="83"
-        USER_INTERNAL_ID="2" />
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="3" VALUE="28" EXTENSION_FIELD_INTERNAL_ID="84"
-        USER_INTERNAL_ID="2" />
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="4" VALUE="82.7" EXTENSION_FIELD_INTERNAL_ID="85"
-        USER_INTERNAL_ID="2" />
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="5" VALUE="2008-01-23T04:56:22.000Z"
-        EXTENSION_FIELD_INTERNAL_ID="86" USER_INTERNAL_ID="2" />
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="6" VALUE="ZXhhbXBsZQ=="
-        EXTENSION_FIELD_INTERNAL_ID="87" USER_INTERNAL_ID="2" />
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="7" VALUE="https://example.com/Users/28"
-        EXTENSION_FIELD_INTERNAL_ID="88" USER_INTERNAL_ID="2" />
+    <scim_extension_field_value internal_id="1" value="male" extension_field_internal_id="82"
+                                user_internal_id="2"/>
+    <scim_extension_field_value internal_id="2" value="true" extension_field_internal_id="83"
+                                user_internal_id="2"/>
+    <scim_extension_field_value internal_id="3" value="100000000000000000028" extension_field_internal_id="84"
+                                user_internal_id="2"/>
+    <scim_extension_field_value internal_id="4" value="100000000000000000082.7" extension_field_internal_id="85"
+                                user_internal_id="2"/>
+    <scim_extension_field_value internal_id="5" value="2008-01-23T04:56:22.000Z"
+                                extension_field_internal_id="86" user_internal_id="2"/>
+    <scim_extension_field_value internal_id="6" value="ZXhhbXBsZQ=="
+                                extension_field_internal_id="87" user_internal_id="2"/>
+    <scim_extension_field_value internal_id="7" value="https://example.com/Users/28"
+                                extension_field_internal_id="88" user_internal_id="2"/>
 
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="8" VALUE="male" EXTENSION_FIELD_INTERNAL_ID="82"
-        USER_INTERNAL_ID="3" />
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="9" VALUE="true" EXTENSION_FIELD_INTERNAL_ID="83"
-        USER_INTERNAL_ID="3" />
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="10" VALUE="28" EXTENSION_FIELD_INTERNAL_ID="84"
-        USER_INTERNAL_ID="3" />
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="11" VALUE="82.7" EXTENSION_FIELD_INTERNAL_ID="85"
-        USER_INTERNAL_ID="3" />
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="12" VALUE="2008-01-23T04:56:22.000Z"
-        EXTENSION_FIELD_INTERNAL_ID="86" USER_INTERNAL_ID="3" />
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="13" VALUE="ZXhhbXBsZQ=="
-        EXTENSION_FIELD_INTERNAL_ID="87" USER_INTERNAL_ID="3" />
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="14" VALUE="https://example.com/Users/28"
-        EXTENSION_FIELD_INTERNAL_ID="88" USER_INTERNAL_ID="3" />
+    <scim_extension_field_value internal_id="8" value="male" extension_field_internal_id="82"
+                                user_internal_id="3"/>
+    <scim_extension_field_value internal_id="9" value="true" extension_field_internal_id="83"
+                                user_internal_id="3"/>
+    <scim_extension_field_value internal_id="10" value="100000000000000000028" extension_field_internal_id="84"
+                                user_internal_id="3"/>
+    <scim_extension_field_value internal_id="11" value="100000000000000000082.7" extension_field_internal_id="85"
+                                user_internal_id="3"/>
+    <scim_extension_field_value internal_id="12" value="2008-01-23T04:56:22.000Z"
+                                extension_field_internal_id="86" user_internal_id="3"/>
+    <scim_extension_field_value internal_id="13" value="ZXhhbXBsZQ=="
+                                extension_field_internal_id="87" user_internal_id="3"/>
+    <scim_extension_field_value internal_id="14" value="https://example.com/Users/28"
+                                extension_field_internal_id="88" user_internal_id="3"/>
 
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="15" VALUE="male" EXTENSION_FIELD_INTERNAL_ID="82"
-        USER_INTERNAL_ID="4" />
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="16" VALUE="true" EXTENSION_FIELD_INTERNAL_ID="83"
-        USER_INTERNAL_ID="4" />
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="17" VALUE="28" EXTENSION_FIELD_INTERNAL_ID="84"
-        USER_INTERNAL_ID="4" />
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="18" VALUE="82.7" EXTENSION_FIELD_INTERNAL_ID="85"
-        USER_INTERNAL_ID="4" />
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="19" VALUE="2008-01-23T04:56:22.000Z"
-        EXTENSION_FIELD_INTERNAL_ID="86" USER_INTERNAL_ID="4" />
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="20" VALUE="ZXhhbXBsZQ=="
-        EXTENSION_FIELD_INTERNAL_ID="87" USER_INTERNAL_ID="4" />
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="21" VALUE="https://example.com/Users/28"
-        EXTENSION_FIELD_INTERNAL_ID="88" USER_INTERNAL_ID="4" />
+    <scim_extension_field_value internal_id="15" value="male" extension_field_internal_id="82"
+                                user_internal_id="4"/>
+    <scim_extension_field_value internal_id="16" value="true" extension_field_internal_id="83"
+                                user_internal_id="4"/>
+    <scim_extension_field_value internal_id="17" value="100000000000000000028" extension_field_internal_id="84"
+                                user_internal_id="4"/>
+    <scim_extension_field_value internal_id="18" value="100000000000000000082.7" extension_field_internal_id="85"
+                                user_internal_id="4"/>
+    <scim_extension_field_value internal_id="19" value="2008-01-23T04:56:22.000Z"
+                                extension_field_internal_id="86" user_internal_id="4"/>
+    <scim_extension_field_value internal_id="20" value="ZXhhbXBsZQ=="
+                                extension_field_internal_id="87" user_internal_id="4"/>
+    <scim_extension_field_value internal_id="21" value="https://example.com/Users/28"
+                                extension_field_internal_id="88" user_internal_id="4"/>
 
 </dataset>
