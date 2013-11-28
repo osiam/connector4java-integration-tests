@@ -1,50 +1,11 @@
-package org.osiam.client
-
-import java.nio.ByteBuffer
+package org.osiam.test.integration
 
 import org.osiam.client.exception.ConflictException
-import org.osiam.client.oauth.AccessToken
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.User
-import org.osiam.test.AbstractIT
-
 import spock.lang.Unroll
 
-
-class ScimExtensionTypesIT extends AbstractIT {
-
-    private static final String URN = "extension"
-
-    private static final String FIELD_NAME_STRING = 'gender'
-    private static final String FIELD_TYPE_STRING = 'String'
-    private static final String FIELD_NAME_BOOLEAN = 'newsletter'
-    private static final String FIELD_TYPE_BOOLEAN = 'Boolean'
-    private static final String FIELD_NAME_INTEGER = 'age'
-    private static final String FIELD_TYPE_INTEGER = 'Integer'
-    private static final String FIELD_NAME_DECIMAL = 'weight'
-    private static final String FIELD_TYPE_DECIMAL = 'Decimal'
-    private static final String FIELD_NAME_DATE = 'birthday'
-    private static final String FIELD_TYPE_DATE = 'Date'
-    private static final String FIELD_NAME_BINARY = 'photo'
-    private static final String FIELD_TYPE_BINARY = 'binary'
-    private static final String FIELD_NAME_REFERENCE = 'mother'
-    private static final String FIELD_TYPE_REFERENCE = 'reference'
-
-    private static final String     STRING_VALUE = '!@#$%^&*_+'
-    private static final Boolean    BOOLEAN_VALUE = true
-    private static final BigInteger INTEGER_VALUE = 123G
-    private static final BigDecimal DECIMAL_VALUE = 1.23G
-    private static final Date       DATE_TIME_VALUE = createDate(2011, 7, 1, 18, 29, 49)
-    private static final ByteBuffer BINARY_VALUE = ByteBuffer.wrap([
-        101,
-        120,
-        97,
-        109,
-        112,
-        108,
-        101] as byte[])
-    private static final URI        REFERENCE_VALUE = new URI('https://example.com/Users/28')
-
+class ScimExtensionTypesIT extends AbstractExtensionBaseIT {
 
     def setup() {
         testSetup('/database_seeds/ScimExtensionIT/extensions.xml')
@@ -66,7 +27,7 @@ class ScimExtensionTypesIT extends AbstractIT {
         thrown(ConflictException)
 
         where:
-        fieldName            |fieldType             | fieldValue
+        fieldName            | fieldType            | fieldValue
         FIELD_NAME_BOOLEAN   | FIELD_TYPE_BOOLEAN   | STRING_VALUE
         FIELD_NAME_BOOLEAN   | FIELD_TYPE_BOOLEAN   | INTEGER_VALUE
         FIELD_NAME_BOOLEAN   | FIELD_TYPE_BOOLEAN   | DECIMAL_VALUE
@@ -100,12 +61,4 @@ class ScimExtensionTypesIT extends AbstractIT {
         FIELD_NAME_REFERENCE | FIELD_TYPE_REFERENCE | STRING_VALUE
     }
 
-    private static Date createDate(int year, int month, int date, int hourOfDay, int minute,
-            int second) {
-        Calendar calendar = Calendar.getInstance()
-        calendar.set(Calendar.MILLISECOND, 0)
-        calendar.setTimeZone(TimeZone.getTimeZone(TimeZone.GMT_ID))
-        calendar.set(year, month, date, hourOfDay, minute, second)
-        calendar.getTime()
-    }
 }

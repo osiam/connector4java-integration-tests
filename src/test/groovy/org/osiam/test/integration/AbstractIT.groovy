@@ -1,6 +1,4 @@
-package org.osiam.test
-
-import javax.sql.DataSource
+package org.osiam.test.integration
 
 import org.dbunit.database.DatabaseDataSourceConnection
 import org.dbunit.database.IDatabaseConnection
@@ -13,8 +11,9 @@ import org.osiam.client.oauth.GrantType
 import org.osiam.client.oauth.Scope
 import org.springframework.context.ApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext
-
 import spock.lang.Specification
+
+import javax.sql.DataSource
 
 /**
  * Base class for integration tests.
@@ -39,24 +38,24 @@ abstract class AbstractIT extends Specification {
     protected OsiamConnector osiamConnectorForClientCredentialsGrant;
 
     def testSetup(String seedFileName) {
-		
-		// Load Spring context configuration.
-		ApplicationContext ac = new ClassPathXmlApplicationContext("context.xml")
-		// Get dataSource configuration.
-		DataSource dataSource = (DataSource) ac.getBean("dataSource")
-		// Establish database connection.
-		IDatabaseConnection connection = new DatabaseDataSourceConnection(dataSource)
-		// Load the initialization data from file.
-		IDataSet initData = new FlatXmlDataSetBuilder().build(ac.getResource(seedFileName).getFile())
 
-		// Insert initialization data into database.
-		try {
-			DatabaseOperation.CLEAN_INSERT.execute(connection, initData)
-		}
-		finally {
-			connection.close();
-		}
-		
+        // Load Spring context configuration.
+        ApplicationContext ac = new ClassPathXmlApplicationContext("context.xml")
+        // Get dataSource configuration.
+        DataSource dataSource = (DataSource) ac.getBean("dataSource")
+        // Establish database connection.
+        IDatabaseConnection connection = new DatabaseDataSourceConnection(dataSource)
+        // Load the initialization data from file.
+        IDataSet initData = new FlatXmlDataSetBuilder().build(ac.getResource(seedFileName).getFile())
+
+        // Insert initialization data into database.
+        try {
+            DatabaseOperation.CLEAN_INSERT.execute(connection, initData)
+        }
+        finally {
+            connection.close();
+        }
+
         osiamConnector = new OsiamConnector.Builder().
                 setAuthServiceEndpoint(AUTH_ENDPOINT).
                 setResourceEndpoint(RESOURCE_ENDPOINT).
