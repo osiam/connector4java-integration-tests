@@ -6,7 +6,6 @@ import spock.lang.Unroll
 
 public class ScimExtensionSearchIT extends AbstractExtensionBaseIT {
 
-aint
 
     @Unroll
     def 'search for user by #fieldType extension field and constraint #constraint with query string works'() {
