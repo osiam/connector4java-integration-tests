@@ -17,13 +17,12 @@ import spock.lang.Unroll
 class ControllerIT extends AbstractIT {
 
     def setup() {
-        testSetup('database_seed.xml')
+        setupDatabase('database_seed.xml')
     }
 
     @Unroll
     def "REGT-001-#testCase: An API request missing an accept header with scope #scope and content type #contentType on path #requestPath should return HTTP status code #expectedResponseCode and content type #expectedResponseType."() {
         given: "a valid access token"
-        AccessToken validAccessToken = osiamConnector.retrieveAccessToken()
 
         when: "a request is sent"
         def http = new HTTPBuilder(RESOURCE_ENDPOINT)
@@ -33,7 +32,7 @@ class ControllerIT extends AbstractIT {
 
         http.request(Method.GET, contentType) { req ->
             uri.path = RESOURCE_ENDPOINT + requestPath
-            headers."Authorization" = "Bearer " + validAccessToken.getToken()
+            headers."Authorization" = "Bearer " + accessToken.getToken()
 
             // response handler for a success response code:
             response.success = { resp, json ->

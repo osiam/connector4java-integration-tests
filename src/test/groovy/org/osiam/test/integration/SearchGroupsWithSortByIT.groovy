@@ -1,21 +1,16 @@
 package org.osiam.test.integration
 
-import org.osiam.client.oauth.AccessToken
 import org.osiam.client.query.Query
 import org.osiam.client.query.metamodel.Group_
 import org.osiam.resources.scim.Group
 import org.osiam.resources.scim.SCIMSearchResult
-import spock.lang.Shared
 import spock.lang.Unroll
 
 class SearchGroupsWithSortByIT extends AbstractIT {
 
-    @Shared
-    AccessToken accessToken
 
     def setup() {
-        testSetup('/database_seeds/SearchGroupsWithSortByIT/database_seed.xml')
-        accessToken = osiamConnector.retrieveAccessToken()
+        setupDatabase('/database_seeds/SearchGroupsWithSortByIT/database_seed.xml')
     }
 
     @Unroll

@@ -8,13 +8,12 @@ import spock.lang.Unroll
 class ScimExtensionTypesIT extends AbstractExtensionBaseIT {
 
     def setup() {
-        testSetup('/database_seeds/ScimExtensionIT/extensions.xml')
+        setupDatabase('/database_seeds/ScimExtensionIT/extensions.xml')
     }
 
     @Unroll
     def 'Saving \'#fieldValue\' into the extension field \'#fieldName\' which is from type #fieldType raises a exception'() {
         given: "a valid access token"
-        accessToken = osiamConnector.retrieveAccessToken()
         Extension extension = new Extension(URN);
         extension.addOrUpdateField(fieldName, fieldValue);
 

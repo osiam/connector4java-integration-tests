@@ -32,12 +32,13 @@ abstract class AbstractIT extends Specification {
     protected static final String AUTH_ENDPOINT = "http://localhost:8180/osiam-auth-server"
     protected static final String RESOURCE_ENDPOINT = "http://localhost:8180/osiam-resource-server"
 
-    protected OsiamConnector osiamConnector;
-    protected AccessToken accessToken;
+    def OsiamConnector osiamConnector;
 
-    protected OsiamConnector osiamConnectorForClientCredentialsGrant;
+    def AccessToken accessToken;
 
-    def testSetup(String seedFileName) {
+    def OsiamConnector osiamConnectorForClientCredentialsGrant;
+
+    def setupDatabase(String seedFileName) {
 
         // Load Spring context configuration.
         ApplicationContext ac = new ClassPathXmlApplicationContext("context.xml")
@@ -73,6 +74,8 @@ abstract class AbstractIT extends Specification {
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.CLIENT_CREDENTIALS).
                 setScope(Scope.ALL).build()
+
+        accessToken = osiamConnector.retrieveAccessToken()
     }
 
     def cleanup() {
