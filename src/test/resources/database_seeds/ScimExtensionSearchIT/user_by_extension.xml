@@ -140,6 +140,7 @@
                                 user_internal_id="25"/>
     <scim_extension_field_value internal_id="34" value="ZXhhbXBsZQ==" extension_field_internal_id="87"
                                 user_internal_id="25"/>
-    <scim_extension_field_value internal_id="35" value="https://example.com/Users/28" extension_field_internal_id="88"
+    <scim_extension_field_value internal_id="35" value="https://beta.example.com/Users/28"
+                                extension_field_internal_id="88"
                                 user_internal_id="25"/>
 </dataset>
