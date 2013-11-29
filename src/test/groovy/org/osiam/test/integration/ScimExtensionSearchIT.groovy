@@ -6,12 +6,15 @@ import spock.lang.Unroll
 
 public class ScimExtensionSearchIT extends AbstractExtensionBaseIT {
 
+    def setup() {
+        setupDatabase('/database_seeds/ScimExtensionSearchIT/user_by_extension.xml')
+    }
 
     @Unroll
     def 'search for user by #fieldType extension field and constraint #constraint with query string works'() {
 
         given:
-        def query = URLEncoder.encode("extension.$fieldName $constraint $queryValue", 'UTF-8');
+        def query = URLEncoder.encode("extension.$fieldName $constraint $queryValue", 'UTF-8')
 
         when:
         SCIMSearchResult result = osiamConnector.searchUsers("filter=$query", accessToken)
@@ -52,7 +55,7 @@ public class ScimExtensionSearchIT extends AbstractExtensionBaseIT {
     @Unroll
     def 'search for user by #fieldType extension field and constraint #constraint with query string raises exception'() {
         given:
-        def query = URLEncoder.encode("extension.$fieldName $constraint irrelevant", 'UTF-8');
+        def query = URLEncoder.encode("extension.$fieldName $constraint irrelevant", 'UTF-8')
 
         when:
         osiamConnector.searchUsers("filter=$query", accessToken)
