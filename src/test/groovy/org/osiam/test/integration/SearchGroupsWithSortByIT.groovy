@@ -1,15 +1,12 @@
-package org.osiam.client
+package org.osiam.test.integration
 
 import org.osiam.client.oauth.AccessToken
 import org.osiam.client.query.Query
 import org.osiam.client.query.metamodel.Group_
 import org.osiam.resources.scim.Group
 import org.osiam.resources.scim.SCIMSearchResult
-import org.osiam.test.AbstractIT
-
 import spock.lang.Shared
 import spock.lang.Unroll
-
 
 class SearchGroupsWithSortByIT extends AbstractIT {
 
@@ -45,7 +42,7 @@ class SearchGroupsWithSortByIT extends AbstractIT {
     }
 
     private def void resultsAreInRightOrder(List<Group> groups, List<String> expectedGroupNameOrder) {
-        [groups, expectedGroupNameOrder].transpose().each {it ->
+        [groups, expectedGroupNameOrder].transpose().each { it ->
             assert it[0].displayName == it[1]
         }
     }
