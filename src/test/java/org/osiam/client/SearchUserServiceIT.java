@@ -1,15 +1,20 @@
 package org.osiam.client;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.omg.CORBA.ORBPackage.InconsistentTypeCode;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.SortOrder;
 import org.osiam.client.query.metamodel.User_;
@@ -20,20 +25,25 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class })
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class SearchUserServiceIT extends AbstractIntegrationTestBase {
 
@@ -64,7 +74,8 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_username.xml")
-    public void search_for_all_users_ordered_by_user_name_with_query_builder_works() throws UnsupportedEncodingException {
+    public void search_for_all_users_ordered_by_user_name_with_query_builder_works()
+            throws UnsupportedEncodingException {
         Query.Builder queryBuilder = new Query.Builder(User.class);
         queryBuilder.setSortBy(User_.userName).setSortOrder(SortOrder.ASCENDING);
         queryResult = oConnector.searchUsers(queryBuilder.build(), accessToken);
@@ -105,7 +116,8 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_last_modified.xml")
-    public void search_for_all_users_ordered_by_last_modified_with_query_builder_works() throws UnsupportedEncodingException {
+    public void search_for_all_users_ordered_by_last_modified_with_query_builder_works()
+            throws UnsupportedEncodingException {
         Query.Builder queryBuilder = new Query.Builder(User.class);
         queryBuilder.setSortBy(User_.Meta.lastModified).setSortOrder(SortOrder.ASCENDING);
         SCIMSearchResult<User> result = oConnector.searchUsers(queryBuilder.build(), accessToken);
@@ -136,14 +148,14 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         assertThatQueryResultContainsOnlyValidUser();
     }
 
-
     @Test
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
     public void search_for_3_users_by_username_using_and() {
         String user01 = "cmiller";
         String user02 = "hsimpson";
         String user03 = "kmorris";
-        String searchString = encodeExpected("userName eq " + user01 + " and userName eq " + user02 + "and userName eq " + user03);
+        String searchString = encodeExpected("userName eq " + user01 + " and userName eq " + user02
+                + "and userName eq " + user03);
         whenSearchIsDoneByString(searchString);
         assertThatQueryResultDoesNotContainValidUsers();
     }
@@ -154,7 +166,8 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         String user01 = "cmiller";
         String user02 = "hsimpson";
         String user03 = "kmorris";
-        String searchString = encodeExpected("userName eq " + user01 + " or userName eq " + user02 + " or userName eq " + user03);
+        String searchString = encodeExpected("userName eq " + user01 + " or userName eq " + user02 + " or userName eq "
+                + user03);
         whenSearchIsDoneByString(searchString);
         assertThatQueryResultContainsUser(user01);
         assertThatQueryResultContainsUser(user02);
@@ -168,7 +181,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
                 .or(User_.userName.equalTo("hsimpson"));
 
         DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTimeParser();
-        //DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        // DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
         DateTime date = dateTimeFormatter.parseDateTime("2000-05-23T13:12:45.672Z");
         Query.Filter mainFilter = new Query.Filter(User.class, User_.Meta.created.greaterThan(date))
@@ -195,7 +208,8 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
     public void prevPage_scrolls_backward() throws UnsupportedEncodingException {
         // since OSIAMs default startIndex is wrongly '0' using ITEMS_PER_PAGE works here.
-        Query.Builder builder = new Query.Builder(User.class).setCountPerPage(ITEMS_PER_PAGE).setStartIndex(STARTINDEX_SECOND_PAGE);
+        Query.Builder builder = new Query.Builder(User.class).setCountPerPage(ITEMS_PER_PAGE).setStartIndex(
+                STARTINDEX_SECOND_PAGE);
         Query query = builder.build().previousPage();
         whenSearchedIsDoneByQuery(query);
         assertEquals(1, queryResult.getStartIndex());
@@ -207,6 +221,36 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         create100NewUser();
         List<User> allUsers = oConnector.getAllUsers(accessToken);
         assertEquals(111, allUsers.size());
+    }
+
+    @Test
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed_groups.xml")
+    public void searching_for_users_belonging_to_a_specific_group_by_displayname() {
+        Query.Builder queryBuilder = new Query.Builder(User.class);
+        queryBuilder.setFilter("groups.display eq \"test_group01\"");
+        Set<String> expectedUserNames = new HashSet<>(Arrays.asList("bjensen", "jcambell", "adavies"));
+
+        queryResult = oConnector.searchUsers(queryBuilder.build(), accessToken);
+
+        assertThat(queryResult.getResources().size(), is(equalTo(expectedUserNames.size())));
+        for (User user : queryResult.getResources()) {
+            assertThat(expectedUserNames, hasItem(user.getUserName()));
+        }
+    }
+
+    @Test
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed_groups.xml")
+    public void searching_for_users_belonging_to_a_specific_group_by_id() {
+        Query.Builder queryBuilder = new Query.Builder(User.class);
+        queryBuilder.setFilter("groups eq \"69e1a5dc-89be-4343-976c-b5541af249f4\"");
+        Set<String> expectedUserNames = new HashSet<>(Arrays.asList("bjensen", "jcambell", "adavies"));
+
+        queryResult = oConnector.searchUsers(queryBuilder.build(), accessToken);
+
+        assertThat(queryResult.getResources().size(), is(equalTo(expectedUserNames.size())));
+        for (User user : queryResult.getResources()) {
+            assertThat(expectedUserNames, hasItem(user.getUserName()));
+        }
     }
 
     private void create100NewUser() {
