@@ -64,7 +64,7 @@ class RegistrationIT extends AbstractIT{
         //ensure that the content is HTML
         responseContent.contains("</form>")
         //HTML should contain the fields for registration
-        responseContent.count("ng-model") == 7
+        responseContent.count("ng-model") == 8
         responseContent.contains('url: \'http://test\'')
     }
 
