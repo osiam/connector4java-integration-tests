@@ -1,6 +1,4 @@
-package org.osiam.test
-
-import javax.sql.DataSource
+package org.osiam.test.integration
 
 import org.dbunit.database.DatabaseDataSourceConnection
 import org.dbunit.database.IDatabaseConnection
@@ -13,8 +11,9 @@ import org.osiam.client.oauth.GrantType
 import org.osiam.client.oauth.Scope
 import org.springframework.context.ApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext
-
 import spock.lang.Specification
+
+import javax.sql.DataSource
 
 /**
  * Base class for integration tests.
@@ -33,30 +32,31 @@ abstract class AbstractIT extends Specification {
     protected static final String AUTH_ENDPOINT = "http://localhost:8180/osiam-auth-server"
     protected static final String RESOURCE_ENDPOINT = "http://localhost:8180/osiam-resource-server"
 
-    protected OsiamConnector osiamConnector;
-    protected AccessToken accessToken;
+    def OsiamConnector osiamConnector;
 
-    protected OsiamConnector osiamConnectorForClientCredentialsGrant;
+    def AccessToken accessToken;
 
-    def testSetup(String seedFileName) {
-		
-		// Load Spring context configuration.
-		ApplicationContext ac = new ClassPathXmlApplicationContext("context.xml")
-		// Get dataSource configuration.
-		DataSource dataSource = (DataSource) ac.getBean("dataSource")
-		// Establish database connection.
-		IDatabaseConnection connection = new DatabaseDataSourceConnection(dataSource)
-		// Load the initialization data from file.
-		IDataSet initData = new FlatXmlDataSetBuilder().build(ac.getResource(seedFileName).getFile())
+    def OsiamConnector osiamConnectorForClientCredentialsGrant;
 
-		// Insert initialization data into database.
-		try {
-			DatabaseOperation.CLEAN_INSERT.execute(connection, initData)
-		}
-		finally {
-			connection.close();
-		}
-		
+    def setupDatabase(String seedFileName) {
+
+        // Load Spring context configuration.
+        ApplicationContext ac = new ClassPathXmlApplicationContext("context.xml")
+        // Get dataSource configuration.
+        DataSource dataSource = (DataSource) ac.getBean("dataSource")
+        // Establish database connection.
+        IDatabaseConnection connection = new DatabaseDataSourceConnection(dataSource)
+        // Load the initialization data from file.
+        IDataSet initData = new FlatXmlDataSetBuilder().build(ac.getResource(seedFileName).getFile())
+
+        // Insert initialization data into database.
+        try {
+            DatabaseOperation.CLEAN_INSERT.execute(connection, initData)
+        }
+        finally {
+            connection.close();
+        }
+
         osiamConnector = new OsiamConnector.Builder().
                 setAuthServiceEndpoint(AUTH_ENDPOINT).
                 setResourceEndpoint(RESOURCE_ENDPOINT).
@@ -74,6 +74,8 @@ abstract class AbstractIT extends Specification {
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.CLIENT_CREDENTIALS).
                 setScope(Scope.ALL).build()
+
+        accessToken = osiamConnector.retrieveAccessToken()
     }
 
     def cleanup() {

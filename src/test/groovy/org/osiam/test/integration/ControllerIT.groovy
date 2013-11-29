@@ -1,15 +1,11 @@
-package org.osiam.test.server
+package org.osiam.test.integration
 
 import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
-
 import org.osiam.client.oauth.AccessToken
 import org.osiam.resources.scim.MultiValuedAttribute
 import org.osiam.resources.scim.User
-import org.osiam.test.AbstractIT
-
-import spock.lang.Ignore;
 import spock.lang.Unroll
 
 /**
@@ -20,14 +16,13 @@ import spock.lang.Unroll
  */
 class ControllerIT extends AbstractIT {
 
-	def setup() {
-		testSetup('database_seed.xml')	
-	}
-	
+    def setup() {
+        setupDatabase('database_seed.xml')
+    }
+
     @Unroll
     def "REGT-001-#testCase: An API request missing an accept header with scope #scope and content type #contentType on path #requestPath should return HTTP status code #expectedResponseCode and content type #expectedResponseType."() {
         given: "a valid access token"
-        AccessToken validAccessToken = osiamConnector.retrieveAccessToken()
 
         when: "a request is sent"
         def http = new HTTPBuilder(RESOURCE_ENDPOINT)
@@ -37,7 +32,7 @@ class ControllerIT extends AbstractIT {
 
         http.request(Method.GET, contentType) { req ->
             uri.path = RESOURCE_ENDPOINT + requestPath
-            headers."Authorization" = "Bearer " + validAccessToken.getToken()
+            headers."Authorization" = "Bearer " + accessToken.getToken()
 
             // response handler for a success response code:
             response.success = { resp, json ->
@@ -142,7 +137,7 @@ class ControllerIT extends AbstractIT {
         "y"      | "meta.created co 2013-08-08T19:46:20.638" | 409                  | "CONFLICT"                // Date
         "z"      | "meta.created sw 2013-08-08T1"            | 409                  | "CONFLICT"                // Date
     }
-    
+
     def "REGT-005: A search filter String matching two users should return totalResults=2 and two unique Resource elements."() {
         given: "a valid access token"
         AccessToken validAccessToken = osiamConnector.retrieveAccessToken()

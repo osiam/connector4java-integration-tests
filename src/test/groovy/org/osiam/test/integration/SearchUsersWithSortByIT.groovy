@@ -1,24 +1,16 @@
-package org.osiam.client
+package org.osiam.test.integration
 
-import org.osiam.client.oauth.AccessToken
 import org.osiam.client.query.Query
 import org.osiam.client.query.metamodel.User_
 import org.osiam.resources.scim.SCIMSearchResult
 import org.osiam.resources.scim.User
-import org.osiam.test.AbstractIT
-
-import spock.lang.Shared
 import spock.lang.Unroll
-
 
 class SearchUsersWithSortByIT extends AbstractIT {
 
-    @Shared
-    AccessToken accessToken
 
     def setup() {
-        testSetup('/database_seeds/SearchUsersWithSortByIT/database_seed.xml')
-        accessToken = osiamConnector.retrieveAccessToken()
+        setupDatabase('/database_seeds/SearchUsersWithSortByIT/database_seed.xml')
     }
 
     @Unroll
@@ -57,7 +49,7 @@ class SearchUsersWithSortByIT extends AbstractIT {
     }
 
     private def void resultsAreInRightOrder(List<User> users, List<String> expectedUserNameOrder) {
-        [users, expectedUserNameOrder].transpose().each {it ->
+        [users, expectedUserNameOrder].transpose().each { it ->
             assert it[0].userName == it[1]
         }
     }
