@@ -6,9 +6,7 @@ import spock.lang.Unroll
 
 public class ScimExtensionSearchIT extends AbstractExtensionBaseIT {
 
-    def setup() {
-        setupDatabase('/database_seeds/ScimExtensionSearchIT/user_by_extension.xml')
-    }
+aint
 
     @Unroll
     def 'search for user by #fieldType extension field and constraint #constraint with query string works'() {
