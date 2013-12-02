@@ -31,7 +31,6 @@ import static org.junit.Assert.*;
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
 @DatabaseTearDown(value = "/database_seed.xml", type = DatabaseOperation.DELETE_ALL)
-@Ignore("Ignored until PATCH works again")
 public class UpdateGroupIT extends AbstractIntegrationTestBase {
 
     private static String idExistingGroup = "7d33bcbe-a54c-43d8-867e-f6146164941e";
@@ -67,7 +66,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
         createUpdateGroupWithDeletedMembers();
         updateGroup();
         assertNotNull(originalGroup.getMembers());
-        assertNull(returnGroup.getMembers());
+        assertTrue(returnGroup.getMembers().isEmpty());
     }
 
     @Test(expected = NotFoundException.class)
@@ -87,7 +86,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
     }
 
     @Test(expected = ConflictException.class)
-    @Ignore //not exception is thrown at the moment
+    @Ignore("Updating to empty string is ignored, what is the desired behavior?")
     public void set_display_name_to_empty_string_to_raise_exception() {
         getOriginalGroup();
         createUpdateUserWithEmptyDisplayName();
@@ -127,7 +126,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    @Ignore //the new member is not been added at the moment
+    @Ignore("the new member is not added")
     public void delete_all_members_and_add_one_member() {
         getOriginalGroup();
         createUpdateGroupWithDeleteAllMembersAndAddingOneMember();
