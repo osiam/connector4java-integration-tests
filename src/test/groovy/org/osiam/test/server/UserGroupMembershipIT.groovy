@@ -46,7 +46,7 @@ class UserGroupMembershipIT extends AbstractIT {
     }
 
     //for further information see:
-    //http://tools.ietf.org/html/draft-ietf-scim-core-schema-00#section-6.2
+    //http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2
     //users group field: "Since this attribute is read-only, group membership changes MUST be applied via the Group Resource."
     def "add group membership to user is not allowed by the scim specification"(){
         given:

@@ -46,7 +46,7 @@ class LostPasswordIT extends AbstractIT {
         }
 
         then:
-        statusCode == 201
+        statusCode == 200
         User user = osiamConnector.getUser(userId, accessToken)
         Extension extension = user.getExtension(urn)
         extension.getField("oneTimePassword", ExtensionFieldType.STRING) != null
