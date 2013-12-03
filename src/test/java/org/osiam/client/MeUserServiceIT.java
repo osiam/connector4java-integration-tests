@@ -1,20 +1,17 @@
 package org.osiam.client;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
-import javax.persistence.NoResultException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.connector.OsiamConnector;
-import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.exception.ConflictException;
+import org.osiam.client.minimalUser.BasicUser;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
-import org.osiam.resources.scim.MultiValuedAttribute;
-import org.osiam.resources.scim.Name;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -26,167 +23,52 @@ import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class})
-@DatabaseSetup("/database_seed.xml")
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class })
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
-@Ignore("/User/me is no longer available and '/me' is not yet supported by connector")
+@DatabaseSetup("/database_seed_me_user.xml")
 public class MeUserServiceIT extends AbstractIntegrationTestBase {
 
-    private static final String UUID_HSIMPSON = "7d33bcbe-a54c-43d8-867e-f6146164941e";
-
-    private User deserializedUser;
-
     @Test
-    public void name_is_deserialized_correctly_for_user_bjensen() throws Exception {
-        givenAnAccessTokenForBJensen();
-        deserializedUser = oConnector.getMe(accessToken);
+    public void get_current_user_basic_returns_correct_user() throws Exception {
+        BasicUser basicUser = oConnector.getCurrentUserBasic(accessToken);
 
-        Name name = deserializedUser.getName();
-
-        assertEquals("Jensen", name.getFamilyName());
-        assertEquals("Ms. Barbara J Jensen III", name.getFormatted());
-        assertEquals("Barbara", name.getGivenName());
-        assertNull(name.getHonorificPrefix());
-        assertNull(name.getHonorificSuffix());
-        assertNull(name.getMiddleName());
+        assertEquals("cef9452e-00a9-4cec-a086-d171374ffbef", basicUser.getId());
+        assertEquals("marissa", basicUser.getUserName());
+        assertEquals("marissa@example.com", basicUser.getEmail());
+        assertEquals("Marissa", basicUser.getFirstName());
+        assertEquals("Thompson", basicUser.getLastName());
+        assertEquals(null, basicUser.getLocale());
+        SimpleDateFormat sdfToDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = sdfToDate.parse("2011-10-10 00:00:00");
+        assertEquals(date, basicUser.getUpdatedTime());
     }
 
     @Test
-    @Ignore("/User/me is no longer available and '/me' is not yet supported by connector")
-    public void get_basic_me_returns_user() throws Exception {
-        givenAnAccessTokenForBJensen();
-        deserializedUser = oConnector.getMe(accessToken);
+    public void get_current_user_returns_correct_user() throws Exception {
+        User user = oConnector.getCurrentUser(accessToken);
 
-        Name name = deserializedUser.getName();
-
-        assertEquals("Jensen", name.getFamilyName());
-        assertEquals("Ms. Barbara J Jensen III", name.getFormatted());
-        assertEquals("Barbara", name.getGivenName());
-        assertNull(name.getHonorificPrefix());
-        assertNull(name.getHonorificSuffix());
-        assertNull(name.getMiddleName());
+        assertEquals("cef9452e-00a9-4cec-a086-d171374ffbef", user.getId());
+        assertEquals("marissa", user.getUserName());
     }
 
-    @Test
-    public void emails_are_deserialized_correctly_for_user_bjensen() throws Exception {
-        givenAnAccessTokenForBJensen();
-        deserializedUser = oConnector.getMe(accessToken);
-
-        List<MultiValuedAttribute> emails = deserializedUser.getEmails();
-        assertEquals(1, emails.size());
-        MultiValuedAttribute email = emails.get(0);
-
-        assertEquals("bjensen@example.com", email.getValue().toString());
-        assertEquals("work", email.getType());
+    @Test (expected = ConflictException.class)
+    public void get_current_user_while_loged_in_with_client_credential_raises_exception() throws Exception{
+        givenAnAccessTokenClient();
+        oConnector.getCurrentUserBasic(accessToken);
     }
 
-    @Test
-    public void name_is_deserialized_correctly_for_user_hsimpson() throws Exception {
-        givenAnAccessTokenForHSimpson();
-        deserializedUser = oConnector.getMe(accessToken);
-
-        Name name = deserializedUser.getName();
-
-        assertEquals("Simpson", name.getFamilyName());
-        assertEquals("Mr. Homer Simpson", name.getFormatted());
-        assertEquals("Homer", name.getGivenName());
-        assertNull(name.getHonorificPrefix());
-        assertNull(name.getHonorificSuffix());
-        assertNull(name.getMiddleName());
-    }
-
-    @Test
-    public void emails_are_deserialized_correctly_for_user_hsimpson() throws Exception {
-        givenAnAccessTokenForHSimpson();
-        deserializedUser = oConnector.getMe(accessToken);
-
-        List<MultiValuedAttribute> emails = sortEmails(deserializedUser.getEmails());
-        assertEquals(2, emails.size());
-
-        MultiValuedAttribute email1 = emails.get(0);
-        assertEquals("hsimpson@atom-example.com", email1.getValue().toString());
-        assertEquals("work", email1.getType());
-
-        MultiValuedAttribute email2 = emails.get(1);
-        assertEquals("hsimpson@phome-example.com", email2.getValue().toString());
-        assertEquals("home", email2.getType());
-    }
-
-    @Test
-    public void password_is_not_transferred() throws Exception {
-        deserializedUser = oConnector.getMe(accessToken);
-        assertNull(deserializedUser.getPassword());
-    }
-
-    @Test(expected = UnauthorizedException.class)
-    public void provide_an_invalid_access_token_raises_exception() throws Exception {
-        givenAnInvalidAccessToken();
-        deserializedUser = oConnector.getMe(accessToken);
-        fail("Exception expected");
-    }
-
-    @Test(expected = UnauthorizedException.class)
-    public void access_token_is_expired() throws Exception {
-        givenAnAccessTokenForOneSecond();
-        // Sleeping snake is a test anti-pattern! Timing is not a good idea.
-        Thread.sleep(1000);
-        deserializedUser = oConnector.getMe(accessToken);
-        fail("Exception expected");
-    }
-
-    @Test(expected = NoResultException.class)
-    public void try_to_get_user_after_it_is_deleteted_raises_exception() throws Exception{
-    	givenAnAccessTokenForHSimpson();
-        oConnector.deleteUser(UUID_HSIMPSON, accessToken);
-        deserializedUser = oConnector.getMe(accessToken);
-        fail("Exception expected");
-    }
-
-    private List<MultiValuedAttribute> sortEmails(List<MultiValuedAttribute> emails) {
-        Collections.sort(emails, new Comparator<MultiValuedAttribute>() {
-            @Override
-            public int compare(MultiValuedAttribute o1, MultiValuedAttribute o2) {
-                return o1.getType().compareTo(o2.getType());
-            }
-        });
-
-        return emails;
-    }
-
-    private void givenAnAccessTokenForBJensen() throws Exception {
+    private void givenAnAccessTokenClient() throws Exception {
         OsiamConnector.Builder authBuilder = new OsiamConnector.Builder().
                 setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
                 setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
-                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
-                setUserName("bjensen").
-                setPassword("koala").
+                setGrantType(GrantType.CLIENT_CREDENTIALS).
                 setScope(Scope.ALL);
         oConnector = authBuilder.build();
         accessToken = oConnector.retrieveAccessToken();
     }
-
-    private void givenAnAccessTokenForHSimpson() throws Exception {
-        OsiamConnector.Builder authBuilder = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
-                setClientId(CLIENT_ID).
-                setClientSecret(CLIENT_SECRET).
-                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
-                setUserName("hsimpson").
-                setPassword("koala").
-                setScope(Scope.ALL);
-        oConnector = authBuilder.build();
-        accessToken = oConnector.retrieveAccessToken();
-    }
-
 }

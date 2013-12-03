@@ -46,7 +46,7 @@
 
     <scim_group_scim_id groups_internal_id="52" members_internal_id="1"/>
 
-    <scim_email multiValueId="91" value="marissa@example.com" postgresql_does_not_like_primary="false" type="work"
+    <scim_email multiValueId="91" value="marissa@example.com" postgresql_does_not_like_primary="true" type="work"
                 user_internal_id="1"/>
 
     <scim_address id="8" country="Germany" locality="Germany" postalcode="66222"

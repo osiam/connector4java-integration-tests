@@ -84,12 +84,11 @@ public class LoginOAuth2IT {
     }
 
     @Test
-    @Ignore("/User/me is no longer available and '/me' is not yet supported by connector")
     public void login_and_get_me_user() throws IOException {
         givenValidAuthCode();
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
-        User user = oConnector.getMe(accessToken);
+        User user = oConnector.getCurrentUser(accessToken);
         assertEquals("marissa", user.getUserName());
     }
 
