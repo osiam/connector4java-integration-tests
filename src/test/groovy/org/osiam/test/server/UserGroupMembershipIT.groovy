@@ -6,7 +6,7 @@ import org.osiam.resources.scim.Group
 import org.osiam.resources.scim.Meta
 import org.osiam.resources.scim.MultiValuedAttribute
 import org.osiam.resources.scim.User
-import org.osiam.test.AbstractIT
+import org.osiam.test.integration.AbstractIT
 
 /**
  * Test to ensure that updating group membership works.

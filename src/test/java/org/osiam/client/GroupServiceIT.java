@@ -4,6 +4,7 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,14 +24,16 @@ import java.util.Set;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
+
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed_groups.xml")
-@DatabaseTearDown(value = "/database_seed_groups.xml", type = DatabaseOperation.DELETE_ALL)
+@DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class GroupServiceIT extends AbstractIntegrationTestBase {
 
     private static final String EXPECTED_GROUPNAME = "test_group01";
@@ -75,6 +78,7 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
     @Test(expected = NoResultException.class)
     public void get_an_invalid_group_raises_exception() throws Exception {
         oConnector.getGroup(INVALID_ID, accessToken);
+        fail("Exception expected");
     }
 
 }

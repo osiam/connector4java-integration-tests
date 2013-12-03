@@ -11,7 +11,7 @@ import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.resources.scim.MultiValuedAttribute
 import org.osiam.resources.scim.User
-import org.osiam.test.AbstractIT
+import org.osiam.test.integration.AbstractIT
 import spock.lang.Shared
 
 /**

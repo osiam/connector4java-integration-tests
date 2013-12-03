@@ -6,7 +6,8 @@ import groovyx.net.http.Method
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.resources.scim.User
-import org.osiam.test.AbstractIT
+import org.osiam.test.integration.AbstractIT
+
 import static groovyx.net.http.ContentType.URLENC
 
 /**

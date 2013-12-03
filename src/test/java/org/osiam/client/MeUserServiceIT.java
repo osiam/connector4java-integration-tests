@@ -1,12 +1,10 @@
 package org.osiam.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import javax.persistence.NoResultException;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -24,7 +22,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -32,15 +36,18 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
+@DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 @Ignore("/User/me is no longer available and '/me' is not yet supported by connector")
 public class MeUserServiceIT extends AbstractIntegrationTestBase {
+
+    private static final String UUID_HSIMPSON = "7d33bcbe-a54c-43d8-867e-f6146164941e";
 
     private User deserializedUser;
 
     @Test
     public void name_is_deserialized_correctly_for_user_bjensen() throws Exception {
         givenAnAccessTokenForBJensen();
-        whenUserIsDeserialized();
+        deserializedUser = oConnector.getMe(accessToken);
 
         Name name = deserializedUser.getName();
 
@@ -56,7 +63,7 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     @Ignore("/User/me is no longer available and '/me' is not yet supported by connector")
     public void get_basic_me_returns_user() throws Exception {
         givenAnAccessTokenForBJensen();
-        whenBasicUserIsDeserialized();
+        deserializedUser = oConnector.getMe(accessToken);
 
         Name name = deserializedUser.getName();
 
@@ -71,7 +78,7 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     @Test
     public void emails_are_deserialized_correctly_for_user_bjensen() throws Exception {
         givenAnAccessTokenForBJensen();
-        whenUserIsDeserialized();
+        deserializedUser = oConnector.getMe(accessToken);
 
         List<MultiValuedAttribute> emails = deserializedUser.getEmails();
         assertEquals(1, emails.size());
@@ -84,7 +91,7 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     @Test
     public void name_is_deserialized_correctly_for_user_hsimpson() throws Exception {
         givenAnAccessTokenForHSimpson();
-        whenUserIsDeserialized();
+        deserializedUser = oConnector.getMe(accessToken);
 
         Name name = deserializedUser.getName();
 
@@ -99,7 +106,7 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     @Test
     public void emails_are_deserialized_correctly_for_user_hsimpson() throws Exception {
         givenAnAccessTokenForHSimpson();
-        whenUserIsDeserialized();
+        deserializedUser = oConnector.getMe(accessToken);
 
         List<MultiValuedAttribute> emails = sortEmails(deserializedUser.getEmails());
         assertEquals(2, emails.size());
@@ -115,15 +122,15 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void password_is_not_transferred() throws Exception {
-        whenUserIsDeserialized();
+        deserializedUser = oConnector.getMe(accessToken);
         assertNull(deserializedUser.getPassword());
     }
 
     @Test(expected = UnauthorizedException.class)
     public void provide_an_invalid_access_token_raises_exception() throws Exception {
         givenAnInvalidAccessToken();
-        whenUserIsDeserialized();
-        fail();
+        deserializedUser = oConnector.getMe(accessToken);
+        fail("Exception expected");
     }
 
     @Test(expected = UnauthorizedException.class)
@@ -131,27 +138,16 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
         givenAnAccessTokenForOneSecond();
         // Sleeping snake is a test anti-pattern! Timing is not a good idea.
         Thread.sleep(1000);
-        whenUserIsDeserialized();
-        fail();
+        deserializedUser = oConnector.getMe(accessToken);
+        fail("Exception expected");
     }
 
-    @Test
+    @Test(expected = NoResultException.class)
     public void try_to_get_user_after_it_is_deleteted_raises_exception() throws Exception{
     	givenAnAccessTokenForHSimpson();
-    	deleteHSimpson();
-    	whenUserIsDeserialized();
-    }
-
-    private void whenBasicUserIsDeserialized() {
+        oConnector.deleteUser(UUID_HSIMPSON, accessToken);
         deserializedUser = oConnector.getMe(accessToken);
-    }
-
-    private void whenUserIsDeserialized() {
-        deserializedUser = oConnector.getMe(accessToken);
-    }
-
-    private void deleteHSimpson(){
-    	oConnector.deleteUser("7d33bcbe-a54c-43d8-867e-f6146164941e", accessToken);
+        fail("Exception expected");
     }
 
     private List<MultiValuedAttribute> sortEmails(List<MultiValuedAttribute> emails) {

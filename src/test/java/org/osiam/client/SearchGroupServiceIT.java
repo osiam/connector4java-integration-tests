@@ -5,46 +5,46 @@ import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
 
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.query.Query;
-import org.osiam.client.query.QueryResult;
 import org.osiam.client.query.metamodel.Group_;
 import org.osiam.resources.scim.Group;
+import org.osiam.resources.scim.SCIMSearchResult;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
-@DatabaseTearDown(value = "/database_seed.xml", type = DatabaseOperation.DELETE_ALL)
+@DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
 
     private static final String EXPECTED_GROUP_NAME = "test_group01";
     private static String VALID_GROUP_ID = "69e1a5dc-89be-4343-976c-b5541af249f4";
-    private QueryResult<Group> queryResult;
+    private SCIMSearchResult<Group> queryResult;
 
     @Test
     public void search_for_group_by_string() {
         String searchString = encodeExpected("displayName eq "+ EXPECTED_GROUP_NAME);
         whenSingleGroupIsSearchedByQueryString(searchString);
-        queryResultContainsOnlyValidGroup();
+        assertThatQueryResultContainsOnlyValidGroup();
     }
 
     @Test
     public void search_for_group_by_non_used_displayName() {
         String searchString = encodeExpected("displayName eq " + INVALID_STRING);
         whenSingleGroupIsSearchedByQueryString(searchString);
-        queryResultContainsNoValidUser();
+        assertThatQueryResultContainsNoValidUser();
     }
 
     @Test
@@ -54,15 +54,15 @@ public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
                 .setFilter(filter).build();
 
         whenSingleGroupIsSearchedByQueryBuilder(query);
-        queryResultContainsOnlyValidGroup();
+        assertThatQueryResultContainsOnlyValidGroup();
     }
 
-    private void queryResultContainsOnlyValidGroup() {
+    private void assertThatQueryResultContainsOnlyValidGroup() {
         assertEquals(queryResult.getTotalResults(), 1);
-        queryResultContainsValidGroup();
+        assertThatQueryResultContainsValidGroup();
     }
 
-    private void queryResultContainsValidGroup() {
+    private void assertThatQueryResultContainsValidGroup() {
         for (Group actGroup : queryResult.getResources()) {
             if (actGroup.getId().equals(VALID_GROUP_ID)) {
                 return; // OK
@@ -71,7 +71,7 @@ public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
         fail("Valid group could not be found.");
     }
 
-    private void queryResultContainsNoValidUser() {
+    private void assertThatQueryResultContainsNoValidUser() {
         assertEquals(queryResult.getTotalResults(), 0);
     }
 

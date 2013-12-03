@@ -1,7 +1,5 @@
 package org.osiam.client;
 
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,14 +15,22 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
-@DatabaseTearDown(value = "/database_seed.xml", type = DatabaseOperation.DELETE_ALL)
+@DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class LoginClientCredentialsIT {
 
     protected static final String AUTH_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-auth-server";
@@ -43,7 +49,9 @@ public class LoginClientCredentialsIT {
                 setGrantType(GrantType.CLIENT_CREDENTIALS).
                 setScope(Scope.ALL);
         oConnector = oConBuilder.build();
-        oConnector.retrieveAccessToken();
+        AccessToken at = oConnector.retrieveAccessToken();
+
+        assertThat(at, is(notNullValue()));
 	}
 
 	@Test (expected = UnauthorizedException.class)
@@ -56,7 +64,9 @@ public class LoginClientCredentialsIT {
                 setGrantType(GrantType.CLIENT_CREDENTIALS).
                 setScope(Scope.ALL);
         oConnector = oConBuilder.build();
-        oConnector.retrieveAccessToken();
+        AccessToken at = oConnector.retrieveAccessToken();
+
+        assertThat(at, is(notNullValue()));
 	}
 
     @Test (expected = ConflictException.class)
@@ -72,6 +82,7 @@ public class LoginClientCredentialsIT {
         oConnector = oConBuilder.build();
         AccessToken accessToken = oConnector.retrieveAccessToken();
         oConnector.getMe(accessToken);
+        fail("Exception expected");
     }
 
 }

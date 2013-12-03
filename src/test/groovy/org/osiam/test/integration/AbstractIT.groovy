@@ -1,4 +1,4 @@
-package org.osiam.test
+package org.osiam.test.integration
 
 import org.dbunit.database.DatabaseDataSourceConnection
 import org.dbunit.database.IDatabaseConnection
@@ -40,7 +40,27 @@ abstract class AbstractIT extends Specification {
     protected OsiamConnector osiamConnectorForClientCredentialsGrant;
     protected OsiamConnector osiamConnectorForEmailChange;
 
-    def setup() {
+    def AccessToken accessToken;
+
+    def setupDatabase(String seedFileName) {
+
+        // Load Spring context configuration.
+        ApplicationContext ac = new ClassPathXmlApplicationContext("context.xml")
+        // Get dataSource configuration.
+        DataSource dataSource = (DataSource) ac.getBean("dataSource")
+        // Establish database connection.
+        IDatabaseConnection connection = new DatabaseDataSourceConnection(dataSource)
+        // Load the initialization data from file.
+        IDataSet initData = new FlatXmlDataSetBuilder().build(ac.getResource(seedFileName).getFile())
+
+        // Insert initialization data into database.
+        try {
+            DatabaseOperation.CLEAN_INSERT.execute(connection, initData)
+        }
+        finally {
+            connection.close();
+        }
+
         osiamConnector = new OsiamConnector.Builder().
                 setAuthServiceEndpoint(AUTH_ENDPOINT).
                 setResourceEndpoint(RESOURCE_ENDPOINT).
@@ -68,10 +88,11 @@ abstract class AbstractIT extends Specification {
                 setUserName(USER_NAME_EMAIL_CHANGE).
                 setPassword(USER_PASSWORD_EMAIL_CHANGE).
                 setScope(Scope.ALL).build()
+
+        accessToken = osiamConnector.retrieveAccessToken()
     }
 
-
-    def setupDatabase(String seedXmlName) {
+    def cleanup() {
         // Load Spring context configuration.
         ApplicationContext ac = new ClassPathXmlApplicationContext("context.xml")
         // Get dataSource configuration.
@@ -79,13 +100,12 @@ abstract class AbstractIT extends Specification {
         // Establish database connection.
         IDatabaseConnection connection = new DatabaseDataSourceConnection(dataSource)
         // Load the initialization data from file.
-        IDataSet initData = new FlatXmlDataSetBuilder().build(ac.getResource(seedXmlName).getFile())
+
+        IDataSet initData = new FlatXmlDataSetBuilder().build(ac.getResource("database_tear_down.xml").getFile())
 
         // Insert initialization data into database.
         try {
-            //Deletes all tables before inserting maybe smaller seed, to avoid constraint violations
-            DatabaseOperation.DELETE_ALL.execute(connection, new FlatXmlDataSetBuilder().build(ac.getResource("database_seed_cleanup.xml").getFile()))
-            DatabaseOperation.INSERT.execute(connection, initData)
+            DatabaseOperation.DELETE_ALL.execute(connection, initData)
         }
         finally {
             connection.close();

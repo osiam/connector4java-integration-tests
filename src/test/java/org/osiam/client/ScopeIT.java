@@ -1,11 +1,7 @@
 package org.osiam.client;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
-import com.github.springtestdbunit.annotation.ExpectedDatabase;
-import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -16,20 +12,26 @@ import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
-import org.osiam.client.query.QueryResult;
 import org.osiam.client.update.UpdateGroup;
 import org.osiam.client.update.UpdateUser;
 import org.osiam.resources.scim.Group;
+import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import java.util.List;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
+
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -38,7 +40,7 @@ import static org.junit.Assert.fail;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed_scope.xml")
-@DatabaseTearDown(value = "/database_seed_scope.xml", type = DatabaseOperation.DELETE_ALL)
+@DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class ScopeIT {
 
     private static final String VALID_USER_ID = "834b410a-943b-4c80-817a-4465aed037bc";
@@ -246,10 +248,6 @@ public class ScopeIT {
         assertThat(searchForGroups(), is(notNullValue()));
     }
 
-    private void setScope(Scope scope) {
-        oConnector = oConBuilder.setScope(scope).build();
-    }
-
     @Test
     @ExpectedDatabase(value = "/database_expected_scope_delete_user.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void delete_user_in_DELETE_scope_works() {
@@ -264,6 +262,10 @@ public class ScopeIT {
         setScope(Scope.DELETE);
         retrieveAccessToken();
         oConnector.deleteGroup(VALID_GROUP_ID, accessToken);
+    }
+
+    private void setScope(Scope scope) {
+        oConnector = oConBuilder.setScope(scope).build();
     }
 
     private User createUser() {
@@ -310,13 +312,13 @@ public class ScopeIT {
         return oConnector.updateGroup(VALID_GROUP_ID, updateGroup, accessToken);
     }
 
-    private QueryResult<User> searchForUsers() {
-        Query query = new Query.Builder(User.class).setStartIndex(0).build();
+    private SCIMSearchResult<User> searchForUsers() {
+        Query query = new Query.Builder(User.class).setStartIndex(1).build();
         return oConnector.searchUsers(query, accessToken);
     }
 
-    private QueryResult<Group> searchForGroups() {
-        Query query = new Query.Builder(Group.class).setStartIndex(0).build();
+    private SCIMSearchResult<Group> searchForGroups() {
+        Query query = new Query.Builder(Group.class).setStartIndex(1).build();
         return oConnector.searchGroups(query, accessToken);
     }
 

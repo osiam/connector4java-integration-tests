@@ -211,4 +211,13 @@
 
     <scim_user_scim_roles scim_user_internal_id="1" roles_multiValueId="90"/>
 
+    <scim_extension internal_id="81" urn="extension"/>
+    <scim_extension_field internal_id="82" is_required="true" name="gender" type="STRING" extension_internal_id="81"/>
+    <scim_extension_field internal_id="83" is_required="false" name="size" type="STRING" extension_internal_id="81"/>
+    <scim_extension_field internal_id="84" is_required="true" name="birth" type="STRING" extension_internal_id="81"/>
+    <scim_extension_field internal_id="85" is_required="true" name="newsletter" type="STRING"
+                          extension_internal_id="81"/>
+    <scim_extension_field internal_id="86" is_required="false" name="married" type="STRING" extension_internal_id="81"/>
+
+    <!--    <scim_user_scim_extension scim_user_internal_id="" registeredextensions_internal_id="81" /> -->
 </dataset>
