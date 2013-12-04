@@ -19,7 +19,7 @@ import static groovyx.net.http.ContentType.URLENC
  */
 class LostPasswordIT extends AbstractIT {
 
-    def setupSpec() {
+    def setup() {
         setupDatabase("database_seed_lost_password.xml")
     }
 

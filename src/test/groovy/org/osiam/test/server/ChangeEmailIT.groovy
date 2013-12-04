@@ -20,7 +20,7 @@ import static groovyx.net.http.ContentType.URLENC
  */
 class ChangeEmailIT extends AbstractIT {
 
-    def setupSpec() {
+    def setup() {
         setupDatabase("database_seed_change_email.xml")
     }
 

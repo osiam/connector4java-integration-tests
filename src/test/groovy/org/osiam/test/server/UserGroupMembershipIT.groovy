@@ -17,7 +17,7 @@ import org.osiam.test.integration.AbstractIT
  */
 class UserGroupMembershipIT extends AbstractIT {
 
-    def setupSpec() {
+    def setup() {
         setupDatabase("database_seed_user_group_membership.xml")
     }
 

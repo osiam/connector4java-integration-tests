@@ -25,7 +25,7 @@ class RegistrationIT extends AbstractIT{
 
     @Shared def mapper
 
-    def setupSpec() {
+    def setup() {
         mapper = new ObjectMapper()
         def userDeserializerModule = new SimpleModule("userDeserializerModule", new Version(1, 0, 0, null))
                 .addDeserializer(User.class, new UserDeserializer(User.class))
@@ -174,12 +174,12 @@ class RegistrationIT extends AbstractIT{
         extension.addOrUpdateField("field2", "value2")
         extension.addOrUpdateField("field3", "value3")
 
-        def extMap = ['urn:scim:schemas:osiam:1.0:Test':extension] as Map
+        def extensions = [extension] as Set
 
         def user = new User.Builder("George der II")
                 .setPassword("password")
                 .setEmails([email])
-                .addExtensions(extMap)
+                .addExtensions(extensions)
                 .build()
 
         def userToRegister = mapper.writeValueAsString(user)

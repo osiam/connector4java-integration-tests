@@ -18,7 +18,7 @@ class UpdateUserWithScimUserIT extends AbstractIT {
     def urn = "urn:scim:schemas:osiam:1.0:Registration"
     def field = "tempMail"
 
-    def setupSpec() {
+    def setup() {
         setupDatabase("database_seed_change_email.xml")
     }
 
@@ -32,7 +32,7 @@ class UpdateUserWithScimUserIT extends AbstractIT {
 
         def updateUser = new User.Builder("testUser").setDisplayName("display")
                 .setPhoneNumbers([new MultiValuedAttribute.Builder().setValue("test").setType("work").build()] as List)
-                .setActive(true).addExtension(urn, extension).build()
+                .setActive(true).addExtension(extension).build()
 
         when:
         def result = osiamConnector.updateUser(createdUser.getId(), updateUser, osiamConnector.retrieveAccessToken())
