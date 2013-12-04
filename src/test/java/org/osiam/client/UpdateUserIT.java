@@ -50,7 +50,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     private static String IRRELEVANT = "Irrelevant";
 
     @Test
-    @Ignore ("Not yet implemented")
+    @Ignore("Wrong address is deleted")
     public void delete_multivalue_attributes(){
     	try{
 	    	getOriginalUser("dma");
@@ -68,19 +68,17 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 	        assertFalse(isValuePartOfMultivalueList(returnUser.getRoles(), "role01"));
 	        assertTrue(isValuePartOfAddressList(originalUser.getAddresses(), "formated address 01"));
 	        assertFalse(isValuePartOfAddressList(returnUser.getAddresses(), "formated address 01"));//TODO other address was deleted
-	        assertTrue(isValuePartOfMultivalueList(originalUser.getEntitlements(), "right2")); // TODO at the second run it will fail
-	        assertFalse(isValuePartOfMultivalueList(returnUser.getEntitlements(), "right2"));//TODO at the second run it will fail
-	        assertTrue(isValuePartOfMultivalueList(originalUser.getGroups(), "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"));//TODO Gruppen werden nicht gespeicher
-	        assertFalse(isValuePartOfMultivalueList(returnUser.getGroups(), "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578")); //TODO Gruppen werden nicht gespeicher
-	        assertTrue(isValuePartOfMultivalueList(originalUser.getX509Certificates(), "certificate01"));//TODO at the second run it will fail
-	        assertFalse(isValuePartOfMultivalueList(returnUser.getX509Certificates(), "certificate01"));//TODO at the second run it will fail
+	        assertTrue(isValuePartOfMultivalueList(originalUser.getEntitlements(), "right2"));
+	        assertFalse(isValuePartOfMultivalueList(returnUser.getEntitlements(), "right2"));
+	        assertTrue(isValuePartOfMultivalueList(originalUser.getX509Certificates(), "certificate01"));
+	        assertFalse(isValuePartOfMultivalueList(returnUser.getX509Certificates(), "certificate01"));
     	}finally{
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
     }
 
     @Test
-    @Ignore("Returned user and database user are not consistent yet. Check this always in updateUser() once consistency is reached and delete this test. Also should implement equals on User.")
+    @Ignore("Returned user and database user are not consistent yet. Check this always in updateUser() once consistency is reached delete this test. Also should implement equals on User.")
     public void compare_returned_user_with_database_user() {
         try {
             // create test user
@@ -97,7 +95,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    @Ignore("Single deletion is currently not working!")
     public void REGT_015_delete_multivalue_attributes_twice() {
         try {
             getOriginalUser("dma");
@@ -127,7 +124,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    @Ignore("Only ok because see TODO")
+    @Ignore("ConstraintViolationException occurred on e-mail table.")
     public void delete_all_multivalue_attributes() {
         try {
             getOriginalUser("dama");
@@ -137,7 +134,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
             assertNull(returnUser.getEmails());
             assertNull(returnUser.getAddresses());
             assertNull(returnUser.getEntitlements());
-            assertNull(returnUser.getGroups());//TODO Since Groups are not stored, they are always null
             assertNull(returnUser.getIms());
             assertNull(returnUser.getPhoneNumbers());
             assertNull(returnUser.getPhotos());
@@ -149,7 +145,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    @Ignore ("see TODO's")
+    @Ignore("User update not successful and produced conflicts.")
     public void add_multivalue_attributes(){
     	try{
 	    	getOriginalUser("ama");
@@ -163,8 +159,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 	    	getAddress(returnUser.getAddresses(), "new Address");
 	    	assertEquals(originalUser.getEntitlements().size() + 1, returnUser.getEntitlements().size());//TODO at the second run it will fail
 	    	assertTrue(isValuePartOfMultivalueList(returnUser.getEntitlements(), "right3"));//TODO at the second run it will fail
-	    	assertEquals(originalUser.getGroups().size() + 1, returnUser.getGroups().size());//TODO gruppen werden aktuell nicht gespeichert
-	    	assertTrue(isValuePartOfMultivalueList(returnUser.getGroups(), "d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"));//TODO gruppen werden aktuell nicht gespeichert
 	    	assertEquals(originalUser.getIms().size() + 1, returnUser.getIms().size());
 	    	assertTrue(isValuePartOfMultivalueList(returnUser.getIms(), "ims03"));//TODO der type wird nicht geändert
 	    	assertEquals(originalUser.getPhotos().size() + 1, returnUser.getPhotos().size());
@@ -193,7 +187,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 	    	assertEquals("other", phoneNumber.getType());//TODO der type wird nicht geändert
 	    	//email
 	    	MultiValuedAttribute email = getSingleMultiValueAttribute(returnUser.getEmails(), "hsimpson@atom-example.com");
-	    	assertFalse(email.isPrimary());//TODO die atomadresse wird gelöscht und die andere wird nicht abgedatet
+	    	assertFalse(email.isPrimary());//TODO die atomadresse wird gelöscht und die andere wird nicht ubgedatet
 	    	email = getSingleMultiValueAttribute(returnUser.getEmails(), "hsimpson@home-example.com");
 	    	assertTrue(email.isPrimary());
 	    	assertEquals("other", email.getType());
@@ -201,8 +195,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 	    	assertEquals("icq", ims.getType());//TODO der type wird nicht upgedatet
 	    	MultiValuedAttribute photo = getSingleMultiValueAttribute(returnUser.getPhotos(), "photo01.jpg");
 	    	assertEquals("photo", photo.getType());//TODO der type wird nicht upgedatet
-	    	MultiValuedAttribute userGroup = getSingleMultiValueAttribute(returnUser.getGroups(), "69e1a5dc-89be-4343-976c-b5541af249f4"); //TODO gruppen werden nicht angelegt
-	    	assertEquals("indirect", userGroup.getType());
     	}finally{
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
@@ -288,20 +280,18 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 	}
 
 	@Test (expected = ConflictException.class)
-	@Ignore ("No exception is thrown an the moment")
+    @Ignore("Test description unclear. If update with empty user name is meant, this will be ignored on server side. Clarify behavior!")
 	public void username_is_set_no_empty_string_is_thrown_probably(){
 		try{
 			getOriginalUser("ietiuuitp");
 			createUpdateUserWithEmptyUserName();
 			updateUser();
-			fail("exception expected");
 		}finally{
     		oConnector.deleteUser(idExistingUser, accessToken);
     	}
 	}
 
     @Test
-    @Ignore("Ignored due to update user problem.")
     public void REGT_015_update_multivalue_attributes_twice() throws InterruptedException {
         try {
             getOriginalUser("uma");
@@ -407,12 +397,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         entitlements.add(entitlement01);
         entitlements.add(entitlement02);
 
-        MultiValuedAttribute group01 = new MultiValuedAttribute.Builder().setValue("69e1a5dc-89be-4343-976c-b5541af249f4").build();
-        MultiValuedAttribute group02 = new MultiValuedAttribute.Builder().setValue("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578").build();
-        List<MultiValuedAttribute> groups = new ArrayList<>();
-        groups.add(group01);
-        groups.add(group02);
-
         MultiValuedAttribute ims01 = new MultiValuedAttribute.Builder().setValue("ims01").setType("skype").build();
         MultiValuedAttribute ims02 = new MultiValuedAttribute.Builder().setValue("ims02").build();
         List<MultiValuedAttribute> ims = new ArrayList<>();
@@ -453,7 +437,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
                 .setTitle("irgendwas")
                 .setUserType("irgendwas")
                 .setAddresses(addresses)
-                .setGroups(groups)
                 .setIms(ims)
                 .setPhotos(photos)
                 .setRoles(roles)
@@ -513,7 +496,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     	MultiValuedAttribute ims = new MultiValuedAttribute.Builder().setValue("ims01").setType("icq").build();
     	MultiValuedAttribute photo = new MultiValuedAttribute.Builder().setValue("photo01.jpg").setType("photo").build();
     	MultiValuedAttribute role = new MultiValuedAttribute.Builder().setValue("role01").build();
-    	MultiValuedAttribute group = new MultiValuedAttribute.Builder().setValue("69e1a5dc-89be-4343-976c-b5541af249f4").build();
 
     	updateUser = new UpdateUser.Builder()
         					.addEmail(email)
@@ -521,7 +503,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         					.addPhoto(photo)
         					.addIms(ims)
         					.addRole(role)
-        					.addGroupMembership(group)
         					.build();
     }
 
@@ -559,7 +540,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     	updateUser = new UpdateUser.Builder()
         					.deleteEmail(email)
         					.deleteEntitlement(entitlement)
-        					.deleteGroup("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578")
         					.deleteIms(ims)
         					.deletePhoneNumber(phoneNumber)
         					.deletePhoto(photo)
@@ -583,14 +563,12 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     	MultiValuedAttribute photo = new MultiValuedAttribute.Builder().setValue("photo03.jpg").build();
     	MultiValuedAttribute role = new MultiValuedAttribute.Builder().setValue("role03").build();
     	MultiValuedAttribute certificate = new MultiValuedAttribute.Builder().setValue("certificate03").build();
-    	MultiValuedAttribute groupMembership = new MultiValuedAttribute.Builder().setValue("d30a77eb-d7cf-4cd1-9fb3-cc640ef09578").build();
 
     	updateUser = new UpdateUser.Builder()
         					.addEmail(email)
         					.addPhoneNumber(phonenumber)
         					.addAddress(newSimpleAddress)
         					.addEntitlement(entitlement)
-        					.addGroupMembership(groupMembership) //TODO Gruppen werden nicht gespeichert
         					.addIms(ims)
         					.addPhoto(photo)
         					.addRole(role)
@@ -606,7 +584,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         					.deleteEmails()
         					.deleteAddresses()
         					.deleteEntitlements()
-        					.deleteGroups() //TODO Gruppen werden nicht gespeichert und können somit auch nicht gelöscht werden
         					.deleteIms()
         					.deletePhoneNumbers()
         					.deletePhotos()

@@ -45,34 +45,6 @@ class UserGroupMembershipIT extends AbstractIT {
         theGroupWithMembers.getMembers().size() == 1
     }
 
-    //for further information see:
-    //http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-6.2
-    //users group field: "Since this attribute is read-only, group membership changes MUST be applied via the Group Resource."
-    def "add group membership to user is not allowed by the scim specification"(){
-        given:
-        def user = new User.Builder("testUser1").setPassword("test").build()
-        def group = new Group.Builder().setDisplayName("testGroup1").build()
-        def createdUser = osiamConnector.createUser(user, osiamConnector.retrieveAccessToken())
-        def createdGroup = osiamConnector.createGroup(group, osiamConnector.retrieveAccessToken())
-
-        MultiValuedAttribute groupMembership = new MultiValuedAttribute.Builder().setValue(createdGroup.getId()).build();
-        def updateUser = new UpdateUser.Builder()
-                .addGroupMembership(groupMembership)
-                .build()
-
-        when:
-        def updatedUser = osiamConnector.updateUser(createdUser.getId(), updateUser, osiamConnector.retrieveAccessToken())
-
-        then:
-        updatedUser.getGroups().size() == 0
-
-        def theUserWithGroup = osiamConnector.getUser(createdUser.getId(), osiamConnector.retrieveAccessToken())
-        theUserWithGroup.getGroups().size() == 0
-
-        def theGroupWithMembers = osiamConnector.getGroup(createdGroup.getId(), osiamConnector.retrieveAccessToken())
-        theGroupWithMembers.getMembers().size() == 0
-    }
-
     def "add group member to group"(){
         given:
         def parentGroup = new Group.Builder().setDisplayName("parentGroup").build()
