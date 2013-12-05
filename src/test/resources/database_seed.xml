@@ -211,4 +211,5 @@
 
     <scim_user_scim_roles scim_user_internal_id="1" roles_multiValueId="90"/>
 
+    <HIBERNATE_SEQUENCES SEQUENCE_NAME="MultiValueAttributeEntitySkeleton" SEQUENCE_NEXT_HI_VALUE="2"/>
 </dataset>
