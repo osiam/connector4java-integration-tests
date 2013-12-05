@@ -1,4 +1,4 @@
-package org.osiam.test.server
+package org.osiam.test.integration
 
 import org.osiam.client.update.UpdateGroup
 import org.osiam.client.update.UpdateUser

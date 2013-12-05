@@ -1,4 +1,4 @@
-package org.osiam.test.server
+package org.osiam.test.integration
 
 import com.fasterxml.jackson.core.Version
 import com.fasterxml.jackson.databind.ObjectMapper

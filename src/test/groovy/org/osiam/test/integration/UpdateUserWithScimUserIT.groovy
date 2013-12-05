@@ -1,4 +1,4 @@
-package org.osiam.test.server
+package org.osiam.test.integration
 
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
