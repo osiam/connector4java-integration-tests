@@ -1,18 +1,11 @@
 package org.osiam.client;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.sql.DataSource;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,12 +21,15 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
-import com.github.springtestdbunit.annotation.ExpectedDatabase;
-import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
+import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -95,19 +91,19 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
             assertTrue(storedUser.getSchemas().contains(URN));
             Extension storedExtension = storedUser.getExtension(URN);
             for (Map.Entry<String, Extension.Field> entry : extensionData.entrySet()) {
-                String fieldName = entry.getKey();            
+                String fieldName = entry.getKey();
                 Extension.Field expectedField = entry.getValue();
                 ExtensionFieldType<?> expectedType = expectedField.getType();
                 Object expectedValue = expectedType.fromString(expectedField.getValue());
                 Object actualValue = storedExtension.getField(fieldName, expectedType);
-                
+
                 assertEquals(expectedValue, actualValue);
             }
         }
     }
 
     @Test
-    @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/extensions.xml")
+    @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/add_user.xml")
     @ExpectedDatabase(value = "/database_seeds/ScimExtensionIT/expected_extensions.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void adding_a_user_with_extension_data_to_database_works() {
         Extension extension = createExtensionWithData(URN, extensionData);
@@ -118,7 +114,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
         User storedUser = oConnector.getUser(uuid, accessToken);
         assertTrue(storedUser.getSchemas().contains(URN));
         Extension storedExtension = storedUser.getExtension(URN);
-        
+
         assertExtensionEqualsExtensionMap(storedExtension, extensionData);
     }
 
@@ -134,7 +130,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
 
         User storedUser = oConnector.getUser(EXISTING_USER_UUID, accessToken);
         Extension storedExtension = storedUser.getExtension(URN);
-        
+
         assertExtensionEqualsExtensionMap(storedExtension, extensionData);
     }
 
@@ -148,7 +144,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
 
         User storedUser = oConnector.getUser(EXISTING_USER_UUID, accessToken);
         Extension storedExtension = storedUser.getExtension(URN);
-        
+
         assertExtensionEqualsExtensionMap(storedExtension, extensionDataToPatch);
     }
 
@@ -159,7 +155,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
 
         String sql = "SELECT count(*) FROM SCIM_EXTENSION_FIELD_VALUE WHERE USER_INTERNAL_ID = 2";
         ResultSet rs = dataSource.getConnection().createStatement().executeQuery(sql);
-        rs.first();
+        rs.next();
 
         assertThat(rs.getInt(1), is(0));
     }
@@ -174,7 +170,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
 
         User storedUser = oConnector.getUser(EXISTING_USER_UUID, accessToken);
         Extension storedExtension = storedUser.getExtension(URN);
-        
+
         assertExtensionEqualsExtensionMap(storedExtension, extensionDataToPatch);
     }
 
@@ -185,7 +181,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
             Extension.Field field = fieldData.getValue();
             ExtensionFieldType<?> type = field.getType();
             String value = field.getValue();
-            
+
             addOrUpdateExtension(extension, fieldData.getKey(), value, type);
         }
 
@@ -195,17 +191,17 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
     private <T> void addOrUpdateExtension(Extension extension, String fieldName, String value, ExtensionFieldType<T> type) {
         extension.addOrUpdateField(fieldName, type.fromString(value), type);
     }
-    
+
     private void assertExtensionEqualsExtensionMap(Extension storedExtension, Map<String, Field> extensionMap) {
         assertThat(storedExtension.getAllFields().size(), is(extensionMap.size()));
-        
+
         for (Map.Entry<String, Extension.Field> entry : extensionMap.entrySet()) {
-            String fieldName = entry.getKey();            
+            String fieldName = entry.getKey();
             Extension.Field expectedField = entry.getValue();
             ExtensionFieldType<?> expectedType = expectedField.getType();
             Object expectedValue = expectedType.fromString(expectedField.getValue());
             Object actualValue = storedExtension.getField(fieldName, expectedType);
-            
+
             assertEquals(expectedValue, actualValue);
         }
     }
