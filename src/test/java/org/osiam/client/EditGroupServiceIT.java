@@ -29,7 +29,7 @@ import static org.junit.Assert.fail;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @DatabaseSetup(value = "/database_seeds/EditGroupServiceIT/groups.xml")
-//@DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
+@DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class EditGroupServiceIT extends AbstractIntegrationTestBase {
 
     private String newId;
