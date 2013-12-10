@@ -299,7 +299,7 @@ public class ScopeIT {
     }
 
     private User getCurrentUser() {
-        return oConnector.getMe(accessToken);
+        return oConnector.getCurrentUser(accessToken);
     }
 
     private User updateUser() {

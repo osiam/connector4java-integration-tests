@@ -56,38 +56,24 @@
 
     <scim_user_scim_roles scim_user_internal_id="100001" roles_multi_value_id="100090"/>
 
-    <scim_extension internal_id="100081" urn="extension"/>
+    <scim_extension internal_id="100081" urn="ExtensionWithMixedCase"/>
 
     <scim_extension_field internal_id="100082" is_required="false" name="gender" type="STRING"
-                          extension_internal_id="100081"/>
-    <scim_extension_field internal_id="100083" is_required="false" name="newsletter" type="BOOLEAN"
-                          extension_internal_id="100081"/>
-    <scim_extension_field internal_id="100084" is_required="false" name="age" type="INTEGER"
-                          extension_internal_id="100081"/>
-    <scim_extension_field internal_id="100085" is_required="false" name="weight" type="DECIMAL"
-                          extension_internal_id="100081"/>
-    <scim_extension_field internal_id="100086" is_required="false" name="birthday" type="DATE_TIME"
-                          extension_internal_id="100081"/>
-    <scim_extension_field internal_id="100087" is_required="false" name="photo" type="BINARY"
-                          extension_internal_id="100081"/>
-    <scim_extension_field internal_id="100088" is_required="false" name="mother" type="REFERENCE"
                           extension_internal_id="100081"/>
 
     <scim_extension_field_value internal_id="100001" value="female" extension_field_internal_id="100082"
                                 user_internal_id="100005"/>
-    <scim_extension_field_value internal_id="100007" value="https://example.com/Users/28"
-                                extension_field_internal_id="100088"
-                                user_internal_id="100005"/>
-    <scim_extension_field_value internal_id="100009" value="false" extension_field_internal_id="100083"
+
+    <scim_extension_field_value internal_id="100008" value="female" extension_field_internal_id="100082"
                                 user_internal_id="100009"/>
-    <scim_extension_field_value internal_id="100013" value="ZXhhbXBsZQ==" extension_field_internal_id="100087"
-                                user_internal_id="100009"/>
-    <scim_extension_field_value internal_id="100017" value="100000000000000000027" extension_field_internal_id="100084"
+
+    <scim_extension_field_value internal_id="100015" value="female" extension_field_internal_id="100082"
                                 user_internal_id="100013"/>
-    <scim_extension_field_value internal_id="100025" value="100000000000000000080.7"
-                                extension_field_internal_id="100085"
+
+    <scim_extension_field_value internal_id="100022" value="male" extension_field_internal_id="100082"
                                 user_internal_id="100021"/>
-    <scim_extension_field_value internal_id="100033" value="1982-11-13T04:56:22.000Z"
-                                extension_field_internal_id="100086"
+
+    <scim_extension_field_value internal_id="100029" value="male" extension_field_internal_id="100082"
                                 user_internal_id="100025"/>
+
 </dataset>
