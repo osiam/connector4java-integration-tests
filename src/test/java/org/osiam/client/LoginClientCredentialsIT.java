@@ -70,7 +70,6 @@ public class LoginClientCredentialsIT {
 	}
 
     @Test (expected = ConflictException.class)
-    @Ignore("Users/me is not available at this time")
     public void get_actual_user_rasies_exception(){
         OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
                 setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
@@ -81,7 +80,7 @@ public class LoginClientCredentialsIT {
                 setScope(Scope.ALL);
         oConnector = oConBuilder.build();
         AccessToken accessToken = oConnector.retrieveAccessToken();
-        oConnector.getMe(accessToken);
+        oConnector.getCurrentUser(accessToken);
         fail("Exception expected");
     }
 
