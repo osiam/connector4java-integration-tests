@@ -25,12 +25,14 @@ class RegistrationIT extends AbstractIT{
 
     @Shared def mapper
 
-    def setup() {
+    def setupSpec() {
         mapper = new ObjectMapper()
         def userDeserializerModule = new SimpleModule("userDeserializerModule", new Version(1, 0, 0, null))
                 .addDeserializer(User.class, new UserDeserializer(User.class))
         mapper.registerModule(userDeserializerModule)
+    }
 
+    def setup() {
         setupDatabase("database_seed_registration.xml")
     }
 
