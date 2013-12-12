@@ -243,5 +243,5 @@
     <scim_extension_field internal_id="100086" is_required="false" name="married" type="STRING"
                           extension_internal_id="100081"/>
 
-    <!--    <scim_user_scim_extension scim_user_internal_id="" registeredextensions_internal_id="100081" /> -->
+    <HIBERNATE_SEQUENCES SEQUENCE_NAME="MultiValueAttributeEntitySkeleton" SEQUENCE_NEXT_HI_VALUE="2"/>
 </dataset>

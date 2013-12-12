@@ -269,6 +269,10 @@
                             <war>${project.build.directory}/osiam-auth-server-${osiam.version}</war>
                             <contextPath>/osiam-auth-server</contextPath>
                         </contextHandler>
+                        <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
+                            <war>${project.build.directory}/osiam-registration-module-${osiam.version}</war>
+                            <contextPath>/osiam-registration-module</contextPath>
+                        </contextHandler>
                     </contextHandlers>
                     <war>${project.build.directory}/osiam-resource-server-${osiam.version}</war>
                     <webAppConfig>
@@ -341,6 +345,25 @@
                             <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>download-osiam-registration-module</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.osiam</groupId>
+                                    <artifactId>osiam-registration-module</artifactId>
+                                    <version>${osiam.version}</version>
+                                    <type>war</type>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/osiam-registration-module-${osiam.version}</outputDirectory>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -404,6 +427,27 @@
                                 <resource>
                                     <directory>src/test/resources/</directory>
                                     <filtering>true</filtering>
+                                    <include>osiam.properties</include>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-osiam-registration-resources</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${project.build.directory}/osiam-registration-module-${osiam.version}/WEB-INF/classes
+                            </outputDirectory>
+                            <overwrite>true</overwrite>
+                            <resources>
+                                <resource>
+                                    <directory>src/test/resources/</directory>
+                                    <filtering>true</filtering>
+                                    <include>osiam-registration.properties</include>
                                     <include>osiam.properties</include>
                                 </resource>
                             </resources>

@@ -63,20 +63,6 @@ public abstract class AbstractIntegrationTestBase {
         tokenField.setAccessible(false);
     }
 
-    protected OsiamConnector getAccessTokenForUser(String name, String password) {
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
-                setClientId("example-client-2").
-                setClientSecret("secret1").
-                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
-                setUserName(name).
-                setPassword(password).
-                setScope(Scope.ALL);
-
-        return oConBuilder.build();
-    }
-
     protected String encodeExpected(String string) {
         String encoded = null;
         try {

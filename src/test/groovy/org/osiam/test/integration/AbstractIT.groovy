@@ -29,14 +29,18 @@ abstract class AbstractIT extends Specification {
     private static final String USER_NAME = "marissa"
     private static final String USER_PASSWORD = "koala"
 
+    private static final String USER_NAME_EMAIL_CHANGE = "GeorgeAlexander"
+    private static final String USER_PASSWORD_EMAIL_CHANGE = "koala"
+
     protected static final String AUTH_ENDPOINT = "http://localhost:8180/osiam-auth-server"
     protected static final String RESOURCE_ENDPOINT = "http://localhost:8180/osiam-resource-server"
+    protected static final String REGISTRATION_ENDPOINT = "http://localhost:8180/osiam-registration-module"
 
-    def OsiamConnector osiamConnector;
+    protected OsiamConnector osiamConnector;
+    protected OsiamConnector osiamConnectorForClientCredentialsGrant;
+    protected OsiamConnector osiamConnectorForEmailChange;
 
     def AccessToken accessToken;
-
-    def OsiamConnector osiamConnectorForClientCredentialsGrant;
 
     def setupDatabase(String seedFileName) {
 
@@ -75,6 +79,16 @@ abstract class AbstractIT extends Specification {
                 setGrantType(GrantType.CLIENT_CREDENTIALS).
                 setScope(Scope.ALL).build()
 
+        osiamConnectorForEmailChange = new OsiamConnector.Builder().
+                setAuthServiceEndpoint(AUTH_ENDPOINT).
+                setResourceEndpoint(RESOURCE_ENDPOINT).
+                setClientId(CLIENT_ID).
+                setClientSecret(CLIENT_SECRET).
+                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
+                setUserName(USER_NAME_EMAIL_CHANGE).
+                setPassword(USER_PASSWORD_EMAIL_CHANGE).
+                setScope(Scope.ALL).build()
+
         accessToken = osiamConnector.retrieveAccessToken()
     }
 
@@ -86,6 +100,7 @@ abstract class AbstractIT extends Specification {
         // Establish database connection.
         IDatabaseConnection connection = new DatabaseDataSourceConnection(dataSource)
         // Load the initialization data from file.
+
         IDataSet initData = new FlatXmlDataSetBuilder().build(ac.getResource("database_tear_down.xml").getFile())
 
         // Insert initialization data into database.
