@@ -6,13 +6,6 @@ import org.osiam.resources.scim.MultiValuedAttribute
 import org.osiam.resources.scim.User
 import org.osiam.test.integration.AbstractIT
 
-/**
- * CHANGE THIS TEXT TO SOMETHING USEFUL, DESCRIBING THE CLASS.
- * User: Jochen Todea
- * Date: 03.12.13
- * Time: 11:31
- * Created: with Intellij IDEA
- */
 class UpdateUserWithScimUserIT extends AbstractIT {
 
     def urn = "urn:scim:schemas:osiam:1.0:Registration"
