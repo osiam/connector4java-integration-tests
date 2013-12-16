@@ -8,23 +8,23 @@ import org.osiam.test.integration.AbstractIT
 
 class UpdateUserWithScimUserIT extends AbstractIT {
 
-    def urn = "urn:scim:schemas:osiam:1.0:Registration"
-    def field = "tempMail"
+    def urn = 'urn:scim:schemas:osiam:1.0:Registration'
+    def field = 'tempMail'
 
     def setup() {
-        setupDatabase("database_seed_change_email.xml")
+        setupDatabase('database_seed_change_email.xml')
     }
 
-    def "updating a user should also work with user object instead of updateUser object"() {
+    def 'updating a user should also work with user object instead of updateUser object'() {
         given:
-        def user = new User.Builder("testUser").setPassword("test").build()
+        def user = new User.Builder('testUser').setPassword('test').build()
         def createdUser = osiamConnector.createUser(user, osiamConnector.retrieveAccessToken())
 
         def extension = new Extension(urn)
-        extension.addOrUpdateField(field, "value")
+        extension.addOrUpdateField(field, 'value')
 
-        def updateUser = new User.Builder("testUser").setDisplayName("display")
-                .setPhoneNumbers([new MultiValuedAttribute.Builder().setValue("test").setType("work").build()] as List)
+        def updateUser = new User.Builder('testUser').setDisplayName('display')
+                .setPhoneNumbers([new MultiValuedAttribute.Builder().setValue('test').setType('work').build()] as List)
                 .setActive(true).addExtension(extension).build()
 
         when:
@@ -35,9 +35,9 @@ class UpdateUserWithScimUserIT extends AbstractIT {
         def savedUser = osiamConnector.getUser(createdUser.getId(), osiamConnector.retrieveAccessToken())
         savedUser.isActive()
         savedUser.getPhoneNumbers().size() == 1
-        savedUser.getDisplayName() == "display"
-        savedUser.getUserName() == "testUser"
-        savedUser.getExtension(urn).getField(field, ExtensionFieldType.STRING).equals("value")
+        savedUser.getDisplayName() == 'display'
+        savedUser.getUserName() == 'testUser'
+        savedUser.getExtension(urn).getField(field, ExtensionFieldType.STRING).equals('value')
     }
 
 }
