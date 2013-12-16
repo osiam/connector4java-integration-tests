@@ -81,7 +81,6 @@ class ControllerIT extends AbstractIT {
         def responseStatusCode
         def responseContentType
         def responseErrorCode
-        def responseFailureText
 
 
         http.request(Method.GET, ContentType.JSON) { req ->
@@ -109,33 +108,34 @@ class ControllerIT extends AbstractIT {
         assert responseErrorCode == expectedResponseErrorCode
 
         where:
-        testCase | searchString                              | expectedResponseCode | expectedResponseErrorCode
-        "a"      | "userName eq marissa"                     | 200                  | null                      // String
-        "b"      | "userName co ari"                         | 200                  | null                      // String
-        "c"      | "userName sw mar"                         | 200                  | null                      // String
-        "d"      | "userName pr"                             | 200                  | null                      // String
-        "e"      | "userName gt l"                           | 200                  | null                      // String
-        "f"      | "userName ge m"                           | 200                  | null                      // String
-        "g"      | "userName lt n"                           | 200                  | null                      // String
-        "h"      | "userName le m"                           | 200                  | null                      // String
-        "i"      | "emails.type eq work"                     | 200                  | null                      // Enum (EmailEntity)
-        "j"      | "emails.type co work"                     | 409                  | "CONFLICT"                 // Enum (EmailEntity)
-        "k"      | "emails.type sw work"                     | 409                  | "CONFLICT"                 // Enum (EmailEntity)
-        "l"      | "emails.type pr"                          | 200                  | null                      // Enum (EmailEntity)
-        "m"      | "emails.type gt work"                     | 409                  | "CONFLICT"                 // Enum (EmailEntity)
-        "n"      | "emails.type ge work"                     | 409                  | "CONFLICT"                 // Enum (EmailEntity)
-        "o"      | "emails.type lt work"                     | 409                  | "CONFLICT"                 // Enum (EmailEntity)
-        "p"      | "emails.type le work"                     | 409                  | "CONFLICT"                 // Enum (EmailEntity)
-        "q"      | "active eq true"                          | 200                  | null                      // boolean
-        "r"      | "active co true"                          | 409                  | "CONFLICT"                 // boolean
-        "s"      | "active sw true"                          | 409                  | "CONFLICT"                 // boolean
-        "t"      | "active pr true"                          | 200                  | null                      // boolean
-        "u"      | "active gt true"                          | 409                  | "CONFLICT"                 // boolean
-        "v"      | "active ge true"                          | 409                  | "CONFLICT"                 // boolean
-        "w"      | "active lt true"                          | 409                  | "CONFLICT"                 // boolean
-        "x"      | "active le true"                          | 409                  | "CONFLICT"                 // boolean
-        "y"      | "meta.created co 2013-08-08T19:46:20.638" | 409                  | "CONFLICT"                // Date
-        "z"      | "meta.created sw 2013-08-08T1"            | 409                  | "CONFLICT"                // Date
+        testCase | searchString                                | expectedResponseCode | expectedResponseErrorCode
+        'a'      | 'userName eq "marissa"'                     | 200                  | null                      // String
+        'b'      | 'userName co "ari"'                         | 200                  | null                      // String
+        'c'      | 'userName sw "mar"'                         | 200                  | null                      // String
+        'd'      | 'userName pr'                               | 200                  | null                      // String
+        'e'      | 'userName gt "l"'                           | 200                  | null                      // String
+        'f'      | 'userName ge "m"'                           | 200                  | null                      // String
+        'g'      | 'userName lt "n"'                           | 200                  | null                      // String
+        'h'      | 'userName le "m"'                           | 200                  | null                      // String
+        'i'      | 'emails.type eq "work"'                     | 200                  | null                      // Enum (EmailEntity)
+        'j'      | 'emails.type co "work"'                     | 409                  | 'CONFLICT'                 // Enum (EmailEntity)
+        'k'      | 'emails.type sw "work"'                     | 409                  | 'CONFLICT'                 // Enum (EmailEntity)
+        'l'      | 'emails.type pr'                            | 200                  | null                      // Enum (EmailEntity)
+        'm'      | 'emails.type gt "work"'                     | 409                  | 'CONFLICT'                 // Enum (EmailEntity)
+        'n'      | 'emails.type ge "work"'                     | 409                  | 'CONFLICT'                 // Enum (EmailEntity)
+        'o'      | 'emails.type lt "work"'                     | 409                  | 'CONFLICT'                 // Enum (EmailEntity)
+        'p'      | 'emails.type le "work"'                     | 409                  | 'CONFLICT'                 // Enum (EmailEntity)
+        'q'      | 'active eq "true"'                          | 200                  | null                      // boolean
+        'r'      | 'active co "true"'                          | 409                  | 'CONFLICT'                 // boolean
+        's'      | 'active sw "true"'                          | 409                  | 'CONFLICT'                 // boolean
+        't'      | 'active pr'                                 | 200                  | null                      // boolean
+        'u'      | 'active gt "true"'                          | 409                  | 'CONFLICT'                 // boolean
+        'v'      | 'active ge "true"'                          | 409                  | 'CONFLICT'                 // boolean
+        'w'      | 'active lt "true"'                          | 409                  | 'CONFLICT'                 // boolean
+        'x'      | 'active le "true"'                          | 409                  | 'CONFLICT'                 // boolean
+        'y'      | 'meta.created co "2013-08-08T19:46:20.638"' | 409                  | 'CONFLICT'                // Date
+        'z'      | 'meta.created sw "2013-08-08T1"'            | 409                  | 'CONFLICT'                // Date
+        'za'     | 'active pr "true"'                          | 409                  | 'CONFLICT'                // pr with value
     }
 
     def "REGT-005: A search filter String matching two users should return totalResults=2 and two unique Resource elements."() {

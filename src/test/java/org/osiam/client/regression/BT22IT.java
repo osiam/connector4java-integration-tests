@@ -39,7 +39,7 @@ public class BT22IT extends AbstractIntegrationTestBase {
 
     @Test
     public void searching_for_user_with_filter_on_extension_field_same_case() throws UnsupportedEncodingException {
-        String query = URLEncoder.encode(URN + "." + FIELD + " eq female", "UTF-8");
+        String query = URLEncoder.encode(URN + "." + FIELD + " eq \"female\"", "UTF-8");
 
         SCIMSearchResult<User> result = oConnector.searchUsers("filter=" + query, accessToken);
 
@@ -49,7 +49,7 @@ public class BT22IT extends AbstractIntegrationTestBase {
     @Test
     public void searching_for_user_with_filter_on_extension_field_with_wrong_cased_urn()
             throws UnsupportedEncodingException {
-        String query = URLEncoder.encode(URN_WRONG_CASE + "." + FIELD + " eq female", "UTF-8");
+        String query = URLEncoder.encode(URN_WRONG_CASE + "." + FIELD + " eq \"female\"", "UTF-8");
 
         SCIMSearchResult<User> result = oConnector.searchUsers("filter=" + query, accessToken);
 
@@ -59,7 +59,7 @@ public class BT22IT extends AbstractIntegrationTestBase {
     @Test
     public void searching_for_user_with_filter_on_extension_field_with_wrong_cased_field_name()
             throws UnsupportedEncodingException {
-        String query = URLEncoder.encode(URN + "." + FIELD_WRONG_CASE + " eq female", "UTF-8");
+        String query = URLEncoder.encode(URN + "." + FIELD_WRONG_CASE + " eq \"female\"", "UTF-8");
 
         SCIMSearchResult<User> result = oConnector.searchUsers("filter=" + query, accessToken);
 
@@ -69,7 +69,7 @@ public class BT22IT extends AbstractIntegrationTestBase {
     @Test
     public void searching_for_user_with_filter_on_extension_field_with_wrong_cased_urn_and_field_name()
             throws UnsupportedEncodingException {
-        String query = URLEncoder.encode(URN_WRONG_CASE + "." + FIELD_WRONG_CASE + " eq female", "UTF-8");
+        String query = URLEncoder.encode(URN_WRONG_CASE + "." + FIELD_WRONG_CASE + " eq \"female\"", "UTF-8");
 
         SCIMSearchResult<User> result = oConnector.searchUsers("filter=" + query, accessToken);
 

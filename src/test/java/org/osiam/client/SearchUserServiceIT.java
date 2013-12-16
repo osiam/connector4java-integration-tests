@@ -1,20 +1,15 @@
 package org.osiam.client;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.omg.CORBA.ORBPackage.InconsistentTypeCode;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.SortOrder;
 import org.osiam.client.query.metamodel.User_;
@@ -25,20 +20,14 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -55,7 +44,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_username.xml")
     public void search_for_user_by_username_with_query_string_works() {
         String userName = "bjensen";
-        String query = encodeExpected("userName eq " + userName);
+        String query = encodeExpected("userName eq \"" +  userName + "\"");
 
         SCIMSearchResult<User> result = oConnector.searchUsers("filter=" + query, accessToken);
 
@@ -67,7 +56,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     @Test
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_username.xml")
     public void search_for_user_by_nonexistent_username_with_query_string_fails() {
-        String query = encodeExpected("userName eq " + INVALID_STRING);
+        String query = encodeExpected("userName eq \"" + INVALID_STRING + "\"");
         SCIMSearchResult<User> result = oConnector.searchUsers("filter=" + query, accessToken);
         assertThat(result.getTotalResults(), is(equalTo(0L)));
     }
@@ -105,7 +94,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_email.xml")
     public void search_for_user_by_emails_value_with_query_string_works() {
         String email = "bjensen@example.com";
-        String query = encodeExpected("emails.value eq " + email);
+        String query = encodeExpected("emails.value eq \"" + email + "\"");
 
         SCIMSearchResult<User> result = oConnector.searchUsers("filter=" + query, accessToken);
 
@@ -154,8 +143,8 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         String user01 = "cmiller";
         String user02 = "hsimpson";
         String user03 = "kmorris";
-        String searchString = encodeExpected("userName eq " + user01 + " and userName eq " + user02
-                + "and userName eq " + user03);
+        String searchString = encodeExpected("userName eq \"" + user01 + "\" and userName eq \"" + user02
+                + "\" and userName eq \"" + user03 + "\"");
         whenSearchIsDoneByString(searchString);
         assertThatQueryResultDoesNotContainValidUsers();
     }
@@ -166,8 +155,8 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         String user01 = "cmiller";
         String user02 = "hsimpson";
         String user03 = "kmorris";
-        String searchString = encodeExpected("userName eq " + user01 + " or userName eq " + user02 + " or userName eq "
-                + user03);
+        String searchString = encodeExpected("userName eq \"" + user01 + "\" or userName eq \"" + user02 + "\" or userName eq \""
+                + user03 + "\"");
         whenSearchIsDoneByString(searchString);
         assertThatQueryResultContainsUser(user01);
         assertThatQueryResultContainsUser(user02);
