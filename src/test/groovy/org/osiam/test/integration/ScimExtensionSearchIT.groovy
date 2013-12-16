@@ -1,6 +1,6 @@
 package org.osiam.test.integration
 
-import org.osiam.client.exception.ConnectionInitializationException
+import org.osiam.client.exception.OsiamClientConnectionException
 import org.osiam.resources.scim.SCIMSearchResult
 import spock.lang.Unroll
 
@@ -61,7 +61,7 @@ public class ScimExtensionSearchIT extends AbstractExtensionBaseIT {
         osiamConnector.searchUsers("filter=$query", accessToken)
 
         then:
-        thrown(ConnectionInitializationException) // TODO: This should raise a ConflictException
+        thrown(OsiamClientConnectionException) // TODO: This should raise a ConflictException
 
         where:
         fieldType            | fieldName            | constraint
