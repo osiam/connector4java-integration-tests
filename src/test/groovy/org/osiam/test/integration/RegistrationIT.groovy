@@ -36,7 +36,7 @@ class RegistrationIT extends AbstractIT{
         setupDatabase("database_seed_registration.xml")
     }
 
-    def "The registration controller should return an HTML page if a GET request was issued to his '/' path with an access token in the header"() {
+    def "The registration controller should return an HTML page if a GET request was issued to its '/' path with an access token in the header"() {
         given:
         def responseContent
         def responseContentType

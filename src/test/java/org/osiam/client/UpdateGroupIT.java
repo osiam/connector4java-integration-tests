@@ -1,5 +1,11 @@
 package org.osiam.client;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -8,7 +14,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
-import org.osiam.client.exception.NotFoundException;
+import org.osiam.client.exception.NoResultException;
 import org.osiam.client.update.UpdateGroup;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.MemberRef;
@@ -21,8 +27,6 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -68,7 +72,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
         assertTrue(returnGroup.getMembers().isEmpty());
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test(expected = NoResultException.class)
     public void try_update_with_wrong_id_raises_exception() {
         getOriginalGroup();
         createUpdateUserWithUpdateFields();
@@ -77,7 +81,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
         fail("Exception expected");
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test(expected = NoResultException.class)
     public void try_update_with_user_id_raises_exception() {
         getOriginalGroup();
         createUpdateUserWithUpdateFields();
@@ -107,7 +111,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
         assertNotNull(value);
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test(expected = NoResultException.class)
     public void add_invalid_mebers() {
         getOriginalGroup();
         createUpdateGroupWithAddingInvalidMembers();
