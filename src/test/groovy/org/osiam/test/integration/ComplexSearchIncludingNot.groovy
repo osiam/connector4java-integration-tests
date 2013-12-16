@@ -54,4 +54,18 @@ class ComplexSearchIncludingNot extends AbstractIT {
             assert (it.getUserName().equals("george4") || it.getUserName().equals("george5"))
         }
     }
+
+    def "searching with escaped quot in value"() {
+        given:
+        Query query = new Query.Builder(User).setFilter('userName eq "hanz \\"meiser\\""').build()
+
+        when:
+        SCIMSearchResult<User> result = osiamConnector.searchUsers(query, accessToken);
+
+        then:
+        result.getResources().size() == 1
+        result.getResources().each {
+            assert it.getUserName().equals("hanz \"meiser\"")
+        }
+    }
 }

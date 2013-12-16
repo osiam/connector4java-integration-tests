@@ -24,6 +24,7 @@
     <scim_meta id="100095" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
     <scim_meta id="100096" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
     <scim_meta id="100097" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
+    <scim_meta id="100098" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
 
     <scim_meta id="100080" created="2013-07-31 21:43:18.0" lastmodified="2013-07-31 21:43:18.0" resourcetype="Group"/>
     <scim_meta id="100081" created="2013-07-31 21:43:18.0" lastmodified="2013-07-31 21:43:18.0" resourcetype="Group"/>
@@ -39,6 +40,7 @@
     <scim_id internal_id="10008" meta_id="100095" id="cef2452e-00a9-4cec-a886-d171374ffbef"/>
     <scim_id internal_id="10009" meta_id="100096" id="cef9452e-00a2-4cec-a886-d171374ffbef"/>
     <scim_id internal_id="100010" meta_id="100097" id="cef9452e-00a9-4cec-a826-d171374ffbef"/>
+    <scim_id internal_id="100011" meta_id="100098" id="cef9452e-00a9-4cec-a826-d151374ffbef"/>
 
     <scim_id internal_id="100052" meta_id="100080" id="69e1a5dc-89be-4343-956c-b5541af249f4"/>
     <scim_id internal_id="1005" meta_id="100081" id="69e1a5dc-89be-4543-976c-b5541af249f4"/>
@@ -75,6 +77,9 @@
             password="123"
             username="george6" internal_id="100010" active="false"/>
 
+    <scim_user
+            password="123"
+            username="hanz &quot;meiser&quot;" internal_id="100011" active="false"/>
 
     <scim_user
             password="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
