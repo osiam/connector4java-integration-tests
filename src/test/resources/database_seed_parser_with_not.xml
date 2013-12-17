@@ -79,16 +79,16 @@
 
     <scim_user
             password="123"
-            username="hanz &quot;meiser&quot;" internal_id="100011" active="false"/>
+            username="george &quot;alexander&quot;" internal_id="100011" active="false"/>
 
     <scim_user
             password="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
             username="marissa" internal_id="100001" active="true"/>
 
     <scim_group displayname="test" internal_id="100052"/>
-    <scim_group displayname="bewerber" internal_id="1005"/>
-    <scim_group displayname="anwaerter" internal_id="1006"/>
-    <scim_group displayname="stipendiat" internal_id="1007"/>
+    <scim_group displayname="student" internal_id="1005"/>
+    <scim_group displayname="noob" internal_id="1006"/>
+    <scim_group displayname="alumni" internal_id="1007"/>
 
     <scim_group_scim_id groups_internal_id="100052" members_internal_id="10004"/>
     <scim_group_scim_id groups_internal_id="100052" members_internal_id="10005"/>

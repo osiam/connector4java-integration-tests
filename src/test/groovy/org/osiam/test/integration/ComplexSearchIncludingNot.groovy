@@ -20,10 +20,10 @@ class ComplexSearchIncludingNot extends AbstractIT {
 
     def "search with not operator"() {
         given:
-        Query.Filter notFilter2 = new Query.Filter(User).not(new Comparison("groups.display eq \"stipendiat\""))
-        Query.Filter notFilter3 = new Query.Filter(User).not(new Comparison("groups.display eq \"anwaerter\""))
+        Query.Filter notFilter2 = new Query.Filter(User).not(new Comparison("groups.display eq \"alumni\""))
+        Query.Filter notFilter3 = new Query.Filter(User).not(new Comparison("groups.display eq \"noob\""))
 
-        Query.Filter notFilter = new Query.Filter(User).not(new Comparison("groups.display eq \"bewerber\"")).and(notFilter2).and(notFilter3)
+        Query.Filter notFilter = new Query.Filter(User).not(new Comparison("groups.display eq \"student\"")).and(notFilter2).and(notFilter3)
         Query.Filter filter = new Query.Filter(User, notFilter).and(new Comparison("active eq \"true\""))
         Query query = new Query.Builder(User).setFilter(filter).build()
 
@@ -41,7 +41,7 @@ class ComplexSearchIncludingNot extends AbstractIT {
         given:
         Query.Filter innerFilter = new Query.Filter(User, new Comparison("emails.value eq \"jj@tt.de\""))
                 .or(new Comparison("emails.value eq \"oo@aa.de\"")).or(new Comparison("emails.value eq \"bb@ss.de\""))
-        Query.Filter filter = new Query.Filter(User, new Comparison("groups.display eq \"stipendiat\"")).and(innerFilter)
+        Query.Filter filter = new Query.Filter(User, new Comparison("groups.display eq \"alumni\"")).and(innerFilter)
 
         Query query = new Query.Builder(User).setFilter(filter).build()
 
@@ -57,7 +57,7 @@ class ComplexSearchIncludingNot extends AbstractIT {
 
     def "searching with escaped quot in value"() {
         given:
-        Query query = new Query.Builder(User).setFilter('userName eq "hanz \\"meiser\\""').build()
+        Query query = new Query.Builder(User).setFilter('userName eq "george \\"alexander\\""').build()
 
         when:
         SCIMSearchResult<User> result = osiamConnector.searchUsers(query, accessToken);
@@ -65,7 +65,18 @@ class ComplexSearchIncludingNot extends AbstractIT {
         then:
         result.getResources().size() == 1
         result.getResources().each {
-            assert it.getUserName().equals("hanz \"meiser\"")
+            assert it.getUserName().equals("george \"alexander\"")
         }
+    }
+
+    def "search with missing quotes should end up in a exception"(){
+        given:
+        Query query = new Query.Builder(User).setFilter('userName eq george0').build()
+
+        when:
+        osiamConnector.searchUsers(query, accessToken);
+
+        then:
+        thrown(IllegalArgumentException)
     }
 }
