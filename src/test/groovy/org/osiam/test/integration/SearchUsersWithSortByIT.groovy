@@ -14,7 +14,7 @@ class SearchUsersWithSortByIT extends AbstractIT {
     }
 
     @Unroll
-    def 'searching for a User with sortBy field set to #sortBy and default sort order works'() {
+    def 'searching for all Users with sortBy field set to #sortBy and default sort order should work'() {
         given:
         Query.Builder queryBuilder = new Query.Builder(User)
         queryBuilder.setSortBy(sortBy)

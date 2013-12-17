@@ -29,7 +29,7 @@ public class SearchByExtensionIT extends AbstractIntegrationTestBase {
 
     @Test
     public void searching_by_multiple_fields_works() {
-        Query query = new Query.Builder(User.class).setFilter("userName co existing AND extension.gender eq male AND extension.birthday pr").build();
+        Query query = new Query.Builder(User.class).setFilter("userName co \"existing\" AND extension.gender eq \"male\" AND extension.birthday pr").build();
 
         SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
 

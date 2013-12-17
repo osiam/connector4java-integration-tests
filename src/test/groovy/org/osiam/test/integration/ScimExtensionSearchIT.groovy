@@ -18,7 +18,7 @@ public class ScimExtensionSearchIT extends AbstractExtensionBaseIT {
     def 'search for user by #fieldType extension field and constraint #constraint with query string works'() {
 
         given:
-        def query = URLEncoder.encode("extension.$fieldName $constraint $queryValue", 'UTF-8')
+        def query = URLEncoder.encode("extension.$fieldName $constraint \"$queryValue\"", 'UTF-8')
 
         when:
         SCIMSearchResult result = osiamConnector.searchUsers("filter=$query", accessToken)
@@ -28,7 +28,7 @@ public class ScimExtensionSearchIT extends AbstractExtensionBaseIT {
 
         where:
         fieldType            | fieldName            | constraint | queryValue                            | expectedResult
-        FIELD_TYPE_STRING    | FIELD_NAME_STRING    | 'eq'       | '"female"'                            | 3
+        FIELD_TYPE_STRING    | FIELD_NAME_STRING    | 'eq'       | 'female'                              | 3
         FIELD_TYPE_STRING    | FIELD_NAME_STRING    | 'co'       | 'mal'                                 | 5
         FIELD_TYPE_STRING    | FIELD_NAME_STRING    | 'sw'       | 'fe'                                  | 3
         FIELD_TYPE_STRING    | FIELD_NAME_STRING    | 'gt'       | 'female'                              | 2
@@ -59,7 +59,7 @@ public class ScimExtensionSearchIT extends AbstractExtensionBaseIT {
     @Unroll
     def 'search for user by #fieldType extension field and constraint #constraint with query string raises exception'() {
         given:
-        def query = URLEncoder.encode("extension.$fieldName $constraint irrelevant", 'UTF-8')
+        def query = URLEncoder.encode("extension.$fieldName $constraint \"irrelevant\"", 'UTF-8')
 
         when:
         osiamConnector.searchUsers("filter=$query", accessToken)

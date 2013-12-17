@@ -35,14 +35,14 @@ public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void search_for_group_by_string() {
-        String searchString = encodeExpected("displayName eq "+ EXPECTED_GROUP_NAME);
+        String searchString = encodeExpected("displayName eq \""+ EXPECTED_GROUP_NAME + "\"");
         whenSingleGroupIsSearchedByQueryString(searchString);
         assertThatQueryResultContainsOnlyValidGroup();
     }
 
     @Test
     public void search_for_group_by_non_used_displayName() {
-        String searchString = encodeExpected("displayName eq " + INVALID_STRING);
+        String searchString = encodeExpected("displayName eq \"" + INVALID_STRING + "\"");
         whenSingleGroupIsSearchedByQueryString(searchString);
         assertThatQueryResultContainsNoValidUser();
     }
