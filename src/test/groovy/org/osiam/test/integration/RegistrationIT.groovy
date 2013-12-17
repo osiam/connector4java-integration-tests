@@ -3,6 +3,9 @@ package org.osiam.test.integration
 import com.fasterxml.jackson.core.Version
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
+import com.icegreen.greenmail.util.GreenMail
+import com.icegreen.greenmail.util.GreenMailUtil
+import com.icegreen.greenmail.util.ServerSetupTest
 import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
@@ -11,8 +14,9 @@ import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.resources.scim.MultiValuedAttribute
 import org.osiam.resources.scim.User
-import org.osiam.test.integration.AbstractIT
 import spock.lang.Shared
+
+import javax.mail.Message
 
 /**
  * This test covers the controller for registration purpose.
@@ -24,16 +28,24 @@ import spock.lang.Shared
 class RegistrationIT extends AbstractIT{
 
     @Shared def mapper
+    @Shared def mailServer
 
     def setupSpec() {
         mapper = new ObjectMapper()
         def userDeserializerModule = new SimpleModule("userDeserializerModule", new Version(1, 0, 0, null))
                 .addDeserializer(User.class, new UserDeserializer(User.class))
         mapper.registerModule(userDeserializerModule)
+
+        mailServer = new GreenMail(ServerSetupTest.ALL)
+        mailServer.start()
     }
 
     def setup() {
         setupDatabase("database_seed_registration.xml")
+    }
+
+    def cleanupSpec() {
+        mailServer.stop()
     }
 
     def "The registration controller should return an HTML page if a GET request was issued to its '/' path with an access token in the header"() {
@@ -103,6 +115,14 @@ class RegistrationIT extends AbstractIT{
         !user.isActive()
         Extension extension = user.getExtension('urn:scim:schemas:osiam:1.0:Registration')
         extension.getField('activationToken', ExtensionFieldType.STRING) != null
+
+        //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
+        mailServer.waitForIncomingEmail(5000, 1)
+        Message[] messages = mailServer.getReceivedMessages();
+        messages.length == 1
+        messages[0].getSubject() == "registration"
+        GreenMailUtil.getBody(messages[0]).trim() == "Sehr geehrter Kunde, für Sie wurde ein Benutzerkonto angelegt. Um Ihre Registrierung zu bestätigen rufen Sie bitte folgenden Link auf: http://test?userId=3D293d0321-0edd-43cf-bbb1-b587c9d8e1e8&activationToken=3Daae165bd-6e00-47e3-9908-e1bd89793e60 Mit freundlichen Grüßen, Ihr OSIAM-Team"
+        messages[0].getFrom()[0] == "noreply@osiam.org"
     }
 
     def getUserAsStringWithExtension() {
@@ -216,5 +236,7 @@ class RegistrationIT extends AbstractIT{
         registeredExtension1.getField('activationToken', ExtensionFieldType.STRING) != null
         Extension registeredExtension2 = registeredUser.getExtension('urn:scim:schemas:osiam:1.0:Test')
         registeredExtension2.getField('field1', ExtensionFieldType.STRING) != null
+
+        //TODO check mail
     }
 }
