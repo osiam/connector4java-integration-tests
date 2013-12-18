@@ -7,7 +7,6 @@
     <scim_meta />
     <scim_id />
     <scim_name />
-    <scim_roles />
     <scim_user/>
     <scim_group />
     <scim_group_scim_id />
@@ -17,13 +16,11 @@
     <scim_im />
     <scim_phonenumber />
     <scim_certificate />
+    <scim_manager />
     <scim_enterprise />
-    <scim_user_scim_address />
-    <scim_user_scim_roles />
-    <scim_user_scim_entitlements />
+    <scim_roles />
+    <scim_entitlements />
     <scim_extension />
     <scim_extension_field />
     <scim_extension_field_value />    
-    <scim_user_scim_extension />
-
 </dataset>
