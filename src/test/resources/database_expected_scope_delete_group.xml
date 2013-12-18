@@ -22,7 +22,6 @@
     <scim_id internal_id="100001" meta_id="100004" id="cef9452e-00a9-4cec-a086-d171374ffbef"/>
     <scim_id internal_id="100046" externalid="bjensen" meta_id="100047" id="834b410a-943b-4c80-817a-4465aed037bc"/>
 
-    <scim_roles multi_value_id="100090" value="USER"/>
     <scim_name id="100048" familyname="Jensen" formatted="Ms. Barbara J Jensen III" givenname="Barbara"/>
 
     <scim_user
@@ -34,6 +33,5 @@
             profileurl="http://babaraJ.com" timezone="UTC" title="Dr."
             username="bjensen" usertype="user" internal_id="100046" name_id="100048" active="false"/>
 
-    <scim_user_scim_roles scim_user_internal_id="100001" roles_multi_value_id="100090"/>
-
+    <scim_roles multi_value_id="100090" user_internal_id="100001" value="USER"/>
 </dataset>

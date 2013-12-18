@@ -38,8 +38,6 @@
 
     <scim_name id="100048" familyname="Jensen" formatted="Ms. Barbara J Jensen III" givenname="Barbara"/>
 
-    <scim_roles multi_value_id="100090" value="USER"/>
-
     <scim_user
             password="42db3b474c2a54f6b1c3c352e4436274de6b0239432c9a6c2d51c62e54b28ad1e3ecbb306f7748890934e3dae4292e339189c8bb7af55f68de9855ca455f19e4"
             displayname="BarbaraJ." locale="de" nickname="Barbara" preferredlanguage="de"
@@ -55,12 +53,12 @@
 
     <scim_address id="100008" country="Germany" locality="Berlin" postalcode="10777"
                   postgresql_does_not_like_primary="false" region="Berlin" streetaddress="Hauptstr. 69"
-                  type="work"/>
+                  type="work" user_internal_id="100046" />
 
     <scim_address id="100012" country="Germany" locality="Berlin" postalcode="10777"
                   postgresql_does_not_like_primary="false" region="Berlin" streetaddress="Hauptstr. 68"
-                  type="work"/>
-
+                  type="work" user_internal_id="100046" />
+                  
     <scim_photo multi_value_id="100102" value="http://example.com/barbara.jpg" type="photo" user_internal_id="100046"/>
 
     <scim_im multi_value_id="100103" value="barbara" type="xmpp" user_internal_id="100046"/>
@@ -68,9 +66,5 @@
     <scim_phonenumber multi_value_id="100104" value="555-555-8377" type="work" user_internal_id="100046"/>
     <scim_phonenumber multi_value_id="100111" value="655-222-8377" type="home" user_internal_id="100046"/>
 
-    <scim_user_scim_address scim_user_internal_id="100046" addresses_id="100008"/>
-    <scim_user_scim_address scim_user_internal_id="100046" addresses_id="100012"/>
-
-    <scim_user_scim_roles scim_user_internal_id="100001" roles_multi_value_id="100090"/>
-
+    <scim_roles multi_value_id="100090" user_internal_id="100001" value="USER"/>
 </dataset>

@@ -101,8 +101,6 @@
     <scim_name id="100048" familyname="Jensen" formatted="Ms. Barbara J Jensen III" givenname="Barbara"/>
     <scim_name id="100051" familyname="Erick" formatted="Erick Willey" givenname="Willey"/>
 
-    <scim_roles multi_value_id="100090" value="USER"/>
-
     <scim_user
             password="42db3b474c2a54f6b1c3c352e4436274de6b0239432c9a6c2d51c62e54b28ad1e3ecbb306f7748890934e3dae4292e339189c8bb7af55f68de9855ca455f19e4"
             displayname="BarbaraJ." locale="de" nickname="Barbara" preferredlanguage="de"
@@ -179,29 +177,29 @@
 
     <scim_address id="100008" country="Germany" locality="Germany" postalcode="66222"
                   postgresql_does_not_like_primary="false" region="Germany" streetaddress="example street 62"
-                  type="work"/>
+                  type="work" user_internal_id="100005" />
     <scim_address id="100012" country="Germany" locality="Germany" postalcode="66333"
                   postgresql_does_not_like_primary="false" region="Germany" streetaddress="example street 63"
-                  type="work"/>
+                  type="work" user_internal_id="100009" />
     <scim_address id="100016" country="Germany" locality="Germany" postalcode="6644"
                   postgresql_does_not_like_primary="false" region="Germany" streetaddress="example street 64"
-                  type="work"/>
+                  type="work" user_internal_id="100013" />
     <scim_address id="100024" country="Germany" locality="Germany" postalcode="66666"
                   postgresql_does_not_like_primary="false" region="Germany" streetaddress="example street 66"
-                  type="work"/>
+                  type="work" user_internal_id="100021" />
     <scim_address id="100028" country="Germany" locality="Germany" postalcode="66777"
                   postgresql_does_not_like_primary="false" region="Germany" streetaddress="example street 67"
-                  type="work"/>
+                  type="work" user_internal_id="100025" />
     <scim_address id="100032" country="Germany" locality="Germany" postalcode="66888"
                   postgresql_does_not_like_primary="false" region="Germany" streetaddress="example street 68"
-                  type="work"/>
+                  type="work" user_internal_id="100029" />
     <scim_address id="100036" country="USA" locality="USA" postalcode="4567" postgresql_does_not_like_primary="false"
-                  region="Springfield" streetaddress="742 Evergreen" type="home"/>
+                  region="Springfield" streetaddress="742 Evergreen" type="home" user_internal_id="100033" />
     <scim_address id="100037" country="USA" locality="USA" postalcode="1245" postgresql_does_not_like_primary="false"
-                  region="Springfield" streetaddress="Walnut Street - Moes" type="work"/>
+                  region="Springfield" streetaddress="Walnut Street - Moes" type="work" user_internal_id="100033" />
     <scim_address id="100045" country="Germany" locality="Germany" postalcode="66111"
                   postgresql_does_not_like_primary="false" region="Germany" streetaddress="example street 60"
-                  type="work"/>
+                  type="work" user_internal_id="100042"/>
 
     <scim_photo multi_value_id="100102" value="http://example.com/barbara.jpg" type="photo" user_internal_id="100046"/>
 
@@ -219,17 +217,7 @@
     <scim_phonenumber multi_value_id="100113" value="677-555-8377" type="work" user_internal_id="100025"/>
     <scim_phonenumber multi_value_id="100114" value="688-555-8377" type="work" user_internal_id="100029"/>
 
-    <scim_user_scim_address scim_user_internal_id="100005" addresses_id="100008"/>
-    <scim_user_scim_address scim_user_internal_id="100009" addresses_id="100012"/>
-    <scim_user_scim_address scim_user_internal_id="100013" addresses_id="100016"/>
-    <scim_user_scim_address scim_user_internal_id="100021" addresses_id="100024"/>
-    <scim_user_scim_address scim_user_internal_id="100025" addresses_id="100028"/>
-    <scim_user_scim_address scim_user_internal_id="100029" addresses_id="100032"/>
-    <scim_user_scim_address scim_user_internal_id="100033" addresses_id="100036"/>
-    <scim_user_scim_address scim_user_internal_id="100033" addresses_id="100037"/>
-    <scim_user_scim_address scim_user_internal_id="100042" addresses_id="100045"/>
-
-    <scim_user_scim_roles scim_user_internal_id="100001" roles_multi_value_id="100090"/>
+    <scim_roles multi_value_id="100090" user_internal_id="100001" value="USER"/>
 
     <scim_extension internal_id="100081" urn="extension"/>
     <scim_extension_field internal_id="100082" is_required="true" name="gender" type="STRING"

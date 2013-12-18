@@ -51,7 +51,6 @@
                timezone="UTC+02" title="ZZZ." username="marissa" usertype="internal" internal_id="100001"
                name_id="100011" active="true"/>
 
-    <scim_roles multi_value_id="100090" value="USER"/>
-    <scim_user_scim_roles scim_user_internal_id="100001" roles_multi_value_id="100090"/>
+    <scim_roles multi_value_id="100090" user_internal_id="100001" value="USER"/>
 
 </dataset>
