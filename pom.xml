@@ -149,6 +149,13 @@
         </dependency>
         <!-- TESTING -->
 
+        <dependency>
+            <groupId>com.icegreen</groupId>
+            <artifactId>greenmail</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Groovy and Spock framework: needed for testing -->
         <dependency>
             <groupId>org.codehaus.groovy</groupId>

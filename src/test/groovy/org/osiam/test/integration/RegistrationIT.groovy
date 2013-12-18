@@ -3,6 +3,9 @@ package org.osiam.test.integration
 import com.fasterxml.jackson.core.Version
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
+import com.icegreen.greenmail.util.GreenMail
+import com.icegreen.greenmail.util.GreenMailUtil
+import com.icegreen.greenmail.util.ServerSetupTest
 import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
@@ -11,19 +14,18 @@ import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.resources.scim.MultiValuedAttribute
 import org.osiam.resources.scim.User
-import org.osiam.test.integration.AbstractIT
 import spock.lang.Shared
+
+import javax.mail.Message
 
 /**
  * This test covers the controller for registration purpose.
- * User: Jochen Todea
- * Date: 05.11.13
- * Time: 11:45
- * Created: with Intellij IDEA
+ * @author Jochen Todea
  */
 class RegistrationIT extends AbstractIT{
 
     @Shared def mapper
+    def mailServer
 
     def setupSpec() {
         mapper = new ObjectMapper()
@@ -34,6 +36,13 @@ class RegistrationIT extends AbstractIT{
 
     def setup() {
         setupDatabase("database_seed_registration.xml")
+
+        mailServer = new GreenMail(ServerSetupTest.ALL)
+        mailServer.start()
+    }
+
+    def cleanup() {
+        mailServer.stop()
     }
 
     def "The registration controller should return an HTML page if a GET request was issued to its '/' path with an access token in the header"() {
@@ -103,6 +112,15 @@ class RegistrationIT extends AbstractIT{
         !user.isActive()
         Extension extension = user.getExtension('urn:scim:schemas:osiam:1.0:Registration')
         extension.getField('activationToken', ExtensionFieldType.STRING) != null
+
+        //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
+        mailServer.waitForIncomingEmail(5000, 1)
+        Message[] messages = mailServer.getReceivedMessages();
+        messages.length == 1
+        messages[0].getSubject() == "registration"
+        GreenMailUtil.getBody(messages[0]).contains("your account has been created")
+        messages[0].getFrom()[0].toString() == "noreply@osiam.org"
+        messages[0].getAllRecipients()[0].toString().equals("email@example.org")
     }
 
     def getUserAsStringWithExtension() {
@@ -216,5 +234,14 @@ class RegistrationIT extends AbstractIT{
         registeredExtension1.getField('activationToken', ExtensionFieldType.STRING) != null
         Extension registeredExtension2 = registeredUser.getExtension('urn:scim:schemas:osiam:1.0:Test')
         registeredExtension2.getField('field1', ExtensionFieldType.STRING) != null
+
+        //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
+        mailServer.waitForIncomingEmail(5000, 1)
+        Message[] messages = mailServer.getReceivedMessages();
+        messages.length == 1
+        messages[0].getSubject() == "registration"
+        GreenMailUtil.getBody(messages[0]).contains("your account has been created")
+        messages[0].getFrom()[0].toString() == "noreply@osiam.org"
+        messages[0].getAllRecipients()[0].toString().equals("email@example.org")
     }
 }
