@@ -44,8 +44,6 @@
     <scim_name id="100023" familyname="Cooper" formatted="Mr. Daniel Cooper" givenname="Daniel"/>
     <scim_name id="100048" familyname="Jensen" formatted="Ms. Barbara J Jensen III" givenname="Barbara"/>
 
-    <scim_roles multi_value_id="100090" value="USER"/>
-
     <scim_user
             password="42db3b474c2a54f6b1c3c352e4436274de6b0239432c9a6c2d51c62e54b28ad1e3ecbb306f7748890934e3dae4292e339189c8bb7af55f68de9855ca455f19e4"
             displayname="BarbaraJ." locale="de" nickname="Barbara" preferredlanguage="de"
@@ -78,7 +76,6 @@
     <scim_group_scim_id groups_internal_id="100054" members_internal_id="100021"/>
     <scim_group_scim_id groups_internal_id="100054" members_internal_id="100013"/>
 
-
-    <scim_user_scim_roles scim_user_internal_id="100001" roles_multi_value_id="100090"/>
+    <scim_roles multi_value_id="100090" user_internal_id="100001" value="USER"/>
 
 </dataset>

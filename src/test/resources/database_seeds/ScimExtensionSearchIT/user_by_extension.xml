@@ -33,8 +33,6 @@
     <scim_id internal_id="100025" externalid="epalmer" meta_id="100026" id="db566580-08a7-44fa-be0f-d30f1c0ff2df"/>
     <scim_id internal_id="100001" meta_id="100004" id="cef9452e-00a9-4cec-a086-d171374ffbef"/>
 
-    <scim_roles multi_value_id="100090" value="USER"/>
-
     <scim_user displayname="AdelineD." locale="de" nickname="Adeline"
                password="de80fa5f5b167a83e57d0f388f1f1964b8c3b991347eb71d7d74ed8823e88d592b19762ca78b58982aa85bb28a3b4596a97346daeabfcf2913bdc400e9af4b67"
                title="Prof." username="adavies" internal_id="100005" active="false"/>
@@ -54,7 +52,7 @@
             password="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
             username="marissa" internal_id="100001" active="true"/>
 
-    <scim_user_scim_roles scim_user_internal_id="100001" roles_multi_value_id="100090"/>
+    <scim_roles multi_value_id="100090" user_internal_id="100001" value="USER"/>
 
     <scim_extension internal_id="100081" urn="extension"/>
 

@@ -199,7 +199,6 @@ public class ScopeIT {
     }
 
     @Test
-    @Ignore("/User/me is no longer available and '/me' is not yet supported by connector")
     public void get_current_user_in_GET_scope_works() {
         setScope(Scope.GET);
         retrieveAccessToken();

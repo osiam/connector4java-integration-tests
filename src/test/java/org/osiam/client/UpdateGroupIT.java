@@ -1,16 +1,9 @@
 package org.osiam.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
@@ -28,6 +21,16 @@ import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
@@ -36,7 +39,8 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class UpdateGroupIT extends AbstractIntegrationTestBase {
 
-    private static String idExistingGroup = "7d33bcbe-a54c-43d8-867e-f6146164941e";
+    private static final String IRRELEVANT = "irrelevant";
+    private static String idExistingGroup = "69e1a5dc-89be-4343-976c-b5541af249f4";
     private static String ID_USER_BTHOMSON = "618b398c-0110-43f2-95df-d1bc4e7d2b4a";
     private static String ID_USER_CMILLER = "ac3bacc9-915d-4bab-9145-9eb600d5e5bf";
     private static String ID_USER_HSIMPSON = "7d33bcbe-a54c-43d8-867e-f6146164941e";
@@ -90,13 +94,14 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
         fail("Exception expected");
     }
 
-    @Test(expected = ConflictException.class)
-    @Ignore("Updating to empty string is ignored, what is the desired behavior?")
-    public void set_display_name_to_empty_string_to_raise_exception() {
+    @Test
+    public void set_display_name_to_empty_string_is_ignored() {
         getOriginalGroup();
-        createUpdateUserWithEmptyDisplayName();
+        createUpdateGroupWithEmptyDisplayName();
+
         updateGroup();
-        fail("exception expected");
+
+        assertThat(returnGroup.getDisplayName(), is(equalTo(IRRELEVANT)));
     }
 
     @Test
@@ -132,7 +137,6 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    @Ignore("the new member is not added")
     public void delete_all_members_and_add_one_member() {
         getOriginalGroup();
         createUpdateGroupWithDeleteAllMembersAndAddingOneMember();
@@ -141,6 +145,13 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
         assertEquals(1, returnGroup.getMembers().size());
         MemberRef value = getSingleMember(returnGroup.getMembers(), ID_USER_HSIMPSON);
         assertNotNull(value);
+    }
+
+    @Test (expected = ConflictException.class)
+    public void updating_the_displayname_to_existing_displayname_raises_exception() {
+        createUpdateGroupWithNewDisplayName("test_group06");
+
+        updateGroup();
     }
 
     private MemberRef getSingleMember(Set<MemberRef> multiValues, Object value) {
@@ -194,7 +205,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
     }
 
     private void getOriginalGroup() {
-        Group.Builder groupBuilder = new Group.Builder().setDisplayName("irgendwas");
+        Group.Builder groupBuilder = new Group.Builder().setDisplayName(IRRELEVANT);
 
         MemberRef member01 = new MemberRef.Builder().setValue(ID_USER_BTHOMSON).build();
         MemberRef member02 = new MemberRef.Builder().setValue(ID_USER_CMILLER).build();
@@ -206,7 +217,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
 
         groupBuilder
                 .setMembers(members)
-                .setExternalId("irgendwas")
+                .setExternalId(IRRELEVANT)
         ;
         Group newGroup = groupBuilder.build();
 
@@ -221,7 +232,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
                 .build();
     }
 
-    private void createUpdateUserWithEmptyDisplayName() {
+    private void createUpdateGroupWithEmptyDisplayName() {
         updateGroup = new UpdateGroup.Builder()
                 .updateDisplayName("")
                 .build();
@@ -229,6 +240,12 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
 
     private void updateGroup() {
         returnGroup = oConnector.updateGroup(idExistingGroup, updateGroup, accessToken);
+    }
+
+    private void createUpdateGroupWithNewDisplayName(String displayName) {
+        idExistingGroup = ID_GROUP_01;
+        updateGroup = new UpdateGroup.Builder().updateDisplayName(displayName)
+                .build();
     }
 
 }

@@ -142,13 +142,6 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     @Test(expected = NoResultException.class)
-    public void group_is_not_deleted() throws Exception {
-        givenAValidGroupIDForDeletion();
-        whenGroupIsDeleted();
-        fail();
-    }
-
-    @Test(expected = NoResultException.class)
     public void delete_user_two_times() throws Exception {
         givenAValidUserIDForDeletion();
         whenUserIsDeleted();
@@ -323,14 +316,6 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
 
     private void givenAValidUserIDForDeletion() throws Exception {
         validId = DELETE_USER_ID;
-    }
-
-    private void givenAValidGroupIDForDeletion() throws Exception {
-        validId = VALID_GROUP_ID;
-    }
-
-    private void whenGroupIsDeleted() {
-        oConnector.deleteUser(validId, accessToken);
     }
 
     private void assertThatUserIsRemoveFromServer() {
