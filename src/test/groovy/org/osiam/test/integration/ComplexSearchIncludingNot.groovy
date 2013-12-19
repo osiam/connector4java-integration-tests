@@ -1,5 +1,6 @@
 package org.osiam.test.integration
 
+import org.osiam.client.exception.ConflictException
 import org.osiam.client.query.Query
 import org.osiam.client.query.metamodel.Comparison
 import org.osiam.resources.scim.SCIMSearchResult
@@ -15,7 +16,7 @@ import org.osiam.resources.scim.User
 class ComplexSearchIncludingNot extends AbstractIT {
 
     def setup() {
-        setupDatabase("database_seed_parser_with_not.xml");
+        setupDatabase("database_seed_parser_with_not.xml")
     }
 
     def "search with not operator"() {
@@ -28,7 +29,7 @@ class ComplexSearchIncludingNot extends AbstractIT {
         Query query = new Query.Builder(User).setFilter(filter).build()
 
         when:
-        SCIMSearchResult<User> result = osiamConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = osiamConnector.searchUsers(query, accessToken)
 
         then:
         result.getResources().size() == 1
@@ -46,7 +47,7 @@ class ComplexSearchIncludingNot extends AbstractIT {
         Query query = new Query.Builder(User).setFilter(filter).build()
 
         when:
-        SCIMSearchResult<User> result = osiamConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = osiamConnector.searchUsers(query, accessToken)
 
         then:
         result.getResources().size() == 2
@@ -60,7 +61,7 @@ class ComplexSearchIncludingNot extends AbstractIT {
         Query query = new Query.Builder(User).setFilter('userName eq "george \\"alexander\\""').build()
 
         when:
-        SCIMSearchResult<User> result = osiamConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = osiamConnector.searchUsers(query, accessToken)
 
         then:
         result.getResources().size() == 1
@@ -74,9 +75,9 @@ class ComplexSearchIncludingNot extends AbstractIT {
         Query query = new Query.Builder(User).setFilter('userName eq george0').build()
 
         when:
-        osiamConnector.searchUsers(query, accessToken);
+        osiamConnector.searchUsers(query, accessToken)
 
         then:
-        thrown(IllegalArgumentException)
+        thrown(ConflictException)
     }
 }
