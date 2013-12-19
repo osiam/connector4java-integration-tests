@@ -8,6 +8,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.connector.OsiamConnector;
+import org.osiam.client.exception.ConflictException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
@@ -231,6 +232,13 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         assertThat(retrieveNewAccessToken(), is(notNullValue()));
     }
 
+    @Test (expected = ConflictException.class)
+    public void updating_the_username_to_existing_username_raises_exception() {
+        createUpdateUserWithNewUserName("marissa");
+
+        updateUser();
+    }
+
     private boolean isValuePartOfMultivalueList(List<MultiValuedAttribute> list, String value) {
         if (list != null) {
             for (MultiValuedAttribute actAttribute : list) {
@@ -363,7 +371,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         Name newName = new Name.Builder().setFamilyName("newFamilyName").build();
         updateUser = new UpdateUser.Builder()
 
-                .updateUserName(UUID.randomUUID().toString())
+                .updateUserName(IRRELEVANT)
                 .updateNickName(IRRELEVANT)
                 .updateExternalId(IRRELEVANT)
                 .updateDisplayName(IRRELEVANT)
@@ -474,6 +482,11 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
     private void createUpdateUserWithEmptyUserName() {
         updateUser = new UpdateUser.Builder().updateUserName("")
+                .build();
+    }
+
+    private void createUpdateUserWithNewUserName(String username) {
+        updateUser = new UpdateUser.Builder().updateUserName(username)
                 .build();
     }
 

@@ -7,8 +7,10 @@ import java.util.UUID;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.update.UpdateGroup;
+import org.osiam.client.update.UpdateUser;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.MemberRef;
 import org.springframework.test.context.ContextConfiguration;
@@ -40,7 +42,7 @@ import static org.junit.Assert.fail;
 public class UpdateGroupIT extends AbstractIntegrationTestBase {
 
     private static final String IRRELEVANT = "irrelevant";
-    private static String idExistingGroup = "7d33bcbe-a54c-43d8-867e-f6146164941e";
+    private static String idExistingGroup = "69e1a5dc-89be-4343-976c-b5541af249f4";
     private static String ID_USER_BTHOMSON = "618b398c-0110-43f2-95df-d1bc4e7d2b4a";
     private static String ID_USER_CMILLER = "ac3bacc9-915d-4bab-9145-9eb600d5e5bf";
     private static String ID_USER_HSIMPSON = "7d33bcbe-a54c-43d8-867e-f6146164941e";
@@ -147,6 +149,13 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
         assertNotNull(value);
     }
 
+    @Test (expected = ConflictException.class)
+    public void updating_the_displayname_to_existing_displayname_raises_exception() {
+        createUpdateGroupWithNewDisplayName("test_group06");
+
+        updateGroup();
+    }
+
     private MemberRef getSingleMember(Set<MemberRef> multiValues, Object value) {
         if (multiValues != null) {
             for (MemberRef actMemberRef : multiValues) {
@@ -233,6 +242,11 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
 
     private void updateGroup() {
         returnGroup = oConnector.updateGroup(idExistingGroup, updateGroup, accessToken);
+    }
+
+    private void createUpdateGroupWithNewDisplayName(String username) {
+        updateGroup = new UpdateGroup.Builder().updateDisplayName(username)
+                .build();
     }
 
 }
