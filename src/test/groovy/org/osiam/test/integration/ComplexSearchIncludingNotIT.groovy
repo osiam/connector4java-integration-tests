@@ -1,5 +1,6 @@
 package org.osiam.test.integration
 
+import org.osiam.client.exception.ConflictException
 import org.osiam.client.query.Query
 import org.osiam.client.query.metamodel.Comparison
 import org.osiam.resources.scim.SCIMSearchResult
@@ -12,7 +13,7 @@ import org.osiam.resources.scim.User
  * Time: 16:36
  * Created: with Intellij IDEA
  */
-class ComplexSearchIncludingNot extends AbstractIT {
+class ComplexSearchIncludingNotIT extends AbstractIT {
 
     def setup() {
         setupDatabase("database_seed_parser_with_not.xml");
@@ -77,6 +78,6 @@ class ComplexSearchIncludingNot extends AbstractIT {
         osiamConnector.searchUsers(query, accessToken);
 
         then:
-        thrown(IllegalArgumentException)
+        thrown(ConflictException)
     }
 }
