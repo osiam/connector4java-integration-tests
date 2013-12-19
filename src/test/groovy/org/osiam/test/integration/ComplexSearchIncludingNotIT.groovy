@@ -16,7 +16,7 @@ import org.osiam.resources.scim.User
 class ComplexSearchIncludingNotIT extends AbstractIT {
 
     def setup() {
-        setupDatabase("database_seed_parser_with_not.xml");
+        setupDatabase("database_seed_parser_with_not.xml")
     }
 
     def "search with not operator"() {
@@ -29,7 +29,7 @@ class ComplexSearchIncludingNotIT extends AbstractIT {
         Query query = new Query.Builder(User).setFilter(filter).build()
 
         when:
-        SCIMSearchResult<User> result = osiamConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = osiamConnector.searchUsers(query, accessToken)
 
         then:
         result.getResources().size() == 1
@@ -47,7 +47,7 @@ class ComplexSearchIncludingNotIT extends AbstractIT {
         Query query = new Query.Builder(User).setFilter(filter).build()
 
         when:
-        SCIMSearchResult<User> result = osiamConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = osiamConnector.searchUsers(query, accessToken)
 
         then:
         result.getResources().size() == 2
@@ -61,7 +61,7 @@ class ComplexSearchIncludingNotIT extends AbstractIT {
         Query query = new Query.Builder(User).setFilter('userName eq "george \\"alexander\\""').build()
 
         when:
-        SCIMSearchResult<User> result = osiamConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = osiamConnector.searchUsers(query, accessToken)
 
         then:
         result.getResources().size() == 1
@@ -75,7 +75,7 @@ class ComplexSearchIncludingNotIT extends AbstractIT {
         Query query = new Query.Builder(User).setFilter('userName eq george0').build()
 
         when:
-        osiamConnector.searchUsers(query, accessToken);
+        osiamConnector.searchUsers(query, accessToken)
 
         then:
         thrown(ConflictException)
