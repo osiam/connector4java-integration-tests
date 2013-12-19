@@ -6,7 +6,7 @@
                   id="example-client" implicit_approval="false" redirect_uri="http://localhost:5000/oauth2"
                   refreshtokenvalidityseconds="2342" validityinseconds="1337"/>
     <osiam_client_grants id="100003" grants="authorization_code"/>
-    <osiam_client_grants id="100003" grants="refresh-token"/>
+    <osiam_client_grants id="100003" grants="refresh_token"/>
     <osiam_client_grants id="100003" grants="password"/>
     <osiam_client_grants id="100003" grants="client_credentials"/>
     <osiam_client_scopes id="100003" scope="GET"/>
