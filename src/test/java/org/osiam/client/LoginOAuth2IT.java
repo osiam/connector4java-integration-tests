@@ -1,10 +1,9 @@
 package org.osiam.client;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpResponse;
@@ -17,7 +16,6 @@ import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.connector.OsiamConnector;
@@ -32,14 +30,12 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -81,6 +77,7 @@ public class LoginOAuth2IT {
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
         assertTrue(accessToken != null);
+        assertNotNull(accessToken.getRefreshToken());
     }
 
     @Test
@@ -98,6 +95,7 @@ public class LoginOAuth2IT {
         givenAuthCode();
         givenAccessTokenUsingHttpResponse();
         assertTrue(accessToken != null);
+        assertNotNull(accessToken.getRefreshToken());
     }
 
     @Test(expected = ConflictException.class)
