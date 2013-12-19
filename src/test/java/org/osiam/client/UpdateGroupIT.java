@@ -4,13 +4,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.update.UpdateGroup;
-import org.osiam.client.update.UpdateUser;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.MemberRef;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,8 +21,8 @@ import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -99,7 +97,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
     @Test
     public void set_display_name_to_empty_string_is_ignored() {
         getOriginalGroup();
-        createUpdateUserWithEmptyDisplayName();
+        createUpdateGroupWithEmptyDisplayName();
 
         updateGroup();
 
@@ -234,7 +232,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
                 .build();
     }
 
-    private void createUpdateUserWithEmptyDisplayName() {
+    private void createUpdateGroupWithEmptyDisplayName() {
         updateGroup = new UpdateGroup.Builder()
                 .updateDisplayName("")
                 .build();
@@ -244,8 +242,9 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
         returnGroup = oConnector.updateGroup(idExistingGroup, updateGroup, accessToken);
     }
 
-    private void createUpdateGroupWithNewDisplayName(String username) {
-        updateGroup = new UpdateGroup.Builder().updateDisplayName(username)
+    private void createUpdateGroupWithNewDisplayName(String displayName) {
+        idExistingGroup = ID_GROUP_01;
+        updateGroup = new UpdateGroup.Builder().updateDisplayName(displayName)
                 .build();
     }
 
