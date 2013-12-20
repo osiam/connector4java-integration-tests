@@ -61,7 +61,7 @@ public class RefreshTokenGrantIT {
     protected String clientSecret = "secret";
 
     @Test
-    public void login_with_client_credentials(){
+    public void refreshing_an_access_token_should_provide_a_new_access_token(){
 
         //Get a access token.
         OsiamConnector connectorWithROPC = new OsiamConnector.Builder().

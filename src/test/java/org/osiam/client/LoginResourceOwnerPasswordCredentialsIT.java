@@ -59,7 +59,7 @@ public class LoginResourceOwnerPasswordCredentialsIT {
     protected String clientSecret = "secret";
 
     @Test
-    public void login_with_client_credentials(){
+    public void login_with_resource_owner_password_credentials_grant_should_provide_an_refresh_token(){
         OsiamConnector osiamConnector = new OsiamConnector.Builder().
                 setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
                 setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
