@@ -6,7 +6,7 @@
                   accesstokenvalidityseconds="2342" refreshtokenvalidityseconds="2342" validityinseconds="1337"
                   implicit_approval="false" expiry="1970-01-01 00:00:01"/>
     <osiam_client_grants id="100003" grants="authorization_code"/>
-    <osiam_client_grants id="100003" grants="refresh-token"/>
+    <osiam_client_grants id="100003" grants="refresh_token"/>
     <osiam_client_grants id="100003" grants="password"/>
     <osiam_client_grants id="100003" grants="client_credentials"/>
     <osiam_client_scopes id="100003" scope="GET"/>

@@ -13,7 +13,7 @@ import org.osiam.resources.scim.User
  * Time: 16:36
  * Created: with Intellij IDEA
  */
-class ComplexSearchIncludingNot extends AbstractIT {
+class ComplexSearchIncludingNotIT extends AbstractIT {
 
     def setup() {
         setupDatabase("database_seed_parser_with_not.xml")

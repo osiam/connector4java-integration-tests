@@ -7,7 +7,7 @@
                   ID="example-client" IMPLICIT_APPROVAL="false" REDIRECT_URI="http://localhost:5000/oauth2"
                   REFRESHTOKENVALIDITYSECONDS="2342" VALIDITYINSECONDS="1337"/>
     <OSIAM_CLIENT_GRANTS ID="100003" GRANTS="authorization_code"/>
-    <OSIAM_CLIENT_GRANTS ID="100003" GRANTS="refresh-token"/>
+    <OSIAM_CLIENT_GRANTS ID="100003" GRANTS="refresh_token"/>
     <OSIAM_CLIENT_GRANTS ID="100003" GRANTS="password"/>
     <OSIAM_CLIENT_GRANTS ID="100003" GRANTS="client_credentials"/>
     <OSIAM_CLIENT_SCOPES ID="100003" SCOPE="GET"/>
