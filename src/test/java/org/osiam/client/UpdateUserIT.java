@@ -239,6 +239,26 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         updateUser();
     }
 
+    @Test
+    public void adding_new_primary_email_address_sets_the_other_to_non_primary(){
+        getOriginalUser(IRRELEVANT);
+        createUpdateUserWithNewPrimaryEmailAddress();
+
+        updateUser();
+
+        assertThatOnlyNewEmailAddressIsPrimary();
+    }
+
+    private void assertThatOnlyNewEmailAddressIsPrimary(){
+        for(MultiValuedAttribute email : returnUser.getEmails()){
+            if(email.getValue().equals("hsimpson02@atom-example.com")){
+                assertThat(email.isPrimary(), is(true));
+            }else{
+                assertThat(email.isPrimary(), is(false));
+            }
+        }
+    }
+
     private boolean isValuePartOfMultivalueList(List<MultiValuedAttribute> list, String value) {
         if (list != null) {
             for (MultiValuedAttribute actAttribute : list) {
@@ -477,6 +497,16 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     private void createUpdateUserWithJustOtherNickname() {
         updateUser = new UpdateUser.Builder()
                 .updateNickName(IRRELEVANT)
+                .build();
+    }
+
+    private void createUpdateUserWithNewPrimaryEmailAddress() {
+
+        MultiValuedAttribute primaryEmail = new MultiValuedAttribute.Builder().setValue("hsimpson02@atom-example.com")
+                .setPrimary(true).build();
+
+        updateUser = new UpdateUser.Builder()
+                .addEmail(primaryEmail)
                 .build();
     }
 
