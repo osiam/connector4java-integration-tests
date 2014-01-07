@@ -38,8 +38,8 @@
     <scim_roles multi_value_id="90" user_internal_id="1" value="USER"/>
     <scim_roles multi_value_id="91" user_internal_id="62" value="USER"/>
 
-    <scim_email multi_value_id="50" value="george.alexander@osiam.org" postgresql_does_not_like_primary="true" type="work" user_internal_id="60"/>
-    <scim_email multi_value_id="51" value="not.primary@osiam.org" postgresql_does_not_like_primary="false" type="work" user_internal_id="60"/>
+    <scim_email multi_value_id="50" value="george.alexander@osiam.org" is_primary="true" type="work" user_internal_id="60"/>
+    <scim_email multi_value_id="51" value="not.primary@osiam.org" is_primary="false" type="work" user_internal_id="60"/>
 
     <scim_extension internal_id="81" urn="urn:scim:schemas:osiam:1.0:Registration"/>
     <scim_extension_field internal_id="82" is_required="true" name="emailConfirmToken" type="STRING" extension_internal_id="81"/>

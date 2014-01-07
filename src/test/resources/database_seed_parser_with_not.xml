@@ -97,11 +97,11 @@
     <scim_group_scim_id groups_internal_id="1007" members_internal_id="10008"/>
     <scim_group_scim_id groups_internal_id="1007" members_internal_id="10009"/>
 
-    <scim_email multi_value_id="1000100" value="jj@tt.de" postgresql_does_not_like_primary="false" type="work"
+    <scim_email multi_value_id="1000100" value="jj@tt.de" is_primary="false" type="work"
                 user_internal_id="10008"/>
-    <scim_email multi_value_id="1000101" value="bb@ss.de" postgresql_does_not_like_primary="false" type="work"
+    <scim_email multi_value_id="1000101" value="bb@ss.de" is_primary="false" type="work"
                 user_internal_id="10009"/>
-    <scim_email multi_value_id="1000102" value="oo@aa.de" postgresql_does_not_like_primary="false" type="work"
+    <scim_email multi_value_id="1000102" value="oo@aa.de" is_primary="false" type="work"
                 user_internal_id="100010"/>
 
     <scim_roles multi_value_id="100090" user_internal_id="100001" value="USER"/>

@@ -150,55 +150,55 @@
 
     <scim_group_scim_id groups_internal_id="100052" members_internal_id="100046"/>
 
-    <scim_email multi_value_id="100091" value="adavies@example.com" postgresql_does_not_like_primary="false" type="work"
+    <scim_email multi_value_id="100091" value="adavies@example.com" is_primary="false" type="work"
                 user_internal_id="100009"/>
-    <scim_email multi_value_id="100092" value="bjensen@example.com" postgresql_does_not_like_primary="false" type="work"
+    <scim_email multi_value_id="100092" value="bjensen@example.com" is_primary="false" type="work"
                 user_internal_id="100046"/>
-    <scim_email multi_value_id="100093" value="bthomson@example.com" postgresql_does_not_like_primary="false"
+    <scim_email multi_value_id="100093" value="bthomson@example.com" is_primary="false"
                 type="work"
                 user_internal_id="100005"/>
-    <scim_email multi_value_id="100094" value="cmiller@example.com" postgresql_does_not_like_primary="false" type="work"
+    <scim_email multi_value_id="100094" value="cmiller@example.com" is_primary="false" type="work"
                 user_internal_id="100013"/>
-    <scim_email multi_value_id="100095" value="dcooper@example.com" postgresql_does_not_like_primary="false" type="work"
+    <scim_email multi_value_id="100095" value="dcooper@example.com" is_primary="false" type="work"
                 user_internal_id="100021"/>
-    <scim_email multi_value_id="100096" value="epalmer@example.com" postgresql_does_not_like_primary="false" type="work"
+    <scim_email multi_value_id="100096" value="epalmer@example.com" is_primary="false" type="work"
                 user_internal_id="100025"/>
-    <scim_email multi_value_id="100097" value="ewilley@example.com" postgresql_does_not_like_primary="false" type="work"
+    <scim_email multi_value_id="100097" value="ewilley@example.com" is_primary="false" type="work"
                 user_internal_id="100049"/>
-    <scim_email multi_value_id="100098" value="gbarker@example.com" postgresql_does_not_like_primary="false" type="work"
+    <scim_email multi_value_id="100098" value="gbarker@example.com" is_primary="false" type="work"
                 user_internal_id="100029"/>
-    <scim_email multi_value_id="100099" value="hsimpson@atom-example.com" postgresql_does_not_like_primary="false"
+    <scim_email multi_value_id="100099" value="hsimpson@atom-example.com" is_primary="false"
                 type="work"
                 user_internal_id="100033"/>
-    <scim_email multi_value_id="100100" value="hsimpson@phome-example.com" postgresql_does_not_like_primary="false"
+    <scim_email multi_value_id="100100" value="hsimpson@phome-example.com" is_primary="false"
                 type="home" user_internal_id="100033"/>
-    <scim_email multi_value_id="100101" value="kmorris@example.com" postgresql_does_not_like_primary="false" type="work"
+    <scim_email multi_value_id="100101" value="kmorris@example.com" is_primary="false" type="work"
                 user_internal_id="100042"/>
 
-    <scim_address id="100008" country="Germany" locality="Germany" postalcode="66222"
-                  postgresql_does_not_like_primary="false" region="Germany" streetaddress="example street 62"
+    <scim_address multi_value_id="100008" country="Germany" locality="Germany" postalcode="66222"
+                  is_primary="false" region="Germany" streetaddress="example street 62"
                   type="work" user_internal_id="100005" />
-    <scim_address id="100012" country="Germany" locality="Germany" postalcode="66333"
-                  postgresql_does_not_like_primary="false" region="Germany" streetaddress="example street 63"
+    <scim_address multi_value_id="100012" country="Germany" locality="Germany" postalcode="66333"
+                  is_primary="false" region="Germany" streetaddress="example street 63"
                   type="work" user_internal_id="100009" />
-    <scim_address id="100016" country="Germany" locality="Germany" postalcode="6644"
-                  postgresql_does_not_like_primary="false" region="Germany" streetaddress="example street 64"
+    <scim_address multi_value_id="100016" country="Germany" locality="Germany" postalcode="6644"
+                  is_primary="false" region="Germany" streetaddress="example street 64"
                   type="work" user_internal_id="100013" />
-    <scim_address id="100024" country="Germany" locality="Germany" postalcode="66666"
-                  postgresql_does_not_like_primary="false" region="Germany" streetaddress="example street 66"
+    <scim_address multi_value_id="100024" country="Germany" locality="Germany" postalcode="66666"
+                  is_primary="false" region="Germany" streetaddress="example street 66"
                   type="work" user_internal_id="100021" />
-    <scim_address id="100028" country="Germany" locality="Germany" postalcode="66777"
-                  postgresql_does_not_like_primary="false" region="Germany" streetaddress="example street 67"
+    <scim_address multi_value_id="100028" country="Germany" locality="Germany" postalcode="66777"
+                  is_primary="false" region="Germany" streetaddress="example street 67"
                   type="work" user_internal_id="100025" />
-    <scim_address id="100032" country="Germany" locality="Germany" postalcode="66888"
-                  postgresql_does_not_like_primary="false" region="Germany" streetaddress="example street 68"
+    <scim_address multi_value_id="100032" country="Germany" locality="Germany" postalcode="66888"
+                  is_primary="false" region="Germany" streetaddress="example street 68"
                   type="work" user_internal_id="100029" />
-    <scim_address id="100036" country="USA" locality="USA" postalcode="4567" postgresql_does_not_like_primary="false"
+    <scim_address multi_value_id="100036" country="USA" locality="USA" postalcode="4567" is_primary="false"
                   region="Springfield" streetaddress="742 Evergreen" type="home" user_internal_id="100033" />
-    <scim_address id="100037" country="USA" locality="USA" postalcode="1245" postgresql_does_not_like_primary="false"
+    <scim_address multi_value_id="100037" country="USA" locality="USA" postalcode="1245" is_primary="false"
                   region="Springfield" streetaddress="Walnut Street - Moes" type="work" user_internal_id="100033" />
-    <scim_address id="100045" country="Germany" locality="Germany" postalcode="66111"
-                  postgresql_does_not_like_primary="false" region="Germany" streetaddress="example street 60"
+    <scim_address multi_value_id="100045" country="Germany" locality="Germany" postalcode="66111"
+                  is_primary="false" region="Germany" streetaddress="example street 60"
                   type="work" user_internal_id="100042"/>
 
     <scim_photo multi_value_id="100102" value="http://example.com/barbara.jpg" type="photo" user_internal_id="100046"/>
