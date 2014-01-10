@@ -1,18 +1,19 @@
 package org.osiam.test.integration
 
-import com.icegreen.greenmail.util.GreenMail
-import com.icegreen.greenmail.util.GreenMailUtil
-import com.icegreen.greenmail.util.ServerSetupTest
+import static groovyx.net.http.ContentType.URLENC
 import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
+
+import javax.mail.Message
+
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.resources.scim.User
 
-import javax.mail.Message
-
-import static groovyx.net.http.ContentType.URLENC
+import com.icegreen.greenmail.util.GreenMail
+import com.icegreen.greenmail.util.GreenMailUtil
+import com.icegreen.greenmail.util.ServerSetupTest
 
 /**
  * Integration test for lost password controller
@@ -63,10 +64,10 @@ class LostPasswordIT extends AbstractIT {
 
         //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
         mailServer.waitForIncomingEmail(5000, 1)
-        Message[] messages = mailServer.getReceivedMessages();
+        Message[] messages = mailServer.getReceivedMessages()
         messages.length == 1
         messages[0].getSubject() == "passwordLost"
-        GreenMailUtil.getBody(messages[0]).contains("To reset your password, please click the link below:");
+        GreenMailUtil.getBody(messages[0]).contains("To reset your password, please click the link below:")
         messages[0].getFrom()[0].toString() == "noreply@osiam.org"
         messages[0].getAllRecipients()[0].toString().equals("george.alexander@osiam.org")
     }
