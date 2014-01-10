@@ -6,6 +6,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +23,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import javax.sql.DataSource;
+
+import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -172,6 +175,21 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
         Extension storedExtension = storedUser.getExtension(URN);
 
         assertExtensionEqualsExtensionMap(storedExtension, extensionDataToPatch);
+    }
+
+    @Test
+    @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/extensions.xml")
+    public void updating_one_extension_field_doesnt_change_the_other_fields(){
+        Map<String, Extension.Field> extensionDataToPatch = new HashMap<>();
+        extensionDataToPatch.put("gender", new Extension.Field(ExtensionFieldType.STRING, "male"));
+        Extension extension = createExtensionWithData(URN, extensionDataToPatch);
+
+        User patchUser = new User.Builder().addExtension(extension).build();
+
+        User updatedUser = oConnector.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
+
+        Extension storedExtension = updatedUser.getExtension(URN);
+        assertEquals(BigInteger.valueOf(28), storedExtension.getField("age", ExtensionFieldType.INTEGER));
     }
 
     private Extension createExtensionWithData(String urn, Map<String, Extension.Field> extensionData) {
