@@ -1,18 +1,19 @@
 package org.osiam.test.integration
 
-import com.icegreen.greenmail.util.GreenMail
-import com.icegreen.greenmail.util.GreenMailUtil
-import com.icegreen.greenmail.util.ServerSetupTest
+import static groovyx.net.http.ContentType.URLENC
 import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
+
+import javax.mail.Message
+
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.resources.scim.User
 
-import javax.mail.Message
-
-import static groovyx.net.http.ContentType.URLENC
+import com.icegreen.greenmail.util.GreenMail
+import com.icegreen.greenmail.util.GreenMailUtil
+import com.icegreen.greenmail.util.ServerSetupTest
 
 /**
  * Integration test for the change email controller.
@@ -64,7 +65,7 @@ class ChangeEmailIT extends AbstractIT {
         responseContent.contains('url: \'http://test\'')
     }
 
-    def "The /email/change endpoint with HTTP method POST should generate confirmation token, saving the new email temporary and sending an email to the new address"() {
+    def "The /email/change endpoint should generate confirmation token, saving the new email temporary and sending an email to the new address"() {
         given:
         def accessToken = osiamConnectorForEmailChange.retrieveAccessToken()
         def userId = "7d33bcbe-a54c-43d8-867e-f6146164941e"
@@ -100,7 +101,7 @@ class ChangeEmailIT extends AbstractIT {
 
         //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
         mailServer.waitForIncomingEmail(5000, 1)
-        Message[] messages = mailServer.getReceivedMessages();
+        Message[] messages = mailServer.getReceivedMessages()
         messages.length == 1
         messages[0].getSubject() == "emailChange"
         GreenMailUtil.getBody(messages[0]).contains("To change your e-mail address, please click the link below:")
@@ -154,7 +155,7 @@ class ChangeEmailIT extends AbstractIT {
 
         //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
         mailServer.waitForIncomingEmail(5000, 1)
-        Message[] messages = mailServer.getReceivedMessages();
+        Message[] messages = mailServer.getReceivedMessages()
         messages.length == 1
         messages[0].getSubject() == "emailInfo"
         GreenMailUtil.getBody(messages[0]).contains("your e-mail address has been changed successfully.")
