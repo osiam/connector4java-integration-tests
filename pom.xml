@@ -22,9 +22,8 @@
   ~ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <!-- refer to sonatype parent pom for publishment to maven central -->
 
@@ -110,11 +109,11 @@
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
         </dependency>
-		<dependency>
-			<groupId>postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>9.1-901.jdbc4</version>
-		</dependency>
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.1-901.jdbc4</version>
+        </dependency>
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.0-api</artifactId>
@@ -285,11 +284,11 @@
                             <war>${project.build.directory}/osiam-registration-module-${osiam.version}</war>
                             <contextPath>/osiam-registration-module</contextPath>
                         </contextHandler>
+                        <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
+                            <war>${project.build.directory}/osiam-resource-server-${osiam.version}</war>
+                            <contextPath>/osiam-resource-server</contextPath>
+                        </contextHandler>
                     </contextHandlers>
-                    <war>${project.build.directory}/osiam-resource-server-${osiam.version}</war>
-                    <webAppConfig>
-                        <contextPath>/osiam-resource-server</contextPath>
-                    </webAppConfig>
                     <jettyXml>src/test/resources/jetty.xml</jettyXml>
                 </configuration>
                 <executions>
@@ -297,7 +296,7 @@
                         <id>start-jetty</id>
                         <phase>pre-integration-test</phase>
                         <goals>
-                            <goal>run-exploded</goal>
+                            <goal>start</goal>
                         </goals>
                         <configuration>
                             <scanIntervalSeconds>0</scanIntervalSeconds>
