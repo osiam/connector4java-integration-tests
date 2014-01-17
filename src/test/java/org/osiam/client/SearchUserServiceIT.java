@@ -4,12 +4,14 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.osiam.client.exception.ConflictException;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.SortOrder;
 import org.osiam.client.query.metamodel.User_;
@@ -240,6 +242,14 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         for (User user : queryResult.getResources()) {
             assertThat(expectedUserNames, hasItem(user.getUserName()));
         }
+    }
+    
+    @Test(expected = ConflictException.class)
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
+    public void search_for_user_by_Password_with_query_string_fails() {
+        String query = encodeExpected("password eq \"" + INVALID_STRING + "\"");
+        oConnector.searchUsers("filter=" + query, accessToken);
+        fail("Exception should be thrown");
     }
 
     private void create100NewUser() {
