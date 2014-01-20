@@ -24,7 +24,7 @@ class UserGroupMembershipIT extends AbstractIT {
     def "add user member to group"(){
         given:
         def user = new User.Builder("testUser").setPassword("test").build()
-        def group = new Group.Builder().setDisplayName("testGroup").build()
+        def group = new Group.Builder("testGroup").build()
         def createdUser = osiamConnector.createUser(user, osiamConnector.retrieveAccessToken())
         def createdGroup = osiamConnector.createGroup(group, osiamConnector.retrieveAccessToken())
 
@@ -47,8 +47,8 @@ class UserGroupMembershipIT extends AbstractIT {
 
     def "add group member to group"(){
         given:
-        def parentGroup = new Group.Builder().setDisplayName("parentGroup").build()
-        def memberGroup = new Group.Builder().setDisplayName("memberGroup").build()
+        def parentGroup = new Group.Builder("parentGroup").build()
+        def memberGroup = new Group.Builder("memberGroup").build()
         def createdParentGroup = osiamConnector.createGroup(parentGroup, osiamConnector.retrieveAccessToken())
         def createdMemberGroup = osiamConnector.createGroup(memberGroup, osiamConnector.retrieveAccessToken())
 
@@ -71,14 +71,14 @@ class UserGroupMembershipIT extends AbstractIT {
 
     def "remove member from group"() {
         given:
-        def memberGroup1 = osiamConnector.createGroup(new Group.Builder().setDisplayName("memberGroup1").build(), osiamConnector.retrieveAccessToken())
-        def memberGroup2 = osiamConnector.createGroup(new Group.Builder().setDisplayName("memberGroup2").build(), osiamConnector.retrieveAccessToken())
+        def memberGroup1 = osiamConnector.createGroup(new Group.Builder("memberGroup1").build(), osiamConnector.retrieveAccessToken())
+        def memberGroup2 = osiamConnector.createGroup(new Group.Builder("memberGroup2").build(), osiamConnector.retrieveAccessToken())
         def memberUser = osiamConnector.createUser(new User.Builder("userMember").setPassword("test").build(), osiamConnector.retrieveAccessToken())
 
         def member1 = new MultiValuedAttribute.Builder().setValue(memberGroup1.getId()).build()
         def member2 = new MultiValuedAttribute.Builder().setValue(memberGroup2.getId()).build()
         def member3 = new MultiValuedAttribute.Builder().setValue(memberUser.getId()).build()
-        def parentGroup = new Group.Builder().setDisplayName("parent").setMembers([member1, member2, member3] as Set).build()
+        def parentGroup = new Group.Builder("parent").setMembers([member1, member2, member3] as Set).build()
 
         def parent = osiamConnector.createGroup(parentGroup, osiamConnector.retrieveAccessToken())
 
@@ -99,12 +99,12 @@ class UserGroupMembershipIT extends AbstractIT {
 
     def "remove all members from group"() {
         given:
-        def memberGroup1 = osiamConnector.createGroup(new Group.Builder().setDisplayName("memberGroup10").build(), osiamConnector.retrieveAccessToken())
-        def memberGroup2 = osiamConnector.createGroup(new Group.Builder().setDisplayName("memberGroup20").build(), osiamConnector.retrieveAccessToken())
+        def memberGroup1 = osiamConnector.createGroup(new Group.Builder("memberGroup10").build(), osiamConnector.retrieveAccessToken())
+        def memberGroup2 = osiamConnector.createGroup(new Group.Builder("memberGroup20").build(), osiamConnector.retrieveAccessToken())
 
         def member1 = new MultiValuedAttribute.Builder().setValue(memberGroup1.getId()).build()
         def member2 = new MultiValuedAttribute.Builder().setValue(memberGroup2.getId()).build()
-        def parentGroup = new Group.Builder().setDisplayName("parent1").setMembers([member1, member2] as Set).build()
+        def parentGroup = new Group.Builder("parent1").setMembers([member1, member2] as Set).build()
 
         def parent = osiamConnector.createGroup(parentGroup, osiamConnector.retrieveAccessToken())
 
@@ -125,7 +125,7 @@ class UserGroupMembershipIT extends AbstractIT {
 
     def "ignoring required and read only attributes"(){
         given:
-        def group = new Group.Builder().setDisplayName("Group").build()
+        def group = new Group.Builder("Group").build()
 
         def createdGroup = osiamConnector.createGroup(group, osiamConnector.retrieveAccessToken())
 
