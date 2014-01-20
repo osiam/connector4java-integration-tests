@@ -72,7 +72,6 @@ class UserGroupMembershipIT extends AbstractIT {
 
     def 'remove member from group'() {
         given:
-		
 		AccessToken accessToken = osiamConnector.retrieveAccessToken()
         def memberGroup1 = osiamConnector.createGroup(new Group.Builder('memberGroup1').build(), accessToken)
         def memberGroup2 = osiamConnector.createGroup(new Group.Builder('memberGroup2').build(), accessToken)
@@ -113,7 +112,6 @@ class UserGroupMembershipIT extends AbstractIT {
         def parentGroup = new Group.Builder('parent1').setMembers([member1, member2] as Set).build()
 
         def parent = osiamConnector.createGroup(parentGroup, accessToken)
-
 
         def updateGroup = new Group.Builder()
                 .setMeta(new Meta.Builder(null, null).setAttributes(['members'] as Set).build())
