@@ -23,10 +23,8 @@
 
 package org.osiam.client;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.connector.OsiamConnector;
@@ -38,18 +36,21 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import static org.junit.Assert.assertNotNull;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 /**
  * Test for resource owner password credentials grant.
- *
+ * 
  * @author Jochen Todea
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class})
-@DatabaseSetup("/database_seed.xml")
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class })
+@DatabaseSetup("/database_seed_login_password_credentials.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class LoginResourceOwnerPasswordCredentialsIT {
 
@@ -59,21 +60,35 @@ public class LoginResourceOwnerPasswordCredentialsIT {
     protected String clientSecret = "secret";
 
     @Test
-    public void login_with_resource_owner_password_credentials_grant_should_provide_an_refresh_token(){
-        OsiamConnector osiamConnector = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
-                setClientId(clientId).
-                setClientSecret(clientSecret).
-                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
-                setUserName("marissa").
-                setPassword("koala").
-                setScope(Scope.ALL).
-                build();
+    public void login_with_resource_owner_password_credentials_grant_should_provide_an_refresh_token() {
+        OsiamConnector osiamConnector = createOsiamConnector("marissa", "koala");
 
         AccessToken at = osiamConnector.retrieveAccessToken();
 
         assertNotNull("The hole access token object was null.", at);
         assertNotNull("The refresh token was null.", at.getRefreshToken());
+    }
+
+    @Test
+    public void login_with_two_users_works() {
+        OsiamConnector osiamConnector = createOsiamConnector("marissa", "koala");
+        AccessToken at = osiamConnector.retrieveAccessToken();
+
+        OsiamConnector osiamConnector2 = createOsiamConnector("marissa02",
+                "koala");
+        AccessToken at2 = osiamConnector2.retrieveAccessToken();
+
+        assertNotNull(at);
+        assertNotNull(at2);
+    }
+
+    private OsiamConnector createOsiamConnector(String userName, String password) {
+        return new OsiamConnector.Builder()
+                .setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setClientId(clientId).setClientSecret(clientSecret)
+                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
+                .setUserName(userName).setPassword(password)
+                .setScope(Scope.ALL).build();
     }
 }
