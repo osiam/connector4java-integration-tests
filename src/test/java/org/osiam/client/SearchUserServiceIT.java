@@ -1,9 +1,20 @@
 package org.osiam.client;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
@@ -22,14 +33,10 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import java.io.UnsupportedEncodingException;
-import java.util.*;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.junit.Assert.*;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -223,6 +230,21 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
 
         queryResult = oConnector.searchUsers(queryBuilder.build(), accessToken);
 
+        assertThat(queryResult.getResources().size(), is(equalTo(expectedUserNames.size())));
+        for (User user : queryResult.getResources()) {
+            assertThat(expectedUserNames, hasItem(user.getUserName()));
+        }
+    }
+    
+    @Test
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed_groups.xml")
+    public void searching_for_users_belonging_to_multiple_groups_by_displayname() {
+        Query.Builder queryBuilder = new Query.Builder(User.class);
+        queryBuilder.setFilter("groups.display eq \"test_group01\" and groups.display eq \"test_group02\"");
+
+        queryResult = oConnector.searchUsers(queryBuilder.build(), accessToken);
+
+        Set<String> expectedUserNames = new HashSet<>(Arrays.asList("bjensen", "adavies"));
         assertThat(queryResult.getResources().size(), is(equalTo(expectedUserNames.size())));
         for (User user : queryResult.getResources()) {
             assertThat(expectedUserNames, hasItem(user.getUserName()));
