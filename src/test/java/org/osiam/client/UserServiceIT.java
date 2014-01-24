@@ -1,14 +1,21 @@
 package org.osiam.client;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.isEmptyString;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.resources.scim.Address;
-import org.osiam.resources.scim.MultiValuedAttribute;
+import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.Name;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
@@ -16,108 +23,104 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.isEmptyString;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+		DbUnitTestExecutionListener.class })
 @DatabaseSetup("/database_seed_users.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class UserServiceIT extends AbstractIntegrationTestBase {
 
-    private User deserializedUser;
+	private User deserializedUser;
 
-    @Test
-    public void all_emails_are_transmitted() {
+	@Test
+	public void all_emails_are_transmitted() {
 
-        whenAValidUserIsDeserialized();
-        List<MultiValuedAttribute> emails = deserializedUser.getEmails();
+		whenAValidUserIsDeserialized();
+		List<Email> emails = deserializedUser.getEmails();
 
-        assertThat(emails, hasSize(1));
-    }
+		assertThat(emails, hasSize(1));
+	}
 
-    @Test
-    public void emails_are_deserialized_correctly() throws Exception {
+	@Test
+	public void emails_are_deserialized_correctly() throws Exception {
 
-        whenAValidUserIsDeserialized();
+		whenAValidUserIsDeserialized();
 
-        MultiValuedAttribute email = deserializedUser.getEmails().get(0);
+		Email email = deserializedUser.getEmails().get(0);
 
-        assertThat(email.getValue(), is(equalTo("bjensen@example.com")));
-        assertThat(email.getType(), is(equalTo("work")));
-    }
+		assertThat(email.getValue(), is(equalTo("bjensen@example.com")));
+		assertThat(email.getType(), is(equalTo(Email.Type.WORK)));
+	}
 
-    @Test
-    public void name_is_deserialized_correctly() throws Exception {
+	@Test
+	public void name_is_deserialized_correctly() throws Exception {
 
-        whenAValidUserIsDeserialized();
+		whenAValidUserIsDeserialized();
 
-        Name name = deserializedUser.getName();
+		Name name = deserializedUser.getName();
 
-        assertThat(name.getFamilyName(), is(equalTo("Jensen")));
-        assertThat(name.getFormatted(), is(equalTo("Ms. Barbara J Jensen III")));
-        assertThat(name.getGivenName(), is(equalTo("Barbara")));
-        assertThat(name.getHonorificPrefix(), is(nullValue()));
-        assertThat(name.getHonorificSuffix(), is(nullValue()));
-        assertThat(name.getMiddleName(), is(nullValue()));
-    }
+		assertThat(name.getFamilyName(), is(equalTo("Jensen")));
+		assertThat(name.getFormatted(), is(equalTo("Ms. Barbara J Jensen III")));
+		assertThat(name.getGivenName(), is(equalTo("Barbara")));
+		assertThat(name.getHonorificPrefix(), is(nullValue()));
+		assertThat(name.getHonorificSuffix(), is(nullValue()));
+		assertThat(name.getMiddleName(), is(nullValue()));
+	}
 
-    @Test
-    public void all_addresses_are_transmitted() {
+	@Test
+	public void all_addresses_are_transmitted() {
 
-        whenAValidUserIsDeserialized();
-        List<Address> addresses = deserializedUser.getAddresses();
+		whenAValidUserIsDeserialized();
+		List<Address> addresses = deserializedUser.getAddresses();
 
-        assertThat(addresses, hasSize(2));
-    }
+		assertThat(addresses, hasSize(2));
+	}
 
-    @Test
-    public void address_is_deserialized_correctly() {
+	@Test
+	public void address_is_deserialized_correctly() {
 
-        whenAValidUserIsDeserialized();
+		whenAValidUserIsDeserialized();
 
-        Address address = deserializedUser.getAddresses().get(0);
-        assertThat(address.getCountry(), is(equalTo("Germany")));
-        assertThat(address.getLocality(), is(equalTo("Berlin")));
-        assertThat(address.getRegion(), is(equalTo("Berlin")));
-        assertThat(address.getPostalCode(), is(equalTo("10777")));
-        assertThat(address.getStreetAddress(), is(startsWith("Hauptstr. ")));
-    }
+		Address address = deserializedUser.getAddresses().get(0);
+		assertThat(address.getCountry(), is(equalTo("Germany")));
+		assertThat(address.getLocality(), is(equalTo("Berlin")));
+		assertThat(address.getRegion(), is(equalTo("Berlin")));
+		assertThat(address.getPostalCode(), is(equalTo("10777")));
+		assertThat(address.getStreetAddress(), is(startsWith("Hauptstr. ")));
+	}
 
-    @Test
-    public void password_is_not_transmitted() throws Exception {
-        whenAValidUserIsDeserialized();
+	@Test
+	public void password_is_not_transmitted() throws Exception {
+		whenAValidUserIsDeserialized();
 
-        assertThat(deserializedUser.getPassword(), isEmptyString());
-    }
+		assertThat(deserializedUser.getPassword(), isEmptyString());
+	}
 
-    @Test(expected = UnauthorizedException.class)
-    public void provide_an_invalid_access_token_raises_exception() throws Exception {
-        givenAnInvalidAccessToken();
+	@Test(expected = UnauthorizedException.class)
+	public void provide_an_invalid_access_token_raises_exception()
+			throws Exception {
+		givenAnInvalidAccessToken();
 
-        whenAValidUserIsDeserialized();
-        fail("Exception expected");
-    }
+		whenAValidUserIsDeserialized();
+		fail("Exception expected");
+	}
 
-    @Test(expected = UnauthorizedException.class)
-    public void access_token_is_expired() throws Exception {
-        givenAnAccessTokenForOneSecond();
-        Thread.sleep(1000);
-        whenAValidUserIsDeserialized();
-        fail("Exception expected");
-    }
+	@Test(expected = UnauthorizedException.class)
+	public void access_token_is_expired() throws Exception {
+		givenAnAccessTokenForOneSecond();
+		Thread.sleep(1000);
+		whenAValidUserIsDeserialized();
+		fail("Exception expected");
+	}
 
-    private void whenAValidUserIsDeserialized() {
-        deserializedUser = oConnector.getUser(VALID_USER_ID, accessToken);
-    }
+	private void whenAValidUserIsDeserialized() {
+		deserializedUser = oConnector.getUser(VALID_USER_ID, accessToken);
+	}
 
 }

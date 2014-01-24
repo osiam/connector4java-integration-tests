@@ -1,22 +1,26 @@
 package org.osiam.test.integration
 
+import groovyx.net.http.ContentType
+import groovyx.net.http.HTTPBuilder
+import groovyx.net.http.Method
+
+import javax.mail.Message
+
+import org.osiam.resources.helper.UserDeserializer
+import org.osiam.resources.scim.Email
+import org.osiam.resources.scim.Extension
+import org.osiam.resources.scim.ExtensionFieldType
+import org.osiam.resources.scim.MultiValuedAttribute
+import org.osiam.resources.scim.User
+
+import spock.lang.Shared
+
 import com.fasterxml.jackson.core.Version
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.icegreen.greenmail.util.GreenMail
 import com.icegreen.greenmail.util.GreenMailUtil
 import com.icegreen.greenmail.util.ServerSetupTest
-import groovyx.net.http.ContentType
-import groovyx.net.http.HTTPBuilder
-import groovyx.net.http.Method
-import org.osiam.resources.helper.UserDeserializer
-import org.osiam.resources.scim.Extension
-import org.osiam.resources.scim.ExtensionFieldType
-import org.osiam.resources.scim.MultiValuedAttribute
-import org.osiam.resources.scim.User
-import spock.lang.Shared
-
-import javax.mail.Message
 
 /**
  * This test covers the controller for registration purpose.
@@ -124,7 +128,7 @@ class RegistrationIT extends AbstractIT{
     }
 
     def getUserAsStringWithExtension() {
-        def email = new MultiValuedAttribute(primary: true, value: "email@example.org")
+        def email = new Email.Builder().setPrimary(true).setValue("email@example.org").build()
 
         def user = new User.Builder("George Alexander")
                 .setPassword("password")
@@ -188,7 +192,7 @@ class RegistrationIT extends AbstractIT{
         given:
         def accessToken = osiamConnector.retrieveAccessToken()
 
-        def email = new MultiValuedAttribute(primary: true, value: "email@example.org")
+        def email = new Email.Builder().setPrimary(true).setValue("email@example.org").build()
         def extension = new Extension('urn:scim:schemas:osiam:1.0:Test')
         extension.addOrUpdateField("field1", "value1")
         extension.addOrUpdateField("field2", "value2")

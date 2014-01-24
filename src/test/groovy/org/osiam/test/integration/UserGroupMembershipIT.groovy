@@ -2,6 +2,7 @@ package org.osiam.test.integration
 
 import org.osiam.client.update.UpdateGroup
 import org.osiam.client.update.UpdateUser
+import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.Group
 import org.osiam.resources.scim.Meta
 import org.osiam.resources.scim.MultiValuedAttribute
@@ -75,16 +76,16 @@ class UserGroupMembershipIT extends AbstractIT {
         def memberGroup2 = osiamConnector.createGroup(new Group.Builder("memberGroup2").build(), osiamConnector.retrieveAccessToken())
         def memberUser = osiamConnector.createUser(new User.Builder("userMember").setPassword("test").build(), osiamConnector.retrieveAccessToken())
 
-        def member1 = new MultiValuedAttribute.Builder().setValue(memberGroup1.getId()).build()
-        def member2 = new MultiValuedAttribute.Builder().setValue(memberGroup2.getId()).build()
-        def member3 = new MultiValuedAttribute.Builder().setValue(memberUser.getId()).build()
+        def member1 = new Email.Builder().setValue(memberGroup1.getId()).build()
+        def member2 = new Email.Builder().setValue(memberGroup2.getId()).build()
+        def member3 = new Email.Builder().setValue(memberUser.getId()).build()
         def parentGroup = new Group.Builder("parent").setMembers([member1, member2, member3] as Set).build()
 
         def parent = osiamConnector.createGroup(parentGroup, osiamConnector.retrieveAccessToken())
 
 
         def updateGroup = new Group.Builder()
-                .setMembers([new MultiValuedAttribute.Builder().setValue(memberGroup1.getId()).setOperation("delete").build()] as Set)
+                .setMembers([new Email.Builder().setValue(memberGroup1.getId()).setOperation("delete").build()] as Set)
                 .build()
 
         when:
@@ -102,8 +103,8 @@ class UserGroupMembershipIT extends AbstractIT {
         def memberGroup1 = osiamConnector.createGroup(new Group.Builder("memberGroup10").build(), osiamConnector.retrieveAccessToken())
         def memberGroup2 = osiamConnector.createGroup(new Group.Builder("memberGroup20").build(), osiamConnector.retrieveAccessToken())
 
-        def member1 = new MultiValuedAttribute.Builder().setValue(memberGroup1.getId()).build()
-        def member2 = new MultiValuedAttribute.Builder().setValue(memberGroup2.getId()).build()
+        def member1 = new Email.Builder().setValue(memberGroup1.getId()).build()
+        def member2 = new Email.Builder().setValue(memberGroup2.getId()).build()
         def parentGroup = new Group.Builder("parent1").setMembers([member1, member2] as Set).build()
 
         def parent = osiamConnector.createGroup(parentGroup, osiamConnector.retrieveAccessToken())

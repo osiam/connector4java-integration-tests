@@ -3,9 +3,11 @@ package org.osiam.test.integration
 import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
+
 import org.osiam.client.oauth.AccessToken
-import org.osiam.resources.scim.MultiValuedAttribute
+import org.osiam.resources.scim.Email
 import org.osiam.resources.scim.User
+
 import spock.lang.Unroll
 
 /**
@@ -178,8 +180,8 @@ class ControllerIT extends AbstractIT {
 
         given: "a valid access token and two users with the same E-Mail address"
         AccessToken validAccessToken = osiamConnector.retrieveAccessToken()
-        def emailUserOne = new MultiValuedAttribute.Builder().setType("work").setValue("sameMail@osiam.de").build()
-        def emailUserTwo = new MultiValuedAttribute.Builder().setType("home").setValue("sameMail@osiam.de").build()
+        def emailUserOne = new Email.Builder().setType(Email.Type.WORK).setValue("sameMail@osiam.de").build()
+        def emailUserTwo = new Email.Builder().setType(Email.Type.HOME).setValue("sameMail@osiam.de").build()
         def user1 = new User.Builder("UserOne").setEmails([emailUserOne] as List).setExternalId("pew1").build()
         def user2 = new User.Builder("UserTwo").setEmails([emailUserTwo] as List).setExternalId("pew2").build()
 
