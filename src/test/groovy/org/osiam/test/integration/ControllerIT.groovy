@@ -176,59 +176,26 @@ class ControllerIT extends AbstractIT {
         }
     }
 
-    def "REGT-OSNG-141: E-Mail address should not be unique. So two different users should be able to add the same address and getting displayed only the own entry."() {
+    def 'REGT-OSNG-141: E-Mail address should not be unique. So two different users should be able to add the same address and getting displayed only the own entry.'() {
 
-        given: "a valid access token and two users with the same E-Mail address"
+        given: 'a valid access token and two users with the same E-Mail address'
         AccessToken validAccessToken = osiamConnector.retrieveAccessToken()
-        def emailUserOne = new Email.Builder().setType(Email.Type.WORK).setValue("sameMail@osiam.de").build()
-        def emailUserTwo = new Email.Builder().setType(Email.Type.HOME).setValue("sameMail@osiam.de").build()
-        def user1 = new User.Builder("UserOne").setEmails([emailUserOne] as List).setExternalId("pew1").build()
-        def user2 = new User.Builder("UserTwo").setEmails([emailUserTwo] as List).setExternalId("pew2").build()
+        def emailUserOne = new Email.Builder().setType(Email.Type.WORK).setValue('sameMail@osiam.de').build()
+        def emailUserTwo = new Email.Builder().setType(Email.Type.HOME).setValue('sameMail@osiam.de').build()
+        def user1 = new User.Builder('UserOne').setEmails([emailUserOne] as List).setExternalId('pew1').build()
+        def user2 = new User.Builder('UserTwo').setEmails([emailUserTwo] as List).setExternalId('pew2').build()
 
-        when: "a add user request is sent"
-        def http = new HTTPBuilder(RESOURCE_ENDPOINT)
+        when: 'a add user request is sent'
+		User retUser1 = osiamConnector.createUser(user1, validAccessToken);
+		User retUser2 = osiamConnector.createUser(user2, validAccessToken);
 
-        def responseStatusCodeUser1
-        def responseStatusCodeUser2
-
-        def responseContentUser1
-        def responseContentUser2
-
-        //Adding user one
-        http.request(Method.POST, ContentType.JSON) { req ->
-            uri.path = RESOURCE_ENDPOINT + "/Users"
-            body = user1
-
-            headers."Authorization" = "Bearer " + validAccessToken.getToken()
-
-            response.success = { resp, json ->
-                responseStatusCodeUser1 = resp.statusLine.statusCode
-                responseContentUser1 = json
-            }
-        }
-        //Adding user two
-        http.request(Method.POST, ContentType.JSON) { req ->
-            uri.path = RESOURCE_ENDPOINT + "/Users"
-            body = user2
-
-            headers."Authorization" = "Bearer " + validAccessToken.getToken()
-
-            response.success = { resp, json ->
-                responseStatusCodeUser2 = resp.statusLine.statusCode
-                responseContentUser2 = json
-            }
-        }
-
-        then: "the response elements should contain the expected email for each user"
-        assert responseStatusCodeUser1 == 201
-        assert responseStatusCodeUser2 == 201
-
-        assert responseContentUser1.emails != responseContentUser2.emails
-        assert responseContentUser1.emails[0].value == responseContentUser2.emails[0].value
-        assert responseContentUser1.emails[0].type != responseContentUser2.emails[0].type
-        assert responseContentUser1.emails[0].primary == responseContentUser2.emails[0].primary
+        then: 'the response elements should contain the expected email for each user'
+        assert retUser1.emails != retUser2.emails
+        assert retUser1.emails[0].value == retUser2.emails[0].value
+        assert retUser1.emails[0].type != retUser2.emails[0].type
+        assert retUser1.emails[0].primary == retUser2.emails[0].primary
     }
-
+	
     def "REGT-OSNG-37: The token validation should not raise an exception in case of the OAuth2 client credentials grant because of missing user authentication"() {
 
         given: "a valid access token"
