@@ -76,7 +76,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         assertFalse(isValuePartOfX509CertificateList(returnUser.getX509Certificates(), "certificate01"));
     }
 
-	@Test
+    @Test
     @Ignore("write a private equals method to compare both users for value-equality")
     public void compare_returned_user_with_database_user() {
         getOriginalUser("dma");
@@ -236,7 +236,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         assertThat(retrieveNewAccessToken(), is(notNullValue()));
     }
 
-    @Test (expected = ConflictException.class)
+    @Test(expected = ConflictException.class)
     public void updating_the_username_to_existing_username_raises_exception() {
         createUpdateUserWithNewUserName("marissa");
 
@@ -244,7 +244,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void adding_new_primary_email_address_sets_the_other_to_non_primary(){
+    public void adding_new_primary_email_address_sets_the_other_to_non_primary() {
         getOriginalUser(IRRELEVANT);
         createUpdateUserWithNewPrimaryEmailAddress();
 
@@ -253,16 +253,26 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         assertThatOnlyNewEmailAddressIsPrimary();
     }
 
-    private void assertThatOnlyNewEmailAddressIsPrimary(){
-        for(Email email : returnUser.getEmails()){
-            if(email.getValue().equals("hsimpson02@atom-example.com")){
+    @Test
+    @DatabaseSetup(value = "/database_seed_complete_user.xml")
+    public void modify_complete_user_works() {
+        oConnector.updateUser("", updateUser, accessToken);
+    }
+
+    private void createUpdateUserWIthAllAttributes() {
+
+    }
+
+    private void assertThatOnlyNewEmailAddressIsPrimary() {
+        for (Email email : returnUser.getEmails()) {
+            if (email.getValue().equals("hsimpson02@atom-example.com")) {
                 assertThat(email.isPrimary(), is(true));
-            }else{
+            } else {
                 assertThat(email.isPrimary(), is(false));
             }
         }
     }
-    
+
     private boolean isValuePartOfEmailList(List<Email> list, String value) {
         if (list != null) {
             for (Email actAttribute : list) {
@@ -273,7 +283,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         }
         return false;
     }
-    
+
     private boolean isValuePartOfPhoneNumberList(List<PhoneNumber> list, String value) {
         if (list != null) {
             for (PhoneNumber actAttribute : list) {
@@ -295,10 +305,10 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         }
         return false;
     }
-    
+
     private boolean isValuePartOfX509CertificateList(
-			List<X509Certificate> list, String value) {
-    	if (list != null) {
+            List<X509Certificate> list, String value) {
+        if (list != null) {
             for (X509Certificate actAttribute : list) {
                 if (actAttribute.getValue().equals(value)) {
                     return true;
@@ -306,11 +316,11 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
             }
         }
         return false;
-	}
+    }
 
-	private boolean isValuePartOfEntitlementList(List<Entitlement> list,
-			String value) {
-		if (list != null) {
+    private boolean isValuePartOfEntitlementList(List<Entitlement> list,
+            String value) {
+        if (list != null) {
             for (Entitlement actAttribute : list) {
                 if (actAttribute.getValue().equals(value)) {
                     return true;
@@ -318,10 +328,10 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
             }
         }
         return false;
-	}
+    }
 
-	private boolean isValuePartOfRoleList(List<Role> list, String value) {
-		if (list != null) {
+    private boolean isValuePartOfRoleList(List<Role> list, String value) {
+        if (list != null) {
             for (Role actRole : list) {
                 if (actRole.getValue().equals(value)) {
                     return true;
@@ -329,10 +339,10 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
             }
         }
         return false;
-	}
+    }
 
-	private boolean isValuePartOfPhotoList(List<Photo> list, String value) {
-		if (list != null) {
+    private boolean isValuePartOfPhotoList(List<Photo> list, String value) {
+        if (list != null) {
             for (Photo actPhoto : list) {
                 if (actPhoto.getValue().equals(value)) {
                     return true;
@@ -340,10 +350,10 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
             }
         }
         return false;
-	}
+    }
 
-	private boolean isValuePartOfImList(List<Im> list, String value) {
-		if (list != null) {
+    private boolean isValuePartOfImList(List<Im> list, String value) {
+        if (list != null) {
             for (Im actIm : list) {
                 if (actIm.getValue().equals(value)) {
                     return true;
@@ -351,7 +361,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
             }
         }
         return false;
-	}
+    }
 
     private void getOriginalUser(String userName) {
         User.Builder userBuilder = new User.Builder(userName);

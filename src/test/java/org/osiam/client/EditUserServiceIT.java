@@ -21,9 +21,15 @@ import org.osiam.client.query.Query;
 import org.osiam.client.query.metamodel.User_;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Email;
+import org.osiam.resources.scim.Entitlement;
+import org.osiam.resources.scim.Im;
 import org.osiam.resources.scim.Name;
+import org.osiam.resources.scim.PhoneNumber;
+import org.osiam.resources.scim.Photo;
+import org.osiam.resources.scim.Role;
 import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.User;
+import org.osiam.resources.scim.X509Certificate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -151,11 +157,19 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     @Test(expected = UnauthorizedException.class)
-    public void provide_an_invalid_access_token_raises_exception() throws Exception {
+    public void provide_an_invalid_access_token_raises_exception()
+            throws Exception {
         givenAValidUserIDForDeletion();
         givenAnInvalidAccessToken();
         whenUserIsDeleted();
         fail();
+    }
+
+    @Test
+    public void create_complete_user_works() {
+        initializeUserWIthAllAttributes();
+        createUser();
+        assertTrue(newUser.equals(returnedUser));
     }
 
     private void initializeUserWithNoUserName() {
@@ -168,6 +182,58 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
 
     private void initializeSimpleUserWithID(String id) {
         newUser = new User.Builder(IRRELEVANT).setId(id).build();
+    }
+
+    private void initializeUserWIthAllAttributes() {
+        List<Address> addresses = new ArrayList<Address>();
+        Address address = new Address.Builder().setCountry("Germany")
+                .setFormatted("formatted").setLocality("Berlin")
+                .setPostalCode("12345").setPrimary(true).setRegion("Berlin")
+                .setStreetAddress("Voltastr. 5").setType(Address.Type.WORK)
+                .build();
+        addresses.add(address);
+        List<Email> emails = new ArrayList<Email>();
+        Email email = new Email.Builder().setPrimary(true)
+                .setValue("test@tarent.de").setType(Email.Type.WORK).build();
+        emails.add(email);
+        List<Entitlement> entitlements = new ArrayList<Entitlement>();
+        Entitlement entitlement = new Entitlement.Builder().setPrimary(true)
+                .setType(new Entitlement.Type("irrelevant"))
+                .setValue("entitlement").build();
+        entitlements.add(entitlement);
+        List<Im> ims = new ArrayList<Im>();
+        Im im = new Im.Builder().setPrimary(true).setType(Im.Type.AIM)
+                .setValue("aim").build();
+        ims.add(im);
+        Name name = new Name.Builder().setFamilyName("test")
+                .setFormatted("formatted").setGivenName("test")
+                .setHonorificPrefix("Dr.").setHonorificSuffix("Mr.")
+                .setMiddleName("test").build();
+        List<PhoneNumber> phoneNumbers = new ArrayList<PhoneNumber>();
+        PhoneNumber phoneNumber = new PhoneNumber.Builder().setPrimary(true)
+                .setType(PhoneNumber.Type.WORK).setValue("03012345678").build();
+        phoneNumbers.add(phoneNumber);
+        List<Photo> photos = new ArrayList<Photo>();
+        Photo photo = new Photo.Builder().setPrimary(true)
+                .setType(Photo.Type.PHOTO).setValue("username.jpg").build();
+        photos.add(photo);
+        List<Role> roles = new ArrayList<Role>();
+        Role role = new Role.Builder().setPrimary(true).setValue("user_role")
+                .build();
+        roles.add(role);
+        List<X509Certificate> x509Certificates = new ArrayList<X509Certificate>();
+        X509Certificate x509Certificat = new X509Certificate.Builder()
+                .setPrimary(true).setValue("x509Certificat").build();
+        x509Certificates.add(x509Certificat);
+        newUser = new User.Builder("username").setActive(true)
+                .setAddresses(addresses).setDisplayName("displayName")
+                .setEmails(emails).setEntitlements(entitlements)
+                .setExternalId("externalId").setIms(ims).setLocale("de_DE")
+                .setName(name).setNickName("nickname").setPassword("password")
+                .setPhoneNumbers(phoneNumbers).setPhotos(photos)
+                .setPreferredLanguage("german").setProfileUrl("/user/username")
+                .setRoles(roles).setTimezone("DE").setTitle("title")
+                .setX509Certificates(x509Certificates).build();
     }
 
     private void initializeUserWithExistingUserName() {
@@ -183,7 +249,8 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     private void loadSingleUserByQuery() {
-        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = oConnector.searchUsers(query,
+                accessToken);
         if (result.getResources().size() == 0) {
             dbUser = null;
         } else if (result.getResources().size() == 1) {
@@ -198,19 +265,17 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     private void initialQueryToSearchUser() {
-        query = new Query.Builder(User.class).setFilter(
-                new Query.Filter(User.class, User_.userName.equalTo(IRRELEVANT))).build();
+        query = new Query.Builder(User.class)
+                .setFilter(
+                        new Query.Filter(User.class, User_.userName
+                                .equalTo(IRRELEVANT))).build();
     }
 
     private void buildCompleteUser() {
         Address address = new Address.Builder()
-                .setStreetAddress("Example Street 22")
-                .setCountry("Germany")
-                .setFormatted("Complete Adress")
-                .setLocality("de")
-                .setPostalCode("111111")
-                .setRegion("Berlin")
-                .build();
+                .setStreetAddress("Example Street 22").setCountry("Germany")
+                .setFormatted("Complete Adress").setLocality("de")
+                .setPostalCode("111111").setRegion("Berlin").build();
         List<Address> addresses = new ArrayList<>();
         addresses.add(address);
         Email email01 = new Email.Builder().setValue("example@example.de")
@@ -222,22 +287,14 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
         emails.add(email02);
 
         Name name = new Name.Builder().setFamilyName("familyName")
-                .setGivenName("vorName")
-                .setMiddleName("middle")
-                .setFormatted("complete Name")
-                .setHonorificPrefix("HPre")
+                .setGivenName("vorName").setMiddleName("middle")
+                .setFormatted("complete Name").setHonorificPrefix("HPre")
                 .setHonorificSuffix("HSu").build();
 
-        newUser = new User.Builder(IRRELEVANT)
-                .setPassword("password")
-                .setActive(true)
-                .setAddresses(addresses)
-                .setLocale("de")
-                .setName(name)
-                .setNickName("aNicknane")
-                .setTitle("Dr.")
-                .setEmails(emails)
-                .build();
+        newUser = new User.Builder(IRRELEVANT).setPassword("password")
+                .setActive(true).setAddresses(addresses).setLocale("de")
+                .setName(name).setNickName("aNicknane").setTitle("Dr.")
+                .setEmails(emails).build();
     }
 
     private void assertEqualsUser(User expected, User actual) {
@@ -252,23 +309,30 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
 
     }
 
-    private void assertEqualsEmailAttribute(List<Email> expectedMultiValuedAttributes,
+    private void assertEqualsEmailAttribute(
+            List<Email> expectedMultiValuedAttributes,
             List<Email> actualMultiValuedAttributes) {
-        if ((expectedMultiValuedAttributes == null || expectedMultiValuedAttributes.size() == 0)
-                && (actualMultiValuedAttributes == null || actualMultiValuedAttributes.size() == 0)) {
+        if ((expectedMultiValuedAttributes == null || expectedMultiValuedAttributes
+                .size() == 0)
+                && (actualMultiValuedAttributes == null || actualMultiValuedAttributes
+                        .size() == 0)) {
             return;
         }
-        assertEquals(expectedMultiValuedAttributes.size(), actualMultiValuedAttributes.size());
+        assertEquals(expectedMultiValuedAttributes.size(),
+                actualMultiValuedAttributes.size());
         for (int count = 0; count < expectedMultiValuedAttributes.size(); count++) {
-        	Email expectedEmail = expectedMultiValuedAttributes.get(count);
-        	Email actualEmail = getMultiAttributeWithValue(actualMultiValuedAttributes,
-        			expectedEmail.getValue().toString());
+            Email expectedEmail = expectedMultiValuedAttributes.get(count);
+            Email actualEmail = getMultiAttributeWithValue(
+                    actualMultiValuedAttributes, expectedEmail.getValue()
+                            .toString());
             if (actualEmail == null) {
-                fail("MultiValueAttribute " + expectedEmail.getValue() + " could not be found");
+                fail("MultiValueAttribute " + expectedEmail.getValue()
+                        + " could not be found");
             }
 
             assertEquals(expectedEmail.getDisplay(), actualEmail.getDisplay());
-            assertEquals(expectedEmail.getOperation(), actualEmail.getOperation());
+            assertEquals(expectedEmail.getOperation(),
+                    actualEmail.getOperation());
             assertEquals(expectedEmail.getType(), actualEmail.getType());
             assertEquals(expectedEmail.getValue(), actualEmail.getValue());
         }
@@ -276,7 +340,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
 
     private Email getMultiAttributeWithValue(List<Email> multiValuedAttributes,
             String expectedValue) {
-    	Email mutliVal = null;
+        Email mutliVal = null;
         for (Email actAttribute : multiValuedAttributes) {
             if (actAttribute.getValue().toString().equals(expectedValue)) {
                 mutliVal = actAttribute;
@@ -290,23 +354,31 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
         assertEquals(expectedName.getFamilyName(), actualName.getFamilyName());
         assertEquals(expectedName.getFormatted(), actualName.getFormatted());
         assertEquals(expectedName.getGivenName(), actualName.getGivenName());
-        assertEquals(expectedName.getHonorificPrefix(), actualName.getHonorificPrefix());
-        assertEquals(expectedName.getHonorificSuffix(), actualName.getHonorificSuffix());
+        assertEquals(expectedName.getHonorificPrefix(),
+                actualName.getHonorificPrefix());
+        assertEquals(expectedName.getHonorificSuffix(),
+                actualName.getHonorificSuffix());
         assertEquals(expectedName.getMiddleName(), actualName.getMiddleName());
     }
 
-    private void assertEqualsAddresses(List<Address> expectedAddresses, List<Address> actualAddresses) {
+    private void assertEqualsAddresses(List<Address> expectedAddresses,
+            List<Address> actualAddresses) {
         assertEquals(expectedAddresses.size(), actualAddresses.size());
         for (int count = 0; count < expectedAddresses.size(); count++) {
             Address expectedAddress = expectedAddresses.get(count);
             Address actualAddress = actualAddresses.get(count);
 
-            assertEquals(expectedAddress.getCountry(), actualAddress.getCountry());
-            assertEquals(expectedAddress.getFormatted(), actualAddress.getFormatted());
-            assertEquals(expectedAddress.getLocality(), actualAddress.getLocality());
-            assertEquals(expectedAddress.getPostalCode(), actualAddress.getPostalCode());
+            assertEquals(expectedAddress.getCountry(),
+                    actualAddress.getCountry());
+            assertEquals(expectedAddress.getFormatted(),
+                    actualAddress.getFormatted());
+            assertEquals(expectedAddress.getLocality(),
+                    actualAddress.getLocality());
+            assertEquals(expectedAddress.getPostalCode(),
+                    actualAddress.getPostalCode());
             assertEquals(expectedAddress.getRegion(), actualAddress.getRegion());
-            assertEquals(expectedAddress.getStreetAddress(), actualAddress.getStreetAddress());
+            assertEquals(expectedAddress.getStreetAddress(),
+                    actualAddress.getStreetAddress());
         }
     }
 
