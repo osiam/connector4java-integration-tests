@@ -165,6 +165,13 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
         fail();
     }
 
+    @Test
+    public void create_complete_user_works() {
+        initializeUserWIthAllAttributes();
+        createUser();
+        assertTrue(newUser.equals(returnedUser));
+    }
+
     private void initializeUserWithNoUserName() {
         newUser = new User.Builder().build();
     }
@@ -175,6 +182,58 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
 
     private void initializeSimpleUserWithID(String id) {
         newUser = new User.Builder(IRRELEVANT).setId(id).build();
+    }
+
+    private void initializeUserWIthAllAttributes() {
+        List<Address> addresses = new ArrayList<Address>();
+        Address address = new Address.Builder().setCountry("Germany")
+                .setFormatted("formatted").setLocality("Berlin")
+                .setPostalCode("12345").setPrimary(true).setRegion("Berlin")
+                .setStreetAddress("Voltastr. 5").setType(Address.Type.WORK)
+                .build();
+        addresses.add(address);
+        List<Email> emails = new ArrayList<Email>();
+        Email email = new Email.Builder().setPrimary(true)
+                .setValue("test@tarent.de").setType(Email.Type.WORK).build();
+        emails.add(email);
+        List<Entitlement> entitlements = new ArrayList<Entitlement>();
+        Entitlement entitlement = new Entitlement.Builder().setPrimary(true)
+                .setType(new Entitlement.Type("irrelevant"))
+                .setValue("entitlement").build();
+        entitlements.add(entitlement);
+        List<Im> ims = new ArrayList<Im>();
+        Im im = new Im.Builder().setPrimary(true).setType(Im.Type.AIM)
+                .setValue("aim").build();
+        ims.add(im);
+        Name name = new Name.Builder().setFamilyName("test")
+                .setFormatted("formatted").setGivenName("test")
+                .setHonorificPrefix("Dr.").setHonorificSuffix("Mr.")
+                .setMiddleName("test").build();
+        List<PhoneNumber> phoneNumbers = new ArrayList<PhoneNumber>();
+        PhoneNumber phoneNumber = new PhoneNumber.Builder().setPrimary(true)
+                .setType(PhoneNumber.Type.WORK).setValue("03012345678").build();
+        phoneNumbers.add(phoneNumber);
+        List<Photo> photos = new ArrayList<Photo>();
+        Photo photo = new Photo.Builder().setPrimary(true)
+                .setType(Photo.Type.PHOTO).setValue("username.jpg").build();
+        photos.add(photo);
+        List<Role> roles = new ArrayList<Role>();
+        Role role = new Role.Builder().setPrimary(true).setValue("user_role")
+                .build();
+        roles.add(role);
+        List<X509Certificate> x509Certificates = new ArrayList<X509Certificate>();
+        X509Certificate x509Certificat = new X509Certificate.Builder()
+                .setPrimary(true).setValue("x509Certificat").build();
+        x509Certificates.add(x509Certificat);
+        newUser = new User.Builder("username").setActive(true)
+                .setAddresses(addresses).setDisplayName("displayName")
+                .setEmails(emails).setEntitlements(entitlements)
+                .setExternalId("externalId").setIms(ims).setLocale("de_DE")
+                .setName(name).setNickName("nickname").setPassword("password")
+                .setPhoneNumbers(phoneNumbers).setPhotos(photos)
+                .setPreferredLanguage("german").setProfileUrl("/user/username")
+                .setRoles(roles).setTimezone("DE").setTitle("title")
+                .setX509Certificates(x509Certificates).build();
     }
 
     private void initializeUserWithExistingUserName() {
