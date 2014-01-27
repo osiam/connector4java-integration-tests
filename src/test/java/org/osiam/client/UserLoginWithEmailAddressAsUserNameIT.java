@@ -1,5 +1,6 @@
 package org.osiam.client;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.connector.OsiamConnector;
@@ -18,17 +19,17 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class })
 @DatabaseSetup(value = "/database_seed_login_with_email_address_as_username.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class UserLoginWithEmailAddressAsUserNameIT extends AbstractIntegrationTestBase {
 
+    
     @Test
     public void log_in_with_an_email_address_as_user_name_is_possible() {
         AccessToken at = getAccessToken("chunkylover53@aol.com", "koala");
@@ -37,14 +38,15 @@ public class UserLoginWithEmailAddressAsUserNameIT extends AbstractIntegrationTe
 
     private AccessToken getAccessToken(String userName, String password) {
         return new OsiamConnector.Builder()
-                .setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS)
-                .setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS)
-                .setClientId("example-client")
-                .setClientSecret("secret")
+                .setClientId("tpick-ubuntu-01")
+                .setClientSecret("tpick-ubuntu-01")
+                .setAuthServiceEndpoint("http://ong01-tpick-dev:8080/osiam-auth-server")
+                .setResourceEndpoint("http://ong01-tpick-dev:8080/osiam-resource-server")
+                .setClientRedirectUri("http://localhost:5000")
                 .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
-                .setUserName(userName)
-                .setPassword(password)
                 .setScope(Scope.ALL)
+                .setUserName("tpick@tarent.pdfx")
+                .setPassword("Test1234!")
                 .build()
                 .retrieveAccessToken();
     }
