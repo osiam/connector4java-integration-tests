@@ -137,6 +137,15 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     @Test
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_complex_query.xml")
+    public void search_for_user_by_complex_query() {
+        queryResult = oConnector.searchUsers("filter=" + 
+                encodeExpected("userName eq \"user1\" and name.formatted eq \"formatted1\""
+                        + " and emails eq \"email1@other.com\" and extension.stringValue eq \"Hello 1\"" ), accessToken);
+        assertThat(queryResult.getTotalResults(), is(equalTo(1L)));
+    }
+    
+    @Test
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
     public void search_for_user_with_multiple_fields() throws UnsupportedEncodingException {
         Query.Filter filter = new Query.Filter(User.class, User_.title.equalTo("Dr."))
