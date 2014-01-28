@@ -1,9 +1,14 @@
 package org.osiam.client;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -11,22 +16,15 @@ import org.junit.runner.RunWith;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.MemberRef;
-import org.osiam.resources.scim.MultiValuedAttribute;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Set;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.core.Is.is;
-
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -60,7 +58,7 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
     public void group_member_is_the_expected_one() {
         Group group = oConnector.getGroup(VALID_GROUP_ID, accessToken);
 
-        for (MultiValuedAttribute actMember : group.getMembers()) {
+        for (MemberRef actMember : group.getMembers()) {
             assertThat(actMember.getValue(), is(equalTo(VALID_USER_ID)));
         }
     }
