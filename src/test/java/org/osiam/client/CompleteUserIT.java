@@ -7,7 +7,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.update.UpdateUser;
@@ -41,8 +40,7 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class CompleteUserIT extends AbstractIntegrationTestBase {
 
-    private static final String VALID_USER_ID = "834b410a-943b-4c80-817a-4465aed037bc";
-    private static final String VALID_GROUP_ID = "69e1a5dc-89be-4343-976c-b5541af249f4";
+    private static final String VALID_USER_ID = "d83c0f36-4e77-407d-94c9-2ca7e4cb7cf1";
     private static final String EXTENSION_URN = "extension";
 
     @Test
@@ -50,49 +48,55 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         User newUser = initializeUserWIthAllAttributes();
         User retUser = oConnector.createUser(newUser, accessToken);
         User dbUser = oConnector.getUser(retUser.getId(), accessToken);
-        assertThatNewUserAndReturnUserAreEqual(newUser, dbUser);
+        assertThatNewUserAndReturnUserAreEqual(newUser, dbUser, true);
     }
 
-    @Ignore
     @Test
     public void update_all_attributes_of_one_user_works() {
-        // UpdateUser updateUser
+        User oldUser = oConnector.getUser(VALID_USER_ID, accessToken);
+        User expectedUser = createUserWithUpdatedField();
+        UpdateUser updateUser = createUpdateUser(oldUser, expectedUser);
+        User dbUser = oConnector.updateUser(VALID_USER_ID, updateUser, accessToken);
+        assertThatNewUserAndReturnUserAreEqual(expectedUser, dbUser, false);
+    }
+    
+    @Test
+    public void delete_User_who_has_all_attributes(){
+        oConnector.deleteUser(VALID_USER_ID, accessToken);
+    }
+    
+    @Test
+    public void replace_user_with_has_all_attributes(){
+        User patchdUser = new User.Builder(createUserWithUpdatedField()).setId(VALID_USER_ID).build();
+        User updatedUser = oConnector.replaceUser(patchdUser, accessToken);
+        assertThatNewUserAndReturnUserAreEqual(patchdUser, updatedUser, true);
     }
 
-    private UpdateUser createUpdateUser() {
-        UpdateUser.Builder updateUserBuilder = new UpdateUser.Builder();
-
-        updateUserBuilder.updateActive(false);
-        // updateUserBuilder.updateAddress(oldAttribute, newAttribute)
-        return null;
-    }
-
-    private User initializeUserWIthAllAttributes() {
-
+    private User createUserWithUpdatedField() {
         List<Address> addresses = new ArrayList<Address>();
-        Address address = new Address.Builder().setCountry("Germany")
-                .setFormatted("formatted").setLocality("Berlin")
-                .setPostalCode("12345").setPrimary(true).setRegion("Berlin")
-                .setStreetAddress("Voltastr. 5").setType(Address.Type.WORK)
+        Address address = new Address.Builder().setCountry("USA")
+                .setFormatted("formattedAddress").setLocality("Houston")
+                .setPostalCode("ab5781").setPrimary(false).setRegion("Texas")
+                .setStreetAddress("Main Street. 22").setType(Address.Type.HOME)
                 .build();
         addresses.add(address);
         List<Email> emails = new ArrayList<Email>();
         Email email = new Email.Builder().setPrimary(true)
-                .setValue("test@tarent.de").setType(Email.Type.WORK).build();
+                .setValue("my@mail.com").setType(Email.Type.HOME).build();
         emails.add(email);
         List<Entitlement> entitlements = new ArrayList<Entitlement>();
         Entitlement entitlement = new Entitlement.Builder().setPrimary(true)
-                .setType(new Entitlement.Type("irrelevant"))
-                .setValue("entitlement").build();
+                .setType(new Entitlement.Type("not irrelevant"))
+                .setValue("some entitlement").build();
         entitlements.add(entitlement);
         List<Im> ims = new ArrayList<Im>();
-        Im im = new Im.Builder().setPrimary(true).setType(Im.Type.AIM)
-                .setValue("aim").build();
+        Im im = new Im.Builder().setPrimary(true).setType(Im.Type.GTALK)
+                .setValue("gtalk").build();
         ims.add(im);
-        Name name = new Name.Builder().setFamilyName("test")
-                .setFormatted("formatted").setGivenName("test")
+        Name name = new Name.Builder().setFamilyName("Simpson")
+                .setFormatted("formatted").setGivenName("Homer")
                 .setHonorificPrefix("Dr.").setHonorificSuffix("Mr.")
-                .setMiddleName("test").build();
+                .setMiddleName("J").build();
         List<PhoneNumber> phoneNumbers = new ArrayList<PhoneNumber>();
         PhoneNumber phoneNumber = new PhoneNumber.Builder().setPrimary(true)
                 .setType(PhoneNumber.Type.WORK).setValue("03012345678").build();
@@ -125,9 +129,90 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
                 .build();
     }
 
-    private void assertThatNewUserAndReturnUserAreEqual(User expectedUser, User actualUser) {
+    private UpdateUser createUpdateUser(User oldUser, User expectedUser) {
+        UpdateUser.Builder updateUserBuilder = new UpdateUser.Builder();
+
+        updateUserBuilder.updateActive(expectedUser.isActive());
+        updateUserBuilder.updateAddress(oldUser.getAddresses().get(0), expectedUser.getAddresses().get(0));
+        updateUserBuilder.updateEmail(oldUser.getEmails().get(0), expectedUser.getEmails().get(0));
+        updateUserBuilder.updateExternalId(expectedUser.getExternalId());
+        updateUserBuilder.updateName(expectedUser.getName());
+        updateUserBuilder.updatePhoneNumber(oldUser.getPhoneNumbers().get(0), expectedUser.getPhoneNumbers().get(0));
+        updateUserBuilder.updatePreferredLanguage(expectedUser.getPreferredLanguage());
+        updateUserBuilder.updateRole(oldUser.getRoles().get(0), expectedUser.getRoles().get(0));
+        updateUserBuilder.updateX509Certificate(oldUser.getX509Certificates().get(0), expectedUser
+                .getX509Certificates().get(0));
+        updateUserBuilder.updateEntitlement(oldUser.getEntitlements().get(0), expectedUser.getEntitlements().get(0));
+        updateUserBuilder.updateIms(oldUser.getIms().get(0), expectedUser.getIms().get(0));
+        updateUserBuilder.updatePhotos(oldUser.getPhotos().get(0), expectedUser.getPhotos().get(0));
+        updateUserBuilder.updateUserName(expectedUser.getUserName());
+
+        return updateUserBuilder.build();
+    }
+
+    private User initializeUserWIthAllAttributes() {
+
+        List<Address> addresses = new ArrayList<Address>();
+        Address address = new Address.Builder().setCountry("Germany")
+                .setFormatted("formatted").setLocality("Berlin")
+                .setPostalCode("12345").setPrimary(true).setRegion("Berlin")
+                .setStreetAddress("Voltastr. 5").setType(Address.Type.WORK)
+                .build();
+        addresses.add(address);
+        List<Email> emails = new ArrayList<Email>();
+        Email email = new Email.Builder().setPrimary(true)
+                .setValue("test@tarent.de").setType(Email.Type.WORK).build();
+        emails.add(email);
+        List<Entitlement> entitlements = new ArrayList<Entitlement>();
+        Entitlement entitlement = new Entitlement.Builder().setPrimary(true)
+                .setType(new Entitlement.Type("irrelevant"))
+                .setValue("entitlement").build();
+        entitlements.add(entitlement);
+        List<Im> ims = new ArrayList<Im>();
+        Im im = new Im.Builder().setPrimary(true).setType(Im.Type.AIM)
+                .setValue("aim").build();
+        ims.add(im);
+        Name name = new Name.Builder().setFamilyName("Cooper")
+                .setFormatted("neerd").setGivenName("Sheldon")
+                .setHonorificPrefix("Dr. Dr. ").setHonorificSuffix("little")
+                .setMiddleName("Lee").build();
+        List<PhoneNumber> phoneNumbers = new ArrayList<PhoneNumber>();
+        PhoneNumber phoneNumber = new PhoneNumber.Builder().setPrimary(true)
+                .setType(PhoneNumber.Type.HOME).setValue("034875119").build();
+        phoneNumbers.add(phoneNumber);
+        List<Photo> photos = new ArrayList<Photo>();
+        Photo photo = new Photo.Builder().setPrimary(false)
+                .setType(Photo.Type.THUMBNAIL).setValue("nice.png").build();
+        photos.add(photo);
+        List<Role> roles = new ArrayList<Role>();
+        Role role = new Role.Builder().setPrimary(false).setValue("some_role")
+                .build();
+        roles.add(role);
+        List<X509Certificate> x509Certificates = new ArrayList<X509Certificate>();
+        X509Certificate x509Certificat = new X509Certificate.Builder()
+                .setPrimary(false).setValue("my x509Certificat").build();
+        x509Certificates.add(x509Certificat);
+        Extension extension = new Extension(EXTENSION_URN);
+        extension.addOrUpdateField("gender", "male");
+        extension.addOrUpdateField("age", new BigInteger("28"));
+        return new User.Builder("new_user_name").setActive(false)
+                .setAddresses(addresses).setDisplayName("Shelli")
+                .setEmails(emails).setEntitlements(entitlements)
+                .setExternalId("externalNeerd").setIms(ims).setLocale("us_US")
+                .setName(name).setNickName("Jim").setPassword("Parsons")
+                .setPhoneNumbers(phoneNumbers).setPhotos(photos)
+                .setPreferredLanguage("english").setProfileUrl("/user/profile")
+                .setRoles(roles).setTimezone("US").setTitle("IQ187")
+                .setX509Certificates(x509Certificates)
+                .addExtension(extension)
+                .build();
+    }
+
+    private void assertThatNewUserAndReturnUserAreEqual(User expectedUser, User actualUser, boolean checkExtensions) {
         assertThatAddressesAreEqual(expectedUser.getAddresses(), actualUser.getAddresses());
-        assertEquals(expectedUser.getAllExtensions(), actualUser.getAllExtensions());
+        if (checkExtensions) {
+            assertEquals(expectedUser.getAllExtensions(), actualUser.getAllExtensions());
+        }
         assertEquals(expectedUser.getDisplayName(), actualUser.getDisplayName());
         assertThatEmailsAreEqual(expectedUser.getEmails(), actualUser.getEmails());
         assertThatEntitlementsAreEqual(expectedUser.getEntitlements(), actualUser.getEntitlements());
