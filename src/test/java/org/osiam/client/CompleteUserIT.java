@@ -1,5 +1,8 @@
 package org.osiam.client;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -20,6 +23,7 @@ import org.osiam.resources.scim.Name;
 import org.osiam.resources.scim.PhoneNumber;
 import org.osiam.resources.scim.Photo;
 import org.osiam.resources.scim.Role;
+import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.User;
 import org.osiam.resources.scim.X509Certificate;
 import org.springframework.test.context.ContextConfiguration;
@@ -45,7 +49,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
 
     @Test
     public void create_complete_user_works() {
-        User newUser = initializeUserWIthAllAttributes();
+        User newUser = initializeUserWithAllAttributes();
         User retUser = oConnector.createUser(newUser, accessToken);
         User dbUser = oConnector.getUser(retUser.getId(), accessToken);
         assertThatNewUserAndReturnUserAreEqual(newUser, dbUser, true);
@@ -73,6 +77,63 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
     }
 
     private User createUserWithUpdatedField() {
+        return null;
+    }
+
+    public void search_for_user_by_complex_query() {
+        
+        User newUser = initializeUserWithAllAttributes();
+        User retUser = oConnector.createUser(newUser, accessToken);
+        // \"\"
+        String query = encodeExpected(""
+                + "active eq \"true\""
+                + " and address.country eq \"Germany\""
+                + " and address.formatted eq \"formatted\""
+                + " and address.locality eq \"Berlin\""
+                + " and address.postalCode eq \"12345\""
+                + " and address.primary eq \"true\""
+                + " and address.region eq \"Berlin\""
+                + " and address.streetAddress eq \"Voltastr. 5\""
+                + " and address.type eq \"" + Address.Type.WORK + "\""
+                + " and displayname eq \"displayName\""
+                + " and emails eq \"test@tarent.de\""
+                + " and emails.primary eq \"true\""
+                + " and emails.type eq \"work\""
+                + " and entitlements eq \"entitlement\""
+                + " and entitlements.primary eq \"irrelevant\""
+                + " and entitlements.type eq \"irrelevant\""
+                + " and extension.gender eq \"male\""
+                + " and externalId \"externalId\""
+                + " and ims eq \"aim\""
+                + " and ims.primary eq \"true\""
+                + " and ims.type eq \"" + Im.Type.AIM + "\""
+                + " and locale eq \"de_DE\""
+                + " and name.familyname eq \"familyName\""
+                + " and name.formatted eq \"formatted\""
+                + " and name.givenName eq \"name\""
+                + " and name.honorificPrefix eq \"Dr.\""
+                + " and name.honorificSuffix eq \"Mr.\""
+                + " and name.middleName eq \"middleName\""
+                + " and nickname eq \"nickname\""
+                + " and phoneNumbers eq \"03012345678\""
+                + " and phoneNumbers.type eq \"" + PhoneNumber.Type.WORK + "\""
+                + " and phoneNumbers.primary eq \"true\""
+                + " and photos eq \"username.jpg\""
+                + " and photos.primary eq \"true\""
+                + " and not (photos.type eq \"" + Photo.Type.THUMBNAIL + "\""
+                + " and preferredLanguage eq \"german\""
+                + " and profileurl eq \"/user/username\""
+                + " and roles eq \"user_role\""
+                + " and roles.primary eq \"true\""
+                + " and timezone eq \"DE\""
+                + " and title eq \"title\""
+                + " and userName eq \"complete_add_user\""
+                + " and x509Certificates eq \"x509Certificat\"");
+        SCIMSearchResult<User> queryResult = oConnector.searchUsers("filter=" + query, accessToken);
+        assertThat(queryResult.getTotalResults(), is(equalTo(1L)));
+    }
+
+    private User initializeUserWithAllAttributes() {
         List<Address> addresses = new ArrayList<Address>();
         Address address = new Address.Builder().setCountry("USA")
                 .setFormatted("formattedAddress").setLocality("Houston")
@@ -110,20 +171,31 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
                 .build();
         roles.add(role);
         List<X509Certificate> x509Certificates = new ArrayList<X509Certificate>();
-        X509Certificate x509Certificat = new X509Certificate.Builder()
+        X509Certificate x509Certificate = new X509Certificate.Builder()
                 .setPrimary(true).setValue("x509Certificat").build();
-        x509Certificates.add(x509Certificat);
+        x509Certificates.add(x509Certificate);
         Extension extension = new Extension(EXTENSION_URN);
         extension.addOrUpdateField("gender", "female");
         extension.addOrUpdateField("age", new BigInteger("18"));
-        return new User.Builder("complete_add_user").setActive(true)
-                .setAddresses(addresses).setDisplayName("displayName")
-                .setEmails(emails).setEntitlements(entitlements)
-                .setExternalId("externalId").setIms(ims).setLocale("de_DE")
-                .setName(name).setNickName("nickname").setPassword("password")
-                .setPhoneNumbers(phoneNumbers).setPhotos(photos)
-                .setPreferredLanguage("german").setProfileUrl("/user/username")
-                .setRoles(roles).setTimezone("DE").setTitle("title")
+        return new User.Builder("complete_add_user")
+                .setActive(true)
+                .setAddresses(addresses)
+                .setDisplayName("displayName")
+                .setEmails(emails)
+                .setEntitlements(entitlements)
+                .setExternalId("externalId")
+                .setIms(ims)
+                .setLocale("de_DE")
+                .setName(name)
+                .setNickName("nickname")
+                .setPassword("password")
+                .setPhoneNumbers(phoneNumbers)
+                .setPhotos(photos)
+                .setPreferredLanguage("german")
+                .setProfileUrl("/user/username")
+                .setRoles(roles)
+                .setTimezone("DE")
+                .setTitle("title")
                 .setX509Certificates(x509Certificates)
                 .addExtension(extension)
                 .build();
