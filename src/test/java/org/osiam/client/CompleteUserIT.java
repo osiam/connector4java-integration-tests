@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,7 +64,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         User dbUser = oConnector.updateUser(VALID_USER_ID, updateUser, accessToken);
         assertThatNewUserAndReturnUserAreEqual(expectedUser, dbUser, false);
     }
-    
+
     @Test
     public void delete_User_who_has_all_attributes(){
         oConnector.deleteUser(VALID_USER_ID, accessToken);
@@ -81,54 +82,54 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
     }
 
     public void search_for_user_by_complex_query() {
-        
-        User newUser = initializeUserWithAllAttributes();
-        User retUser = oConnector.createUser(newUser, accessToken);
-        // \"\"
-        String query = encodeExpected(""
-                + "active eq \"true\""
-                + " and address.country eq \"Germany\""
-                + " and address.formatted eq \"formatted\""
-                + " and address.locality eq \"Berlin\""
-                + " and address.postalCode eq \"12345\""
-                + " and address.primary eq \"true\""
-                + " and address.region eq \"Berlin\""
-                + " and address.streetAddress eq \"Voltastr. 5\""
-                + " and address.type eq \"" + Address.Type.WORK + "\""
+        String query = encodeExpected("active eq \"true\""
+                + " and addresses.country eq \"Germany\""
+                + " and addresses.formatted eq \"formatted\""
+                + " and addresses.locality eq \"Berlin\""
+                + " and addresses.postalCode eq \"12345\""
+                + " and addresses.primary eq \"true\""
+                + " and addresses.region eq \"Berlin\""
+                + " and addresses.streetAddress eq \"Voltastr. 5\""
+                + " and addresses.type eq \"" + Address.Type.WORK + "\""
                 + " and displayname eq \"displayName\""
                 + " and emails eq \"test@tarent.de\""
                 + " and emails.primary eq \"true\""
-                + " and emails.type eq \"work\""
+                + " and emails.type eq \"" + Email.Type.WORK + "\""
                 + " and entitlements eq \"entitlement\""
-                + " and entitlements.primary eq \"irrelevant\""
+                + " and entitlements.primary eq \"false\""
                 + " and entitlements.type eq \"irrelevant\""
                 + " and extension.gender eq \"male\""
-                + " and externalId \"externalId\""
+                + " and extension.age eq \"18\""
+                + " and externalId eq \"externalId\""
+                + " and groups eq \"ddf772b2-a864-44d7-a58b-3fdd6e647b7b\""
+                + " and groups.display eq \"group1\""
                 + " and ims eq \"aim\""
-                + " and ims.primary eq \"true\""
+                + " and ims.primary eq \"false\""
                 + " and ims.type eq \"" + Im.Type.AIM + "\""
                 + " and locale eq \"de_DE\""
-                + " and name.familyname eq \"familyName\""
+                + " and meta.created eq \"" + dateAsString(2014, 0, 27, 14, 32, 11, 648) + "\""
+                + " and meta.lastmodified eq \"" + dateAsString(2014, 0, 27, 14, 32, 11, 648) + "\""
+                + " and name.familyname sw \"fam\""
                 + " and name.formatted eq \"formatted\""
-                + " and name.givenName eq \"name\""
-                + " and name.honorificPrefix eq \"Dr.\""
-                + " and name.honorificSuffix eq \"Mr.\""
+                + " and name.givenName co \"am\""
+                + " and name.honorificPrefix co \"r.\""
+                + " and name.honorificSuffix sw \"M\""
                 + " and name.middleName eq \"middleName\""
                 + " and nickname eq \"nickname\""
                 + " and phoneNumbers eq \"03012345678\""
                 + " and phoneNumbers.type eq \"" + PhoneNumber.Type.WORK + "\""
                 + " and phoneNumbers.primary eq \"true\""
-                + " and photos eq \"username.jpg\""
+                + " and photos co \"name\""
                 + " and photos.primary eq \"true\""
-                + " and not (photos.type eq \"" + Photo.Type.THUMBNAIL + "\""
+                + " and not (photos.type eq \"" + Photo.Type.THUMBNAIL + "\")"
                 + " and preferredLanguage eq \"german\""
                 + " and profileurl eq \"/user/username\""
                 + " and roles eq \"user_role\""
                 + " and roles.primary eq \"true\""
                 + " and timezone eq \"DE\""
                 + " and title eq \"title\""
-                + " and userName eq \"complete_add_user\""
-                + " and x509Certificates eq \"x509Certificat\"");
+                + " and userName sw \"user\""
+                + " and x509Certificates eq \"x509Certificate\"");
         SCIMSearchResult<User> queryResult = oConnector.searchUsers("filter=" + query, accessToken);
         assertThat(queryResult.getTotalResults(), is(equalTo(1L)));
     }
@@ -183,7 +184,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
                 .setDisplayName("displayName")
                 .setEmails(emails)
                 .setEntitlements(entitlements)
-                .setExternalId("externalId")
+                .setExternalId("externalId2")
                 .setIms(ims)
                 .setLocale("de_DE")
                 .setName(name)

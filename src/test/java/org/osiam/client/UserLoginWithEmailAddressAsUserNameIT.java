@@ -1,6 +1,9 @@
 package org.osiam.client;
 
-import org.junit.Ignore;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.connector.OsiamConnector;
@@ -16,10 +19,6 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
-
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -38,15 +37,14 @@ public class UserLoginWithEmailAddressAsUserNameIT extends AbstractIntegrationTe
 
     private AccessToken getAccessToken(String userName, String password) {
         return new OsiamConnector.Builder()
-                .setClientId("tpick-ubuntu-01")
-                .setClientSecret("tpick-ubuntu-01")
-                .setAuthServiceEndpoint("http://ong01-tpick-dev:8080/osiam-auth-server")
-                .setResourceEndpoint("http://ong01-tpick-dev:8080/osiam-resource-server")
-                .setClientRedirectUri("http://localhost:5000")
+                .setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setClientId("example-client")
+                .setClientSecret("secret")
                 .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
+                .setUserName(userName)
+                .setPassword(password)
                 .setScope(Scope.ALL)
-                .setUserName("tpick@tarent.pdfx")
-                .setPassword("Test1234!")
                 .build()
                 .retrieveAccessToken();
     }

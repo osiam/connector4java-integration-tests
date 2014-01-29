@@ -35,7 +35,11 @@ public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void search_for_group_by_string() {
-        String searchString = encodeExpected("displayName eq \""+ EXPECTED_GROUP_NAME + "\"");
+        String searchString = encodeExpected("displayName eq \""+ EXPECTED_GROUP_NAME + "\""
+                + " and externalid eq \"ext_id_test_group01\""
+                + " and meta.created eq \"" + dateAsString(2013, 6, 31, 21, 43, 18, 0) + "\""
+                + " and meta.lastmodified eq \"" + dateAsString(2013, 6, 31, 21, 43, 18, 0) + "\""
+                + " and members eq \"834b410a-943b-4c80-817a-4465aed037bc\"");
         whenSingleGroupIsSearchedByQueryString(searchString);
         assertThatQueryResultContainsOnlyValidGroup();
     }

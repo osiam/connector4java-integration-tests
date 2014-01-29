@@ -1,5 +1,6 @@
 package org.osiam.client;
 
+import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Before;
 import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.oauth.AccessToken;
@@ -9,6 +10,9 @@ import org.osiam.client.oauth.Scope;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 import static org.springframework.test.util.AssertionErrors.fail;
 
@@ -71,6 +75,19 @@ public abstract class AbstractIntegrationTestBase {
             fail("Unable to encode queryString");
         }
         return encoded;
+    }
+    
+    protected String dateAsString(int year, int month, int date, int hourOfDay, int minute, int second, int millisecond) {
+        Date completeDate = createDate(year, month, date, hourOfDay, minute, second, millisecond);
+        return ISODateTimeFormat.dateTime().withZoneUTC().print(completeDate.getTime());
+    }
+
+    private Date createDate(int year, int month, int date, int hourOfDay, int minute, int second, int millisecond) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.MILLISECOND, millisecond);
+        calendar.setTimeZone(TimeZone.getDefault());
+        calendar.set(year, month, date, hourOfDay, minute, second);
+        return calendar.getTime();
     }
 
 }
