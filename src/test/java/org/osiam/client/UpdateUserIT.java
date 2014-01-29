@@ -253,16 +253,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         assertThatOnlyNewEmailAddressIsPrimary();
     }
 
-    @Test
-    @DatabaseSetup(value = "/database_seed_complete_user.xml")
-    public void modify_complete_user_works() {
-        oConnector.updateUser("", updateUser, accessToken);
-    }
-
-    private void createUpdateUserWIthAllAttributes() {
-
-    }
-
     private void assertThatOnlyNewEmailAddressIsPrimary() {
         for (Email email : returnUser.getEmails()) {
             if (email.getValue().equals("hsimpson02@atom-example.com")) {
