@@ -9,7 +9,6 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,13 +75,16 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         User updatedUser = oConnector.replaceUser(patchdUser, accessToken);
         assertThatNewUserAndReturnUserAreEqual(patchdUser, updatedUser, true);
     }
-
-    private User createUserWithUpdatedField() {
-        return null;
-    }
-
+    
+    @Test
     public void search_for_user_by_complex_query() {
-        String query = encodeExpected("active eq \"true\""
+        String query = getCompletUserQueryString();
+        SCIMSearchResult<User> queryResult = oConnector.searchUsers("filter=" + query, accessToken);
+        assertThat(queryResult.getTotalResults(), is(equalTo(1L)));
+    }
+    
+    private String getCompletUserQueryString() {
+        return encodeExpected("active eq \"true\""
                 + " and addresses.country eq \"Germany\""
                 + " and addresses.formatted eq \"formatted\""
                 + " and addresses.locality eq \"Berlin\""
@@ -130,8 +132,63 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
                 + " and title eq \"title\""
                 + " and userName sw \"user\""
                 + " and x509Certificates eq \"x509Certificate\"");
-        SCIMSearchResult<User> queryResult = oConnector.searchUsers("filter=" + query, accessToken);
-        assertThat(queryResult.getTotalResults(), is(equalTo(1L)));
+    }
+
+    private User createUserWithUpdatedField() {
+        List<Address> addresses = new ArrayList<Address>();
+        Address address = new Address.Builder().setCountry("USA")
+                .setFormatted("formattedAddress").setLocality("Houston")
+                .setPostalCode("ab5781").setPrimary(false).setRegion("Texas")
+                .setStreetAddress("Main Street. 22").setType(Address.Type.HOME)
+                .build();
+        addresses.add(address);
+        List<Email> emails = new ArrayList<Email>();
+        Email email = new Email.Builder().setPrimary(true)
+                .setValue("my@mail.com").setType(Email.Type.HOME).build();
+        emails.add(email);
+        List<Entitlement> entitlements = new ArrayList<Entitlement>();
+        Entitlement entitlement = new Entitlement.Builder().setPrimary(true)
+                .setType(new Entitlement.Type("not irrelevant"))
+                .setValue("some entitlement").build();
+        entitlements.add(entitlement);
+        List<Im> ims = new ArrayList<Im>();
+        Im im = new Im.Builder().setPrimary(true).setType(Im.Type.GTALK)
+                .setValue("gtalk").build();
+        ims.add(im);
+        Name name = new Name.Builder().setFamilyName("Simpson")
+                .setFormatted("formatted").setGivenName("Homer")
+                .setHonorificPrefix("Dr.").setHonorificSuffix("Mr.")
+                .setMiddleName("J").build();
+        List<PhoneNumber> phoneNumbers = new ArrayList<PhoneNumber>();
+        PhoneNumber phoneNumber = new PhoneNumber.Builder().setPrimary(true)
+                .setType(PhoneNumber.Type.WORK).setValue("03012345678").build();
+        phoneNumbers.add(phoneNumber);
+        List<Photo> photos = new ArrayList<Photo>();
+        Photo photo = new Photo.Builder().setPrimary(true)
+                .setType(Photo.Type.PHOTO).setValue("username.jpg").build();
+        photos.add(photo);
+        List<Role> roles = new ArrayList<Role>();
+        Role role = new Role.Builder().setPrimary(true).setValue("user_role")
+                .build();
+        roles.add(role);
+        List<X509Certificate> x509Certificates = new ArrayList<X509Certificate>();
+        X509Certificate x509Certificat = new X509Certificate.Builder()
+                .setPrimary(true).setValue("x509Certificat").build();
+        x509Certificates.add(x509Certificat);
+        Extension extension = new Extension(EXTENSION_URN);
+        extension.addOrUpdateField("gender", "female");
+        extension.addOrUpdateField("age", new BigInteger("18"));
+        return new User.Builder("complete_add_user").setActive(true)
+                .setAddresses(addresses).setDisplayName("displayName")
+                .setEmails(emails).setEntitlements(entitlements)
+                .setExternalId("externalId").setIms(ims).setLocale("de_DE")
+                .setName(name).setNickName("nickname").setPassword("password")
+                .setPhoneNumbers(phoneNumbers).setPhotos(photos)
+                .setPreferredLanguage("german").setProfileUrl("/user/username")
+                .setRoles(roles).setTimezone("DE").setTitle("title")
+                .setX509Certificates(x509Certificates)
+                .addExtension(extension)
+                .build();
     }
 
     private User initializeUserWithAllAttributes() {
@@ -221,64 +278,6 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         updateUserBuilder.updateUserName(expectedUser.getUserName());
 
         return updateUserBuilder.build();
-    }
-
-    private User initializeUserWIthAllAttributes() {
-
-        List<Address> addresses = new ArrayList<Address>();
-        Address address = new Address.Builder().setCountry("Germany")
-                .setFormatted("formatted").setLocality("Berlin")
-                .setPostalCode("12345").setPrimary(true).setRegion("Berlin")
-                .setStreetAddress("Voltastr. 5").setType(Address.Type.WORK)
-                .build();
-        addresses.add(address);
-        List<Email> emails = new ArrayList<Email>();
-        Email email = new Email.Builder().setPrimary(true)
-                .setValue("test@tarent.de").setType(Email.Type.WORK).build();
-        emails.add(email);
-        List<Entitlement> entitlements = new ArrayList<Entitlement>();
-        Entitlement entitlement = new Entitlement.Builder().setPrimary(true)
-                .setType(new Entitlement.Type("irrelevant"))
-                .setValue("entitlement").build();
-        entitlements.add(entitlement);
-        List<Im> ims = new ArrayList<Im>();
-        Im im = new Im.Builder().setPrimary(true).setType(Im.Type.AIM)
-                .setValue("aim").build();
-        ims.add(im);
-        Name name = new Name.Builder().setFamilyName("Cooper")
-                .setFormatted("neerd").setGivenName("Sheldon")
-                .setHonorificPrefix("Dr. Dr. ").setHonorificSuffix("little")
-                .setMiddleName("Lee").build();
-        List<PhoneNumber> phoneNumbers = new ArrayList<PhoneNumber>();
-        PhoneNumber phoneNumber = new PhoneNumber.Builder().setPrimary(true)
-                .setType(PhoneNumber.Type.HOME).setValue("034875119").build();
-        phoneNumbers.add(phoneNumber);
-        List<Photo> photos = new ArrayList<Photo>();
-        Photo photo = new Photo.Builder().setPrimary(false)
-                .setType(Photo.Type.THUMBNAIL).setValue("nice.png").build();
-        photos.add(photo);
-        List<Role> roles = new ArrayList<Role>();
-        Role role = new Role.Builder().setPrimary(false).setValue("some_role")
-                .build();
-        roles.add(role);
-        List<X509Certificate> x509Certificates = new ArrayList<X509Certificate>();
-        X509Certificate x509Certificat = new X509Certificate.Builder()
-                .setPrimary(false).setValue("my x509Certificat").build();
-        x509Certificates.add(x509Certificat);
-        Extension extension = new Extension(EXTENSION_URN);
-        extension.addOrUpdateField("gender", "male");
-        extension.addOrUpdateField("age", new BigInteger("28"));
-        return new User.Builder("new_user_name").setActive(false)
-                .setAddresses(addresses).setDisplayName("Shelli")
-                .setEmails(emails).setEntitlements(entitlements)
-                .setExternalId("externalNeerd").setIms(ims).setLocale("us_US")
-                .setName(name).setNickName("Jim").setPassword("Parsons")
-                .setPhoneNumbers(phoneNumbers).setPhotos(photos)
-                .setPreferredLanguage("english").setProfileUrl("/user/profile")
-                .setRoles(roles).setTimezone("US").setTitle("IQ187")
-                .setX509Certificates(x509Certificates)
-                .addExtension(extension)
-                .build();
     }
 
     private void assertThatNewUserAndReturnUserAreEqual(User expectedUser, User actualUser, boolean checkExtensions) {
