@@ -49,7 +49,9 @@
                resourcetype="User"/>
     <scim_meta id="100050" created="2013-08-08 19:53:43.221" lastmodified="2013-08-08 19:53:43.221"
                resourcetype="User"/>
-    <scim_meta id="100053" created="2013-07-31 21:43:18.0" lastmodified="2013-07-31 21:43:18.0" resourcetype="Group"/>
+               
+    <scim_meta id="100053" created="2013-07-31 21:43:18.0" lastmodified="2013-07-31 21:43:18.0"
+    		   resourcetype="Group"/>
     <scim_meta id="100055" created="2013-08-08 19:59:54.612" lastmodified="2013-08-08 19:59:54.612"
                resourcetype="Group"/>
     <scim_meta id="100057" created="2013-08-08 19:59:56.681" lastmodified="2013-08-08 19:59:56.681"
@@ -79,7 +81,7 @@
     <scim_id internal_id="100046" externalid="bjensen" meta_id="100047" id="834b410a-943b-4c80-817a-4465aed037bc"/>
     <scim_id internal_id="100049" externalid="ewilley" meta_id="100050" id="781d9891-9114-4cd5-813a-77c3f4b0e15f"/>
     <scim_id internal_id="100001" meta_id="100004" id="cef9452e-00a9-4cec-a086-d171374ffbef"/>
-    <scim_id internal_id="100052" meta_id="100053" id="69e1a5dc-89be-4343-976c-b5541af249f4"/>
+    <scim_id internal_id="100052" externalid="ext_id_test_group01" meta_id="100053" id="69e1a5dc-89be-4343-976c-b5541af249f4"/>
     <scim_id internal_id="100054" meta_id="100055" id="d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"/>
     <scim_id internal_id="100056" meta_id="100057" id="0cb908cf-81a9-4966-803f-a3eb92968bb4"/>
     <scim_id internal_id="100058" meta_id="100059" id="4969930d-103a-4c34-8ecc-1f0966f4e3a6"/>
