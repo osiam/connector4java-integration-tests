@@ -71,9 +71,9 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
     
     @Test
     public void replace_user_with_has_all_attributes(){
-        User patchdUser = new User.Builder(createUserWithUpdatedField()).setId(VALID_USER_ID).build();
-        User updatedUser = oConnector.replaceUser(patchdUser, accessToken);
-        assertThatNewUserAndReturnUserAreEqual(patchdUser, updatedUser, true);
+        User patchedUser = new User.Builder(createUserWithUpdatedField()).build();
+        User updatedUser = oConnector.replaceUser(VALID_USER_ID, patchedUser, accessToken);
+        assertThatNewUserAndReturnUserAreEqual(patchedUser, updatedUser, true);
     }
     
     @Test
