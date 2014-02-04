@@ -49,7 +49,8 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
         } catch (NoResultException e) {
             String errorMessage = e.getMessage();
             printOutErrorMessage(errorMessage);
-            assertTrue(errorMessage.contains("User") && errorMessage.contains("not found"));
+            assertTrue(errorMessage.contains("User"));
+            assertTrue(errorMessage.contains("not found"));
         }
     }
 
@@ -64,7 +65,8 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
         } catch (NoResultException e) {
             String errorMessage = e.getMessage();
             printOutErrorMessage(errorMessage);
-            assertTrue(errorMessage.contains("Group") && errorMessage.contains("not found"));
+            assertTrue(errorMessage.contains("Group"));
+            assertTrue(errorMessage.contains("not found"));
         }
     }
 
@@ -79,7 +81,8 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
         } catch (NoResultException e) {
             String errorMessage = e.getMessage();
             printOutErrorMessage(errorMessage);
-            assertTrue(errorMessage.contains("User") && errorMessage.contains("not found"));
+            assertTrue(errorMessage.contains("User"));
+            assertTrue(errorMessage.contains("not found"));
         }
     }
 
@@ -95,7 +98,8 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
         } catch (ConflictException e) {
             String errorMessage = e.getMessage();
             printOutErrorMessage(errorMessage);
-            assertTrue(errorMessage.contains("userName") && errorMessage.contains("mandatory"));
+            assertTrue(errorMessage.contains("userName"));
+            assertTrue(errorMessage.contains("mandatory"));
         }
     }
 
@@ -111,7 +115,8 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
         } catch (ConflictException e) {
             String errorMessage = e.getMessage();
             printOutErrorMessage(errorMessage);
-            assertTrue(errorMessage.contains("displayName") && errorMessage.contains("mandatory"));
+            assertTrue(errorMessage.contains("displayName"));
+            assertTrue(errorMessage.contains("mandatory"));
         }
     }
 
@@ -128,7 +133,8 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
         } catch (ConflictException e) {
             String errorMessage = e.getMessage();
             printOutErrorMessage(errorMessage);
-            assertTrue(errorMessage.contains("user") && errorMessage.contains("already taken"));
+            assertTrue(errorMessage.contains("user"));
+            assertTrue(errorMessage.contains("already taken"));
         }
     }
 
@@ -328,8 +334,9 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
         } catch (ConflictException e) {
             String errorMessage = e.getMessage();
             printOutErrorMessage(errorMessage);
-            assertTrue(errorMessage.contains("group") && errorMessage.contains("externalId")
-                    && errorMessage.contains("already taken"));
+            assertTrue(errorMessage.contains("group"));
+            assertTrue(errorMessage.contains("externalId"));
+            assertTrue(errorMessage.contains("already taken"));
         }
     }
 
@@ -370,7 +377,8 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
         } catch (ConflictException e) {
             String errorMessage = e.getMessage();
             printOutErrorMessage(errorMessage);
-            assertTrue(errorMessage.contains("URI") && errorMessage.contains("photo"));
+            assertTrue(errorMessage.contains("URI"));
+            assertTrue(errorMessage.contains("photo"));
         }
     }
 
@@ -380,3 +388,4 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
         System.out.println("The error message for " + methodName + " is: " + errorMessage);
     }
 }
+
