@@ -30,7 +30,7 @@ public class EmptyDateIT extends AbstractIntegrationTestBase {
         User user = oConnector.getUser("df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d4", accessToken);
         user.getExtension("extension").addOrUpdateField("birthday", "");
         
-        User replacedUser = oConnector.replaceUser(user, accessToken);
+        User replacedUser = oConnector.replaceUser("df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d4", user, accessToken);
         
         assertThat(replacedUser.getExtension("extension").isFieldPresent("birthday"), is(equalTo(false)));
     }
