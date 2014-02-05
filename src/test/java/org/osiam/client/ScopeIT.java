@@ -270,7 +270,7 @@ public class ScopeIT {
     }
 
     private Group createGroup() {
-        Group group = new Group.Builder().setDisplayName("displayName").build();
+        Group group = new Group.Builder("displayName").build();
         return oConnector.createGroup(group, accessToken);
     }
 

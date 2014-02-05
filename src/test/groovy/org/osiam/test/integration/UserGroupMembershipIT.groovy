@@ -1,12 +1,13 @@
 package org.osiam.test.integration
 
+import org.osiam.client.oauth.AccessToken
 import org.osiam.client.update.UpdateGroup
-import org.osiam.client.update.UpdateUser
+import org.osiam.resources.scim.Email
 import org.osiam.resources.scim.Group
+import org.osiam.resources.scim.GroupRef
+import org.osiam.resources.scim.MemberRef
 import org.osiam.resources.scim.Meta
-import org.osiam.resources.scim.MultiValuedAttribute
 import org.osiam.resources.scim.User
-import org.osiam.test.integration.AbstractIT
 
 /**
  * Test to ensure that updating group membership works.
@@ -24,7 +25,7 @@ class UserGroupMembershipIT extends AbstractIT {
     def "add user member to group"(){
         given:
         def user = new User.Builder("testUser").setPassword("test").build()
-        def group = new Group.Builder().setDisplayName("testGroup").build()
+        def group = new Group.Builder("testGroup").build()
         def createdUser = osiamConnector.createUser(user, osiamConnector.retrieveAccessToken())
         def createdGroup = osiamConnector.createGroup(group, osiamConnector.retrieveAccessToken())
 
@@ -47,8 +48,8 @@ class UserGroupMembershipIT extends AbstractIT {
 
     def "add group member to group"(){
         given:
-        def parentGroup = new Group.Builder().setDisplayName("parentGroup").build()
-        def memberGroup = new Group.Builder().setDisplayName("memberGroup").build()
+        def parentGroup = new Group.Builder("parentGroup").build()
+        def memberGroup = new Group.Builder("memberGroup").build()
         def createdParentGroup = osiamConnector.createGroup(parentGroup, osiamConnector.retrieveAccessToken())
         def createdMemberGroup = osiamConnector.createGroup(memberGroup, osiamConnector.retrieveAccessToken())
 
@@ -69,63 +70,66 @@ class UserGroupMembershipIT extends AbstractIT {
         memberGroupWithparent.getMembers().size() == 0
     }
 
-    def "remove member from group"() {
+    def 'remove member from group'() {
         given:
-        def memberGroup1 = osiamConnector.createGroup(new Group.Builder().setDisplayName("memberGroup1").build(), osiamConnector.retrieveAccessToken())
-        def memberGroup2 = osiamConnector.createGroup(new Group.Builder().setDisplayName("memberGroup2").build(), osiamConnector.retrieveAccessToken())
-        def memberUser = osiamConnector.createUser(new User.Builder("userMember").setPassword("test").build(), osiamConnector.retrieveAccessToken())
+		AccessToken accessToken = osiamConnector.retrieveAccessToken()
+        def memberGroup1 = osiamConnector.createGroup(new Group.Builder('memberGroup1').build(), accessToken)
+        def memberGroup2 = osiamConnector.createGroup(new Group.Builder('memberGroup2').build(), accessToken)
+        def memberUser = osiamConnector.createUser(new User.Builder('userMember').setPassword('test').build(), accessToken)
 
-        def member1 = new MultiValuedAttribute.Builder().setValue(memberGroup1.getId()).build()
-        def member2 = new MultiValuedAttribute.Builder().setValue(memberGroup2.getId()).build()
-        def member3 = new MultiValuedAttribute.Builder().setValue(memberUser.getId()).build()
-        def parentGroup = new Group.Builder().setDisplayName("parent").setMembers([member1, member2, member3] as Set).build()
+        def groupMember1 = new MemberRef.Builder().setValue(memberGroup1.getId()).build()
+        def groupMember2 = new MemberRef.Builder().setValue(memberGroup2.getId()).build()
+        def userMember3 = new MemberRef.Builder().setValue(memberUser.getId()).build()
+        def parentGroup = new Group.Builder('parent').setMembers([groupMember1, groupMember2, userMember3] as Set).build()
 
-        def parent = osiamConnector.createGroup(parentGroup, osiamConnector.retrieveAccessToken())
+        def retParentGroup = osiamConnector.createGroup(parentGroup, accessToken)
 
 
         def updateGroup = new Group.Builder()
-                .setMembers([new MultiValuedAttribute.Builder().setValue(memberGroup1.getId()).setOperation("delete").build()] as Set)
+                .setMembers([new MemberRef.Builder(memberGroup1).setOperation('delete').build()] as Set)
                 .build()
 
         when:
-        def result = osiamConnector.updateGroup(parent.getId(), updateGroup, osiamConnector.retrieveAccessToken())
+        def resultParentGroup = osiamConnector.updateGroup(retParentGroup.getId(), updateGroup, accessToken)
 
         then:
-        parent.getMembers().size() == 3
-        result.getMembers().size() == 2
-        def persistedParent = osiamConnector.getGroup(parent.getId(), osiamConnector.retrieveAccessToken())
+        parentGroup.getMembers().size() == 3
+        resultParentGroup.getMembers().size() == 2
+        def persistedParent = osiamConnector.getGroup(retParentGroup.getId(), accessToken)
         persistedParent.getMembers().size() == 2
     }
 
-    def "remove all members from group"() {
+    def 'remove all members from group'() {
         given:
-        def memberGroup1 = osiamConnector.createGroup(new Group.Builder().setDisplayName("memberGroup10").build(), osiamConnector.retrieveAccessToken())
-        def memberGroup2 = osiamConnector.createGroup(new Group.Builder().setDisplayName("memberGroup20").build(), osiamConnector.retrieveAccessToken())
+		
+		AccessToken accessToken = osiamConnector.retrieveAccessToken()
+		
+        def memberGroup1 = osiamConnector.createGroup(new Group.Builder('memberGroup10').build(), accessToken)
+        def memberGroup2 = osiamConnector.createGroup(new Group.Builder('memberGroup20').build(), accessToken)
 
-        def member1 = new MultiValuedAttribute.Builder().setValue(memberGroup1.getId()).build()
-        def member2 = new MultiValuedAttribute.Builder().setValue(memberGroup2.getId()).build()
-        def parentGroup = new Group.Builder().setDisplayName("parent1").setMembers([member1, member2] as Set).build()
+        def member1 = new MemberRef.Builder().setValue(memberGroup1.getId()).build()
+        def member2 = new MemberRef.Builder().setValue(memberGroup2.getId()).build()
+        def parentGroup = new Group.Builder('parent1').setMembers([member1, member2] as Set).build()
 
-        def parent = osiamConnector.createGroup(parentGroup, osiamConnector.retrieveAccessToken())
-
+        def parent = osiamConnector.createGroup(parentGroup, accessToken)
 
         def updateGroup = new Group.Builder()
-                .setMeta(new Meta.Builder(null, null).setAttributes(["members"] as Set).build())
+                .setMeta(new Meta.Builder(null, null).setAttributes(['members'] as Set).build())
                 .build()
 
         when:
-        def result = osiamConnector.updateGroup(parent.getId(), updateGroup, osiamConnector.retrieveAccessToken())
+        def result = osiamConnector.updateGroup(parent.getId(), updateGroup, accessToken)
 
         then:
         parent.getMembers().size() == 2
         result.getMembers().isEmpty()
-        def persistedParent = osiamConnector.getGroup(parent.getId(), osiamConnector.retrieveAccessToken())
+        def persistedParent = osiamConnector.getGroup(parent.getId(), accessToken)
         persistedParent.getMembers().isEmpty()
     }
 
     def "ignoring required and read only attributes"(){
         given:
-        def group = new Group.Builder().setDisplayName("Group").build()
+        def group = new Group.Builder("Group").build()
 
         def createdGroup = osiamConnector.createGroup(group, osiamConnector.retrieveAccessToken())
 

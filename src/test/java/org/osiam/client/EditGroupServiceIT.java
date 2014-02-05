@@ -57,7 +57,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
 
     @Test(expected = ConflictException.class)
     public void create_group_with_empty_displayName_raises_exception() {
-        group = new Group.Builder().setDisplayName("").build();
+        group = new Group.Builder("").build();
         createGroup();
         fail("Exception expected");
     }
@@ -65,14 +65,14 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
     @Test(expected = ConflictException.class)
     public void create_group_with_existing_displayName_raises_exception() {
         String existingGroupName = "parent_group";
-        group = new Group.Builder().setDisplayName(existingGroupName).build();
+        group = new Group.Builder(existingGroupName).build();
         createGroup();
         fail("Exception expected");
     }
 
     @Test
     public void creating_a_group_works() {
-        group = new Group.Builder().setDisplayName(IRRELEVANT).build();
+        group = new Group.Builder(IRRELEVANT).build();
         Group groupInDb = loadGroup(createGroup().getId());
         assertThat(groupInDb.getDisplayName(), is(equalTo(group.getDisplayName())));
     }
@@ -80,7 +80,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
     @Test
     public void create_group_with_exing_id_is_ignored() {
         String existingGroupId = "69e1a5dc-89be-4343-976c-b5541af249f4";
-        group = new Group.Builder().setDisplayName(IRRELEVANT).setId(existingGroupId).build();
+        group = new Group.Builder(IRRELEVANT).setId(existingGroupId).build();
         createGroup();
         Group groupInDb = loadGroup(existingGroupId);
         assertThat(groupInDb.getDisplayName(), not(equalTo(group.getDisplayName())));
@@ -88,7 +88,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
 
     @Test(expected = NoResultException.class)
     public void create_group_with_provided_id_ignores_provided_id() {
-        group = new Group.Builder().setDisplayName(IRRELEVANT).setId(INVALID_ID).build();
+        group = new Group.Builder(IRRELEVANT).setId(INVALID_ID).build();
         Group createdGroup = createGroup();
         assertThat(createdGroup.getId(), not(equalTo(INVALID_ID))); // This might fail once every 8 billion years
         loadGroup(newId);
@@ -98,7 +98,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
     @Test
     public void created_group_can_be_found_via_query() {
         Query query = queryToSearchForGroupWithName(IRRELEVANT);
-        group = new Group.Builder().setDisplayName(IRRELEVANT).build();
+        group = new Group.Builder(IRRELEVANT).build();
         createGroup();
 
         Group foundGroup = findSingleGroupByQuery(query);

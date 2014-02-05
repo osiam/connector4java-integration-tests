@@ -1,5 +1,12 @@
 package org.osiam.client;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +20,7 @@ import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.metamodel.User_;
 import org.osiam.resources.scim.Address;
-import org.osiam.resources.scim.MultiValuedAttribute;
+import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.Name;
 import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.User;
@@ -26,13 +33,6 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -151,7 +151,8 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     @Test(expected = UnauthorizedException.class)
-    public void provide_an_invalid_access_token_raises_exception() throws Exception {
+    public void provide_an_invalid_access_token_raises_exception()
+            throws Exception {
         givenAValidUserIDForDeletion();
         givenAnInvalidAccessToken();
         whenUserIsDeleted();
@@ -183,7 +184,8 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     private void loadSingleUserByQuery() {
-        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = oConnector.searchUsers(query,
+                accessToken);
         if (result.getResources().size() == 0) {
             dbUser = null;
         } else if (result.getResources().size() == 1) {
@@ -198,46 +200,36 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     private void initialQueryToSearchUser() {
-        query = new Query.Builder(User.class).setFilter(
-                new Query.Filter(User.class, User_.userName.equalTo(IRRELEVANT))).build();
+        query = new Query.Builder(User.class)
+                .setFilter(
+                        new Query.Filter(User.class, User_.userName
+                                .equalTo(IRRELEVANT))).build();
     }
 
     private void buildCompleteUser() {
         Address address = new Address.Builder()
-                .setStreetAddress("Example Street 22")
-                .setCountry("Germany")
-                .setFormatted("Complete Adress")
-                .setLocality("de")
-                .setPostalCode("111111")
-                .setRegion("Berlin")
-                .build();
+                .setStreetAddress("Example Street 22").setCountry("Germany")
+                .setFormatted("Complete Adress").setLocality("de")
+                .setPostalCode("111111").setRegion("Berlin").build();
         List<Address> addresses = new ArrayList<>();
         addresses.add(address);
-        MultiValuedAttribute email01 = new MultiValuedAttribute.Builder().setValue("example@example.de")
-                .setPrimary(true).setType("work").build();
-        MultiValuedAttribute email02 = new MultiValuedAttribute.Builder().setValue("example02@example.de")
-                .setPrimary(false).setType("home").build();
-        List<MultiValuedAttribute> emails = new ArrayList<>();
+        Email email01 = new Email.Builder().setValue("example@example.de")
+                .setPrimary(true).setType(Email.Type.WORK).build();
+        Email email02 = new Email.Builder().setValue("example02@example.de")
+                .setPrimary(false).setType(Email.Type.HOME).build();
+        List<Email> emails = new ArrayList<>();
         emails.add(email01);
         emails.add(email02);
 
         Name name = new Name.Builder().setFamilyName("familyName")
-                .setGivenName("vorName")
-                .setMiddleName("middle")
-                .setFormatted("complete Name")
-                .setHonorificPrefix("HPre")
+                .setGivenName("vorName").setMiddleName("middle")
+                .setFormatted("complete Name").setHonorificPrefix("HPre")
                 .setHonorificSuffix("HSu").build();
 
-        newUser = new User.Builder(IRRELEVANT)
-                .setPassword("password")
-                .setActive(true)
-                .setAddresses(addresses)
-                .setLocale("de")
-                .setName(name)
-                .setNickName("aNicknane")
-                .setTitle("Dr.")
-                .setEmails(emails)
-                .build();
+        newUser = new User.Builder(IRRELEVANT).setPassword("password")
+                .setActive(true).setAddresses(addresses).setLocale("de")
+                .setName(name).setNickName("aNicknane").setTitle("Dr.")
+                .setEmails(emails).build();
     }
 
     private void assertEqualsUser(User expected, User actual) {
@@ -252,32 +244,39 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
 
     }
 
-    private void assertEqualsEmailAttribute(List<MultiValuedAttribute> expectedMultiValuedAttributes,
-            List<MultiValuedAttribute> actualMultiValuedAttributes) {
-        if ((expectedMultiValuedAttributes == null || expectedMultiValuedAttributes.size() == 0)
-                && (actualMultiValuedAttributes == null || actualMultiValuedAttributes.size() == 0)) {
+    private void assertEqualsEmailAttribute(
+            List<Email> expectedMultiValuedAttributes,
+            List<Email> actualMultiValuedAttributes) {
+        if ((expectedMultiValuedAttributes == null || expectedMultiValuedAttributes
+                .size() == 0)
+                && (actualMultiValuedAttributes == null || actualMultiValuedAttributes
+                        .size() == 0)) {
             return;
         }
-        assertEquals(expectedMultiValuedAttributes.size(), actualMultiValuedAttributes.size());
+        assertEquals(expectedMultiValuedAttributes.size(),
+                actualMultiValuedAttributes.size());
         for (int count = 0; count < expectedMultiValuedAttributes.size(); count++) {
-            MultiValuedAttribute expectedAttribute = expectedMultiValuedAttributes.get(count);
-            MultiValuedAttribute actualAttribute = getMultiAttributeWithValue(actualMultiValuedAttributes,
-                    expectedAttribute.getValue().toString());
-            if (actualAttribute == null) {
-                fail("MultiValueAttribute " + expectedAttribute.getValue() + " could not be found");
+            Email expectedEmail = expectedMultiValuedAttributes.get(count);
+            Email actualEmail = getMultiAttributeWithValue(
+                    actualMultiValuedAttributes, expectedEmail.getValue()
+                            .toString());
+            if (actualEmail == null) {
+                fail("MultiValueAttribute " + expectedEmail.getValue()
+                        + " could not be found");
             }
 
-            assertEquals(expectedAttribute.getDisplay(), actualAttribute.getDisplay());
-            assertEquals(expectedAttribute.getOperation(), actualAttribute.getOperation());
-            assertEquals(expectedAttribute.getType(), actualAttribute.getType());
-            assertEquals(expectedAttribute.getValue(), actualAttribute.getValue());
+            assertEquals(expectedEmail.getDisplay(), actualEmail.getDisplay());
+            assertEquals(expectedEmail.getOperation(),
+                    actualEmail.getOperation());
+            assertEquals(expectedEmail.getType(), actualEmail.getType());
+            assertEquals(expectedEmail.getValue(), actualEmail.getValue());
         }
     }
 
-    private MultiValuedAttribute getMultiAttributeWithValue(List<MultiValuedAttribute> multiValuedAttributes,
+    private Email getMultiAttributeWithValue(List<Email> multiValuedAttributes,
             String expectedValue) {
-        MultiValuedAttribute mutliVal = null;
-        for (MultiValuedAttribute actAttribute : multiValuedAttributes) {
+        Email mutliVal = null;
+        for (Email actAttribute : multiValuedAttributes) {
             if (actAttribute.getValue().toString().equals(expectedValue)) {
                 mutliVal = actAttribute;
                 break;
@@ -290,23 +289,31 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
         assertEquals(expectedName.getFamilyName(), actualName.getFamilyName());
         assertEquals(expectedName.getFormatted(), actualName.getFormatted());
         assertEquals(expectedName.getGivenName(), actualName.getGivenName());
-        assertEquals(expectedName.getHonorificPrefix(), actualName.getHonorificPrefix());
-        assertEquals(expectedName.getHonorificSuffix(), actualName.getHonorificSuffix());
+        assertEquals(expectedName.getHonorificPrefix(),
+                actualName.getHonorificPrefix());
+        assertEquals(expectedName.getHonorificSuffix(),
+                actualName.getHonorificSuffix());
         assertEquals(expectedName.getMiddleName(), actualName.getMiddleName());
     }
 
-    private void assertEqualsAddresses(List<Address> expectedAddresses, List<Address> actualAddresses) {
+    private void assertEqualsAddresses(List<Address> expectedAddresses,
+            List<Address> actualAddresses) {
         assertEquals(expectedAddresses.size(), actualAddresses.size());
         for (int count = 0; count < expectedAddresses.size(); count++) {
             Address expectedAddress = expectedAddresses.get(count);
             Address actualAddress = actualAddresses.get(count);
 
-            assertEquals(expectedAddress.getCountry(), actualAddress.getCountry());
-            assertEquals(expectedAddress.getFormatted(), actualAddress.getFormatted());
-            assertEquals(expectedAddress.getLocality(), actualAddress.getLocality());
-            assertEquals(expectedAddress.getPostalCode(), actualAddress.getPostalCode());
+            assertEquals(expectedAddress.getCountry(),
+                    actualAddress.getCountry());
+            assertEquals(expectedAddress.getFormatted(),
+                    actualAddress.getFormatted());
+            assertEquals(expectedAddress.getLocality(),
+                    actualAddress.getLocality());
+            assertEquals(expectedAddress.getPostalCode(),
+                    actualAddress.getPostalCode());
             assertEquals(expectedAddress.getRegion(), actualAddress.getRegion());
-            assertEquals(expectedAddress.getStreetAddress(), actualAddress.getStreetAddress());
+            assertEquals(expectedAddress.getStreetAddress(),
+                    actualAddress.getStreetAddress());
         }
     }
 

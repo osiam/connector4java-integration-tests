@@ -1,10 +1,9 @@
 package org.osiam.test.integration
 
+import org.osiam.resources.scim.Email
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
-import org.osiam.resources.scim.MultiValuedAttribute
 import org.osiam.resources.scim.User
-import org.osiam.test.integration.AbstractIT
 
 class UpdateUserWithScimUserIT extends AbstractIT {
 
@@ -24,7 +23,7 @@ class UpdateUserWithScimUserIT extends AbstractIT {
         extension.addOrUpdateField(field, 'value')
 
         def updateUser = new User.Builder('testUser').setDisplayName('display')
-                .setPhoneNumbers([new MultiValuedAttribute.Builder().setValue('test').setType('work').build()] as List)
+                .setPhoneNumbers([new Email.Builder().setValue('test').setType(Email.Type.WORK).build()] as List)
                 .setActive(true).addExtension(extension).build()
 
         when:

@@ -205,7 +205,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
     }
 
     private void getOriginalGroup() {
-        Group.Builder groupBuilder = new Group.Builder().setDisplayName(IRRELEVANT);
+        Group.Builder groupBuilder = new Group.Builder(IRRELEVANT);
 
         MemberRef member01 = new MemberRef.Builder().setValue(ID_USER_BTHOMSON).build();
         MemberRef member02 = new MemberRef.Builder().setValue(ID_USER_CMILLER).build();
