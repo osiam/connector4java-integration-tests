@@ -1,3 +1,26 @@
+/*
+ * Copyright (C) 2013 tarent AG
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package org.osiam.test.integration
 
 import org.dbunit.database.DatabaseDataSourceConnection
@@ -17,9 +40,6 @@ import javax.sql.DataSource
 
 /**
  * Base class for integration tests.
- *
- * @author: Andreas Grau, tarent solutions GmbH, 10.09.13
- * @version: 1.0
  */
 abstract class AbstractIT extends Specification {
 
@@ -36,11 +56,11 @@ abstract class AbstractIT extends Specification {
     protected static final String RESOURCE_ENDPOINT = "http://localhost:8180/osiam-resource-server"
     protected static final String REGISTRATION_ENDPOINT = "http://localhost:8180/osiam-registration-module"
 
-    protected OsiamConnector osiamConnector;
-    protected OsiamConnector osiamConnectorForClientCredentialsGrant;
-    protected OsiamConnector osiamConnectorForEmailChange;
+    protected OsiamConnector osiamConnector
+    protected OsiamConnector osiamConnectorForClientCredentialsGrant
+    protected OsiamConnector osiamConnectorForEmailChange
 
-    def AccessToken accessToken;
+    def AccessToken accessToken
 
     def setupDatabase(String seedFileName) {
 
@@ -58,7 +78,7 @@ abstract class AbstractIT extends Specification {
             DatabaseOperation.CLEAN_INSERT.execute(connection, initData)
         }
         finally {
-            connection.close();
+            connection.close()
         }
 
         osiamConnector = new OsiamConnector.Builder().
@@ -108,7 +128,7 @@ abstract class AbstractIT extends Specification {
             DatabaseOperation.DELETE_ALL.execute(connection, initData)
         }
         finally {
-            connection.close();
+            connection.close()
         }
     }
 }
