@@ -23,10 +23,11 @@
 
 package org.osiam.client.integration;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.AbstractIntegrationTestBase;
@@ -61,13 +62,33 @@ public class SearchByExtensionIT extends AbstractIntegrationTestBase {
     
     @Test
     @DatabaseSetup(value = "/database_seeds/SearchByExtensionIT/search_by_extensions_with_not.xml")
-    public void search_user_with_extension_and_not_fail() {
-        String query = getCompletUserQueryString();
+    public void search_user_with_not_returns_right_user() {
+        String query = encodeExpected("not (extension.gender eq \"male\")");
         SCIMSearchResult<User> queryResult = oConnector.searchUsers("filter=" + query, accessToken);
-        assertEquals(1L, queryResult.getTotalResults());
+        assertThat(queryResult.getTotalResults(), is(equalTo(1L)));
+        assertThat(queryResult.getResources().get(0).getUserName(), is(equalTo("existing3")));
     }
-
-    private String getCompletUserQueryString() {
-        return encodeExpected("not (extension.gender eq \"male\")");
+    
+    @Test
+    @Ignore ("Because of Hibernate Bug with isNotNull https://hibernate.atlassian.net/browse/HHH-8914")
+    @DatabaseSetup(value = "/database_seeds/SearchByExtensionIT/search_by_extensions_with_not.xml")
+    public void search_user_with_not_and_present_returns_right_user() {
+        String query = encodeExpected("not (extension.gender pr)");
+        SCIMSearchResult<User> queryResult = oConnector.searchUsers("filter=" + query + "&sortBy=username", accessToken);
+        assertThat(queryResult.getTotalResults(), is(equalTo(2L)));
+        assertThat(queryResult.getResources().get(0).getUserName(), is(equalTo("existing2")));
+        assertThat(queryResult.getResources().get(1).getUserName(), is(equalTo("marissa")));
+    }
+    
+    @Test
+    @Ignore ("Because of Hibernate Bug with isNotNull https://hibernate.atlassian.net/browse/HHH-8914")
+    @DatabaseSetup(value = "/database_seeds/SearchByExtensionIT/search_by_extensions_with_not.xml")
+    public void search_user_with_not_and_present_and_equal_field_returns_right_user() {
+        String query = encodeExpected("not (extension.gender pr and extension.gender eq \"male\")");
+        SCIMSearchResult<User> queryResult = oConnector.searchUsers("filter=" + query + "&sortBy=username", accessToken);
+        assertThat(queryResult.getTotalResults(), is(equalTo(3L)));
+        assertThat(queryResult.getResources().get(0).getUserName(), is(equalTo("existing2")));
+        assertThat(queryResult.getResources().get(1).getUserName(), is(equalTo("existing3")));
+        assertThat(queryResult.getResources().get(2).getUserName(), is(equalTo("marissa")));
     }
 }
