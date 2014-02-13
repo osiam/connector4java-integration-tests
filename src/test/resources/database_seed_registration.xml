@@ -64,6 +64,8 @@
 
     <scim_extension_field internal_id="82" is_required="true" name="activationToken" type="STRING"
         extension_internal_id="81" />
+    <scim_extension_field internal_id="88" is_required="true" name="field1" type="STRING"
+        extension_internal_id="81" />
     <scim_extension_field internal_id="85" is_required="true" name="field1" type="STRING"
         extension_internal_id="84" />
     <scim_extension_field internal_id="86" is_required="true" name="field2" type="STRING"
@@ -73,5 +75,7 @@
 
     <scim_extension_field_value internal_id="83" value="cef9452e-00a9-4cec-a086-a171374febef"
         extension_field_internal_id="82" user_internal_id="60" />
+    <scim_extension_field_value internal_id="84" value="xxxxxx" extension_field_internal_id="88"
+        user_internal_id="60" />
 
 </dataset>

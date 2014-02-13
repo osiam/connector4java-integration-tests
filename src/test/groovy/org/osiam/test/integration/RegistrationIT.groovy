@@ -141,7 +141,7 @@ class RegistrationIT extends AbstractIT{
 
         //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
         mailServer.waitForIncomingEmail(5000, 1)
-        Message[] messages = mailServer.getReceivedMessages();
+        Message[] messages = mailServer.getReceivedMessages()
         messages.length == 1
         messages[0].getSubject() == "registration"
         GreenMailUtil.getBody(messages[0]).contains("your account has been created")
@@ -207,7 +207,7 @@ class RegistrationIT extends AbstractIT{
 
         responseStatus == 200
         activeFlag
-        token == ""
+        token == null
     }
 
     def "Registration of user with client defined extensions"() {
@@ -263,7 +263,7 @@ class RegistrationIT extends AbstractIT{
 
         //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
         mailServer.waitForIncomingEmail(5000, 1)
-        Message[] messages = mailServer.getReceivedMessages();
+        Message[] messages = mailServer.getReceivedMessages()
         messages.length == 1
         messages[0].getSubject() == "registration"
         GreenMailUtil.getBody(messages[0]).contains("your account has been created")

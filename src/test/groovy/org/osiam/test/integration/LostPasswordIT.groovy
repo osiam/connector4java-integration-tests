@@ -127,7 +127,7 @@ class LostPasswordIT extends AbstractIT {
         savedUserId == userId
         User user = osiamConnector.getUser(userId, accessToken)
         Extension extension = user.getExtension(urn)
-        extension.getField("oneTimePassword", ExtensionFieldType.STRING) == ""
+        extension.isFieldPresent("oneTimePassword") == false
     }
 
     def "URI: /password/lostForm with GET method to get an html form with input field for the new password including known values as otp and userId"() {
