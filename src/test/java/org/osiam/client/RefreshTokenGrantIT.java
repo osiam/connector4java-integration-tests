@@ -42,11 +42,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
-/**
- * CHANGE THIS TEXT TO SOMETHING USEFUL, DESCRIBING THE CLASS.
- *
- * @author Jochen Todea
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
