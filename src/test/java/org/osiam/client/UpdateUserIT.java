@@ -276,6 +276,15 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         assertThatOnlyNewEmailAddressIsPrimary();
     }
 
+    @Test
+    public void deleting_and_add_of_same_mailadress_works() {
+        getOriginalUser(IRRELEVANT);
+        createUpdateUserWhereTheSameEmailIsSetToDeleteAndAdd();
+        updateUser();
+
+        assertThat(originalUser.getEmails(), is(databaseUser.getEmails()));
+    }
+
     private void assertThatOnlyNewEmailAddressIsPrimary() {
         for (Email email : returnUser.getEmails()) {
             if (email.getValue().equals("hsimpson02@atom-example.com")) {
@@ -602,6 +611,14 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
         updateUser = new UpdateUser.Builder()
                 .addEmail(primaryEmail)
+                .build();
+    }
+
+    private void createUpdateUserWhereTheSameEmailIsSetToDeleteAndAdd() {
+        Email email = originalUser.getEmails().get(0);
+        updateUser = new UpdateUser.Builder()
+                .deleteEmail(email)
+                .addEmail(email)
                 .build();
     }
 
