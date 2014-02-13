@@ -166,8 +166,8 @@ class ChangeEmailIT extends AbstractIT {
         userId == savedUserId
         User user = osiamConnector.getUser(userId, accessToken)
         Extension extension = user.getExtension(urn)
-        extension.getField("emailConfirmToken", ExtensionFieldType.STRING) == ""
-        extension.getField("tempMail", ExtensionFieldType.STRING) == ""
+        extension.isFieldPresent("emailConfirmToken") == false
+        extension.isFieldPresent("tempMail") == false
         user.getEmails().size() == 2
         user.getEmails().each {
             if (it.isPrimary())
