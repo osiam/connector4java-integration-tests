@@ -24,12 +24,10 @@
 package org.osiam.test.integration
 
 import org.osiam.client.oauth.AccessToken
-import org.osiam.client.update.UpdateGroup
-import org.osiam.resources.scim.Email
 import org.osiam.resources.scim.Group
-import org.osiam.resources.scim.GroupRef
 import org.osiam.resources.scim.MemberRef
 import org.osiam.resources.scim.Meta
+import org.osiam.resources.scim.UpdateGroup
 import org.osiam.resources.scim.User
 
 /**
