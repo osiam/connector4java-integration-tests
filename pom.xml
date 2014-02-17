@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright (C) 2013 tarent AG
   ~
@@ -45,8 +45,8 @@
         <spock.version>0.7-groovy-2.0</spock.version>
 
         <!-- OSIAM -->
-        <osiam.version>0.16</osiam.version>
-        <osiam.connector4java.version>0.12</osiam.connector4java.version>
+        <osiam.version>0.17.1</osiam.version>
+        <osiam.connector4java.version>0.13</osiam.connector4java.version>
     </properties>
 
     <repositories>

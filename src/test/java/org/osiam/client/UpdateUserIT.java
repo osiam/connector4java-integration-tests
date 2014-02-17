@@ -1,3 +1,26 @@
+/*
+ * Copyright (C) 2013 tarent AG
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package org.osiam.client;
 
 import static org.hamcrest.Matchers.empty;
@@ -23,7 +46,6 @@ import org.osiam.client.exception.ConflictException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
-import org.osiam.client.update.UpdateUser;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.Entitlement;
@@ -32,6 +54,7 @@ import org.osiam.resources.scim.Name;
 import org.osiam.resources.scim.PhoneNumber;
 import org.osiam.resources.scim.Photo;
 import org.osiam.resources.scim.Role;
+import org.osiam.resources.scim.UpdateUser;
 import org.osiam.resources.scim.User;
 import org.osiam.resources.scim.X509Certificate;
 import org.springframework.test.context.ContextConfiguration;
@@ -251,6 +274,15 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         updateUser();
 
         assertThatOnlyNewEmailAddressIsPrimary();
+    }
+
+    @Test
+    public void deleting_and_add_of_same_mailadress_works() {
+        getOriginalUser(IRRELEVANT);
+        createUpdateUserWhereTheSameEmailIsSetToDeleteAndAdd();
+        updateUser();
+
+        assertThat(originalUser.getEmails(), is(databaseUser.getEmails()));
     }
 
     private void assertThatOnlyNewEmailAddressIsPrimary() {
@@ -579,6 +611,14 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
         updateUser = new UpdateUser.Builder()
                 .addEmail(primaryEmail)
+                .build();
+    }
+
+    private void createUpdateUserWhereTheSameEmailIsSetToDeleteAndAdd() {
+        Email email = originalUser.getEmails().get(0);
+        updateUser = new UpdateUser.Builder()
+                .deleteEmail(email)
+                .addEmail(email)
                 .build();
     }
 

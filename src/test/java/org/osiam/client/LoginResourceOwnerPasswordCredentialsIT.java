@@ -44,7 +44,6 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 /**
  * Test for resource owner password credentials grant.
  * 
- * @author Jochen Todea
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")

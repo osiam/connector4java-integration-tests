@@ -1,4 +1,27 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (C) 2013 tarent AG
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining
+  ~ a copy of this software and associated documentation files (the
+  ~ "Software"), to deal in the Software without restriction, including
+  ~ without limitation the rights to use, copy, modify, merge, publish,
+  ~ distribute, sublicense, and/or sell copies of the Software, and to
+  ~ permit persons to whom the Software is furnished to do so, subject to
+  ~ the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be
+  ~ included in all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  ~ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+  ~ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+  ~ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+  ~ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+  ~ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+  ~ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+
 <dataset>
 
     <database_scheme_version version="0.05" />
@@ -41,6 +64,8 @@
 
     <scim_extension_field internal_id="82" is_required="true" name="activationToken" type="STRING"
         extension_internal_id="81" />
+    <scim_extension_field internal_id="88" is_required="true" name="field1" type="STRING"
+        extension_internal_id="81" />
     <scim_extension_field internal_id="85" is_required="true" name="field1" type="STRING"
         extension_internal_id="84" />
     <scim_extension_field internal_id="86" is_required="true" name="field2" type="STRING"
@@ -50,5 +75,7 @@
 
     <scim_extension_field_value internal_id="83" value="cef9452e-00a9-4cec-a086-a171374febef"
         extension_field_internal_id="82" user_internal_id="60" />
+    <scim_extension_field_value internal_id="84" value="xxxxxx" extension_field_internal_id="88"
+        user_internal_id="60" />
 
 </dataset>

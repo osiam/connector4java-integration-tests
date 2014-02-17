@@ -1,3 +1,26 @@
+/*
+ * Copyright (C) 2013 tarent AG
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package org.osiam.client;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -12,7 +35,6 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osiam.client.update.UpdateUser;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.Entitlement;
@@ -24,6 +46,7 @@ import org.osiam.resources.scim.PhoneNumber;
 import org.osiam.resources.scim.Photo;
 import org.osiam.resources.scim.Role;
 import org.osiam.resources.scim.SCIMSearchResult;
+import org.osiam.resources.scim.UpdateUser;
 import org.osiam.resources.scim.User;
 import org.osiam.resources.scim.X509Certificate;
 import org.springframework.test.context.ContextConfiguration;
@@ -52,7 +75,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         User newUser = initializeUserWithAllAttributes();
         User retUser = oConnector.createUser(newUser, accessToken);
         User dbUser = oConnector.getUser(retUser.getId(), accessToken);
-        assertThatNewUserAndReturnUserAreEqual(newUser, dbUser, true);
+        assertThatNewUserAndReturnUserAreEqual(newUser, dbUser);
     }
 
     @Test
@@ -61,28 +84,28 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         User expectedUser = createUserWithUpdatedField();
         UpdateUser updateUser = createUpdateUser(oldUser, expectedUser);
         User dbUser = oConnector.updateUser(VALID_USER_ID, updateUser, accessToken);
-        assertThatNewUserAndReturnUserAreEqual(expectedUser, dbUser, false);
+        assertThatNewUserAndReturnUserAreEqual(expectedUser, dbUser);
     }
 
     @Test
-    public void delete_User_who_has_all_attributes(){
+    public void delete_User_who_has_all_attributes() {
         oConnector.deleteUser(VALID_USER_ID, accessToken);
     }
-    
+
     @Test
-    public void replace_user_with_has_all_attributes(){
+    public void replace_user_with_has_all_attributes() {
         User patchedUser = new User.Builder(createUserWithUpdatedField()).build();
         User updatedUser = oConnector.replaceUser(VALID_USER_ID, patchedUser, accessToken);
-        assertThatNewUserAndReturnUserAreEqual(patchedUser, updatedUser, true);
+        assertThatNewUserAndReturnUserAreEqual(patchedUser, updatedUser);
     }
-    
+
     @Test
     public void search_for_user_by_complex_query() {
         String query = getCompletUserQueryString();
         SCIMSearchResult<User> queryResult = oConnector.searchUsers("filter=" + query, accessToken);
         assertThat(queryResult.getTotalResults(), is(equalTo(1L)));
     }
-    
+
     private String getCompletUserQueryString() {
         return encodeExpected("active eq \"true\""
                 + " and addresses.country eq \"Germany\""
@@ -177,7 +200,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         x509Certificates.add(x509Certificat);
         Extension extension = new Extension(EXTENSION_URN);
         extension.addOrUpdateField("gender", "female");
-        extension.addOrUpdateField("age", new BigInteger("18"));
+        extension.addOrUpdateField("age", new BigInteger("22"));
         return new User.Builder("complete_add_user").setActive(true)
                 .setAddresses(addresses).setDisplayName("displayName")
                 .setEmails(emails).setEntitlements(entitlements)
@@ -276,15 +299,14 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         updateUserBuilder.updateIms(oldUser.getIms().get(0), expectedUser.getIms().get(0));
         updateUserBuilder.updatePhotos(oldUser.getPhotos().get(0), expectedUser.getPhotos().get(0));
         updateUserBuilder.updateUserName(expectedUser.getUserName());
+        updateUserBuilder.updateExtension(expectedUser.getExtension(EXTENSION_URN));
 
         return updateUserBuilder.build();
     }
 
-    private void assertThatNewUserAndReturnUserAreEqual(User expectedUser, User actualUser, boolean checkExtensions) {
+    private void assertThatNewUserAndReturnUserAreEqual(User expectedUser, User actualUser) {
         assertThatAddressesAreEqual(expectedUser.getAddresses(), actualUser.getAddresses());
-        if (checkExtensions) {
-            assertEquals(expectedUser.getAllExtensions(), actualUser.getAllExtensions());
-        }
+        assertEquals(expectedUser.getAllExtensions(), actualUser.getAllExtensions());
         assertEquals(expectedUser.getDisplayName(), actualUser.getDisplayName());
         assertThatEmailsAreEqual(expectedUser.getEmails(), actualUser.getEmails());
         assertThatEntitlementsAreEqual(expectedUser.getEntitlements(), actualUser.getEntitlements());
