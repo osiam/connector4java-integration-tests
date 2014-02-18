@@ -27,7 +27,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.AbstractIntegrationTestBase;
@@ -70,7 +69,6 @@ public class SearchByExtensionIT extends AbstractIntegrationTestBase {
     }
     
     @Test
-    @Ignore ("Because of Hibernate Bug with isNotNull https://hibernate.atlassian.net/browse/HHH-8914")
     @DatabaseSetup(value = "/database_seeds/SearchByExtensionIT/search_by_extensions_with_not.xml")
     public void search_user_with_not_and_present_returns_right_user() {
         String query = encodeExpected("not (extension.gender pr)");
@@ -81,7 +79,6 @@ public class SearchByExtensionIT extends AbstractIntegrationTestBase {
     }
     
     @Test
-    @Ignore ("Because of Hibernate Bug with isNotNull https://hibernate.atlassian.net/browse/HHH-8914")
     @DatabaseSetup(value = "/database_seeds/SearchByExtensionIT/search_by_extensions_with_not.xml")
     public void search_user_with_not_and_present_and_equal_field_returns_right_user() {
         String query = encodeExpected("not (extension.gender pr and extension.gender eq \"male\")");
