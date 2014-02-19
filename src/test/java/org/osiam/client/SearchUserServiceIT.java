@@ -305,6 +305,14 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         oConnector.searchUsers("filter=" + query, accessToken);
         fail("Exception should be thrown");
     }
+    
+    @Test(expected = ConflictException.class)
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
+    public void search_for_user_by_non_exisitng_field_with_query_string_fails() {
+        String query = encodeExpected(INVALID_STRING + " eq \"" + INVALID_STRING + "\"");
+        oConnector.searchUsers("filter=" + query, accessToken);
+        fail("Exception should be thrown");
+    }
 
     private void create100NewUser() {
         for (int count = 0; count < 100; count++) {
