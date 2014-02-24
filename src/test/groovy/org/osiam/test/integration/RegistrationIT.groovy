@@ -55,13 +55,13 @@ class RegistrationIT extends AbstractIT{
 
     def setupSpec() {
         mapper = new ObjectMapper()
-        def userDeserializerModule = new SimpleModule("userDeserializerModule", new Version(1, 0, 0, null))
+        def userDeserializerModule = new SimpleModule('userDeserializerModule', new Version(1, 0, 0, null))
                 .addDeserializer(User.class, new UserDeserializer(User.class))
         mapper.registerModule(userDeserializerModule)
     }
 
     def setup() {
-        setupDatabase("database_seed_registration.xml")
+        setupDatabase('database_seed_registration.xml')
 
         mailServer = new GreenMail(ServerSetupTest.ALL)
         mailServer.start()
@@ -71,7 +71,7 @@ class RegistrationIT extends AbstractIT{
         mailServer.stop()
     }
 
-    def "The registration controller should return an HTML page if a GET request was issued to its '/' path with an access token in the header"() {
+    def 'The registration controller should return an HTML page if a GET request was issued to its "/" path with an access token in the header'() {
         given:
         def responseContent
         def responseContentType
@@ -81,7 +81,7 @@ class RegistrationIT extends AbstractIT{
         def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
         httpClient.request(Method.GET, ContentType.TEXT) { req ->
-            uri.path = REGISTRATION_ENDPOINT + "/register"
+            uri.path = REGISTRATION_ENDPOINT + '/register'
             headers.Accept = 'text/html'
 
             response.success = { resp, html ->
@@ -99,13 +99,13 @@ class RegistrationIT extends AbstractIT{
         responseStatus == 200
         responseContentType == ContentType.HTML.toString()
         //ensure that the content is HTML
-        responseContent.contains("</form>")
+        responseContent.contains('</form>')
         //HTML should contain the fields for registration
-        responseContent.count("ng-model") == 8
+        responseContent.count('ng-model') == 8
         responseContent.contains('url: \'http://test\'')
     }
 
-    def "The registration controller should complete the registration process if a POST request was issued to his '/create' path with an access token in the header"() {
+    def 'The registration controller should complete the registration process if a POST request was issued to his "/create" path with an access token in the header'() {
         given:
         def accessToken = osiamConnector.retrieveAccessToken()
         def userToRegister = getUserAsStringWithExtension()
@@ -117,9 +117,9 @@ class RegistrationIT extends AbstractIT{
         def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
         httpClient.request(Method.POST, ContentType.JSON) { req ->
-            uri.path = REGISTRATION_ENDPOINT + "/register/create"
+            uri.path = REGISTRATION_ENDPOINT + '/register/create'
             body = userToRegister
-            headers."Authorization" = "Bearer " + accessToken.getToken()
+            headers.'Authorization' = 'Bearer ' + accessToken.getToken()
 
             response.success = { resp, json ->
                 responseStatus = resp.statusLine.statusCode
@@ -143,27 +143,27 @@ class RegistrationIT extends AbstractIT{
         mailServer.waitForIncomingEmail(5000, 1)
         Message[] messages = mailServer.getReceivedMessages()
         messages.length == 1
-        messages[0].getSubject() == "registration"
-        GreenMailUtil.getBody(messages[0]).contains("ihr Account wurde erstellt")
-        messages[0].getFrom()[0].toString() == "noreply@osiam.org"
-        messages[0].getAllRecipients()[0].toString().equals("email@example.org")
+        messages[0].getSubject() == 'registration'
+        GreenMailUtil.getBody(messages[0]).contains('your account has been created')
+        messages[0].getFrom()[0].toString() == 'noreply@osiam.org'
+        messages[0].getAllRecipients()[0].toString().equals('email@example.org')
     }
 
     def getUserAsStringWithExtension() {
-        def email = new Email.Builder().setPrimary(true).setValue("email@example.org").build()
+        def email = new Email.Builder().setPrimary(true).setValue('email@example.org').build()
 
-        def user = new User.Builder("George Alexander")
-                .setPassword("password")
+        def user = new User.Builder('George Alexander')
+                .setPassword('password')
                 .setEmails([email])
                 .build()
 
         return mapper.writeValueAsString(user)
     }
 
-    def "The registration controller should activate the user if a POST request was issued to his '/activate' path with an access token in the header and the activation code as parameter"() {
+    def 'The registration controller should activate the user if a POST request was issued to his "/activate" path with an access token in the header and the activation code as parameter'() {
         given:
-        def createdUserId = "cef9452e-00a9-4cec-a086-d171374febef"
-        def activationCode = "cef9452e-00a9-4cec-a086-a171374febef"
+        def createdUserId = 'cef9452e-00a9-4cec-a086-d171374febef'
+        def activationCode = 'cef9452e-00a9-4cec-a086-a171374febef'
 
         def accessToken = osiamConnector.retrieveAccessToken()
 
@@ -175,9 +175,9 @@ class RegistrationIT extends AbstractIT{
         def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
         httpClient.request(Method.POST) { req ->
-            uri.path = REGISTRATION_ENDPOINT + "/register/activate"
+            uri.path = REGISTRATION_ENDPOINT + '/register/activate'
             uri.query = [userId:createdUserId, activationToken:activationCode]
-            headers."Authorization" = "Bearer " + accessToken.getToken()
+            headers.'Authorization' = 'Bearer ' + accessToken.getToken()
 
             response.success = { resp ->
                 responseStatus = resp.statusLine.statusCode
@@ -194,8 +194,8 @@ class RegistrationIT extends AbstractIT{
         def httpClient3 = new HTTPBuilder(RESOURCE_ENDPOINT)
 
         httpClient3.request(Method.GET, ContentType.JSON) { req ->
-            uri.path = RESOURCE_ENDPOINT + "/Users/" + createdUserId
-            headers."Authorization" = "Bearer " + accessToken.getToken()
+            uri.path = RESOURCE_ENDPOINT + '/Users/' + createdUserId
+            headers.'Authorization' = 'Bearer ' + accessToken.getToken()
 
             response.success = { resp, json ->
                 responseStatus = resp.statusLine.statusCode
@@ -210,20 +210,20 @@ class RegistrationIT extends AbstractIT{
         token == null
     }
 
-    def "Registration of user with client defined extensions"() {
+    def 'Registration of user with client defined extensions'() {
         given:
         def accessToken = osiamConnector.retrieveAccessToken()
 
-        def email = new Email.Builder().setPrimary(true).setValue("email@example.org").build()
+        def email = new Email.Builder().setPrimary(true).setValue('email@example.org').build()
         def extension = new Extension('urn:scim:schemas:osiam:1.0:Test')
-        extension.addOrUpdateField("field1", "value1")
-        extension.addOrUpdateField("field2", "value2")
-        extension.addOrUpdateField("field3", "value3")
+        extension.addOrUpdateField('field1', 'value1')
+        extension.addOrUpdateField('field2', 'value2')
+        extension.addOrUpdateField('field3', 'value3')
 
         def extensions = [extension] as Set
 
-        def user = new User.Builder("George der II")
-                .setPassword("password")
+        def user = new User.Builder('George der II')
+                .setPassword('password')
                 .setEmails([email])
                 .addExtensions(extensions)
                 .build()
@@ -237,9 +237,9 @@ class RegistrationIT extends AbstractIT{
         def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
         httpClient.request(Method.POST, ContentType.JSON) { req ->
-            uri.path = REGISTRATION_ENDPOINT + "/register/create"
+            uri.path = REGISTRATION_ENDPOINT + '/register/create'
             body = userToRegister
-            headers."Authorization" = "Bearer " + accessToken.getToken()
+            headers.'Authorization' = 'Bearer ' + accessToken.getToken()
 
             response.success = { resp, json ->
                 responseStatus = resp.statusLine.statusCode
@@ -265,9 +265,9 @@ class RegistrationIT extends AbstractIT{
         mailServer.waitForIncomingEmail(5000, 1)
         Message[] messages = mailServer.getReceivedMessages()
         messages.length == 1
-        messages[0].getSubject() == "registration"
-        GreenMailUtil.getBody(messages[0]).contains("ihr Account wurde erstellt")
-        messages[0].getFrom()[0].toString() == "noreply@osiam.org"
-        messages[0].getAllRecipients()[0].toString().equals("email@example.org")
+        messages[0].getSubject() == 'registration'
+        GreenMailUtil.getBody(messages[0]).contains('your account has been created')
+        messages[0].getFrom()[0].toString() == 'noreply@osiam.org'
+        messages[0].getAllRecipients()[0].toString().equals('email@example.org')
     }
 }
