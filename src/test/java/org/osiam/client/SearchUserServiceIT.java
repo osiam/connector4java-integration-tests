@@ -27,6 +27,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -312,6 +314,19 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         String query = encodeExpected(INVALID_STRING + " eq \"" + INVALID_STRING + "\"");
         oConnector.searchUsers("filter=" + query, accessToken);
         fail("Exception should be thrown");
+    }
+    
+    @Test
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
+    public void search_for_user_with_just_some_fields() {
+        String filter = "filter=" + encodeExpected("username eq \"gparker\"");
+        String attributes = "&attributes=" + encodeExpected("userName, emails, nickName");
+        SCIMSearchResult<User> searchResults = oConnector.searchUsers(filter + attributes, accessToken);
+
+        assertThat(searchResults.getTotalResults(), is(1L));
+        User user = searchResults.getResources().get(0);
+        assertThat(user.getUserName(), notNullValue());
+        assertThat(user.getName(), nullValue());
     }
 
     private void create100NewUser() {
