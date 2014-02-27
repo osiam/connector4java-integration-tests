@@ -88,7 +88,9 @@ class LostPasswordIT extends AbstractIT {
         mailServer.waitForIncomingEmail(5000, 1)
         Message[] messages = mailServer.getReceivedMessages()
         messages.length == 1
-        messages[0].getSubject() == "passwordLost"
+        def subject = messages[0].getSubject()
+        subject.contains('Sir or Madam')
+        subject.contains('you can now change your password!')
         def msg = GreenMailUtil.getBody(messages[0])
         msg.contains('to reset your password, please click the link below:')
         msg.contains(userId)

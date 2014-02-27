@@ -125,7 +125,9 @@ class ChangeEmailIT extends AbstractIT {
         mailServer.waitForIncomingEmail(5000, 1)
         Message[] messages = mailServer.getReceivedMessages()
         messages.length == 1
-        messages[0].getSubject() == 'emailChange'
+        def subject = messages[0].getSubject()
+        subject.contains('George Alexander')
+        subject.contains('please confirm that your email has been changed')
         def msg = GreenMailUtil.getBody(messages[0])
         msg.contains('to change your e-mail address, please click the link below:')
         msg.contains(userId)
@@ -182,7 +184,9 @@ class ChangeEmailIT extends AbstractIT {
         mailServer.waitForIncomingEmail(5000, 1)
         Message[] messages = mailServer.getReceivedMessages()
         messages.length == 1
-        messages[0].getSubject() == 'emailInfo'
+        def subject = messages[0].getSubject()
+        subject.contains('Sir or Madam')
+        subject.contains('your email has been successfully changed!')
         GreenMailUtil.getBody(messages[0]).contains('your e-mail address has been changed successfully.')
         messages[0].getFrom()[0].toString() == 'noreply@osiam.org'
         messages[0].getAllRecipients()[0].toString().equals('george.alexander@osiam.org')

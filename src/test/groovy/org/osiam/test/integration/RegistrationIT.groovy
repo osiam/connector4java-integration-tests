@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2013 tarent AG
  *
@@ -33,7 +34,7 @@ import org.osiam.resources.helper.UserDeserializer
 import org.osiam.resources.scim.Email
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
-import org.osiam.resources.scim.MultiValuedAttribute
+import org.osiam.resources.scim.Name
 import org.osiam.resources.scim.User
 
 import spock.lang.Shared
@@ -143,18 +144,26 @@ class RegistrationIT extends AbstractIT{
         mailServer.waitForIncomingEmail(5000, 1)
         Message[] messages = mailServer.getReceivedMessages()
         messages.length == 1
-        messages[0].getSubject() == 'registration'
+        def subject = messages[0].getSubject()
+        subject.contains('Homer Simpson')
+        subject.contains('please confirm your registration!')
         GreenMailUtil.getBody(messages[0]).contains('your account has been created')
         messages[0].getFrom()[0].toString() == 'noreply@osiam.org'
         messages[0].getAllRecipients()[0].toString().equals('email@example.org')
     }
 
     def getUserAsStringWithExtension() {
-        def email = new Email.Builder().setPrimary(true).setValue('email@example.org').build()
+        Name name = new Name.Builder().setFamilyName("Simpson")
+                .setFormatted("Homer Simpson").setGivenName("Homer")
+                .setHonorificPrefix("Dr.").setHonorificSuffix("Mr.")
+                .setMiddleName("J").build();
+                
+        Email email = new Email.Builder().setPrimary(true).setValue('email@example.org').build()
 
-        def user = new User.Builder('George Alexander')
+        User user = new User.Builder('George Alexander')
                 .setPassword('password')
                 .setEmails([email])
+                .setName(name)
                 .build()
 
         return mapper.writeValueAsString(user)
@@ -265,7 +274,9 @@ class RegistrationIT extends AbstractIT{
         mailServer.waitForIncomingEmail(5000, 1)
         Message[] messages = mailServer.getReceivedMessages()
         messages.length == 1
-        messages[0].getSubject() == 'registration'
+        def subject = messages[0].getSubject()
+        subject.contains('Sir or Madam')
+        subject.contains('please confirm your registration!')
         GreenMailUtil.getBody(messages[0]).contains('your account has been created')
         messages[0].getFrom()[0].toString() == 'noreply@osiam.org'
         messages[0].getAllRecipients()[0].toString().equals('email@example.org')
