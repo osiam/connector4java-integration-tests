@@ -306,7 +306,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
 
     private void assertThatNewUserAndReturnUserAreEqual(User expectedUser, User actualUser) {
         assertThatAddressesAreEqual(expectedUser.getAddresses(), actualUser.getAddresses());
-        assertEquals(expectedUser.getAllExtensions(), actualUser.getAllExtensions());
+        assertEquals(expectedUser.getExtensions(), actualUser.getExtensions());
         assertEquals(expectedUser.getDisplayName(), actualUser.getDisplayName());
         assertThatEmailsAreEqual(expectedUser.getEmails(), actualUser.getEmails());
         assertThatEntitlementsAreEqual(expectedUser.getEntitlements(), actualUser.getEntitlements());

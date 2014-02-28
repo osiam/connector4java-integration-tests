@@ -310,7 +310,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
     }
 
     private void assertExtensionEqualsExtensionMap(Extension storedExtension, Map<String, Field> extensionMap) {
-        assertThat(storedExtension.getAllFields().size(), is(extensionMap.size()));
+        assertThat(storedExtension.getFields().size(), is(extensionMap.size()));
 
         for (Map.Entry<String, Extension.Field> entry : extensionMap.entrySet()) {
             String fieldName = entry.getKey();
