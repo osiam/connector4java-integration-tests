@@ -144,9 +144,7 @@ class RegistrationIT extends AbstractIT{
         mailServer.waitForIncomingEmail(5000, 1)
         Message[] messages = mailServer.getReceivedMessages()
         messages.length == 1
-        def subject = messages[0].getSubject()
-        subject.contains('Homer Simpson')
-        subject.contains('please confirm your registration!')
+        messages[0].getSubject().contains('Confirmation of your registration')
         GreenMailUtil.getBody(messages[0]).contains('your account has been created')
         messages[0].getFrom()[0].toString() == 'noreply@osiam.org'
         messages[0].getAllRecipients()[0].toString().equals('email@example.org')
@@ -274,9 +272,7 @@ class RegistrationIT extends AbstractIT{
         mailServer.waitForIncomingEmail(5000, 1)
         Message[] messages = mailServer.getReceivedMessages()
         messages.length == 1
-        def subject = messages[0].getSubject()
-        subject.contains('Sir or Madam')
-        subject.contains('please confirm your registration!')
+        messages[0].getSubject().contains('Confirmation of your registration')
         GreenMailUtil.getBody(messages[0]).contains('your account has been created')
         messages[0].getFrom()[0].toString() == 'noreply@osiam.org'
         messages[0].getAllRecipients()[0].toString().equals('email@example.org')
