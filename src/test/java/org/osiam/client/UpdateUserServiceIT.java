@@ -32,7 +32,7 @@ import java.util.UUID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.NoResultException;
-import org.osiam.resources.scim.User;
+import org.osiam.resources.scim.UpdateUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -49,17 +49,15 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
         DbUnitTestExecutionListener.class })
 @DatabaseSetup(value = "/database_seed.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
-public class ReplaceUserServiceIT extends AbstractIntegrationTestBase {
-
-    private static final String USER_NAME_EXISTING_USER = "hsimpson";
+public class UpdateUserServiceIT extends AbstractIntegrationTestBase {
 
     private String NOT_EXISTING_ID = UUID.randomUUID().toString();
 
     @Test
     public void replace_user_which_not_existing_raises_exception() {
-        User patchedUser = new User.Builder(USER_NAME_EXISTING_USER).build();
+        UpdateUser patchedUser = new UpdateUser.Builder().build();
         try {
-            oConnector.replaceUser(NOT_EXISTING_ID, patchedUser, accessToken);
+            oConnector.updateUser(NOT_EXISTING_ID, patchedUser, accessToken);
             fail("Exception expected");
         } catch (NoResultException e) {
             assertThat(e.getMessage(), containsString("not found"));
