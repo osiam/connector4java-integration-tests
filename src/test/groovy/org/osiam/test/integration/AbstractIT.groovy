@@ -34,6 +34,7 @@ import org.osiam.client.oauth.GrantType
 import org.osiam.client.oauth.Scope
 import org.springframework.context.ApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext
+
 import spock.lang.Specification
 
 import javax.sql.DataSource
@@ -54,7 +55,7 @@ abstract class AbstractIT extends Specification {
 
     protected static final String AUTH_ENDPOINT = "http://localhost:8180/osiam-auth-server"
     protected static final String RESOURCE_ENDPOINT = "http://localhost:8180/osiam-resource-server"
-    protected static final String REGISTRATION_ENDPOINT = "http://localhost:8180/osiam-registration-module"
+    protected static final String REGISTRATION_ENDPOINT = "http://localhost:8180/osiam-self-administration"
 
     protected OsiamConnector osiamConnector
     protected OsiamConnector osiamConnectorForClientCredentialsGrant
@@ -110,6 +111,19 @@ abstract class AbstractIT extends Specification {
                 setScope(Scope.ALL).build()
 
         accessToken = osiamConnector.retrieveAccessToken()
+    }
+
+    def createAccessToken(def userName, def password) {
+        new OsiamConnector.Builder().
+                setAuthServiceEndpoint(AUTH_ENDPOINT).
+                setResourceEndpoint(RESOURCE_ENDPOINT).
+                setClientId(CLIENT_ID).
+                setClientSecret(CLIENT_SECRET).
+                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
+                setUserName(userName).
+                setPassword(password).
+                setScope(Scope.ALL).build().
+                retrieveAccessToken()
     }
 
     def cleanup() {

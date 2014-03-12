@@ -89,7 +89,8 @@ class ChangeEmailIT extends AbstractIT {
 
     def 'The /email/change endpoint should generate confirmation token, saving the new email temporary and sending an email to the new address'() {
         given:
-        def accessToken = osiamConnectorForEmailChange.retrieveAccessToken()
+//        def accessToken = osiamConnectorForEmailChange.retrieveAccessToken()
+        def accessToken = createAccessToken('GeorgeAlexander', '12345')
         def userId = '7d33bcbe-a54c-43d8-867e-f6146164941e'
         def newEmailValue = 'newEmailForGeorgeAlexander@osiam.org'
         def urn = 'urn:scim:schemas:osiam:1.0:Registration'
