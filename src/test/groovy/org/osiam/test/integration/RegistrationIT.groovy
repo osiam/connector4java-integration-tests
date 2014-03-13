@@ -154,7 +154,7 @@ class RegistrationIT extends AbstractIT{
         Name name = new Name.Builder().setFamilyName("Simpson")
                 .setFormatted("Homer Simpson").setGivenName("Homer")
                 .setHonorificPrefix("Dr.").setHonorificSuffix("Mr.")
-                .setMiddleName("J").build();
+                .setMiddleName("J").build()
                 
         Email email = new Email.Builder().setPrimary(true).setValue('email@example.org').build()
 
