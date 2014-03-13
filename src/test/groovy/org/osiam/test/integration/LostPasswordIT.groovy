@@ -99,7 +99,7 @@ class LostPasswordIT extends AbstractIT {
     def "URI: /password/change with POST method to change the old with the new password and validating the user"() {
         given:
         def urn = "urn:scim:schemas:osiam:1.0:Registration"
-        def accessToken = osiamConnector.retrieveAccessToken()
+        def accessToken = createAccessToken("George", "1234")
         def otp = "cef9452e-00a9-4cec-a086-a171374febef"
         def userId = "cef9452e-00a9-4cec-a086-d171374febef"
         def newPassword = "pulverToastMann"

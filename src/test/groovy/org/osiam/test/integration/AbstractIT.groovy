@@ -114,7 +114,7 @@ abstract class AbstractIT extends Specification {
     }
 
     def createAccessToken(def userName, def password) {
-        new OsiamConnector.Builder().
+        OsiamConnector osiamConnector = new OsiamConnector.Builder().
                 setAuthServiceEndpoint(AUTH_ENDPOINT).
                 setResourceEndpoint(RESOURCE_ENDPOINT).
                 setClientId(CLIENT_ID).
@@ -122,8 +122,8 @@ abstract class AbstractIT extends Specification {
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
                 setUserName(userName).
                 setPassword(password).
-                setScope(Scope.ALL).build().
-                retrieveAccessToken()
+                setScope(Scope.ALL).build()
+        osiamConnector.retrieveAccessToken()
     }
 
     def cleanup() {

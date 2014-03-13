@@ -465,7 +465,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>copy-osiam-registration-resources</id>
+                        <id>copy-osiam-self-administration</id>
                         <phase>generate-test-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>

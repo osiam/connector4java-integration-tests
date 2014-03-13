@@ -136,8 +136,8 @@ class ChangeEmailIT extends AbstractIT {
 
     def 'The /email/confirm endpoint with HTTP method POST should verify the confirmation token, saving the email as primary email and sending an email to the old address'() {
         given:
-        def accessToken = createAccessToken('GeorgeAlexander', '12345')
-        def userId = '7d33bcbe-a54c-43d8-867e-f6146164941e'
+        def accessToken = osiamConnector.retrieveAccessToken()
+        def userId = 'cef9452e-00a9-4cec-a086-d171374febef'
         def confirmToken = 'cef9452e-00a9-4cec-a086-a171374febef'
         def urn = 'urn:scim:schemas:osiam:1.0:Registration'
         def newEmailValue = 'newEmailForGeorge@osiam.org'
