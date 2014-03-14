@@ -30,6 +30,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigInteger;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -187,8 +189,14 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
                 .setType(PhoneNumber.Type.WORK).setValue("03012345678").build();
         phoneNumbers.add(phoneNumber);
         List<Photo> photos = new ArrayList<Photo>();
+        URI uri = null;
+        try {
+            uri = new URI("username.jpg");
+        } catch (Exception e) {
+        }
+        
         Photo photo = new Photo.Builder().setPrimary(true)
-                .setType(Photo.Type.PHOTO).setValue("username.jpg").build();
+                .setType(Photo.Type.PHOTO).setValue(uri).build();
         photos.add(photo);
         List<Role> roles = new ArrayList<Role>();
         Role role = new Role.Builder().setPrimary(true).setValue("user_role")
@@ -244,8 +252,14 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
                 .setType(PhoneNumber.Type.WORK).setValue("03012345678").build();
         phoneNumbers.add(phoneNumber);
         List<Photo> photos = new ArrayList<Photo>();
+        URI uri = null;
+        try {
+            uri = new URI("username.jpg");
+        } catch (Exception e) {
+        }
+        
         Photo photo = new Photo.Builder().setPrimary(true)
-                .setType(Photo.Type.PHOTO).setValue("username.jpg").build();
+                .setType(Photo.Type.PHOTO).setValue(uri).build();
         photos.add(photo);
         List<Role> roles = new ArrayList<Role>();
         Role role = new Role.Builder().setPrimary(true).setValue("user_role")
@@ -364,7 +378,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         Photo actualValue = actual.get(0);
 
         assertEquals(expectedValue.getType(), actualValue.getType());
-        assertEquals(expectedValue.getValue(), actualValue.getValue());
+        assertEquals(expectedValue.getValueAsURI().toString(), actualValue.getValueAsURI().toString());
         assertEquals(expectedValue.isPrimary(), actualValue.isPrimary());
     }
 

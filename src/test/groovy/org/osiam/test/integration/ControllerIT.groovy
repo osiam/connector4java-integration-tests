@@ -208,8 +208,8 @@ class ControllerIT extends AbstractIT {
         def user2 = new User.Builder('UserTwo').setEmails([emailUserTwo] as List).setExternalId('pew2').build()
 
         when: 'a add user request is sent'
-		User retUser1 = osiamConnector.createUser(user1, validAccessToken);
-		User retUser2 = osiamConnector.createUser(user2, validAccessToken);
+		User retUser1 = osiamConnector.createUser(user1, validAccessToken)
+		User retUser2 = osiamConnector.createUser(user2, validAccessToken)
 
         then: 'the response elements should contain the expected email for each user'
         assert retUser1.emails != retUser2.emails

@@ -26,8 +26,6 @@ package org.osiam.client;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -39,7 +37,6 @@ import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 import org.osiam.resources.scim.Group;
-import org.osiam.resources.scim.Photo;
 import org.osiam.resources.scim.UpdateGroup;
 import org.osiam.resources.scim.UpdateUser;
 import org.osiam.resources.scim.User;
@@ -382,26 +379,6 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
             String errorMessage = e.getMessage();
             printOutErrorMessage(errorMessage);
             assertTrue(errorMessage.contains("Bad credentials"));
-        }
-    }
-
-    /**
-     * example message: The given value MUST be an URI pointing to an photo.
-     */
-    @Test
-    public void set_invalid_photo_url_returns_correct_error_message() {
-        Photo photo = new Photo.Builder().setValue("!§$%&()=?").build();
-        List<Photo> photos = new ArrayList<Photo>();
-        photos.add(photo);
-        User user = new User.Builder("newUser").setPhotos(photos).build();
-        try {
-            oConnector.createUser(user, accessToken);
-            fail("expected exception");
-        } catch (ConflictException e) {
-            String errorMessage = e.getMessage();
-            printOutErrorMessage(errorMessage);
-            assertTrue(errorMessage.contains("URI"));
-            assertTrue(errorMessage.contains("photo"));
         }
     }
 
