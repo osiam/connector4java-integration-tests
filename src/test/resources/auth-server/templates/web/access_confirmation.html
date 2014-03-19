@@ -1,0 +1,64 @@
+<!--
+  ~ Copyright (C) 2013 tarent AG
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining
+  ~ a copy of this software and associated documentation files (the
+  ~ "Software"), to deal in the Software without restriction, including
+  ~ without limitation the rights to use, copy, modify, merge, publish,
+  ~ distribute, sublicense, and/or sell copies of the Software, and to
+  ~ permit persons to whom the Software is furnished to do so, subject to
+  ~ the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be
+  ~ included in all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  ~ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+  ~ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+  ~ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+  ~ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+  ~ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+  ~ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  -->
+<!DOCTYPE html>
+<html>
+<head>
+  	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+  	<title>Auth-Server</title>
+</head>
+
+<body>
+
+  <h1>Demo</h1>
+
+  <div id="content">
+
+    <div th:if="${#httpSession.getAttribute('SPRING_SECURITY_LAST_EXCEPTION') != null}">
+      <div class="error">
+        <h2>Woops!</h2>
+        <p>Access could not be granted.</p>
+      </div>
+    </div>
+
+    <div th:if="${hasUserRole}">
+      <h2>Please Confirm</h2>
+
+      <p>You hereby authorize to access your protected resources.</p>
+
+      <form id="confirmationForm" name="confirmationForm" th:action="@{/oauth/authorize}" method="post">
+        <input name="user_oauth_approval" value="true" type="hidden" />
+        <label><input name="authorize" value="Authorize" type="submit" /></label>
+      </form>
+      
+      <form id="denialForm" name="denialForm" th:action="@{/oauth/authorize}" method="post">
+        <input name="user_oauth_approval" value="false" type="hidden" />
+        <label><input name="deny" value="Deny" type="submit" /></label>
+      </form>
+      
+    </div>
+  </div>
+
+</body>
+</html>

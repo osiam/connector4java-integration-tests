@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	
+	<title>Login</title>
+	
+	<link href="bootstrap.min.css" rel="stylesheet" />
+	<link href="signin.css" rel="stylesheet" />
+</head>
+
+<body>
+
+	<div class="container">
+		<p th:if="${loginError}" th:text="#{login.error}">Wrong user or password</p>
+		<form th:action="@{/login}" class="form-signin" method="post" role="form">
+			<h2 class="form-signin-heading" th:text="#{login.headline}">Please
+				sign in</h2>
+			<input id="j_username" name="j_username" type="text"
+				class="form-control" th:placeholder="#{login.email.address}" />
+			<input
+				id="j_password" name="j_password" type="password"
+				class="form-control" th:placeholder="#{login.password}" />
+			<button class="btn btn-lg btn-primary btn-block" type="submit"
+				th:text="#{login.signin}">Sign in</button>
+
+		</form>
+
+	</div>
+</body>
+</html>
