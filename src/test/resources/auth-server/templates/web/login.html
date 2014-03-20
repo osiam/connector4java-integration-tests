@@ -5,21 +5,26 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	
-	<title>Login</title>
+	<title th:text="#{login.title}">Login</title>
 	
-	<link href="bootstrap.min.css" rel="stylesheet" />
-	<link href="signin.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" href="style.css" th:href="@{/css/style.css}"/>
 </head>
 
 <body>
 
 	<div class="container">
-		<p th:if="${loginError}" th:text="#{login.error}">Wrong user or password</p>
+		<div class="info-container">
+			<h2 class="form-signin-heading" th:text="#{login.headline}">
+			 	Please sign in
+		    </h2>
+			<div th:if="${loginError}" class="alert-error" th:text="#{login.error}">
+	            Wrong user or password
+	        </div>
+        </div>
 		<form th:action="@{/login}" class="form-signin" method="post" role="form">
-			<h2 class="form-signin-heading" th:text="#{login.headline}">Please
-				sign in</h2>
 			<input id="j_username" name="j_username" type="text"
-				class="form-control" th:placeholder="#{login.email.address}" />
+				class="form-control" th:placeholder="#{login.username}" />
 			<input
 				id="j_password" name="j_password" type="password"
 				class="form-control" th:placeholder="#{login.password}" />

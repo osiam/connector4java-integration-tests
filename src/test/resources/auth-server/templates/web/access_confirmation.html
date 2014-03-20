@@ -26,39 +26,42 @@
   	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-  	<title>Auth-Server</title>
+	
+  	<title th:text="#{confirmation.title}">Confirmation</title>
+  	
+	<link rel="stylesheet" type="text/css" href="bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" href="style.css" th:href="@{/css/style.css}"/>
 </head>
 
 <body>
 
-  <h1>Demo</h1>
-
-  <div id="content">
-
-    <div th:if="${#httpSession.getAttribute('SPRING_SECURITY_LAST_EXCEPTION') != null}">
-      <div class="error">
-        <h2>Woops!</h2>
-        <p>Access could not be granted.</p>
-      </div>
+<div class="container">
+       
+	<div th:if="${loginError}" class="alert-error" th:text="${errorMessage}">
+    	Wrong user or password
     </div>
+	        
+    <div id="confirm-container" th:if="${hasUserRole} and ${!loginError}">
+      <h2 th:text="#{confirmation.headline}">Please Confirm</h2>
 
-    <div th:if="${hasUserRole}">
-      <h2>Please Confirm</h2>
+      <p th:text="#{confirmation.request.description(${client.clientId})}">
+	   		You hereby authorize to access your protected resources.
+      </p>
 
-      <p>You hereby authorize to access your protected resources.</p>
-
-      <form id="confirmationForm" name="confirmationForm" th:action="@{/oauth/authorize}" method="post">
+      <form id="confirmation-form" name="confirmationForm" th:action="@{/oauth/authorize}" method="post">
         <input name="user_oauth_approval" value="true" type="hidden" />
-        <label><input name="authorize" value="Authorize" type="submit" /></label>
+        <button class="btn btn-lg btn-primary btn-block" type="submit"
+				th:text="#{confirmation.button.authorize}">Authorize</button>
       </form>
       
-      <form id="denialForm" name="denialForm" th:action="@{/oauth/authorize}" method="post">
+      <form id="denial-form" name="denialForm" th:action="@{/oauth/authorize}" method="post">
         <input name="user_oauth_approval" value="false" type="hidden" />
-        <label><input name="deny" value="Deny" type="submit" /></label>
+        <button class="btn btn-lg btn-primary btn-block" type="submit"
+				th:text="#{confirmation.button.deny}">Deny</button>
       </form>
       
     </div>
-  </div>
+</div>
 
 </body>
 </html>
