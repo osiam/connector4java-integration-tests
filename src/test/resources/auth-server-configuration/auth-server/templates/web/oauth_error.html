@@ -7,15 +7,15 @@
 	
 	<title th:text="#{oauth.error.title}">Error</title>
 	
-	<link rel="stylesheet" type="text/css" href="bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
-    <link rel="stylesheet" type="text/css" href="style.css" th:href="@{/css/style.css}"/>
+	<link rel="stylesheet" type="text/css" href="../../resources/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" href="../../resources/css/style.css" th:href="@{/css/style.css}"/>
 </head>
 
 <body>
 
 	<div class="container">
 		<div class="info-container">
-			<p th:text="${errorMessage}?: #{oauth.error.message}">
+			<p class="alert alert-danger" th:text="${errorMessage} and ${!#strings.isEmpty(errorMessage)} ? ${errorMessage} : #{oauth.error.message}">
 				There is an internal problem with the client authorization. Please contact your client.
 			</p>
 		</div>

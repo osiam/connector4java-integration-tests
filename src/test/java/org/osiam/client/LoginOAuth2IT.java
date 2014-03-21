@@ -85,7 +85,8 @@ public class LoginOAuth2IT {
         oConnector = new OsiamConnector.Builder()
                 .setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS)
                 .setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS)
-                .setClientId(CLIENT_ID).setClientSecret(CLIENT_SECRET)
+                .setClientId(CLIENT_ID)
+                .setClientSecret(CLIENT_SECRET)
                 .setClientRedirectUri(REDIRECT_URI)
                 .setGrantType(GrantType.AUTHORIZATION_CODE).setScope(Scope.ALL)
                 .build();
@@ -137,6 +138,15 @@ public class LoginOAuth2IT {
         fail("exception expected");
     }
 
+    @Test
+    public void test_failure_login_when_client_not_set() throws IOException {
+        givenValidAuthCode();
+        givenAuthCode();
+        givenAccessTokenUsingAuthCode();
+        assertTrue(accessToken != null);
+        assertNotNull(accessToken.getRefreshToken());
+    }
+    
     private void givenAccessTokenUsingAuthCode() {
         accessToken = oConnector.retrieveAccessToken(authCode);
     }
@@ -156,7 +166,7 @@ public class LoginOAuth2IT {
 
         {
             HttpPost httpPost = new HttpPost(
-                    AUTH_ENDPOINT_ADDRESS + "/login.do");
+                    AUTH_ENDPOINT_ADDRESS + "/login/check");
 
             List<NameValuePair> loginCredentials = new ArrayList<>();
             loginCredentials
@@ -210,7 +220,7 @@ public class LoginOAuth2IT {
 
         {
             HttpPost httpPost = new HttpPost(
-                    AUTH_ENDPOINT_ADDRESS + "/login.do");
+                    AUTH_ENDPOINT_ADDRESS + "/login/check");
 
             List<NameValuePair> loginCredentials = new ArrayList<>();
             loginCredentials

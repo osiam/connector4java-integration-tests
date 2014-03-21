@@ -7,8 +7,8 @@
 	
 	<title th:text="#{login.title}">Login</title>
 	
-	<link rel="stylesheet" type="text/css" href="bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
-    <link rel="stylesheet" type="text/css" href="style.css" th:href="@{/css/style.css}"/>
+	<link rel="stylesheet" type="text/css" href="../../resources/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" href="../../resources/css/style.css" th:href="@{/css/style.css}"/>
 </head>
 
 <body>
@@ -18,11 +18,11 @@
 			<h2 class="form-signin-heading" th:text="#{login.headline}">
 			 	Please sign in
 		    </h2>
-			<div th:if="${loginError}" class="alert-error" th:text="#{login.error}">
-	            Wrong user or password
+			<div th:if="${loginError}" th:class="'alert alert-danger'" class="alert alert-danger" th:text="#{login.error}">
+	            Wrong username or password
 	        </div>
         </div>
-		<form th:action="@{/login}" class="form-signin" method="post" role="form">
+		<form th:action="@{/login/check}" class="form-signin" method="post" role="form">
 			<input id="j_username" name="j_username" type="text"
 				class="form-control" th:placeholder="#{login.username}" />
 			<input
@@ -30,7 +30,6 @@
 				class="form-control" th:placeholder="#{login.password}" />
 			<button class="btn btn-lg btn-primary btn-block" type="submit"
 				th:text="#{login.signin}">Sign in</button>
-
 		</form>
 
 	</div>

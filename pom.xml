@@ -445,7 +445,7 @@
                                     <include>osiam.properties</include>
                                 </resource>
                                 <resource>
-                                    <directory>src/test/resources/auth-server</directory>
+                                <directory>src/test/resources/auth-server-configuration</directory>
                                     <include>**/**</include>
                                 </resource>
                             </resources>

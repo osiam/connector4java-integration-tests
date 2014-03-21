@@ -29,19 +29,15 @@
 	
   	<title th:text="#{confirmation.title}">Confirmation</title>
   	
-	<link rel="stylesheet" type="text/css" href="bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
-    <link rel="stylesheet" type="text/css" href="style.css" th:href="@{/css/style.css}"/>
+  	<link rel="stylesheet" type="text/css" href="../../resources/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" href="../../resources/css/style.css" th:href="@{/css/style.css}"/>
 </head>
 
 <body>
 
 <div class="container">
-       
-	<div th:if="${loginError}" class="alert-error" th:text="${errorMessage}">
-    	Wrong user or password
-    </div>
 	        
-    <div id="confirm-container" th:if="${hasUserRole} and ${!loginError}">
+    <div id="confirm-container" th:if="${hasUserRole}">
       <h2 th:text="#{confirmation.headline}">Please Confirm</h2>
 
       <p th:text="#{confirmation.request.description(${client.clientId})}">
