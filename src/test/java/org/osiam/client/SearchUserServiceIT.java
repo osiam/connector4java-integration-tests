@@ -342,7 +342,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         assertThat(users.size(), is(1));
         User user = users.get(0);
         assertThat(user.getEmails().size(), is(0));
-        assertThat(user.getUserName(), equals("user1"));
+        assertThat(user.getUserName(), is("user1"));
         assertThat(user.getExtensions().size(), is(0));
     }
 
