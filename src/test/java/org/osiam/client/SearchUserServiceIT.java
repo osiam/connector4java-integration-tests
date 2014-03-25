@@ -34,6 +34,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -78,7 +79,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_username.xml")
     public void search_for_user_by_username_with_query_string_works() {
         String userName = "bjensen";
-        String query = encodeExpected("userName eq \"" +  userName + "\"");
+        String query = encodeExpected("userName eq \"" + userName + "\"");
 
         SCIMSearchResult<User> result = oConnector.searchUsers("filter=" + query, accessToken);
 
@@ -164,12 +165,12 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     @Test
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_complex_query.xml")
     public void search_for_user_by_complex_query() {
-        queryResult = oConnector.searchUsers("filter=" + 
+        queryResult = oConnector.searchUsers("filter=" +
                 encodeExpected("userName eq \"user1\" and name.formatted eq \"formatted1\""
-                        + " and emails eq \"email1@other.com\" and extension.stringValue eq \"Hello 1\"" ), accessToken);
+                        + " and emails eq \"email1@other.com\" and extension.stringValue eq \"Hello 1\""), accessToken);
         assertThat(queryResult.getTotalResults(), is(equalTo(1L)));
     }
-    
+
     @Test
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
     public void search_for_user_with_multiple_fields() throws UnsupportedEncodingException {
@@ -198,7 +199,8 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         String user01 = "cmiller";
         String user02 = "hsimpson";
         String user03 = "kmorris";
-        String searchString = encodeExpected("userName eq \"" + user01 + "\" or userName eq \"" + user02 + "\" or userName eq \""
+        String searchString = encodeExpected("userName eq \"" + user01 + "\" or userName eq \"" + user02
+                + "\" or userName eq \""
                 + user03 + "\"");
         whenSearchIsDoneByString(searchString);
         assertThatQueryResultContainsUser(user01);
@@ -269,7 +271,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
             assertThat(expectedUserNames, hasItem(user.getUserName()));
         }
     }
-    
+
     @Test
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed_groups.xml")
     public void searching_for_users_belonging_to_multiple_groups_by_displayname() {
@@ -299,7 +301,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
             assertThat(expectedUserNames, hasItem(user.getUserName()));
         }
     }
-    
+
     @Test(expected = ConflictException.class)
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
     public void search_for_user_by_Password_with_query_string_fails() {
@@ -307,7 +309,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         oConnector.searchUsers("filter=" + query, accessToken);
         fail("Exception should be thrown");
     }
-    
+
     @Test(expected = ConflictException.class)
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
     public void search_for_user_by_non_exisitng_field_with_query_string_fails() {
@@ -315,7 +317,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         oConnector.searchUsers("filter=" + query, accessToken);
         fail("Exception should be thrown");
     }
-    
+
     @Test
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
     public void search_for_user_with_just_some_fields() {
@@ -327,6 +329,21 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         User user = searchResults.getResources().get(0);
         assertThat(user.getUserName(), notNullValue());
         assertThat(user.getName(), nullValue());
+    }
+
+    @Test
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_complex_query.xml")
+    public void search_for_user_with_some_attributes() throws UnsupportedEncodingException {
+        String queryString = "filter="
+                + URLEncoder.encode("meta.created gt \"2011-10-10T00:00:00.000\" and userName eq \"user1\"", "UTF-8")
+                + "&attributes="
+                + URLEncoder.encode("userName, displayName", "UTF-8");
+        List<User> users = oConnector.searchUsers(queryString, accessToken).getResources();
+        assertThat(users.size(), is(1));
+        User user = users.get(0);
+        assertThat(user.getEmails().size(), is(0));
+        assertThat(user.getUserName(), equals("user1"));
+        assertThat(user.getExtensions().size(), is(0));
     }
 
     private void create100NewUser() {
