@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	
+	<title th:text="#{registration.title}">Registration</title>
+	
+	<link rel="stylesheet" type="text/css" href="../../resources/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" href="../../resources/css/style.css" th:href="@{/css/style.css}"/>
+</head>
+
+<body>
+
+	<div class="container">
+		<div class="info-container">
+			<h2 class="form-signin-heading" th:text="#{registration.headline}">
+			 	Please register
+		    </h2>
+			<div th:if="${registerError}" class="alert alert-danger" th:text="#{login.error}">
+	            Error while registration process
+	        </div>
+        </div>
+		<form action="#" th:action="@{/registration}" th:object="${registrationUser}" class="form-signin" method="post">
+<!-- 			<ul th:if="${#fields.hasErrors('*')}"> -->
+<!-- 				<li class="alert alert-danger" th:each="err : ${#fields.errors('*')}" th:text="${err}">Input is incorrect</li> -->
+<!-- 			</ul> -->
+			<fieldset>
+				<input type="text"
+			  		   th:field="*{userName}"
+					   class="form-control"
+					   th:placeholder="#{registration.userName}"
+					   placeholder="Username"
+					   th:errorclass="alert-danger"/>
+				<input type="text"
+			  		   th:field="*{email}"
+					   class="form-control"
+					   th:placeholder="#{registration.emailAddress}"
+					   placeholder="Email address"
+					   required="required"
+					   th:errorclass="alert-danger"/>
+				<input type="text"
+					   th:field="*{honorificPrefix}"
+					   class="form-control"
+					   th:placeholder="#{registration.salutation}"
+					   placeholder="Salutation"
+					   th:errorclass="alert-danger"/>
+				<input type="text"
+					   th:field="*{givenName}"
+					   class="form-control"
+					   th:placeholder="#{registration.givenName}"
+					   placeholder="Givenname"
+					   th:errorclass="alert-danger"/>
+				<input type="text"
+					   th:field="*{familyName}"
+					   class="form-control"
+					   th:placeholder="#{registration.familyName}"
+					   placeholder="Familyname"
+					   th:errorclass="alert-danger"/>
+				<input type="password"
+					   th:field="*{password}"
+					   class="form-control"
+					   th:placeholder="#{registration.password}"
+					   placeholder="Password"
+					   required="required"
+					   th:errorclass="alert-danger"/>
+				<input type="password"
+					   th:field="*{confirmPassword}"
+					   class="form-control"
+					   th:placeholder="#{registration.confirmPassword}"
+					   placeholder="Confirm password"
+					   required="required"
+					   th:errorclass="alert-danger"/>
+				<button class="btn btn-lg btn-primary btn-block"
+						type="submit"
+					    th:text="#{registration.form.register}">Register</button>
+			</fieldset>
+		</form>
+
+	</div>
+</body>
+</html>

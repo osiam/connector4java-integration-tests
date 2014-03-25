@@ -468,6 +468,10 @@
                                     <filtering>true</filtering>
                                     <include>osiam.properties</include>
                                 </resource>
+                                <resource>
+                                    <directory>src/test/resources/auth-server-configuration</directory>
+                                    <include>**/**</include>
+                                </resource>
                             </resources>
                         </configuration>
                     </execution>
@@ -489,6 +493,10 @@
                                     <include>osiam-self-administration.properties</include>
                                     <include>osiam.properties</include>
                                 </resource>
+                                <resource>
+                                    <directory>src/test/resources/addon-self-administration-configuration</directory>
+                                    <include>**/**</include>
+                                </resource>
                             </resources>
                         </configuration>
                     </execution>
@@ -498,25 +506,25 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>1.3.1</version>
-                <executions>
-                    <execution>
-                        <id>enforce-versions</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <requireMavenVersion>
-                                    <version>3.0.4</version>
-                                </requireMavenVersion>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>1.3.1</version>
+                    <executions>
+                        <execution>
+                            <id>enforce-versions</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <requireMavenVersion>
+                                        <version>3.0.4</version>
+                                    </requireMavenVersion>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
