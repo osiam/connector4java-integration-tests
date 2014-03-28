@@ -84,7 +84,7 @@ class ChangeEmailIT extends AbstractIT {
         responseContentType == ContentType.HTML.toString()
         responseContent.contains('</form>')
         responseContent.count('ng-model') == 2
-        responseContent.contains('url: \'http://test\'')
+        responseContent.contains('url: \'http://localhost:8180\'')
     }
 
     def 'The /email/change endpoint should generate confirmation token, saving the new email temporary and sending an email to the new address'() {
@@ -92,7 +92,7 @@ class ChangeEmailIT extends AbstractIT {
         def accessToken = createAccessToken('GeorgeAlexander', '12345')
         def userId = '7d33bcbe-a54c-43d8-867e-f6146164941e'
         def newEmailValue = 'newEmailForGeorgeAlexander@osiam.org'
-        def urn = 'urn:scim:schemas:osiam:1.0:Registration'
+        def urn = 'urn:scim:schemas:osiam:2.0:Registration'
 
         def responseStatusCode
 
@@ -139,7 +139,7 @@ class ChangeEmailIT extends AbstractIT {
         def accessToken = osiamConnector.retrieveAccessToken()
         def userId = 'cef9452e-00a9-4cec-a086-d171374febef'
         def confirmToken = 'cef9452e-00a9-4cec-a086-a171374febef'
-        def urn = 'urn:scim:schemas:osiam:1.0:Registration'
+        def urn = 'urn:scim:schemas:osiam:2.0:Registration'
         def newEmailValue = 'newEmailForGeorge@osiam.org'
 
         def savedUserId

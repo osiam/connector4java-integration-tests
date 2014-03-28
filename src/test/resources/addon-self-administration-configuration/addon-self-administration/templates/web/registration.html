@@ -18,60 +18,42 @@
 			<h2 class="form-signin-heading" th:text="#{registration.headline}">
 			 	Please register
 		    </h2>
-			<div th:if="${registerError}" class="alert alert-danger" th:text="#{login.error}">
-	            Error while registration process
-	        </div>
+			
         </div>
 		<form action="#" th:action="@{/registration}" th:object="${registrationUser}" class="form-signin" method="post">
-<!-- 			<ul th:if="${#fields.hasErrors('*')}"> -->
-<!-- 				<li class="alert alert-danger" th:each="err : ${#fields.errors('*')}" th:text="${err}">Input is incorrect</li> -->
-<!-- 			</ul> -->
+			<div th:if="${#fields.hasAnyErrors()}" class="alert alert-danger" th:text="#{registration.form.error}">
+	            Error while registration process
+	        </div>
 			<fieldset>
-				<input type="text"
-			  		   th:field="*{userName}"
-					   class="form-control"
-					   th:placeholder="#{registration.userName}"
-					   placeholder="Username"
-					   th:errorclass="alert-danger"/>
-				<input type="text"
-			  		   th:field="*{email}"
-					   class="form-control"
-					   th:placeholder="#{registration.emailAddress}"
-					   placeholder="Email address"
-					   required="required"
-					   th:errorclass="alert-danger"/>
-				<input type="text"
-					   th:field="*{honorificPrefix}"
-					   class="form-control"
-					   th:placeholder="#{registration.salutation}"
-					   placeholder="Salutation"
-					   th:errorclass="alert-danger"/>
-				<input type="text"
-					   th:field="*{givenName}"
-					   class="form-control"
-					   th:placeholder="#{registration.givenName}"
-					   placeholder="Givenname"
-					   th:errorclass="alert-danger"/>
-				<input type="text"
-					   th:field="*{familyName}"
-					   class="form-control"
-					   th:placeholder="#{registration.familyName}"
-					   placeholder="Familyname"
-					   th:errorclass="alert-danger"/>
-				<input type="password"
-					   th:field="*{password}"
-					   class="form-control"
-					   th:placeholder="#{registration.password}"
-					   placeholder="Password"
-					   required="required"
-					   th:errorclass="alert-danger"/>
-				<input type="password"
-					   th:field="*{confirmPassword}"
-					   class="form-control"
-					   th:placeholder="#{registration.confirmPassword}"
-					   placeholder="Confirm password"
-					   required="required"
-					   th:errorclass="alert-danger"/>
+			  	<div th:replace="htmlfield :: defaultInput('userName', 'text', true)"></div>
+			  	<div th:replace="htmlfield :: defaultInput('email', 'email', true)"></div>
+				<div th:replace="htmlfield :: defaultInput('password', 'password', true)"></div>
+				<div th:replace="htmlfield :: defaultInput('confirmPassword', 'password', true)"></div>
+				<div th:replace="htmlfield :: defaultInput('formattedName', 'text', false)"></div>
+				<div th:replace="htmlfield :: defaultInput('familyName', 'text', false)"></div>
+				<div th:replace="htmlfield :: defaultInput('givenName', 'text', false)"></div>
+				<div th:replace="htmlfield :: defaultInput('middleName', 'text', false)"></div>
+				<div th:replace="htmlfield :: defaultInput('honorificPrefix', 'text', false)"></div>
+				<div th:replace="htmlfield :: defaultInput('honorificSuffix', 'text', false)"></div>
+				<div th:replace="htmlfield :: defaultInput('displayName', 'text', false)"></div>
+				<div th:replace="htmlfield :: defaultInput('nickName', 'text', false)"></div>
+				<div th:replace="htmlfield :: defaultInput('profileUrl', 'text', false)"></div>
+				<div th:replace="htmlfield :: defaultInput('title', 'text', false)"></div>
+				<div th:replace="htmlfield :: defaultInput('preferredLanguage', 'text', false)"></div>
+				<div th:replace="htmlfield :: defaultInput('locale', 'text', false)"></div>
+				<div th:replace="htmlfield :: defaultInput('timezone', 'text', false)"></div>
+				<div th:replace="htmlfield :: defaultInput('phoneNumber', 'text', false)"></div>
+				<div th:replace="htmlfield :: defaultInput('im', 'text', false)"></div>
+				<div th:replace="htmlfield :: defaultInput('photo', 'text', false)"></div>
+				<div th:replace="htmlfield :: defaultInput('formattedAddress', 'text', false)"></div>
+				<div th:replace="htmlfield :: defaultInput('streetAddress', 'text', false)"></div>
+				<div th:replace="htmlfield :: defaultInput('locality', 'text', false)"></div>
+				<div th:replace="htmlfield :: defaultInput('region', 'text', false)"></div>
+				<div th:replace="htmlfield :: defaultInput('postalCode', 'text', false)"></div>
+				<div th:replace="htmlfield :: defaultInput('country', 'text', false)"></div>
+				
+				<div th:replace="htmlfield :: extensioninput('urn:client:extension', 'age', 'text', false)"></div>
+ 
 				<button class="btn btn-lg btn-primary btn-block"
 						type="submit"
 					    th:text="#{registration.form.register}">Register</button>
