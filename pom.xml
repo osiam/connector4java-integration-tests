@@ -490,7 +490,6 @@
                                 <resource>
                                     <directory>src/test/resources/</directory>
                                     <filtering>true</filtering>
-                                    <include>osiam-self-administration.properties</include>
                                     <include>osiam.properties</include>
                                 </resource>
                                 <resource>
@@ -554,6 +553,54 @@
                             <username>sa</username>
                             <password>sa</password>
                             <src>src/test/resources/database_seed.xml</src>
+                            <type>CLEAN_INSERT</type>
+                            <format>flat</format>
+                            <ordered>true</ordered>
+                            <dest>src/test/resources/database_dump.xml</dest>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>seed</id>
+                                <goals>
+                                    <goal>operation</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>dump</id>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>db-seeding-self-admin</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>dbunit-maven-plugin</artifactId>
+                        <version>1.0-beta-3</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.h2database</groupId>
+                                <artifactId>h2</artifactId>
+                                <version>${h2.version}</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <dataTypeFactoryName>org.dbunit.ext.h2.H2DataTypeFactory</dataTypeFactoryName>
+                            <driver>org.h2.Driver</driver>
+                            <url>jdbc:h2:tcp://localhost/mem:osiam</url>
+                            <username>sa</username>
+                            <password>sa</password>
+                            <src>src/test/resources/database_seed_self_administration.xml</src>
                             <type>CLEAN_INSERT</type>
                             <format>flat</format>
                             <ordered>true</ordered>
