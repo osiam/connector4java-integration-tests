@@ -59,23 +59,19 @@
 
     <scim_roles multi_value_id="90" user_internal_id="1" value="USER" />
 
-    <scim_extension internal_id="81" urn="urn:scim:schemas:osiam:1.0:Registration" />
-    <scim_extension internal_id="84" urn="urn:scim:schemas:osiam:1.0:Test" />
+    <scim_extension internal_id="81" urn="urn:scim:schemas:osiam:2.0:Registration" />
+    <scim_extension internal_id="84" urn="urn:client:extension" />
 
     <scim_extension_field internal_id="82" is_required="true" name="activationToken" type="STRING"
         extension_internal_id="81" />
     <scim_extension_field internal_id="88" is_required="true" name="field1" type="STRING"
         extension_internal_id="81" />
-    <scim_extension_field internal_id="85" is_required="true" name="field1" type="STRING"
-        extension_internal_id="84" />
-    <scim_extension_field internal_id="86" is_required="true" name="field2" type="STRING"
-        extension_internal_id="84" />
-    <scim_extension_field internal_id="87" is_required="true" name="field3" type="STRING"
+    <scim_extension_field internal_id="85" is_required="true" name="age" type="STRING"
         extension_internal_id="84" />
 
     <scim_extension_field_value internal_id="83" value="cef9452e-00a9-4cec-a086-a171374febef"
         extension_field_internal_id="82" user_internal_id="60" />
-    <scim_extension_field_value internal_id="84" value="xxxxxx" extension_field_internal_id="88"
+    <scim_extension_field_value internal_id="84" value="12" extension_field_internal_id="88"
         user_internal_id="60" />
 
 </dataset>

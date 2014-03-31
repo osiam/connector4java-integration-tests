@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2013 tarent AG
  *
@@ -35,6 +34,7 @@ import org.osiam.resources.scim.Email
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.resources.scim.Name
+import org.osiam.resources.scim.SCIMSearchResult
 import org.osiam.resources.scim.User
 
 import spock.lang.Shared
@@ -51,7 +51,9 @@ import com.icegreen.greenmail.util.ServerSetupTest
  */
 class RegistrationIT extends AbstractIT{
 
-    @Shared def mapper
+    @Shared
+    ObjectMapper mapper
+    
     def mailServer
 
     def setupSpec() {
@@ -72,17 +74,17 @@ class RegistrationIT extends AbstractIT{
         mailServer.stop()
     }
 
-    def 'The registration controller should return an HTML page if a GET request was issued to its "/" path with an access token in the header'() {
+    def 'The registration controller should return a rendered html'() {
         given:
         def responseContent
         def responseContentType
         def responseStatus
 
         when:
-        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+        HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
         httpClient.request(Method.GET, ContentType.TEXT) { req ->
-            uri.path = REGISTRATION_ENDPOINT + '/register'
+            uri.path = REGISTRATION_ENDPOINT + '/registration'
             headers.Accept = 'text/html'
 
             response.success = { resp, html ->
@@ -98,33 +100,32 @@ class RegistrationIT extends AbstractIT{
 
         then:
         responseStatus == 200
-        responseContentType == ContentType.HTML.toString()
+        responseContentType.contains(ContentType.HTML.toString())
         //ensure that the content is HTML
         responseContent.contains('</form>')
         //HTML should contain the fields for registration
-        responseContent.count('ng-model') == 8
-        responseContent.contains('url: \'http://test\'')
+        responseContent.contains('/registration')
+        responseContent.contains('email')
+        responseContent.contains('password')
+        responseContent.contains('urn:client:extension')
     }
 
-    def 'The registration controller should complete the registration process if a POST request was issued to his "/create" path with an access token in the header'() {
+    def 'The registration controller should complete the registration process if a POST request send to "/registration"'() {
         given:
-        def accessToken = osiamConnector.retrieveAccessToken()
-        def userToRegister = getUserAsStringWithExtension()
+        def userToRegister = [email: 'email@example.org', password: 'password']
 
         def responseStatus
         def createdUserId
 
         when:
-        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+        HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
-        httpClient.request(Method.POST, ContentType.JSON) { req ->
-            uri.path = REGISTRATION_ENDPOINT + '/register/create'
+        httpClient.request(Method.POST, ContentType.URLENC) { req ->
+            uri.path = REGISTRATION_ENDPOINT + '/registration'
             body = userToRegister
-            headers.'Authorization' = 'Bearer ' + accessToken.getToken()
 
-            response.success = { resp, json ->
+            response.success = { resp ->
                 responseStatus = resp.statusLine.statusCode
-                createdUserId = json.id
             }
 
             response.failure = { resp ->
@@ -133,11 +134,13 @@ class RegistrationIT extends AbstractIT{
         }
 
         then:
-        responseStatus == 200
+        responseStatus == 201
 
-        User user = osiamConnector.getUser(createdUserId, accessToken)
+        def queryString = "filter=" + URLEncoder.encode("userName eq \"email@example.org\"", "UTF-8")
+        SCIMSearchResult<User> users = osiamConnector.searchUsers(queryString, accessToken)
+        User user = users.getResources()[0];
         !user.isActive()
-        Extension extension = user.getExtension('urn:scim:schemas:osiam:1.0:Registration')
+        Extension extension = user.getExtension('urn:scim:schemas:osiam:2.0:Registration')
         extension.getField('activationToken', ExtensionFieldType.STRING) != null
 
         //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
@@ -167,10 +170,10 @@ class RegistrationIT extends AbstractIT{
         return mapper.writeValueAsString(user)
     }
 
-    def 'The registration controller should activate the user if a POST request was issued to his "/activate" path with an access token in the header and the activation code as parameter'() {
+    def 'The registration controller should activate the user if a POST request was send to "/registration/activation" with user id and activation code as parameter'() {
         given:
         def createdUserId = 'cef9452e-00a9-4cec-a086-d171374febef'
-        def activationCode = 'cef9452e-00a9-4cec-a086-a171374febef'
+        def activationToken = 'cef9452e-00a9-4cec-a086-a171374febef'
 
         def accessToken = osiamConnector.retrieveAccessToken()
 
@@ -181,10 +184,9 @@ class RegistrationIT extends AbstractIT{
         when:
         def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
-        httpClient.request(Method.POST) { req ->
-            uri.path = REGISTRATION_ENDPOINT + '/register/activate'
-            uri.query = [userId:createdUserId, activationToken:activationCode]
-            headers.'Authorization' = 'Bearer ' + accessToken.getToken()
+        httpClient.request(Method.GET) { req ->
+            uri.path = REGISTRATION_ENDPOINT + '/registration/activation'
+            uri.query = [userId:createdUserId, activationToken:activationToken]
 
             response.success = { resp ->
                 responseStatus = resp.statusLine.statusCode
@@ -197,23 +199,8 @@ class RegistrationIT extends AbstractIT{
 
         then:
         responseStatus == 200
-
-        def httpClient3 = new HTTPBuilder(RESOURCE_ENDPOINT)
-
-        httpClient3.request(Method.GET, ContentType.JSON) { req ->
-            uri.path = RESOURCE_ENDPOINT + '/Users/' + createdUserId
-            headers.'Authorization' = 'Bearer ' + accessToken.getToken()
-
-            response.success = { resp, json ->
-                responseStatus = resp.statusLine.statusCode
-                //verify that the activation token was deleted and user is active
-                token = json.'urn:scim:schemas:osiam:1.0:Registration'.activationToken
-                activeFlag = json.active
-            }
-        }
-
-        responseStatus == 200
-        activeFlag
+        
+        osiamConnector.getUser(createdUserId, accessToken).active
         token == null
     }
 
@@ -221,36 +208,19 @@ class RegistrationIT extends AbstractIT{
         given:
         def accessToken = osiamConnector.retrieveAccessToken()
 
-        def email = new Email.Builder().setPrimary(true).setValue('email@example.org').build()
-        def extension = new Extension('urn:scim:schemas:osiam:1.0:Test')
-        extension.addOrUpdateField('field1', 'value1')
-        extension.addOrUpdateField('field2', 'value2')
-        extension.addOrUpdateField('field3', 'value3')
-
-        def extensions = [extension] as Set
-
-        def user = new User.Builder('George der II')
-                .setPassword('password')
-                .setEmails([email])
-                .addExtensions(extensions)
-                .build()
-
-        def userToRegister = mapper.writeValueAsString(user)
+        def userToRegister = [email: 'email@example.org', password: 'password', 'extensions[\'urn:client:extension\'].fields[\'age\']': 12]
 
         def responseStatus
-        def createdUserId
 
         when:
         def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
-        httpClient.request(Method.POST, ContentType.JSON) { req ->
-            uri.path = REGISTRATION_ENDPOINT + '/register/create'
+        httpClient.request(Method.POST, ContentType.URLENC) { req ->
+            uri.path = REGISTRATION_ENDPOINT + '/registration'
             body = userToRegister
-            headers.'Authorization' = 'Bearer ' + accessToken.getToken()
 
             response.success = { resp, json ->
                 responseStatus = resp.statusLine.statusCode
-                createdUserId = json.id
             }
 
             response.failure = { resp ->
@@ -259,14 +229,17 @@ class RegistrationIT extends AbstractIT{
         }
 
         then:
-        responseStatus == 200
-
-        User registeredUser = osiamConnector.getUser(createdUserId, accessToken)
-        !registeredUser.isActive()
-        Extension registeredExtension1 = registeredUser.getExtension('urn:scim:schemas:osiam:1.0:Registration')
+        responseStatus == 201
+        
+        def queryString = "filter=" + URLEncoder.encode("userName eq \"email@example.org\"", "UTF-8")
+        SCIMSearchResult<User> users = osiamConnector.searchUsers(queryString, accessToken)
+        User registeredUser = users.getResources()[0];
+        
+        Extension registeredExtension1 = registeredUser.getExtension('urn:scim:schemas:osiam:2.0:Registration')
         registeredExtension1.getField('activationToken', ExtensionFieldType.STRING) != null
-        Extension registeredExtension2 = registeredUser.getExtension('urn:scim:schemas:osiam:1.0:Test')
-        registeredExtension2.getField('field1', ExtensionFieldType.STRING) != null
+        Extension registeredExtension2 = registeredUser.getExtension('urn:client:extension')
+        registeredExtension2.getField('age', ExtensionFieldType.STRING) != null
+        registeredExtension2.getField('age', ExtensionFieldType.STRING) == '12'
 
         //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
         mailServer.waitForIncomingEmail(5000, 1)
