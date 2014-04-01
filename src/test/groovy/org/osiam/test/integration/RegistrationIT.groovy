@@ -107,6 +107,7 @@ class RegistrationIT extends AbstractIT{
         responseContent.contains('/registration')
         responseContent.contains('email')
         responseContent.contains('password')
+        responseContent.contains('displayName')
         responseContent.contains('urn:client:extension')
     }
 
@@ -158,7 +159,7 @@ class RegistrationIT extends AbstractIT{
                 .setFormatted("Homer Simpson").setGivenName("Homer")
                 .setHonorificPrefix("Dr.").setHonorificSuffix("Mr.")
                 .setMiddleName("J").build()
-                
+
         Email email = new Email.Builder().setPrimary(true).setValue('email@example.org').build()
 
         User user = new User.Builder('George Alexander')
@@ -199,12 +200,12 @@ class RegistrationIT extends AbstractIT{
 
         then:
         responseStatus == 200
-        
+
         osiamConnector.getUser(createdUserId, accessToken).active
         token == null
     }
 
-    def 'Registration of user with client defined extensions'() {
+    def 'A registration of an user with client defined extensions'() {
         given:
         def accessToken = osiamConnector.retrieveAccessToken()
 
@@ -230,11 +231,11 @@ class RegistrationIT extends AbstractIT{
 
         then:
         responseStatus == 201
-        
+
         def queryString = "filter=" + URLEncoder.encode("userName eq \"email@example.org\"", "UTF-8")
         SCIMSearchResult<User> users = osiamConnector.searchUsers(queryString, accessToken)
         User registeredUser = users.getResources()[0];
-        
+
         Extension registeredExtension1 = registeredUser.getExtension('urn:scim:schemas:osiam:2.0:Registration')
         registeredExtension1.getField('activationToken', ExtensionFieldType.STRING) != null
         Extension registeredExtension2 = registeredUser.getExtension('urn:client:extension')
@@ -249,5 +250,82 @@ class RegistrationIT extends AbstractIT{
         GreenMailUtil.getBody(messages[0]).contains('your account has been created')
         messages[0].getFrom()[0].toString() == 'noreply@osiam.org'
         messages[0].getAllRecipients()[0].toString().equals('email@example.org')
+    }
+
+    def 'A registration of an user with not allowed field nickName and existing extension but not the field'() {
+        given:
+        def accessToken = osiamConnector.retrieveAccessToken()
+
+        // email, password are always allowed, displayName is allowed and nickName is disallowed by config
+        // extension 'urn:client:extension' is only allowed with field 'age' and not 'gender'
+        def userToRegister = [email: 'email@example.org', password: 'password', displayName: 'displayName', nickName: 'nickname',
+            'extensions[\'urn:client:extension\'].fields[\'gender\']': 'M']
+
+        def responseStatus
+
+        when:
+        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.POST, ContentType.URLENC) { req ->
+            uri.path = REGISTRATION_ENDPOINT + '/registration'
+            body = userToRegister
+
+            response.success = { resp, json ->
+                responseStatus = resp.statusLine.statusCode
+            }
+
+            response.failure = { resp ->
+                responseStatus = resp.statusLine.statusCode
+            }
+        }
+
+        def queryString = "filter=" + URLEncoder.encode("userName eq \"email@example.org\"", "UTF-8")
+        SCIMSearchResult<User> users = osiamConnector.searchUsers(queryString, accessToken)
+        User registeredUser = users.getResources()[0];
+
+        Extension registeredExtension1 = registeredUser.getExtension('urn:scim:schemas:osiam:2.0:Registration')
+        registeredExtension1.getField('activationToken', ExtensionFieldType.STRING) != null
+        registeredUser.getExtension('urn:client:extension')
+
+        then:
+        thrown(NoSuchElementException)
+
+        registeredUser.nickName == null
+        registeredUser.displayName == 'displayName'
+
+        responseStatus == 201
+
+        //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
+        mailServer.waitForIncomingEmail(5000, 1)
+        Message[] messages = mailServer.getReceivedMessages()
+        messages.length == 1
+    }
+    
+    def 'A registration of an user with malformed email and blank password gets bad request'() {
+        given:
+        def accessToken = osiamConnector.retrieveAccessToken()
+
+        def userToRegister = [email: 'email', password: ' ']
+
+        def responseStatus
+
+        when:
+        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.POST, ContentType.URLENC) { req ->
+            uri.path = REGISTRATION_ENDPOINT + '/registration'
+            body = userToRegister
+
+            response.success = { resp, json ->
+                responseStatus = resp.statusLine.statusCode
+            }
+
+            response.failure = { resp ->
+                responseStatus = resp.statusLine.statusCode
+            }
+        }
+
+        then:
+        responseStatus == 400
     }
 }
