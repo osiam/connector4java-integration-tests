@@ -49,11 +49,11 @@ import com.icegreen.greenmail.util.ServerSetupTest
 /**
  * This test covers the controller for registration purpose.
  */
-class RegistrationIT extends AbstractIT{
+class RegistrationIT extends AbstractIT {
 
     @Shared
     ObjectMapper mapper
-    
+
     def mailServer
 
     def setupSpec() {
@@ -122,6 +122,7 @@ class RegistrationIT extends AbstractIT{
         HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
         httpClient.request(Method.POST, ContentType.URLENC) { req ->
+            headers.'Accept-Language' = 'en, en-US'
             uri.path = REGISTRATION_ENDPOINT + '/registration'
             body = userToRegister
 
@@ -150,6 +151,43 @@ class RegistrationIT extends AbstractIT{
         messages.length == 1
         messages[0].getSubject().contains('Confirmation of your registration')
         GreenMailUtil.getBody(messages[0]).contains('your account has been created')
+        messages[0].getFrom()[0].toString() == 'noreply@osiam.org'
+        messages[0].getAllRecipients()[0].toString().equals('email@example.org')
+    }
+    
+    def 'A german user should get a german email text'() {
+        given:
+        def userToRegister = [email: 'email@example.org', password: 'password']
+
+        def responseStatus
+        def createdUserId
+
+        when:
+        HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.POST, ContentType.URLENC) { req ->
+            headers.'Accept-Language' = 'de, de-DE'
+            uri.path = REGISTRATION_ENDPOINT + '/registration'
+            body = userToRegister
+
+            response.success = { resp ->
+                responseStatus = resp.statusLine.statusCode
+            }
+
+            response.failure = { resp ->
+                responseStatus = resp.statusLine.statusCode
+            }
+        }
+
+        then:
+        responseStatus == 201
+
+        //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
+        mailServer.waitForIncomingEmail(5000, 1)
+        Message[] messages = mailServer.getReceivedMessages()
+        messages.length == 1
+        messages[0].getSubject().contains('Abschließen der Registrierung')
+        GreenMailUtil.getBody(messages[0]).contains('ihr Account wurde erstellt.')
         messages[0].getFrom()[0].toString() == 'noreply@osiam.org'
         messages[0].getAllRecipients()[0].toString().equals('email@example.org')
     }
@@ -217,6 +255,7 @@ class RegistrationIT extends AbstractIT{
         def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
         httpClient.request(Method.POST, ContentType.URLENC) { req ->
+            headers.'Accept-Language' = 'en, en-US'
             uri.path = REGISTRATION_ENDPOINT + '/registration'
             body = userToRegister
 

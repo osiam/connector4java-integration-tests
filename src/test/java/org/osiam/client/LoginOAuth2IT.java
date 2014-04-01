@@ -157,6 +157,7 @@ public class LoginOAuth2IT {
         assertTrue(accessToken == null);
         assertEquals(redirectUri, AUTH_ENDPOINT_ADDRESS + "/login/error");
     }
+    
     private void givenAccessTokenUsingAuthCode() {
         accessToken = oConnector.retrieveAccessToken(authCode);
     }

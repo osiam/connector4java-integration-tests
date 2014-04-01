@@ -103,6 +103,7 @@ class ChangeEmailIT extends AbstractIT {
             uri.path = REGISTRATION_ENDPOINT + '/email/change'
             send URLENC, [newEmailValue: newEmailValue]
             headers.'Authorization' = 'Bearer ' + accessToken.getToken()
+            headers.'Accept-Language' = 'en, en-US'
 
             response.success = { resp ->
                 responseStatusCode = resp.statusLine.statusCode
@@ -153,6 +154,7 @@ class ChangeEmailIT extends AbstractIT {
             uri.path = REGISTRATION_ENDPOINT + '/email/confirm'
             send URLENC, [userId:userId, confirmToken: confirmToken]
             headers.'Authorization' = 'Bearer ' + accessToken.getToken()
+            headers.'Accept-Language' = 'en, en-US'
 
             response.success = { resp, json ->
                 responseStatusCode = resp.statusLine.statusCode

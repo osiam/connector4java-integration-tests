@@ -68,6 +68,7 @@ class LostPasswordIT extends AbstractIT {
         httpClient.request(Method.POST) { req ->
             uri.path = REGISTRATION_ENDPOINT + '/password/lost/' + userId
             headers.'Authorization' = 'Bearer ' + accessToken.getToken()
+            headers.'Accept-Language' = 'en, en-US'
 
             response.success = { resp ->
                 statusCode = resp.statusLine.statusCode
