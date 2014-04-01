@@ -23,10 +23,16 @@
 
 package org.osiam.client;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpResponse;
@@ -53,17 +59,15 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.*;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class })
 @DatabaseSetup("/database_seed.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class LoginOAuth2IT {
@@ -97,7 +101,7 @@ public class LoginOAuth2IT {
 
     @Test
     public void test_successful_login() throws IOException {
-        givenValidAuthCode();
+        givenValidAuthCode("marissa", "koala");
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
         assertTrue(accessToken != null);
@@ -106,7 +110,7 @@ public class LoginOAuth2IT {
 
     @Test
     public void login_and_get_me_user() throws IOException {
-        givenValidAuthCode();
+        givenValidAuthCode("marissa", "koala");
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
         User user = oConnector.getCurrentUser(accessToken);
@@ -115,7 +119,7 @@ public class LoginOAuth2IT {
 
     @Test
     public void test_successful_login_while_using_httpResponse() throws IOException {
-        givenValidAuthCode();
+        givenValidAuthCode("marissa", "koala");
         givenAuthCode();
         givenAccessTokenUsingHttpResponse();
         assertTrue(accessToken != null);
@@ -124,7 +128,7 @@ public class LoginOAuth2IT {
 
     @Test(expected = ConflictException.class)
     public void getting_acces_token_two_times_raises_exception() throws IOException {
-        givenValidAuthCode();
+        givenValidAuthCode("marissa", "koala");
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
         givenAccessTokenUsingAuthCode();
@@ -140,13 +144,19 @@ public class LoginOAuth2IT {
 
     @Test
     public void test_failure_login_when_client_not_set() throws IOException {
-        givenValidAuthCode();
+        givenValidAuthCode("marissa", "koala");
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
         assertTrue(accessToken != null);
         assertNotNull(accessToken.getRefreshToken());
     }
     
+    @Test
+    public void test_failure_login_when_user_not_active() throws IOException {
+        String redirectUri = givenValidAuthCode("ewilley", "ewilley");
+        assertTrue(accessToken == null);
+        assertEquals(redirectUri, AUTH_ENDPOINT_ADDRESS + "/login/error");
+    }
     private void givenAccessTokenUsingAuthCode() {
         accessToken = oConnector.retrieveAccessToken(authCode);
     }
@@ -155,7 +165,7 @@ public class LoginOAuth2IT {
         accessToken = oConnector.retrieveAccessToken(authCodeResponse);
     }
 
-    private void givenValidAuthCode() throws IOException {
+    private String givenValidAuthCode(String username, String password) throws IOException {
         String currentRedirectUri;
 
         {
@@ -170,8 +180,8 @@ public class LoginOAuth2IT {
 
             List<NameValuePair> loginCredentials = new ArrayList<>();
             loginCredentials
-                    .add(new BasicNameValuePair("j_username", "marissa"));
-            loginCredentials.add(new BasicNameValuePair("j_password", "koala"));
+                    .add(new BasicNameValuePair("j_username", username));
+            loginCredentials.add(new BasicNameValuePair("j_password", password));
             UrlEncodedFormEntity loginCredentialsEntity = new UrlEncodedFormEntity(
                     loginCredentials, "UTF-8");
 
@@ -207,6 +217,7 @@ public class LoginOAuth2IT {
 
             httpPost.releaseConnection();
         }
+        return currentRedirectUri;
     }
 
     private void givenDenyResponse() throws IOException {
