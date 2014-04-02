@@ -337,13 +337,14 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         String queryString = "filter="
                 + URLEncoder.encode("meta.created gt \"2011-10-10T00:00:00.000\" and userName eq \"user1\"", "UTF-8")
                 + "&attributes="
-                + URLEncoder.encode("userName, displayName", "UTF-8");
+                + URLEncoder.encode("userName, displayName, extension", "UTF-8");
         List<User> users = oConnector.searchUsers(queryString, accessToken).getResources();
         assertThat(users.size(), is(1));
         User user = users.get(0);
         assertThat(user.getEmails().size(), is(0));
         assertThat(user.getUserName(), is("user1"));
-        assertThat(user.getExtensions().size(), is(0));
+        assertThat(user.getDisplayName(), is("user1DisplayName"));
+        assertThat(user.getExtensions().size(), is(1));
     }
 
     private void create100NewUser() {
