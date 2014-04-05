@@ -186,7 +186,7 @@ class RegistrationIT extends AbstractIT {
         mailServer.waitForIncomingEmail(5000, 1)
         Message[] messages = mailServer.getReceivedMessages()
         messages.length == 1
-        messages[0].getSubject().contains('Abschließen der Registrierung')
+        messages[0].getSubject().contains('Bestätigung der Registrierung')
         GreenMailUtil.getBody(messages[0]).contains('ihr Account wurde erstellt.')
         messages[0].getFrom()[0].toString() == 'noreply@osiam.org'
         messages[0].getAllRecipients()[0].toString().equals('email@example.org')
