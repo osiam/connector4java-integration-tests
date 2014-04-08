@@ -25,6 +25,7 @@ package org.osiam.client;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.osiam.resources.scim.Extension;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -51,9 +52,10 @@ public class EmptyDateIT extends AbstractIntegrationTestBase {
     @Test
     public void replace_user_with_empty_date_extension_fail() {
         User user = oConnector.getUser("df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d4", accessToken);
-        user.getExtension("extension").addOrUpdateField("birthday", "");
+        Extension emptyExtension = new Extension.Builder(user.getExtension("extension")).setField("birthday", "").build();
+        User replaceUser = new User.Builder(user).addExtension(emptyExtension).build();
         
-        User replacedUser = oConnector.replaceUser("df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d4", user, accessToken);
+        User replacedUser = oConnector.replaceUser("df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d4", replaceUser, accessToken);
         
         assertThat(replacedUser.getExtension("extension").isFieldPresent("birthday"), is(equalTo(false)));
     }
