@@ -181,8 +181,8 @@ public class LoginOAuth2IT {
 
             List<NameValuePair> loginCredentials = new ArrayList<>();
             loginCredentials
-                    .add(new BasicNameValuePair("j_username", username));
-            loginCredentials.add(new BasicNameValuePair("j_password", password));
+                    .add(new BasicNameValuePair("username", username));
+            loginCredentials.add(new BasicNameValuePair("password", password));
             UrlEncodedFormEntity loginCredentialsEntity = new UrlEncodedFormEntity(
                     loginCredentials, "UTF-8");
 
@@ -236,8 +236,8 @@ public class LoginOAuth2IT {
 
             List<NameValuePair> loginCredentials = new ArrayList<>();
             loginCredentials
-                    .add(new BasicNameValuePair("j_username", "marissa"));
-            loginCredentials.add(new BasicNameValuePair("j_password", "koala"));
+                    .add(new BasicNameValuePair("username", "marissa"));
+            loginCredentials.add(new BasicNameValuePair("password", "koala"));
             UrlEncodedFormEntity loginCredentialsEntity = new UrlEncodedFormEntity(
                     loginCredentials, "UTF-8");
 

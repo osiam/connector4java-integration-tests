@@ -445,9 +445,15 @@
                                     <include>osiam.properties</include>
                                 </resource>
                                 <resource>
-                                <directory>src/test/resources/auth-server-configuration</directory>
+                                	<directory>src/test/resources/auth-server-configuration</directory>
                                     <include>**/**</include>
+                                    <exclude>user-authentication.xml</exclude>
                                 </resource>
+<!--                                 <resource> -->
+<!--                                 	<directory>src/test/resources/auth-server-configuration</directory> -->
+<!--                                     <exclude>**/**</exclude> -->
+<!--                                     <include>user-authentication.xml</include> -->
+<!--                                 </resource> -->
                             </resources>
                         </configuration>
                     </execution>
@@ -600,6 +606,54 @@
                             <url>jdbc:h2:tcp://localhost/mem:osiam</url>
                             <username>sa</username>
                             <password>sa</password>
+                            <src>src/test/resources/database_seed_self_administration.xml</src>
+                            <type>CLEAN_INSERT</type>
+                            <format>flat</format>
+                            <ordered>true</ordered>
+                            <dest>src/test/resources/database_dump.xml</dest>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>seed</id>
+                                <goals>
+                                    <goal>operation</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>dump</id>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>db-seeding-self-admin-pg</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>dbunit-maven-plugin</artifactId>
+                        <version>1.0-beta-3</version>
+                        <dependencies>
+                            <dependency>
+					            <groupId>org.postgresql</groupId>
+					            <artifactId>postgresql</artifactId>
+                                <version>9.3-1101-jdbc41</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <dataTypeFactoryName>org.dbunit.ext.postgresql.PostgresqlDataTypeFactory</dataTypeFactoryName>
+                            <driver>org.postgresql.Driver</driver>
+                            <url>jdbc:postgresql://localhost:5432/ong</url>
+                            <username>ong</username>
+                            <password>b4s3dg0d</password>
                             <src>src/test/resources/database_seed_self_administration.xml</src>
                             <type>CLEAN_INSERT</type>
                             <format>flat</format>
