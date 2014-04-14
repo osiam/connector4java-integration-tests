@@ -30,6 +30,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +46,7 @@ import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.connector.OsiamConnector;
@@ -53,6 +55,9 @@ import org.osiam.client.exception.ForbiddenException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
+import org.osiam.resources.scim.Email;
+import org.osiam.resources.scim.SCIMSearchResult;
+import org.osiam.resources.scim.UpdateUser;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -101,16 +106,63 @@ public class LoginOAuth2IT {
 
     @Test
     public void test_successful_login() throws IOException {
-        givenValidAuthCode("marissa", "koala");
+        givenValidAuthCode("marissa", "koala", "internal");
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
         assertTrue(accessToken != null);
         assertNotNull(accessToken.getRefreshToken());
     }
+    
+    @Test
+    public void test_successful_ldap_login() throws IOException {
+        givenValidAuthCode("ben", "benspassword", "ldap");
+        givenAuthCode();
+        givenAccessTokenUsingAuthCode();
+        assertTrue(accessToken != null);
+        String queryString = "filter=" + URLEncoder.encode("userName eq \"ben\"", "UTF-8");
+        SCIMSearchResult<User> result = oConnector.searchUsers(queryString, accessToken);
+        User user = result.getResources().get(0);
+        assertEquals(result.getTotalResults(), 1);
+        assertEquals("ben", user.getUserName());
+        assertEquals("Alex", user.getName().getFamilyName());
+        assertNotNull(accessToken.getRefreshToken());
+    }
+    
+    @Test
+    @Ignore
+    public void test_successful_ldap_relogin() throws IOException {
+        givenValidAuthCode("ben", "benspassword", "ldap");
+        givenAuthCode();
+        givenAccessTokenUsingAuthCode();
+        
+        String queryString = "filter=" + URLEncoder.encode("userName eq \"ben\"", "UTF-8");
+        SCIMSearchResult<User> result = oConnector.searchUsers(queryString, accessToken);
+        User user = result.getResources().get(0);
+        
+        Email email = new Email.Builder().setValue("ben@osiam.org").build();
+        UpdateUser updateUser = new UpdateUser.Builder().updateNickName("benNickname")
+                .addEmail(email).build();
+        
+        oConnector.updateUser(user.getId(), updateUser, accessToken);
+        
+        givenValidAuthCode("ben", "benspassword", "ldap");
+        givenAuthCode();
+        givenAccessTokenUsingAuthCode();
+        
+        result = oConnector.searchUsers(queryString, accessToken);
+        user = result.getResources().get(0);
+        
+        assertEquals(result.getTotalResults(), 1);
+        assertEquals("ben", user.getUserName());
+        assertEquals("Alex", user.getName().getFamilyName());
+        assertEquals("benNickname", user.getNickName());
+        assertEquals(2, user.getEmails().size());
+        assertTrue(user.getEmails().contains(email));
+    }
 
     @Test
     public void login_and_get_me_user() throws IOException {
-        givenValidAuthCode("marissa", "koala");
+        givenValidAuthCode("marissa", "koala", "internal");
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
         User user = oConnector.getCurrentUser(accessToken);
@@ -119,7 +171,7 @@ public class LoginOAuth2IT {
 
     @Test
     public void test_successful_login_while_using_httpResponse() throws IOException {
-        givenValidAuthCode("marissa", "koala");
+        givenValidAuthCode("marissa", "koala", "internal");
         givenAuthCode();
         givenAccessTokenUsingHttpResponse();
         assertTrue(accessToken != null);
@@ -128,7 +180,7 @@ public class LoginOAuth2IT {
 
     @Test(expected = ConflictException.class)
     public void getting_acces_token_two_times_raises_exception() throws IOException {
-        givenValidAuthCode("marissa", "koala");
+        givenValidAuthCode("marissa", "koala", "internal");
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
         givenAccessTokenUsingAuthCode();
@@ -144,7 +196,7 @@ public class LoginOAuth2IT {
 
     @Test
     public void test_failure_login_when_client_not_set() throws IOException {
-        givenValidAuthCode("marissa", "koala");
+        givenValidAuthCode("marissa", "koala", "internal");
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
         assertTrue(accessToken != null);
@@ -153,7 +205,7 @@ public class LoginOAuth2IT {
     
     @Test
     public void test_failure_login_when_user_not_active() throws IOException {
-        String redirectUri = givenValidAuthCode("ewilley", "ewilley");
+        String redirectUri = givenValidAuthCode("ewilley", "ewilley", "internal");
         assertTrue(accessToken == null);
         assertEquals(redirectUri, AUTH_ENDPOINT_ADDRESS + "/login/error");
     }
@@ -166,7 +218,7 @@ public class LoginOAuth2IT {
         accessToken = oConnector.retrieveAccessToken(authCodeResponse);
     }
 
-    private String givenValidAuthCode(String username, String password) throws IOException {
+    private String givenValidAuthCode(String username, String password, String provider) throws IOException {
         String currentRedirectUri;
 
         {
@@ -183,6 +235,7 @@ public class LoginOAuth2IT {
             loginCredentials
                     .add(new BasicNameValuePair("username", username));
             loginCredentials.add(new BasicNameValuePair("password", password));
+            loginCredentials.add(new BasicNameValuePair("provider", provider));
             UrlEncodedFormEntity loginCredentialsEntity = new UrlEncodedFormEntity(
                     loginCredentials, "UTF-8");
 

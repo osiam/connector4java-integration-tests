@@ -428,6 +428,30 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>copy-osiam-resource-resources</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${project.build.directory}/osiam-resource-server-${osiam.version}/WEB-INF/classes
+                            </outputDirectory>
+                            <overwrite>true</overwrite>
+                            <resources>
+                                <resource>
+                                    <directory>src/test/resources/</directory>
+                                    <filtering>true</filtering>
+                                    <include>osiam.properties</include>
+                                </resource>
+                                <resource>
+                                    <directory>src/test/resources/auth-server-configuration</directory>
+                                    <include>**/**</include>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>copy-osiam-auth-resources</id>
                         <phase>generate-test-resources</phase>
                         <goals>
@@ -449,34 +473,25 @@
                                     <include>**/**</include>
                                     <exclude>user-authentication.xml</exclude>
                                 </resource>
-<!--                                 <resource> -->
-<!--                                 	<directory>src/test/resources/auth-server-configuration</directory> -->
-<!--                                     <exclude>**/**</exclude> -->
-<!--                                     <include>user-authentication.xml</include> -->
-<!--                                 </resource> -->
                             </resources>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>copy-osiam-resource-resources</id>
+                        <id>copy-osiam-auth-web-config</id>
                         <phase>generate-test-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                ${project.build.directory}/osiam-resource-server-${osiam.version}/WEB-INF/classes
+                                ${project.build.directory}/osiam-auth-server-${osiam.version}/WEB-INF
                             </outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
-                                    <directory>src/test/resources/</directory>
-                                    <filtering>true</filtering>
-                                    <include>osiam.properties</include>
-                                </resource>
-                                <resource>
-                                    <directory>src/test/resources/auth-server-configuration</directory>
-                                    <include>**/**</include>
+                                	<directory>src/test/resources/auth-server-configuration</directory>
+                                    <include>user-authentication.xml</include>
+                                    <exclude>auth-server</exclude>
                                 </resource>
                             </resources>
                         </configuration>

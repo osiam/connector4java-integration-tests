@@ -28,6 +28,19 @@ objectclass: top
 objectclass: organizationalUnit
 ou: otherpeople
 
+dn: uid=marissa,ou=people,dc=springframework,dc=org
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Marissa Osiam
+sn: Osiam
+uid: marissa
+userPassword: koala
+email: marissa@orisam.org
+givenName: Marissa
+displayName: Marysiam
+
 dn: uid=ben,ou=people,dc=springframework,dc=org
 objectclass: top
 objectclass: person
@@ -37,6 +50,9 @@ cn: Ben Alex
 sn: Alex
 uid: ben
 userPassword: {SHA}nFCebWjxfaLbHHG1Qk5UU4trbvQ=
+givenName: Ben
+displayName: Benny
+mail: ben@ben.de
 
 dn: uid=bob,ou=people,dc=springframework,dc=org
 objectclass: top
@@ -47,8 +63,6 @@ cn: Bob Hamilton
 sn: Hamilton
 uid: bob
 userPassword: bobspassword
-email: ben@ben.de
-address: 
 
 dn: uid=joe,ou=otherpeople,dc=springframework,dc=org
 objectclass: top
