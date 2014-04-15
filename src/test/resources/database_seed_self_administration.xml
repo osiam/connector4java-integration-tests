@@ -36,6 +36,19 @@
     <osiam_client_scopes id="100003" scope="PUT" />
     <osiam_client_scopes id="100003" scope="PATCH" />
     <osiam_client_scopes id="100003" scope="DELETE" />
+    
+    <osiam_client internal_id="100004" id="auth-server" redirect_uri="http://localhost:8180"
+        client_secret="auth-secret" accesstokenvalidityseconds="2342" refreshtokenvalidityseconds="2342" validityinseconds="1337"
+        implicit_approval="false" expiry="1970-01-01 00:00:01" />
+    <osiam_client_grants id="100004" grants="authorization_code" />
+    <osiam_client_grants id="100004" grants="refresh_token" />
+    <osiam_client_grants id="100004" grants="password" />
+    <osiam_client_grants id="100004" grants="client_credentials" />
+    <osiam_client_scopes id="100004" scope="GET" />
+    <osiam_client_scopes id="100004" scope="POST" />
+    <osiam_client_scopes id="100004" scope="PUT" />
+    <osiam_client_scopes id="100004" scope="PATCH" />
+    <osiam_client_scopes id="100004" scope="DELETE" />
 
     <scim_meta id="100004" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User" />
 
@@ -43,9 +56,12 @@
 
     <scim_user
         password="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
+        displayName="Marissa"
         username="marissa" internal_id="100001" active="true" />
 
     <scim_roles multi_value_id="100090" user_internal_id="100001" value="USER" />
+    
+    <scim_phonenumber multi_value_id="100114" value="688-555-8377" type="work" user_internal_id="100001"/>
 
     <scim_extension internal_id="100081" urn="urn:scim:schemas:osiam:2.0:Self-Administration" />
     <scim_extension internal_id="100090" urn="urn:client:extension" />
@@ -59,5 +75,7 @@
         extension_internal_id="100081" />
     <scim_extension_field internal_id="100086" is_required="false" name="age" type="INTEGER"
         extension_internal_id="100090" />
+        
+        
 
 </dataset>

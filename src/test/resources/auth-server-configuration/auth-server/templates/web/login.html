@@ -45,10 +45,21 @@
 	        </div>
         </div>
         
-		<form th:action="@{/login}" class="form-signin" method="post" role="form">
-			<input id="j_username" name="j_username" type="text"
-				   class="form-control" th:placeholder="#{login.username}" />
-			<input id="j_password" name="j_password" type="password"
+		<form th:action="@{/login/check}" class="form-signin" method="post" role="form">
+			<select name="provider"
+					class="form-control"
+					th:if="${isLdapConfigured}">
+                <option th:value="internal"
+                  	    th:text="#{login.modus.internal}"
+                  	    th:selected="${#httpSession.getAttribute('LAST_PROVIDER') == 'internal'}">Internal login</option>
+          	    <option th:value="ldap"
+                  	    th:text="#{login.modus.ldap}"
+                  	    th:selected="${#httpSession.getAttribute('LAST_PROVIDER') == 'ldap'}">Login with LDAP</option>
+        	</select>
+			<input id="username" name="username" type="text"
+				   class="form-control" th:placeholder="#{login.username}"
+				   th:value="${#httpSession.getAttribute('LAST_USERNAME')}"/>
+			<input id="password" name="password" type="password"
 				   class="form-control" th:placeholder="#{login.password}" />
 			<button class="btn btn-lg btn-primary btn-block" type="submit"
 				th:text="#{login.signin}">Sign in</button>
