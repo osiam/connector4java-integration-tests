@@ -289,22 +289,22 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
     }
 
     private Extension createExtensionWithData(String urn, Map<String, Extension.Field> extensionData) {
-        Extension.Builder extension = new Extension.Builder(urn);
+        Extension.Builder extensionBuilder = new Extension.Builder(urn);
 
         for (Entry<String, Extension.Field> fieldData : extensionData.entrySet()) {
             Extension.Field field = fieldData.getValue();
             ExtensionFieldType<?> type = field.getType();
             String value = field.getValue();
 
-            addOrUpdateExtension(extension, fieldData.getKey(), value, type);
+            addOrUpdateExtension(extensionBuilder, fieldData.getKey(), value, type);
         }
 
-        return extension.build();
+        return extensionBuilder.build();
     }
 
-    private <T> void addOrUpdateExtension(Extension.Builder extension, String fieldName, String value,
+    private <T> void addOrUpdateExtension(Extension.Builder extensionBuilder, String fieldName, String value,
             ExtensionFieldType<T> type) {
-        extension.setField(fieldName, type.fromString(value), type);
+        extensionBuilder.setField(fieldName, type.fromString(value), type);
     }
 
     private void assertExtensionEqualsExtensionMap(Extension storedExtension, Map<String, Field> extensionMap) {
