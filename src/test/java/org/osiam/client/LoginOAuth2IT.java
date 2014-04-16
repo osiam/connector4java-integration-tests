@@ -24,6 +24,7 @@
 package org.osiam.client;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -126,6 +127,32 @@ public class LoginOAuth2IT {
         assertEquals("ben", user.getUserName());
         assertEquals("Alex", user.getName().getFamilyName());
         assertNotNull(accessToken.getRefreshToken());
+    }
+    
+    @Test
+    public void test_origin_is_set_successful_after_ldap_login() throws IOException {
+        givenValidAuthCode("ben", "benspassword", "ldap");
+        givenAuthCode();
+        givenAccessTokenUsingAuthCode();
+        assertTrue(accessToken != null);
+        String queryString = "filter=" + URLEncoder.encode("userName eq \"ben\"", "UTF-8");
+        SCIMSearchResult<User> result = oConnector.searchUsers(queryString, accessToken);
+        User user = result.getResources().get(0);
+        assertEquals(result.getTotalResults(), 1);
+        assertEquals("ldap", user.getExtension("urn:scim:schemas:osiam:2.0:authentication:server").getFieldAsString("origin"));
+    }
+    
+    @Test
+    public void test_origin_is_not_set_after_internal_login() throws IOException {
+        givenValidAuthCode("marissa", "koala", "internal");
+        givenAuthCode();
+        givenAccessTokenUsingAuthCode();
+        assertTrue(accessToken != null);
+        String queryString = "filter=" + URLEncoder.encode("userName eq \"marissa\"", "UTF-8");
+        SCIMSearchResult<User> result = oConnector.searchUsers(queryString, accessToken);
+        User user = result.getResources().get(0);
+        assertEquals(result.getTotalResults(), 1);
+        assertFalse(user.isExtensionPresent("urn:scim:schemas:osiam:2.0:authentication:server"));
     }
     
     @Test
