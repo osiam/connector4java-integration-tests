@@ -39,6 +39,7 @@ import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -47,7 +48,6 @@ import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.connector.OsiamConnector;
@@ -57,6 +57,7 @@ import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 import org.osiam.resources.scim.Email;
+import org.osiam.resources.scim.Email.Type;
 import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.UpdateUser;
 import org.osiam.resources.scim.User;
@@ -113,7 +114,7 @@ public class LoginOAuth2IT {
         assertTrue(accessToken != null);
         assertNotNull(accessToken.getRefreshToken());
     }
-    
+
     @Test
     public void test_successful_ldap_login() throws IOException {
         givenValidAuthCode("ben", "benspassword", "ldap");
@@ -128,7 +129,7 @@ public class LoginOAuth2IT {
         assertEquals("Alex", user.getName().getFamilyName());
         assertNotNull(accessToken.getRefreshToken());
     }
-    
+
     @Test
     public void test_origin_is_set_successful_after_ldap_login() throws IOException {
         givenValidAuthCode("ben", "benspassword", "ldap");
@@ -139,9 +140,10 @@ public class LoginOAuth2IT {
         SCIMSearchResult<User> result = oConnector.searchUsers(queryString, accessToken);
         User user = result.getResources().get(0);
         assertEquals(result.getTotalResults(), 1);
-        assertEquals("ldap", user.getExtension("urn:scim:schemas:osiam:2.0:authentication:server").getFieldAsString("origin"));
+        assertEquals("ldap",
+                user.getExtension("urn:scim:schemas:osiam:2.0:authentication:server").getFieldAsString("origin"));
     }
-    
+
     @Test
     public void test_origin_is_not_set_after_internal_login() throws IOException {
         givenValidAuthCode("marissa", "koala", "internal");
@@ -154,37 +156,59 @@ public class LoginOAuth2IT {
         assertEquals(result.getTotalResults(), 1);
         assertFalse(user.isExtensionPresent("urn:scim:schemas:osiam:2.0:authentication:server"));
     }
-    
+
     @Test
-    @Ignore
-    public void test_successful_ldap_relogin() throws IOException {
+    public void test_successful_update_user_with_ldap_relogin() throws IOException, InterruptedException {
+        oConnector = new OsiamConnector.Builder()
+                .setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setClientId("short-living-client")
+                .setClientSecret("other-secret")
+                .setClientRedirectUri("http://localhost:5001/oauth2")
+                .setGrantType(GrantType.AUTHORIZATION_CODE).setScope(Scope.ALL)
+                .build();
+        
+        loginUri = oConnector.getRedirectLoginUri();
+
         givenValidAuthCode("ben", "benspassword", "ldap");
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
-        
+
         String queryString = "filter=" + URLEncoder.encode("userName eq \"ben\"", "UTF-8");
         SCIMSearchResult<User> result = oConnector.searchUsers(queryString, accessToken);
         User user = result.getResources().get(0);
-        
-        Email email = new Email.Builder().setValue("ben@osiam.org").build();
+
+        Email ldapEmail = new Email.Builder().setValue("ben@ben.de").setType(new Type("ldap")).build();
+
+        assertEquals(1, user.getEmails().size());
+        assertTrue(user.getEmails().contains(ldapEmail));
+
+        Email newEmail = new Email.Builder().setValue("ben@osiam.org").build();
+        Email toBeDeleteLdapEmail = new Email.Builder().setValue("should.be@deleted.de").setType(new Type("ldap"))
+                .build();
         UpdateUser updateUser = new UpdateUser.Builder().updateNickName("benNickname")
-                .addEmail(email).build();
-        
+                .addEmail(newEmail).addEmail(toBeDeleteLdapEmail).deleteEmail(ldapEmail).build();
+
         oConnector.updateUser(user.getId(), updateUser, accessToken);
-        
+
+        defaultHttpClient = new DefaultHttpClient();
+
+        Thread.sleep(1000);
+
         givenValidAuthCode("ben", "benspassword", "ldap");
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
-        
+
         result = oConnector.searchUsers(queryString, accessToken);
         user = result.getResources().get(0);
-        
+
         assertEquals(result.getTotalResults(), 1);
         assertEquals("ben", user.getUserName());
         assertEquals("Alex", user.getName().getFamilyName());
         assertEquals("benNickname", user.getNickName());
         assertEquals(2, user.getEmails().size());
-        assertTrue(user.getEmails().contains(email));
+        assertTrue(user.getEmails().contains(newEmail));
+        assertTrue(user.getEmails().contains(ldapEmail));
     }
 
     @Test
@@ -229,14 +253,14 @@ public class LoginOAuth2IT {
         assertTrue(accessToken != null);
         assertNotNull(accessToken.getRefreshToken());
     }
-    
+
     @Test
     public void test_failure_login_when_user_not_active() throws IOException {
         String redirectUri = givenValidAuthCode("ewilley", "ewilley", "internal");
         assertTrue(accessToken == null);
         assertEquals(redirectUri, AUTH_ENDPOINT_ADDRESS + "/login/error");
     }
-    
+
     private void givenAccessTokenUsingAuthCode() {
         accessToken = oConnector.retrieveAccessToken(authCode);
     }
