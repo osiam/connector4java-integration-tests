@@ -23,24 +23,29 @@
 
 package org.osiam.client;
 
+import static org.apache.http.HttpStatus.SC_OK;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import groovy.sql.InOutParameter;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.params.ClientPNames;
@@ -158,6 +163,11 @@ public class LoginOAuth2IT {
     }
 
     @Test
+    public void if_ldap_user_login_but_internal_user_already_exists_error_will_be_shown() throws IOException {
+        assureLdapLoginProcessFailes();
+    }
+
+    @Test
     public void test_successful_update_user_with_ldap_relogin() throws IOException, InterruptedException {
         oConnector = new OsiamConnector.Builder()
                 .setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS)
@@ -167,7 +177,7 @@ public class LoginOAuth2IT {
                 .setClientRedirectUri("http://localhost:5001/oauth2")
                 .setGrantType(GrantType.AUTHORIZATION_CODE).setScope(Scope.ALL)
                 .build();
-        
+
         loginUri = oConnector.getRedirectLoginUri();
 
         givenValidAuthCode("ben", "benspassword", "ldap");
@@ -267,6 +277,51 @@ public class LoginOAuth2IT {
 
     private void givenAccessTokenUsingHttpResponse() {
         accessToken = oConnector.retrieveAccessToken(authCodeResponse);
+    }
+
+    private void assureLdapLoginProcessFailes() throws IOException {
+        String currentRedirectUri;
+        String username = "marissa";
+        String password = "koala";
+        String provider = "ldap";
+        
+        {
+            HttpGet httpGet = new HttpGet(loginUri);
+            defaultHttpClient.execute(httpGet);
+            httpGet.releaseConnection();
+        }
+
+        {
+            HttpPost httpPost = new HttpPost(
+                    AUTH_ENDPOINT_ADDRESS + "/login/check");
+
+            List<NameValuePair> loginCredentials = new ArrayList<>();
+            loginCredentials
+                    .add(new BasicNameValuePair("username", username));
+            loginCredentials.add(new BasicNameValuePair("password", password));
+            loginCredentials.add(new BasicNameValuePair("provider", provider));
+            UrlEncodedFormEntity loginCredentialsEntity = new UrlEncodedFormEntity(
+                    loginCredentials, "UTF-8");
+
+            httpPost.setEntity(loginCredentialsEntity);
+            HttpResponse response = defaultHttpClient.execute(httpPost);
+
+            currentRedirectUri = response.getLastHeader("Location").getValue();
+
+            httpPost.releaseConnection();
+        }
+
+        assertTrue(currentRedirectUri.contains("login/error"));
+
+        {
+            HttpGet httpGet = new HttpGet(currentRedirectUri);
+            httpGet.setHeader("Accept-Language", "de, de-DE");
+            CloseableHttpResponse response = defaultHttpClient.execute(httpGet);
+            InputStream content = response.getEntity().getContent();
+            String inputStreamStringValue = IOUtils.toString(content, "UTF-8");
+            assertTrue(inputStreamStringValue.contains("Anmeldung über ldap nicht möglich"));
+            httpGet.releaseConnection();
+        }
     }
 
     private String givenValidAuthCode(String username, String password, String provider) throws IOException {
