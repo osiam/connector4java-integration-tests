@@ -23,13 +23,11 @@
 
 package org.osiam.client;
 
-import static org.apache.http.HttpStatus.SC_OK;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import groovy.sql.InOutParameter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,7 +41,6 @@ import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -146,7 +143,7 @@ public class LoginOAuth2IT {
         User user = result.getResources().get(0);
         assertEquals(result.getTotalResults(), 1);
         assertEquals("ldap",
-                user.getExtension("urn:scim:schemas:osiam:2.0:authentication:server").getFieldAsString("origin"));
+                user.getExtension("urn:org.osiam:scim:extensions:auth-server").getFieldAsString("origin"));
     }
 
     @Test
