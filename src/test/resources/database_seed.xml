@@ -258,7 +258,7 @@
     <scim_roles multi_value_id="100090" user_internal_id="100001" value="USER"/>
 
     <scim_extension internal_id="100081" urn="extension"/>
-    <scim_extension internal_id="100082" urn="urn:scim:schemas:osiam:2.0:authentication:server"/>
+    <scim_extension internal_id="100082" urn="urn:org.osiam:scim:extensions:auth-server"/>
         
     <scim_extension_field internal_id="100082" is_required="true" name="gender" type="STRING"
                           extension_internal_id="100081"/>

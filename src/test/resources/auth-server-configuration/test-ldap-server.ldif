@@ -53,6 +53,8 @@ userPassword: {SHA}nFCebWjxfaLbHHG1Qk5UU4trbvQ=
 givenName: Ben
 displayName: Benny
 mail: ben@ben.de
+wwwHomePage: www.ben.de
+profilePath: /home/ben
 
 dn: uid=bob,ou=people,dc=springframework,dc=org
 objectclass: top
