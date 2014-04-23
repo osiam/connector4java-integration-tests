@@ -419,10 +419,8 @@
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
-                                    <directory>src/test/resources/</directory>
-                                    <includes>
-                                        <include>jpa-configuration.xml</include>
-                                    </includes>
+                                    <directory>src/test/resources/resource-server-configuration</directory>
+                                    <include>jpa-configuration.xml</include>
                                 </resource>
                             </resources>
                         </configuration>
@@ -440,13 +438,8 @@
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
-                                    <directory>src/test/resources/</directory>
-                                    <filtering>true</filtering>
-                                    <include>osiam.properties</include>
-                                </resource>
-                                <resource>
-                                    <directory>src/test/resources/auth-server-configuration</directory>
-                                    <include>**/**</include>
+                                    <directory>src/test/resources/resource-server-configuration</directory>
+                                    <include>resource-server.properties</include>
                                 </resource>
                             </resources>
                         </configuration>
@@ -464,14 +457,10 @@
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
-                                    <directory>src/test/resources/</directory>
-                                    <filtering>true</filtering>
-                                    <include>osiam.properties</include>
-                                </resource>
-                                <resource>
                                 	<directory>src/test/resources/auth-server-configuration</directory>
                                     <include>**/**</include>
-                                    <exclude>user-authentication.xml</exclude>
+                                    <exclude>auth-server_pg.properties</exclude>
+                                    <exclude>*.xml</exclude>
                                 </resource>
                             </resources>
                         </configuration>
@@ -491,7 +480,7 @@
                                 <resource>
                                 	<directory>src/test/resources/auth-server-configuration</directory>
                                     <include>user-authentication.xml</include>
-                                    <exclude>auth-server</exclude>
+                                    <include>jpa-configuration.xml</include>
                                 </resource>
                             </resources>
                         </configuration>
@@ -511,7 +500,7 @@
                                 <resource>
                                     <directory>src/test/resources/</directory>
                                     <filtering>true</filtering>
-                                    <include>osiam.properties</include>
+                                    <include>osiam-self-administraton.properties</include>
                                 </resource>
                                 <resource>
                                     <directory>src/test/resources/addon-self-administration-configuration</directory>
