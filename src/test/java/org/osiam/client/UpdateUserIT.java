@@ -575,7 +575,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         updateUser = new UpdateUser.Builder()
                 .deleteEmail(email)
                 .deleteEntitlement(entitlement)
-                .deleteIms(ims)
+                .deleteIm(ims)
                 .deletePhoneNumber(phoneNumber)
                 .deletePhoto(photo)
                 .deleteRole("role01")
@@ -612,7 +612,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
                 .addPhoneNumber(phonenumber)
                 .addAddress(newSimpleAddress)
                 .addEntitlement(entitlement)
-                .addIms(ims)
+                .addIm(ims)
                 .addPhoto(photo)
                 .addRole(role)
                 .addX509Certificate(certificate)// TODO at the second run it will fail

@@ -309,8 +309,8 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         updateUserBuilder.updateX509Certificate(oldUser.getX509Certificates().get(0), expectedUser
                 .getX509Certificates().get(0));
         updateUserBuilder.updateEntitlement(oldUser.getEntitlements().get(0), expectedUser.getEntitlements().get(0));
-        updateUserBuilder.updateIms(oldUser.getIms().get(0), expectedUser.getIms().get(0));
-        updateUserBuilder.updatePhotos(oldUser.getPhotos().get(0), expectedUser.getPhotos().get(0));
+        updateUserBuilder.updateIm(oldUser.getIms().get(0), expectedUser.getIms().get(0));
+        updateUserBuilder.updatePhoto(oldUser.getPhotos().get(0), expectedUser.getPhotos().get(0));
         updateUserBuilder.updateUserName(expectedUser.getUserName());
         updateUserBuilder.updateExtension(expectedUser.getExtension(EXTENSION_URN));
 
