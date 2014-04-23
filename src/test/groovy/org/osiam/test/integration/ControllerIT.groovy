@@ -208,8 +208,8 @@ class ControllerIT extends AbstractIT {
         def user2 = new User.Builder('UserTwo').setEmails([emailUserTwo] as List).setExternalId('pew2').build()
 
         when: 'a add user request is sent'
-		User retUser1 = osiamConnector.createUser(user1, validAccessToken)
-		User retUser2 = osiamConnector.createUser(user2, validAccessToken)
+        User retUser1 = osiamConnector.createUser(user1, validAccessToken)
+        User retUser2 = osiamConnector.createUser(user2, validAccessToken)
 
         then: 'the response elements should contain the expected email for each user'
         assert retUser1.emails != retUser2.emails
@@ -217,7 +217,7 @@ class ControllerIT extends AbstractIT {
         assert retUser1.emails[0].type != retUser2.emails[0].type
         assert retUser1.emails[0].primary == retUser2.emails[0].primary
     }
-	
+
     def "REGT-OSNG-37: The token validation should not raise an exception in case of the OAuth2 client credentials grant because of missing user authentication"() {
 
         given: "a valid access token"
@@ -225,12 +225,10 @@ class ControllerIT extends AbstractIT {
         def responseStatusCode
         def responseContent
 
-        when: "retrieving a client"
-        def http = new HTTPBuilder(RESOURCE_ENDPOINT)
-
-        http.request(Method.GET, ContentType.JSON) { req ->
-            uri.path = RESOURCE_ENDPOINT + "/Client/" + CLIENT_ID
-
+        when: "retrieving a user"
+        new HTTPBuilder(RESOURCE_ENDPOINT).request(Method.GET, ContentType.JSON) { req ->
+            uri.path = RESOURCE_ENDPOINT + "/Users"
+            uri.query = [filter: 'userName eq "marissa"']
             headers."Authorization" = "Bearer " + validAccessToken.getToken()
 
             response.success = { resp, json ->
@@ -243,8 +241,8 @@ class ControllerIT extends AbstractIT {
             }
         }
 
-        then: "the client should be retrieved without triggering an exception"
-        assert responseStatusCode == 200
-        assert responseContent.id == CLIENT_ID
+        then: "the user should be retrieved without triggering an exception"
+        responseStatusCode == 200
+        responseContent.Resources[0].userName == 'marissa'
     }
 }
