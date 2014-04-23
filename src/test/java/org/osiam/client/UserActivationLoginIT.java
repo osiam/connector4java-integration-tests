@@ -57,8 +57,8 @@ public class UserActivationLoginIT extends AbstractIntegrationTestBase {
 
     private AccessToken getAccessToken(String userName, String password) {
         return new OsiamConnector.Builder()
-                .setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS)
-                .setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
                 .setClientId("example-client")
                 .setClientSecret("secret")
                 .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)

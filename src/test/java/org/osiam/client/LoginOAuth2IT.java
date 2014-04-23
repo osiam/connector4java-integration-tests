@@ -96,8 +96,8 @@ public class LoginOAuth2IT {
     @Before
     public void setUp() throws Exception {
         oConnector = new OsiamConnector.Builder()
-                .setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS)
-                .setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
                 .setClientId(CLIENT_ID)
                 .setClientSecret(CLIENT_SECRET)
                 .setClientRedirectUri(REDIRECT_URI)
@@ -167,8 +167,8 @@ public class LoginOAuth2IT {
     @Test
     public void test_successful_update_user_with_ldap_relogin() throws IOException, InterruptedException {
         oConnector = new OsiamConnector.Builder()
-                .setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS)
-                .setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
                 .setClientId("short-living-client")
                 .setClientSecret("other-secret")
                 .setClientRedirectUri("http://localhost:5001/oauth2")

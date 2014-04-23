@@ -85,8 +85,8 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
 
     private void givenAnAccessTokenClient() throws Exception {
         OsiamConnector.Builder authBuilder = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
+                setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
+                setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.CLIENT_CREDENTIALS).

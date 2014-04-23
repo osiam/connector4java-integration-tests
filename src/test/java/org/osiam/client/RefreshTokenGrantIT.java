@@ -60,8 +60,8 @@ public class RefreshTokenGrantIT {
 
         //Get a access token.
         OsiamConnector connectorWithROPC = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
+                setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
+                setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId(clientId).
                 setClientSecret(clientSecret).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).

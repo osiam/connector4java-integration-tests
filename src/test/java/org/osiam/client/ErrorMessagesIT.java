@@ -366,8 +366,8 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
     @Test
     public void login_with_wrong_client_credentials() {
         OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
+                setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
+                setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId("example-client").
                 setClientSecret("wrongsecret").
                 setGrantType(GrantType.CLIENT_CREDENTIALS).

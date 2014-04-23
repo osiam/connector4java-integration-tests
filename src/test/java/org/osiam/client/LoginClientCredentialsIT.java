@@ -62,8 +62,8 @@ public class LoginClientCredentialsIT {
 	@Test
 	public void login_with_client_credentials(){
         OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
+                setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
+                setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId(clientId).
                 setClientSecret(clientSecret).
                 setGrantType(GrantType.CLIENT_CREDENTIALS).
@@ -77,8 +77,8 @@ public class LoginClientCredentialsIT {
 	@Test (expected = UnauthorizedException.class)
 	public void login_with_wrong_client_credentials(){
         OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
+                setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
+                setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId(clientId).
                 setClientSecret("wrong" + clientSecret).
                 setGrantType(GrantType.CLIENT_CREDENTIALS).
@@ -92,8 +92,8 @@ public class LoginClientCredentialsIT {
     @Test (expected = ConflictException.class)
     public void get_actual_user_rasies_exception(){
         OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
+                setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
+                setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId(clientId).
                 setClientSecret(clientSecret).
                 setGrantType(GrantType.CLIENT_CREDENTIALS).
