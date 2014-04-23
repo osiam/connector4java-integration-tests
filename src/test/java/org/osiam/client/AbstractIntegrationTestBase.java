@@ -55,8 +55,8 @@ public abstract class AbstractIntegrationTestBase {
     @Before
     public void abstractSetUp() throws Exception {
         OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
+                setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
+                setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
@@ -69,8 +69,8 @@ public abstract class AbstractIntegrationTestBase {
 
     protected void givenAnAccessTokenForOneSecond() throws Exception {
         OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
+                setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
+                setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId("short-living-client").
                 setClientSecret("other-secret").
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).

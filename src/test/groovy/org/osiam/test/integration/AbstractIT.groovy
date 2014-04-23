@@ -83,8 +83,8 @@ abstract class AbstractIT extends Specification {
         }
 
         osiamConnector = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT).
-                setResourceEndpoint(RESOURCE_ENDPOINT).
+                setAuthServerEndpoint(AUTH_ENDPOINT).
+                setResourceServerEndpoint(RESOURCE_ENDPOINT).
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
@@ -93,16 +93,16 @@ abstract class AbstractIT extends Specification {
                 setScope(Scope.ALL).build()
 
         osiamConnectorForClientCredentialsGrant = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT).
-                setResourceEndpoint(RESOURCE_ENDPOINT).
+                setAuthServerEndpoint(AUTH_ENDPOINT).
+                setResourceServerEndpoint(RESOURCE_ENDPOINT).
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.CLIENT_CREDENTIALS).
                 setScope(Scope.ALL).build()
 
         osiamConnectorForEmailChange = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT).
-                setResourceEndpoint(RESOURCE_ENDPOINT).
+                setAuthServerEndpoint(AUTH_ENDPOINT).
+                setResourceServerEndpoint(RESOURCE_ENDPOINT).
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
@@ -115,8 +115,8 @@ abstract class AbstractIT extends Specification {
 
     def createAccessToken(def userName, def password) {
         OsiamConnector osiamConnector = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT).
-                setResourceEndpoint(RESOURCE_ENDPOINT).
+                setAuthServerEndpoint(AUTH_ENDPOINT).
+                setResourceServerEndpoint(RESOURCE_ENDPOINT).
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).

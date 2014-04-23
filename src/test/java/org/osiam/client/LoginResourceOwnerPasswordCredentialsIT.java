@@ -83,8 +83,8 @@ public class LoginResourceOwnerPasswordCredentialsIT {
 
     private OsiamConnector createOsiamConnector(String userName, String password) {
         return new OsiamConnector.Builder()
-                .setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS)
-                .setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
                 .setClientId(clientId).setClientSecret(clientSecret)
                 .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
                 .setUserName(userName).setPassword(password)
