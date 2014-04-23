@@ -155,9 +155,11 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
         User existingUser = oConnector.getUser(EXISTING_USER_UUID, accessToken);
         extensionData.put("gender", new Extension.Field(ExtensionFieldType.STRING, "female"));
         Extension extension = existingUser.getExtension(URN);
-        extension.addOrUpdateField("gender", "female");
+        Extension newExtension = new Extension.Builder(extension).setField("gender", "female").build();
+        
+        User replaceUser =  new User.Builder(existingUser).addExtension(newExtension).build();
 
-        oConnector.replaceUser(EXISTING_USER_UUID, existingUser, accessToken);
+        oConnector.replaceUser(EXISTING_USER_UUID, replaceUser, accessToken);
 
         User storedUser = oConnector.getUser(EXISTING_USER_UUID, accessToken);
         Extension storedExtension = storedUser.getExtension(URN);
@@ -244,8 +246,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
     @Test
     @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/extensions.xml")
     public void updating_an_extension_field_works() {
-        Extension updateExtension = new Extension(URN);
-        updateExtension.addOrUpdateField("gender", "female");
+        Extension updateExtension = new Extension.Builder(URN).setField("gender", "female").build();
         UpdateUser patchUser = new UpdateUser.Builder().updateExtension(updateExtension).build();
 
         User updatedUser = oConnector.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
@@ -256,8 +257,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
     @Test
     @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/extensions_with_less_values.xml")
     public void set_a_new_extension_field_works() {
-        Extension updateExtension = new Extension(URN);
-        updateExtension.addOrUpdateField("newsletter", true);
+        Extension updateExtension = new Extension.Builder(URN).setField("newsletter", true).build();
         UpdateUser patchUser = new UpdateUser.Builder().updateExtension(updateExtension).build();
 
         User updatedUser = oConnector.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
@@ -268,8 +268,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
     @Test
     @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/extensions.xml")
     public void updating_an_extension_with_an_empty_string_doesnt_change_the_value() {
-        Extension updateExtension = new Extension(URN);
-        updateExtension.addOrUpdateField("gender", "");
+        Extension updateExtension = new Extension.Builder(URN).setField("gender", "").build();
         UpdateUser patchUser = new UpdateUser.Builder().updateExtension(updateExtension).build();
 
         User updatedUser = oConnector.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
@@ -280,8 +279,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
     @Test
     @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/extensions.xml")
     public void delete_and_add_in_one_request_works() {
-        Extension updateExtension = new Extension(URN);
-        updateExtension.addOrUpdateField("gender", "female");
+        Extension updateExtension = new Extension.Builder(URN).setField("gender", "female").build();
         UpdateUser patchUser = new UpdateUser.Builder().updateExtension(updateExtension)
                 .deleteExtensionField(URN, "gender").build();
 
@@ -291,22 +289,22 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
     }
 
     private Extension createExtensionWithData(String urn, Map<String, Extension.Field> extensionData) {
-        Extension extension = new Extension(urn);
+        Extension.Builder extensionBuilder = new Extension.Builder(urn);
 
         for (Entry<String, Extension.Field> fieldData : extensionData.entrySet()) {
             Extension.Field field = fieldData.getValue();
             ExtensionFieldType<?> type = field.getType();
             String value = field.getValue();
 
-            addOrUpdateExtension(extension, fieldData.getKey(), value, type);
+            addOrUpdateExtension(extensionBuilder, fieldData.getKey(), value, type);
         }
 
-        return extension;
+        return extensionBuilder.build();
     }
 
-    private <T> void addOrUpdateExtension(Extension extension, String fieldName, String value,
+    private <T> void addOrUpdateExtension(Extension.Builder extensionBuilder, String fieldName, String value,
             ExtensionFieldType<T> type) {
-        extension.addOrUpdateField(fieldName, type.fromString(value), type);
+        extensionBuilder.setField(fieldName, type.fromString(value), type);
     }
 
     private void assertExtensionEqualsExtensionMap(Extension storedExtension, Map<String, Field> extensionMap) {

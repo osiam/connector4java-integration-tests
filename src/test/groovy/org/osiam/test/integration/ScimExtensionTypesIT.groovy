@@ -37,10 +37,9 @@ class ScimExtensionTypesIT extends AbstractExtensionBaseIT {
     @Unroll
     def 'Saving \'#fieldValue\' into the extension field \'#fieldName\' which is from type #fieldType raises a exception'() {
         given: "a valid access token"
-        Extension extension = new Extension(URN);
-        extension.addOrUpdateField(fieldName, fieldValue);
+        Extension extension = new Extension.Builder(URN).setField(fieldName, fieldValue).build()
 
-        User.Builder userBuilder = new User.Builder("irrelevant").addExtension(extension);
+        User.Builder userBuilder = new User.Builder("irrelevant").addExtension(extension)
 
         when:
         osiamConnector.createUser(userBuilder.build(), accessToken)

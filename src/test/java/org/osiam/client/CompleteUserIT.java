@@ -31,7 +31,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.math.BigInteger;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -194,7 +193,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
             uri = new URI("username.jpg");
         } catch (Exception e) {
         }
-        
+
         Photo photo = new Photo.Builder().setPrimary(true)
                 .setType(Photo.Type.PHOTO).setValue(uri).build();
         photos.add(photo);
@@ -206,9 +205,9 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         X509Certificate x509Certificat = new X509Certificate.Builder()
                 .setPrimary(true).setValue("x509Certificat").build();
         x509Certificates.add(x509Certificat);
-        Extension extension = new Extension(EXTENSION_URN);
-        extension.addOrUpdateField("gender", "female");
-        extension.addOrUpdateField("age", new BigInteger("22"));
+        Extension extension = new Extension.Builder(EXTENSION_URN)
+                .setField("gender", "female")
+                .setField("age", new BigInteger("22")).build();
         return new User.Builder("complete_add_user").setActive(true)
                 .setAddresses(addresses).setDisplayName("displayName")
                 .setEmails(emails).setEntitlements(entitlements)
@@ -257,7 +256,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
             uri = new URI("username.jpg");
         } catch (Exception e) {
         }
-        
+
         Photo photo = new Photo.Builder().setPrimary(true)
                 .setType(Photo.Type.PHOTO).setValue(uri).build();
         photos.add(photo);
@@ -269,9 +268,9 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         X509Certificate x509Certificate = new X509Certificate.Builder()
                 .setPrimary(true).setValue("x509Certificat").build();
         x509Certificates.add(x509Certificate);
-        Extension extension = new Extension(EXTENSION_URN);
-        extension.addOrUpdateField("gender", "female");
-        extension.addOrUpdateField("age", new BigInteger("18"));
+        Extension extension = new Extension.Builder(EXTENSION_URN)
+                .setField("gender", "female")
+                .setField("age", new BigInteger("18")).build();
         return new User.Builder("complete_add_user")
                 .setActive(true)
                 .setAddresses(addresses)
