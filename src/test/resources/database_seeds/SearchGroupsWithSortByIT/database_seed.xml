@@ -23,8 +23,6 @@
 -->
 
 <dataset>
-    <database_scheme_version version="0.02"/>
-
     <osiam_client internal_id="100003" id="example-client" redirect_uri="http://localhost:5000/oauth2"
                   client_secret="secret" accesstokenvalidityseconds="2342" refreshtokenvalidityseconds="2342"
                   validityinseconds="1337"

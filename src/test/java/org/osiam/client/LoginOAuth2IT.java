@@ -23,9 +23,11 @@
 
 package org.osiam.client;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -281,7 +283,7 @@ public class LoginOAuth2IT {
         String username = "marissa";
         String password = "koala";
         String provider = "ldap";
-        
+
         {
             HttpGet httpGet = new HttpGet(loginUri);
             defaultHttpClient.execute(httpGet);
@@ -312,11 +314,11 @@ public class LoginOAuth2IT {
 
         {
             HttpGet httpGet = new HttpGet(currentRedirectUri);
-            httpGet.setHeader("Accept-Language", "de, de-DE");
+            httpGet.setHeader("Accept-Language", "de-DE");
             CloseableHttpResponse response = defaultHttpClient.execute(httpGet);
             InputStream content = response.getEntity().getContent();
             String inputStreamStringValue = IOUtils.toString(content, "UTF-8");
-            assertTrue(inputStreamStringValue.contains("Anmeldung über ldap nicht möglich"));
+            assertThat(inputStreamStringValue, containsString("Anmeldung über ldap nicht möglich"));
             httpGet.releaseConnection();
         }
     }
