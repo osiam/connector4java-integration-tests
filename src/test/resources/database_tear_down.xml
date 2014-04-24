@@ -23,7 +23,6 @@
 -->
 
 <dataset>
-    <database_scheme_version/>
     <osiam_client />
     <osiam_client_grants />
     <osiam_client_scopes />
