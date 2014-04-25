@@ -66,5 +66,4 @@ public class ReplaceUserServiceIT extends AbstractIntegrationTestBase {
         }
     }
 
-
 }
