@@ -45,7 +45,7 @@
 
         <!-- OSIAM -->
         <osiam.version>0.21-SNAPSHOT</osiam.version>
-        <osiam.self-administration.version>0.1-SNAPSHOT</osiam.self-administration.version>
+        <osiam.addon-self-administration.version>0.1-SNAPSHOT</osiam.addon-self-administration.version>
         <osiam.connector4java.version>0.15-SNAPSHOT</osiam.connector4java.version>
     </properties>
 
@@ -302,8 +302,8 @@
                             <contextPath>/osiam-auth-server</contextPath>
                         </contextHandler>
                         <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
-                            <war>${project.build.directory}/osiam-self-administration-${osiam.self-administration.version}</war>
-                            <contextPath>/osiam-self-administration</contextPath>
+                            <war>${project.build.directory}/addon-self-administration-${osiam.addon-self-administration.version}</war>
+                            <contextPath>/addon-self-administration</contextPath>
                         </contextHandler>
                         <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
                             <war>${project.build.directory}/osiam-resource-server-${osiam.version}</war>
@@ -378,7 +378,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>download-osiam-self-administration</id>
+                        <id>download-addon-self-administration</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack</goal>
@@ -387,12 +387,12 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.osiam</groupId>
-                                    <artifactId>osiam-self-administration</artifactId>
-                                    <version>${osiam.self-administration.version}</version>
+                                    <artifactId>addon-self-administration</artifactId>
+                                    <version>${osiam.addon-self-administration.version}</version>
                                     <type>war</type>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/osiam-self-administration-${osiam.self-administration.version}</outputDirectory>
+                            <outputDirectory>${project.build.directory}/addon-self-administration-${osiam.addon-self-administration.version}</outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
                     </execution>
@@ -486,22 +486,17 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>copy-osiam-self-administration</id>
+                        <id>copy-addon-self-administration</id>
                         <phase>generate-test-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                ${project.build.directory}/osiam-self-administration-${osiam.self-administration.version}/WEB-INF/classes
+                                ${project.build.directory}/addon-self-administration-${osiam.addon-self-administration.version}/WEB-INF/classes
                             </outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>
-                                <resource>
-                                    <directory>src/test/resources/</directory>
-                                    <filtering>true</filtering>
-                                    <include>osiam-self-administraton.properties</include>
-                                </resource>
                                 <resource>
                                     <directory>src/test/resources/addon-self-administration-configuration</directory>
                                     <include>**/**</include>
