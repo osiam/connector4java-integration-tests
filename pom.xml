@@ -203,14 +203,14 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
+
         <dependency>
-			<groupId>org.glassfish.jersey.core</groupId>
-			<artifactId>jersey-client</artifactId>
-			<version>2.7</version>
-		</dependency>
-		
-		<dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>2.7</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.skyscreamer</groupId>
             <artifactId>jsonassert</artifactId>
             <version>1.2.3</version>
@@ -416,7 +416,7 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
-                   <includeEmptyDirs>true</includeEmptyDirs>
+                    <includeEmptyDirs>true</includeEmptyDirs>
                 </configuration>
                 <executions>
                     <execution>
@@ -470,7 +470,7 @@
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
-                                	<directory>src/test/resources/auth-server-configuration</directory>
+                                    <directory>src/test/resources/auth-server-configuration</directory>
                                     <include>**/**</include>
                                     <exclude>auth-server_pg.properties</exclude>
                                     <exclude>*.xml</exclude>
@@ -491,7 +491,7 @@
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
-                                	<directory>src/test/resources/auth-server-configuration</directory>
+                                    <directory>src/test/resources/auth-server-configuration</directory>
                                     <include>user-authentication.xml</include>
                                     <include>jpa-configuration.xml</include>
                                 </resource>
@@ -660,8 +660,8 @@
                         <version>1.0-beta-3</version>
                         <dependencies>
                             <dependency>
-					            <groupId>org.postgresql</groupId>
-					            <artifactId>postgresql</artifactId>
+                                <groupId>org.postgresql</groupId>
+                                <artifactId>postgresql</artifactId>
                                 <version>9.3-1101-jdbc41</version>
                             </dependency>
                         </dependencies>
