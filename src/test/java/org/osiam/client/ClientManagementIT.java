@@ -29,13 +29,13 @@ import static org.junit.Assert.assertThat;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.apache.commons.io.IOUtils;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -56,21 +56,76 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class ClientManagementIT extends AbstractIntegrationTestBase {
 
-    private static final String AUTH_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-auth-server";
-    private DefaultHttpClient defaultHttpClient = new DefaultHttpClient();
+    private static final String AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-auth-server/Client";
     private static final String AUTHORIZATION = "Authorization";
-    private static final String ACCEPT = "Accept";
     private static final String BEARER = "Bearer ";
     
+    Client client = ClientBuilder.newClient();
+
     @Test
-    public void get_client_by_id() throws ClientProtocolException, IOException {
-        HttpGet httpGet = new HttpGet(AUTH_ENDPOINT_ADDRESS + "/Client/100003");
-        httpGet.addHeader(AUTHORIZATION, BEARER + accessToken.getToken());
-        httpGet.addHeader(ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
-        CloseableHttpResponse response = defaultHttpClient.execute(httpGet);
-        InputStream content = response.getEntity().getContent();
+    public void get_client_by_id() {
+        String output = client.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
+            .path("example-client")
+            .request(MediaType.APPLICATION_JSON)
+            .header(AUTHORIZATION, BEARER + accessToken.getToken())
+            .get(String.class);
+        
+        assertThat(output, containsString("example-client"));
+    }
+
+    @Test
+    public void create_client() {
+        String clientAsJsonString = "{\"id\":\"example-client-2\",\"accessTokenValiditySeconds\":2342,\"refreshTokenValiditySeconds\":2342,"
+                + "\"redirectUri\":\"http://localhost:5055/oauth2\",\"client_secret\":\"secret-2\","
+                + "\"scope\":[\"POST\",\"PATCH\",\"GET\",\"DELETE\",\"PUT\"],"
+                + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\",\"password\"],"
+                + "\"implicit\":false,\"validityInSeconds\":1337,\"expiry\":-3599000}";
+
+        String response = client.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
+                .request(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, BEARER + accessToken.getToken())
+                .post(Entity.entity(clientAsJsonString, MediaType.APPLICATION_JSON), String.class);
+            
+
+        assertThat(response, containsString("example-client-2"));
+    }
+    
+    @Test
+    public void delete_client() throws IOException {
+        String deleteResponse = client.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
+                .path("short-living-client")
+                .request()
+                .header(AUTHORIZATION, BEARER + accessToken.getToken())
+                .delete(String.class);
+            
+        assert(deleteResponse.isEmpty());
+
+        Response response = client.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
+                .path("short-living-client")
+                .request(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, BEARER + accessToken.getToken())
+                .get();
+        
+        InputStream content = (InputStream) response.getEntity();
         String inputStreamStringValue = IOUtils.toString(content, "UTF-8");
-        assertThat(inputStreamStringValue, containsString("error"));
-        httpGet.releaseConnection();
+        assertThat(inputStreamStringValue, containsString("NOT_FOUND"));
+    }
+    
+    @Test
+    public void update_client() {
+        String clientAsJsonString = "{\"id\":\"example-client\",\"accessTokenValiditySeconds\":1,\"refreshTokenValiditySeconds\":1,"
+                + "\"redirectUri\":\"http://newhost:5000/oauth2\",\"client_secret\":\"newsecret\","
+                + "\"scope\":[\"POST\",\"PATCH\",\"GET\",\"DELETE\"],"
+                + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\"],"
+                + "\"implicit\":true,\"validityInSeconds\":1,\"expiry\":-3599000}";
+
+        String response = client.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
+                .path("example-client")
+                .request(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, BEARER + accessToken.getToken())
+                .put(Entity.entity(clientAsJsonString, MediaType.APPLICATION_JSON), String.class);
+            
+
+        assertThat(response, containsString("http://newhost:5000/oauth2"));
     }
 }
