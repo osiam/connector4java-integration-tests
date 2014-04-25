@@ -23,6 +23,8 @@
 
 package org.osiam.test.integration
 
+import javax.sql.DataSource
+
 import org.dbunit.database.DatabaseDataSourceConnection
 import org.dbunit.database.IDatabaseConnection
 import org.dbunit.dataset.IDataSet
@@ -36,8 +38,6 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext
 
 import spock.lang.Specification
-
-import javax.sql.DataSource
 
 /**
  * Base class for integration tests.
@@ -55,7 +55,7 @@ abstract class AbstractIT extends Specification {
 
     protected static final String AUTH_ENDPOINT = "http://localhost:8180/osiam-auth-server"
     protected static final String RESOURCE_ENDPOINT = "http://localhost:8180/osiam-resource-server"
-    protected static final String REGISTRATION_ENDPOINT = "http://localhost:8180/osiam-self-administration"
+    protected static final String REGISTRATION_ENDPOINT = "http://localhost:8180/addon-self-administration"
 
     protected OsiamConnector osiamConnector
     protected OsiamConnector osiamConnectorForClientCredentialsGrant
