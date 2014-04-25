@@ -36,8 +36,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
+import org.json.JSONException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -112,20 +114,25 @@ public class ClientManagementIT extends AbstractIntegrationTestBase {
     }
     
     @Test
-    public void update_client() {
+    public void update_client() throws JSONException {
         String clientAsJsonString = "{\"id\":\"example-client\",\"accessTokenValiditySeconds\":1,\"refreshTokenValiditySeconds\":1,"
-                + "\"redirectUri\":\"http://newhost:5000/oauth2\",\"client_secret\":\"newsecret\","
+                + "\"redirectUri\":\"http://newhost:5000/oauth2\",\"client_secret\":\"secret\","
                 + "\"scope\":[\"POST\",\"PATCH\",\"GET\",\"DELETE\"],"
                 + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\"],"
-                + "\"implicit\":true,\"validityInSeconds\":1,\"expiry\":-3599000}";
+                + "\"implicit\":true,\"validityInSeconds\":1}";
 
-        String response = client.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
+        String updated = client.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
                 .path("example-client")
                 .request(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, BEARER + accessToken.getToken())
                 .put(Entity.entity(clientAsJsonString, MediaType.APPLICATION_JSON), String.class);
-            
+        
+        String expected = "{\"id\":\"example-client\",\"accessTokenValiditySeconds\":1,\"refreshTokenValiditySeconds\":1,"
+                + "\"redirectUri\":\"http://newhost:5000/oauth2\",\"client_secret\":\"secret\","
+                + "\"scope\":[\"POST\",\"PATCH\",\"GET\",\"DELETE\"],"
+                + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\"],"
+                + "\"implicit\":true,\"validityInSeconds\":1}";
 
-        assertThat(response, containsString("http://newhost:5000/oauth2"));
+        JSONAssert.assertEquals(expected, updated, false);
     }
 }
