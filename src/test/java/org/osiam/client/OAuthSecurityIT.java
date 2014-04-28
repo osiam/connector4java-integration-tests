@@ -43,6 +43,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class OAuthSecurityIT {
 
     protected static final String AUTH_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-auth-server";
+    protected static final String RESOURCE_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-resource-server";
 
     private Client client;
     
@@ -55,6 +56,33 @@ public class OAuthSecurityIT {
     public void client_is_secured() throws IOException {
         client.target(AUTH_ENDPOINT_ADDRESS + "/Client")
                 .path("example-client")
+                .request(MediaType.APPLICATION_JSON)
+                .get(String.class);
+            
+        fail("Exception expected");
+    }
+    
+    @Test(expected = NotAuthorizedException.class)
+    public void users_is_secured() throws IOException {
+        client.target(RESOURCE_ENDPOINT_ADDRESS + "/Users")
+                .request(MediaType.APPLICATION_JSON)
+                .get(String.class);
+            
+        fail("Exception expected");
+    }
+    
+    @Test(expected = NotAuthorizedException.class)
+    public void groups_is_secured() throws IOException {
+        client.target(RESOURCE_ENDPOINT_ADDRESS + "/Groups")
+                .request(MediaType.APPLICATION_JSON)
+                .get(String.class);
+            
+        fail("Exception expected");
+    }
+    
+    @Test(expected = NotAuthorizedException.class)
+    public void metrics_is_secured() throws IOException {
+        client.target(RESOURCE_ENDPOINT_ADDRESS + "/Metrics")
                 .request(MediaType.APPLICATION_JSON)
                 .get(String.class);
             
