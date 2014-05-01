@@ -250,9 +250,9 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
                 .setHonorificSuffix("HSu").build();
 
         newUser = new User.Builder(IRRELEVANT).setPassword("password")
-                .setActive(true).setAddresses(addresses).setLocale("de")
+                .setActive(true).addAddresses(addresses).setLocale("de")
                 .setName(name).setNickName("aNicknane").setTitle("Dr.")
-                .setEmails(emails).build();
+                .addEmails(emails).build();
     }
 
     private void assertEqualsUser(User expected, User actual) {

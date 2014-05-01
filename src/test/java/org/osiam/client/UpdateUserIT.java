@@ -469,8 +469,8 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
                 .setGivenName("givenName").build();
 
         userBuilder.setNickName("irgendwas")
-                .setEmails(emails)
-                .setPhoneNumbers(phoneNumbers)
+                .addEmails(emails)
+                .addPhoneNumbers(phoneNumbers)
                 .setActive(false)
                 .setDisplayName("irgendwas")
                 .setLocale("de")
@@ -480,13 +480,13 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
                 .setTimezone("irgendwas")
                 .setTitle("irgendwas")
                 .setUserType("irgendwas")
-                .setAddresses(addresses)
-                .setIms(ims)
-                .setPhotos(photos)
-                .setRoles(roles)
+                .addAddresses(addresses)
+                .addIms(ims)
+                .addPhotos(photos)
+                .addRoles(roles)
                 .setName(name)
-                .setX509Certificates(certificates)
-                .setEntitlements(entitlements)
+                .addX509Certificates(certificates)
+                .addEntitlements(entitlements)
                 .setExternalId("irgendwas");
         User newUser = userBuilder.build();
 

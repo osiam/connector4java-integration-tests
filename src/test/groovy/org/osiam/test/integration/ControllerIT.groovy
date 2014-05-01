@@ -204,8 +204,8 @@ class ControllerIT extends AbstractIT {
         AccessToken validAccessToken = osiamConnector.retrieveAccessToken()
         def emailUserOne = new Email.Builder().setType(Email.Type.WORK).setValue('sameMail@osiam.de').build()
         def emailUserTwo = new Email.Builder().setType(Email.Type.HOME).setValue('sameMail@osiam.de').build()
-        def user1 = new User.Builder('UserOne').setEmails([emailUserOne] as List).setExternalId('pew1').build()
-        def user2 = new User.Builder('UserTwo').setEmails([emailUserTwo] as List).setExternalId('pew2').build()
+        def user1 = new User.Builder('UserOne').addEmails([emailUserOne] as List).setExternalId('pew1').build()
+        def user2 = new User.Builder('UserTwo').addEmails([emailUserTwo] as List).setExternalId('pew2').build()
 
         when: 'a add user request is sent'
         User retUser1 = osiamConnector.createUser(user1, validAccessToken)
