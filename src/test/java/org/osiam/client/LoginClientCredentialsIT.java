@@ -23,10 +23,11 @@
 
 package org.osiam.client;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.connector.OsiamConnector;
@@ -40,10 +41,10 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -84,9 +85,9 @@ public class LoginClientCredentialsIT {
                 setGrantType(GrantType.CLIENT_CREDENTIALS).
                 setScope(Scope.ALL);
         oConnector = oConBuilder.build();
-        AccessToken at = oConnector.retrieveAccessToken();
+        oConnector.retrieveAccessToken();
 
-        assertThat(at, is(notNullValue()));
+        fail("Exception expected");
 	}
 
     @Test (expected = ConflictException.class)
