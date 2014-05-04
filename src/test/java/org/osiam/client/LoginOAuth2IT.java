@@ -44,7 +44,6 @@ import org.apache.http.HeaderElement;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.params.ClientPNames;
@@ -315,7 +314,7 @@ public class LoginOAuth2IT {
         {
             HttpGet httpGet = new HttpGet(currentRedirectUri);
             httpGet.setHeader("Accept-Language", "de-DE");
-            CloseableHttpResponse response = defaultHttpClient.execute(httpGet);
+            HttpResponse response = defaultHttpClient.execute(httpGet);
             InputStream content = response.getEntity().getContent();
             String inputStreamStringValue = IOUtils.toString(content, "UTF-8");
             assertThat(inputStreamStringValue, containsString("Anmeldung über ldap nicht möglich"));
