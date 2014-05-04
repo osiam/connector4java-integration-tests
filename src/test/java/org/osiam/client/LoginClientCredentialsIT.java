@@ -31,7 +31,6 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.connector.OsiamConnector;
-import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
@@ -89,20 +88,5 @@ public class LoginClientCredentialsIT {
 
         fail("Exception expected");
 	}
-
-    @Test (expected = ConflictException.class)
-    public void get_actual_user_rasies_exception(){
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
-                setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
-                setClientId(clientId).
-                setClientSecret(clientSecret).
-                setGrantType(GrantType.CLIENT_CREDENTIALS).
-                setScope(Scope.ALL);
-        oConnector = oConBuilder.build();
-        AccessToken accessToken = oConnector.retrieveAccessToken();
-        oConnector.getCurrentUser(accessToken);
-        fail("Exception expected");
-    }
 
 }
