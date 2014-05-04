@@ -24,6 +24,7 @@
 package org.osiam.client;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -79,19 +80,17 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test (expected = ConflictException.class)
     public void get_current_user_while_loged_in_with_client_credential_raises_exception() throws Exception{
-        givenAnAccessTokenClient();
-        oConnector.getCurrentUserBasic(accessToken);
-    }
-
-    private void givenAnAccessTokenClient() throws Exception {
-        OsiamConnector.Builder authBuilder = new OsiamConnector.Builder().
+        OsiamConnector connectorForClient = new OsiamConnector.Builder().
                 setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
                 setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId(CLIENT_ID).
                 setClientSecret(CLIENT_SECRET).
                 setGrantType(GrantType.CLIENT_CREDENTIALS).
-                setScope(Scope.ALL);
-        oConnector = authBuilder.build();
-        accessToken = oConnector.retrieveAccessToken();
+                setScope(Scope.ALL).build();
+
+        connectorForClient.getCurrentUserBasic(connectorForClient.retrieveAccessToken());
+
+        fail("Exception expected");
     }
+
 }
