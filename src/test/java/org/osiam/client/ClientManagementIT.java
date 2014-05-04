@@ -24,18 +24,19 @@
 package org.osiam.client;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,7 +62,7 @@ public class ClientManagementIT extends AbstractIntegrationTestBase {
     private static final String AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-auth-server/Client";
     private static final String AUTHORIZATION = "Authorization";
     private static final String BEARER = "Bearer ";
-    
+
     Client client = ClientBuilder.newClient();
 
     @Test
@@ -71,7 +72,7 @@ public class ClientManagementIT extends AbstractIntegrationTestBase {
             .request(MediaType.APPLICATION_JSON)
             .header(AUTHORIZATION, BEARER + accessToken.getToken())
             .get(String.class);
-        
+
         assertThat(output, containsString("example-client"));
     }
 
@@ -87,32 +88,30 @@ public class ClientManagementIT extends AbstractIntegrationTestBase {
                 .request(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, BEARER + accessToken.getToken())
                 .post(Entity.entity(clientAsJsonString, MediaType.APPLICATION_JSON), String.class);
-            
+
 
         assertThat(response, containsString("example-client-2"));
     }
-    
+
     @Test
     public void delete_client() throws IOException {
-        String deleteResponse = client.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
+        Response deleteResponse = client.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
                 .path("short-living-client")
-                .request()
+                .request(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, BEARER + accessToken.getToken())
-                .delete(String.class);
-            
-        assert(deleteResponse.isEmpty());
+                .delete();
 
-        Response response = client.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
+        assertThat(deleteResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
+        deleteResponse.close();
+
+        Response getResponse = client.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
                 .path("short-living-client")
                 .request(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, BEARER + accessToken.getToken())
                 .get();
-        
-        InputStream content = (InputStream) response.getEntity();
-        String inputStreamStringValue = IOUtils.toString(content, "UTF-8");
-        assertThat(inputStreamStringValue, containsString("NOT_FOUND"));
+        assertThat(getResponse.readEntity(String.class), containsString("NOT_FOUND"));
     }
-    
+
     @Test
     public void update_client() throws JSONException {
         String clientAsJsonString = "{\"id\":\"example-client\",\"accessTokenValiditySeconds\":1,\"refreshTokenValiditySeconds\":1,"
@@ -126,7 +125,7 @@ public class ClientManagementIT extends AbstractIntegrationTestBase {
                 .request(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, BEARER + accessToken.getToken())
                 .put(Entity.entity(clientAsJsonString, MediaType.APPLICATION_JSON), String.class);
-        
+
         String expected = "{\"id\":\"example-client\",\"accessTokenValiditySeconds\":1,\"refreshTokenValiditySeconds\":1,"
                 + "\"redirectUri\":\"http://newhost:5000/oauth2\",\"client_secret\":\"secret\","
                 + "\"scope\":[\"POST\",\"PATCH\",\"GET\",\"DELETE\"],"
