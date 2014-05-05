@@ -90,16 +90,16 @@
     <scim_meta id="100073" created="2013-08-08 20:02:18.462" lastmodified="2013-08-08 20:02:18.462"
                resourcetype="Group"/>
 
-    <scim_id internal_id="100005" externalid="bthomson" meta_id="100006" id="618b398c-0110-43f2-95df-d1bc4e7d2b4a"/>
-    <scim_id internal_id="100009" externalid="adavies" meta_id="100010" id="03dc8f50-acaa-44d6-9401-bdfc5e10e821"/>
-    <scim_id internal_id="100013" externalid="cmiller" meta_id="100014" id="ac3bacc9-915d-4bab-9145-9eb600d5e5bf"/>
-    <scim_id internal_id="100021" externalid="dcooper" meta_id="100022" id="d6f323e2-c717-4ab6-af9c-e639b50a948c"/>
-    <scim_id internal_id="100025" externalid="epalmer" meta_id="100026" id="db566580-08a7-44fa-be0f-d30f1c0ff2df"/>
-    <scim_id internal_id="100029" externalid="gbarker" meta_id="100030" id="df4ca43d-2811-4ade-aed9-75a1ba990dac"/>
-    <scim_id internal_id="100033" externalid="hsimpson" meta_id="100034" id="7d33bcbe-a54c-43d8-867e-f6146164941e"/>
-    <scim_id internal_id="100042" externalid="kmorris" meta_id="100043" id="aba67300-74f1-4e51-a68a-0a6c5c45b79c"/>
-    <scim_id internal_id="100046" externalid="bjensen" meta_id="100047" id="834b410a-943b-4c80-817a-4465aed037bc"/>
-    <scim_id internal_id="100049" externalid="ewilley" meta_id="100050" id="781d9891-9114-4cd5-813a-77c3f4b0e15f"/>
+    <scim_id internal_id="100005" external_id="bthomson" meta_id="100006" id="618b398c-0110-43f2-95df-d1bc4e7d2b4a"/>
+    <scim_id internal_id="100009" external_id="adavies" meta_id="100010" id="03dc8f50-acaa-44d6-9401-bdfc5e10e821"/>
+    <scim_id internal_id="100013" external_id="cmiller" meta_id="100014" id="ac3bacc9-915d-4bab-9145-9eb600d5e5bf"/>
+    <scim_id internal_id="100021" external_id="dcooper" meta_id="100022" id="d6f323e2-c717-4ab6-af9c-e639b50a948c"/>
+    <scim_id internal_id="100025" external_id="epalmer" meta_id="100026" id="db566580-08a7-44fa-be0f-d30f1c0ff2df"/>
+    <scim_id internal_id="100029" external_id="gbarker" meta_id="100030" id="df4ca43d-2811-4ade-aed9-75a1ba990dac"/>
+    <scim_id internal_id="100033" external_id="hsimpson" meta_id="100034" id="7d33bcbe-a54c-43d8-867e-f6146164941e"/>
+    <scim_id internal_id="100042" external_id="kmorris" meta_id="100043" id="aba67300-74f1-4e51-a68a-0a6c5c45b79c"/>
+    <scim_id internal_id="100046" external_id="bjensen" meta_id="100047" id="834b410a-943b-4c80-817a-4465aed037bc"/>
+    <scim_id internal_id="100049" external_id="ewilley" meta_id="100050" id="781d9891-9114-4cd5-813a-77c3f4b0e15f"/>
     <scim_id internal_id="100001" meta_id="100004" id="cef9452e-00a9-4cec-a086-d171374ffbef"/>
     <scim_id internal_id="100052" meta_id="100053" id="69e1a5dc-89be-4343-976c-b5541af249f4"/>
     <scim_id internal_id="100054" meta_id="100055" id="d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"/>

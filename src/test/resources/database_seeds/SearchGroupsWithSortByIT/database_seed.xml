@@ -45,9 +45,9 @@
                location="http://example.com/Groups/0cb908cf-81a9-4966-803f-a3eb92968bb4"/>
     <scim_meta id="100004" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
 
-    <scim_id internal_id="100052" meta_id="100053" id="69e1a5dc-89be-4343-976c-b5541af249f4" externalid="c"/>
-    <scim_id internal_id="100054" meta_id="100055" id="d30a77eb-d7cf-4cd1-9fb3-cc640ef09578" externalid="b"/>
-    <scim_id internal_id="100056" meta_id="100057" id="0cb908cf-81a9-4966-803f-a3eb92968bb4" externalid="a"/>
+    <scim_id internal_id="100052" meta_id="100053" id="69e1a5dc-89be-4343-976c-b5541af249f4" external_id="c"/>
+    <scim_id internal_id="100054" meta_id="100055" id="d30a77eb-d7cf-4cd1-9fb3-cc640ef09578" external_id="b"/>
+    <scim_id internal_id="100056" meta_id="100057" id="0cb908cf-81a9-4966-803f-a3eb92968bb4" external_id="a"/>
 
     <scim_id internal_id="100001" meta_id="100004" id="cef9452e-00a9-4cec-a086-d171374ffbef"/>
 

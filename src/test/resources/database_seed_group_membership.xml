@@ -44,7 +44,7 @@
     <scim_meta id="100055" created="2013-08-08 19:59:54.612" lastmodified="2013-08-08 19:59:54.612"
                resourcetype="Group"/>
 
-    <scim_id internal_id="100046" externalid="bjensen" meta_id="100047" id="834b410a-943b-4c80-817a-4465aed037bc"/>
+    <scim_id internal_id="100046" external_id="bjensen" meta_id="100047" id="834b410a-943b-4c80-817a-4465aed037bc"/>
     <scim_id internal_id="100001" meta_id="100004" id="cef9452e-00a9-4cec-a086-d171374ffbef"/>
     <scim_id internal_id="100052" meta_id="100053" id="69e1a5dc-89be-4343-976c-b5541af249f4"/>
     <scim_id internal_id="100054" meta_id="100055" id="d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"/>

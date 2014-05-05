@@ -42,7 +42,7 @@
                resourcetype="User"/>
 
     <scim_id internal_id="100001" meta_id="100004" id="cef9452e-00a9-4cec-a086-d171374ffbef"/>
-    <scim_id internal_id="100046" externalid="bjensen" meta_id="100047" id="834b410a-943b-4c80-817a-4465aed037bc"/>
+    <scim_id internal_id="100046" external_id="bjensen" meta_id="100047" id="834b410a-943b-4c80-817a-4465aed037bc"/>
 
     <scim_name id="100048" familyname="Jensen" formatted="Ms. Barbara J Jensen III" givenname="Barbara"/>
 
