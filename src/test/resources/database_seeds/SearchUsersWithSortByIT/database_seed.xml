@@ -44,9 +44,9 @@
     <scim_meta id="100047" created="2013-08-08 19:51:34.498" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"
                location="http://example.com/Users/834b410a-943b-4c80-817a-4465aed037bc"/>
 
-    <scim_id internal_id="100005" externalid="bthomson" meta_id="100006" id="618b398c-0110-43f2-95df-d1bc4e7d2b4a"/>
-    <scim_id internal_id="100046" externalid="bjensen" meta_id="100047" id="834b410a-943b-4c80-817a-4465aed037bc"/>
-    <scim_id internal_id="100001" externalid="marissa" meta_id="100004" id="cef9452e-00a9-4cec-a086-d171374ffbef"/>
+    <scim_id internal_id="100005" external_id="bthomson" meta_id="100006" id="618b398c-0110-43f2-95df-d1bc4e7d2b4a"/>
+    <scim_id internal_id="100046" external_id="bjensen" meta_id="100047" id="834b410a-943b-4c80-817a-4465aed037bc"/>
+    <scim_id internal_id="100001" external_id="marissa" meta_id="100004" id="cef9452e-00a9-4cec-a086-d171374ffbef"/>
 
     <scim_name id="100007" familyname="Thompson" formatted="Ms. Beccy Thompson" givenname="Beccy" middlename="Katja"
                honorificprefix="Dr." honorificsuffix="PhD"/>

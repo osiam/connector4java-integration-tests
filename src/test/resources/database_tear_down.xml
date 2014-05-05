@@ -38,8 +38,6 @@
     <scim_im />
     <scim_phonenumber />
     <scim_certificate />
-    <scim_manager />
-    <scim_enterprise />
     <scim_roles />
     <scim_entitlements />
     <scim_extension />
