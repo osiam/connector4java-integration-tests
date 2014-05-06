@@ -74,6 +74,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     private static final int ITEMS_PER_PAGE = 3;
     private static final int STARTINDEX_SECOND_PAGE = 4;
     private SCIMSearchResult<User> queryResult;
+    private static final String HASHED_PASSWORD = "cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800";
 
     @Test
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_username.xml")
@@ -302,12 +303,13 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         }
     }
 
-    @Test(expected = ConflictException.class)
+    @Test
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
     public void search_for_user_by_Password_with_query_string_fails() {
-        String query = encodeExpected("password eq \"" + INVALID_STRING + "\"");
-        oConnector.searchUsers("filter=" + query, accessToken);
-        fail("Exception should be thrown");
+        String query = encodeExpected("password eq \"" + HASHED_PASSWORD + "\"");
+        queryResult = oConnector.searchUsers("filter=" + query, accessToken);
+        User user = queryResult.getResources().get(0);
+        assertThat(user.getUserName(), is("marissa"));
     }
 
     @Test(expected = ConflictException.class)
