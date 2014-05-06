@@ -162,7 +162,7 @@ public class LoginOAuth2IT {
 
     @Test
     public void if_ldap_user_login_but_internal_user_already_exists_error_will_be_shown() throws IOException {
-        assureLdapLoginProcessFailes();
+        assureLdapLoginProcessFails();
     }
 
     @Test
@@ -277,7 +277,7 @@ public class LoginOAuth2IT {
         accessToken = oConnector.retrieveAccessToken(authCodeResponse);
     }
 
-    private void assureLdapLoginProcessFailes() throws IOException {
+    private void assureLdapLoginProcessFails() throws IOException {
         String currentRedirectUri;
         String username = "marissa";
         String password = "koala";
