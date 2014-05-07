@@ -33,9 +33,7 @@ import java.util.TimeZone;
 
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Before;
-import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 
 public abstract class AbstractIntegrationTestBase {
@@ -54,29 +52,21 @@ public abstract class AbstractIntegrationTestBase {
 
     @Before
     public void abstractSetUp() throws Exception {
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
-                setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
-                setClientId(CLIENT_ID).
-                setClientSecret(CLIENT_SECRET).
-                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
-                setUserName("marissa").
-                setPassword("koala").
-                setScope(Scope.ALL);
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder()
+                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setClientId(CLIENT_ID)
+                .setClientSecret(CLIENT_SECRET);
         oConnector = oConBuilder.build();
-        accessToken = oConnector.retrieveAccessToken();
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ALL);
     }
 
     protected void givenAnAccessTokenForOneSecond() throws Exception {
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
-                setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
-                setClientId("short-living-client").
-                setClientSecret("other-secret").
-                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
-                setUserName("marissa").
-                setPassword("koala").
-                setScope(Scope.ALL);
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder()
+                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setClientId("short-living-client")
+                .setClientSecret("other-secret");
         oConnector = oConBuilder.build();
         accessToken = oConnector.retrieveAccessToken();
     }

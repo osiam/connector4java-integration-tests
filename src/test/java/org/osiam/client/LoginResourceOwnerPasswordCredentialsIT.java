@@ -27,7 +27,6 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
@@ -86,8 +85,6 @@ public class LoginResourceOwnerPasswordCredentialsIT {
                 .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
                 .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
                 .setClientId(clientId).setClientSecret(clientSecret)
-                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
-                .setUserName(userName).setPassword(password)
-                .setScope(Scope.ALL).build();
+                .build();
     }
 }

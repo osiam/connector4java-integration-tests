@@ -31,10 +31,7 @@ import java.util.Date;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.exception.ConflictException;
-import org.osiam.client.oauth.GrantType;
-import org.osiam.client.oauth.Scope;
 import org.osiam.client.user.BasicUser;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
@@ -79,14 +76,13 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     @Test (expected = ConflictException.class)
-    public void get_current_user_while_logged_in_with_client_credential_raises_exception() throws Exception{
-        OsiamConnector connectorForClient = new OsiamConnector.Builder().
-                setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
-                setClientId(CLIENT_ID).
-                setClientSecret(CLIENT_SECRET).
-                setGrantType(GrantType.CLIENT_CREDENTIALS).
-                setScope(Scope.ALL).build();
+    public void get_current_user_while_loged_in_with_client_credential_raises_exception() throws Exception{
+        OsiamConnector connectorForClient = new OsiamConnector.Builder()
+                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setClientId(CLIENT_ID)
+                .setClientSecret(CLIENT_SECRET)
+                .build();
 
         connectorForClient.getCurrentUserBasic(connectorForClient.retrieveAccessToken());
 

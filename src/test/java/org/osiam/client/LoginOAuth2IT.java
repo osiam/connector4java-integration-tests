@@ -53,7 +53,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.ForbiddenException;
 import org.osiam.client.oauth.AccessToken;
@@ -102,7 +101,6 @@ public class LoginOAuth2IT {
                 .setClientId(CLIENT_ID)
                 .setClientSecret(CLIENT_SECRET)
                 .setClientRedirectUri(REDIRECT_URI)
-                .setGrantType(GrantType.AUTHORIZATION_CODE).setScope(Scope.ALL)
                 .build();
 
         loginUri = oConnector.getRedirectLoginUri();
@@ -173,7 +171,6 @@ public class LoginOAuth2IT {
                 .setClientId("short-living-client")
                 .setClientSecret("other-secret")
                 .setClientRedirectUri("http://localhost:5001/oauth2")
-                .setGrantType(GrantType.AUTHORIZATION_CODE).setScope(Scope.ALL)
                 .build();
 
         loginUri = oConnector.getRedirectLoginUri();
