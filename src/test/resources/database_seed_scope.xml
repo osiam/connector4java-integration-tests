@@ -61,6 +61,4 @@
 
     <scim_group_scim_id groups_internal_id="100052" members_internal_id="100046"/>
 
-    <scim_roles multi_value_id="100090" user_internal_id="100001" value="USER"/>
-
 </dataset>

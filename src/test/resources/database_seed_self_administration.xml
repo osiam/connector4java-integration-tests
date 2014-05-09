@@ -254,8 +254,6 @@
     <scim_phonenumber multi_value_id="100113" value="677-555-8377" type="work" user_internal_id="100025"/>
     <scim_phonenumber multi_value_id="100114" value="688-555-8377" type="work" user_internal_id="100029"/>
 
-    <scim_roles multi_value_id="100090" user_internal_id="100001" value="USER"/>
-
     <scim_extension internal_id="100081" urn="extension"/>
     <scim_extension internal_id="100082" urn="urn:scim:schemas:osiam:2.0:authentication:server"/>
         

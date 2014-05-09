@@ -54,8 +54,6 @@
 
     <scim_group_scim_id groups_internal_id="100052" members_internal_id="60" />
 
-    <scim_roles multi_value_id="90" user_internal_id="1" value="USER" />
-
     <scim_extension internal_id="81" urn="urn:scim:schemas:osiam:2.0:Registration" />
     <scim_extension internal_id="84" urn="urn:client:extension" />
 
