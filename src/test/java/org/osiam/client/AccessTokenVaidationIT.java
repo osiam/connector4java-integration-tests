@@ -23,20 +23,15 @@
 
 package org.osiam.client;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osiam.client.connector.OsiamConnector;
-import org.osiam.client.exception.ConflictException;
-import org.osiam.client.oauth.GrantType;
-import org.osiam.client.oauth.Scope;
-import org.osiam.client.user.BasicUser;
-import org.osiam.resources.scim.User;
+import org.osiam.client.exception.AccessTokenValidationException;
+import org.osiam.client.oauth.AccessToken;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -51,46 +46,25 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class })
+@DatabaseSetup("/database_seed.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
-@DatabaseSetup("/database_seed_me_user.xml")
-public class MeUserServiceIT extends AbstractIntegrationTestBase {
+public class AccessTokenVaidationIT extends AbstractIntegrationTestBase {
 
     @Test
-    public void get_current_user_basic_returns_correct_user() throws Exception {
-        BasicUser basicUser = oConnector.getCurrentUserBasic(accessToken);
-
-        assertEquals("cef9452e-00a9-4cec-a086-d171374ffbef", basicUser.getId());
-        assertEquals("marissa", basicUser.getUserName());
-        assertEquals("marissa@example.com", basicUser.getEmail());
-        assertEquals("Marissa", basicUser.getFirstName());
-        assertEquals("Thompson", basicUser.getLastName());
-        assertEquals("", basicUser.getLocale());
-        SimpleDateFormat sdfToDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = sdfToDate.parse("2011-10-10 00:00:00");
-        assertEquals(date, basicUser.getUpdatedTime());
+    public void valid_accesstoken_can_be_confirmed() {
+        AccessToken validatedAccesToken = oConnector.validateAccessToken(accessToken, accessToken);
+        assertTrue(validatedAccesToken != null);
     }
 
-    @Test
-    public void get_current_user_returns_correct_user() throws Exception {
-        User user = oConnector.getCurrentUser(accessToken);
-
-        assertEquals("cef9452e-00a9-4cec-a086-d171374ffbef", user.getId());
-        assertEquals("marissa", user.getUserName());
-    }
-
-    @Test (expected = ConflictException.class)
-    public void get_current_user_while_logged_in_with_client_credential_raises_exception() throws Exception{
-        OsiamConnector connectorForClient = new OsiamConnector.Builder().
-                setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
-                setClientId(CLIENT_ID).
-                setClientSecret(CLIENT_SECRET).
-                setGrantType(GrantType.CLIENT_CREDENTIALS).
-                setScope(Scope.ALL).build();
-
-        connectorForClient.getCurrentUserBasic(connectorForClient.retrieveAccessToken());
-
+    @Test(expected = AccessTokenValidationException.class)
+    public void invalid_accesstoken_can_be_reconized() {
+        AccessToken invalidAccessToken = new AccessToken.Builder("invalid").build();
+        oConnector.validateAccessToken(invalidAccessToken, accessToken);
         fail("Exception expected");
     }
 
+    @Test
+    public void accessToken_contains_user_data() {
+        assertThat(accessToken.getUserName(), is("marissa"));
+    }
 }
