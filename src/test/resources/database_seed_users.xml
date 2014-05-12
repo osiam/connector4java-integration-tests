@@ -101,5 +101,4 @@
     <scim_phonenumber multi_value_id="100104" value="555-555-8377" type="work" user_internal_id="100046"/>
     <scim_phonenumber multi_value_id="100111" value="655-222-8377" type="home" user_internal_id="100046"/>
 
-    <scim_roles multi_value_id="100090" user_internal_id="100001" value="USER"/>
 </dataset>

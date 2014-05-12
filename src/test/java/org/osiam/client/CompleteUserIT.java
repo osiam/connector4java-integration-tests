@@ -150,7 +150,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
                 + " and not (photos.type eq \"" + Photo.Type.THUMBNAIL + "\")"
                 + " and preferredLanguage eq \"german\""
                 + " and profileurl eq \"/user/username\""
-                + " and roles eq \"user_role\""
+                + " and roles eq \"superadmin\""
                 + " and roles.primary eq \"true\""
                 + " and timezone eq \"DE\""
                 + " and title eq \"title\""

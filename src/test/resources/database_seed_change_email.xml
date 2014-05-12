@@ -76,9 +76,6 @@
     <scim_group_scim_id groups_internal_id="100052" members_internal_id="62" />
     <scim_group_scim_id groups_internal_id="100052" members_internal_id="60" />
 
-    <scim_roles multi_value_id="90" user_internal_id="1" value="USER" />
-    <scim_roles multi_value_id="91" user_internal_id="62" value="USER" />
-
     <scim_email multi_value_id="50" value="george.alexander@osiam.org" is_primary="true" type="work"
         user_internal_id="60" />
     <scim_email multi_value_id="51" value="not.primary@osiam.org" is_primary="false" type="work"
