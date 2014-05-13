@@ -615,7 +615,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
                 .addIm(ims)
                 .addPhoto(photo)
                 .addRole(role)
-                .addX509Certificate(certificate)// TODO at the second run it will fail
+                .addX509Certificate(certificate)
                 .build();
     }
 
@@ -671,10 +671,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         returnUser = oConnector.updateUser(idExistingUser, updateUser, accessToken);
         // also get user again from database to be able to compare with return object
         databaseUser = oConnector.getUser(returnUser.getId(), accessToken);
-        /*
-         * TODO: Uncomment once returnUser and databaseUser are consistent!
-         */
-        // assertTrue(returnUser.equals(databaseUser));
     }
 
     private void makeNewConnectionWithNewPassword() {
