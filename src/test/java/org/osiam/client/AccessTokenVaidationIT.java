@@ -30,7 +30,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osiam.client.exception.AccessTokenValidationException;
+import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -56,7 +56,7 @@ public class AccessTokenVaidationIT extends AbstractIntegrationTestBase {
         assertTrue(validatedAccesToken != null);
     }
 
-    @Test(expected = AccessTokenValidationException.class)
+    @Test(expected = UnauthorizedException.class)
     public void invalid_accesstoken_can_be_reconized() {
         AccessToken invalidAccessToken = new AccessToken.Builder("invalid").build();
         oConnector.validateAccessToken(invalidAccessToken);
