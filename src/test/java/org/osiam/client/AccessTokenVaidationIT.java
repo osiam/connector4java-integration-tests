@@ -52,14 +52,14 @@ public class AccessTokenVaidationIT extends AbstractIntegrationTestBase {
 
     @Test
     public void valid_accesstoken_can_be_confirmed() {
-        AccessToken validatedAccesToken = oConnector.validateAccessToken(accessToken, accessToken);
+        AccessToken validatedAccesToken = oConnector.validateAccessToken(accessToken);
         assertTrue(validatedAccesToken != null);
     }
 
     @Test(expected = AccessTokenValidationException.class)
     public void invalid_accesstoken_can_be_reconized() {
         AccessToken invalidAccessToken = new AccessToken.Builder("invalid").build();
-        oConnector.validateAccessToken(invalidAccessToken, accessToken);
+        oConnector.validateAccessToken(invalidAccessToken);
         fail("Exception expected");
     }
 
