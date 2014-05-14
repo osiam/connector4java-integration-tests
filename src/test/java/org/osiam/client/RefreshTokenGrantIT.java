@@ -23,13 +23,12 @@
 
 package org.osiam.client;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
@@ -38,9 +37,10 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -59,18 +59,14 @@ public class RefreshTokenGrantIT {
     public void refreshing_an_access_token_should_provide_a_new_access_token(){
 
         //Get a access token.
-        OsiamConnector connectorWithROPC = new OsiamConnector.Builder().
-                setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
-                setClientId(clientId).
-                setClientSecret(clientSecret).
-                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
-                setUserName("marissa").
-                setPassword("koala").
-                setScope(Scope.ALL).
-                build();
+        OsiamConnector connectorWithROPC = new OsiamConnector.Builder()
+                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setClientId(clientId)
+                .setClientSecret(clientSecret)
+                .build();
 
-        AccessToken accessTokenROPC = connectorWithROPC.retrieveAccessToken();
+        AccessToken accessTokenROPC = connectorWithROPC.retrieveAccessToken("marissa", "koala", Scope.ALL);
         assertNotNull("The access token was null.", accessTokenROPC.getToken());
         assertNotNull("The refresh token was null.", accessTokenROPC.getRefreshToken());
 

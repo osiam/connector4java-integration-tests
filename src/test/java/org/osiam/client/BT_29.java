@@ -31,7 +31,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.query.Query;
-import org.osiam.client.query.metamodel.User_;
+import org.osiam.client.query.QueryBuilder;
 import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
@@ -58,11 +58,7 @@ public class BT_29 extends AbstractIntegrationTestBase {
     @Test
     public void searchForUser() {
         for (int i = 0; i < 300; i++) {
-            Query q = new Query.Builder(User.class)
-                    .setFilter(
-                            new Query.Filter(User.class, new Query.Filter(User.class, User_.userName
-                                    .equalTo(USER_NAME_MARISSA))))
-                    .build();
+            Query q = new QueryBuilder().filter("userName eq \"" + USER_NAME_MARISSA + "\"").build();
 
             SCIMSearchResult<User> result = oConnector.searchUsers(q, accessToken);
 

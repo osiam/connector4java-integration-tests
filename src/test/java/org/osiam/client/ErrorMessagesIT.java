@@ -30,7 +30,6 @@ import java.util.UUID;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
@@ -369,9 +368,7 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
                 setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
                 setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId("example-client").
-                setClientSecret("wrongsecret").
-                setGrantType(GrantType.CLIENT_CREDENTIALS).
-                setScope(Scope.ALL);
+                setClientSecret("wrongsecret");
         oConnector = oConBuilder.build();
         try {
             oConnector.retrieveAccessToken();

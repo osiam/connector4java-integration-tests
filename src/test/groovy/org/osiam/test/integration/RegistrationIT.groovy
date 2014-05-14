@@ -29,6 +29,8 @@ import groovyx.net.http.Method
 
 import javax.mail.Message
 
+import org.osiam.client.query.Query
+import org.osiam.client.query.QueryBuilder
 import org.osiam.resources.helper.UserDeserializer
 import org.osiam.resources.scim.Email
 import org.osiam.resources.scim.Extension
@@ -138,9 +140,9 @@ class RegistrationIT extends AbstractIT {
         then:
         responseStatus == 201
 
-        def queryString = "filter=" + URLEncoder.encode("userName eq \"email@example.org\"", "UTF-8")
-        SCIMSearchResult<User> users = osiamConnector.searchUsers(queryString, accessToken)
-        User user = users.getResources()[0];
+        Query query = new QueryBuilder().filter("userName eq \"email@example.org\"").build()
+        SCIMSearchResult<User> users = osiamConnector.searchUsers(query, accessToken)
+        User user = users.getResources()[0]
         !user.isActive()
         Extension extension = user.getExtension('urn:scim:schemas:osiam:2.0:Registration')
         extension.getField('activationToken', ExtensionFieldType.STRING) != null
@@ -271,9 +273,9 @@ class RegistrationIT extends AbstractIT {
         then:
         responseStatus == 201
 
-        def queryString = "filter=" + URLEncoder.encode("userName eq \"email@example.org\"", "UTF-8")
-        SCIMSearchResult<User> users = osiamConnector.searchUsers(queryString, accessToken)
-        User registeredUser = users.getResources()[0];
+        Query query = new QueryBuilder().filter("userName eq \"email@example.org\"").build()
+        SCIMSearchResult<User> users = osiamConnector.searchUsers(query, accessToken)
+        User registeredUser = users.getResources()[0]
 
         Extension registeredExtension1 = registeredUser.getExtension('urn:scim:schemas:osiam:2.0:Registration')
         registeredExtension1.getField('activationToken', ExtensionFieldType.STRING) != null
@@ -318,9 +320,9 @@ class RegistrationIT extends AbstractIT {
             }
         }
 
-        def queryString = "filter=" + URLEncoder.encode("userName eq \"email@example.org\"", "UTF-8")
+        Query queryString = new QueryBuilder().filter("userName eq \"email@example.org\"").build()
         SCIMSearchResult<User> users = osiamConnector.searchUsers(queryString, accessToken)
-        User registeredUser = users.getResources()[0];
+        User registeredUser = users.getResources()[0]
 
         Extension registeredExtension1 = registeredUser.getExtension('urn:scim:schemas:osiam:2.0:Registration')
         registeredExtension1.getField('activationToken', ExtensionFieldType.STRING) != null

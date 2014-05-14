@@ -30,6 +30,7 @@ import groovyx.net.http.Method
 
 import javax.mail.Message
 
+import org.osiam.client.oauth.Scope
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.resources.scim.User
@@ -59,7 +60,7 @@ class LostPasswordIT extends AbstractIT {
         given:
         def urn = 'urn:scim:schemas:osiam:2.0:Registration'
         def userId = 'cef8452e-00a9-4cec-a086-d171374febef'
-        def accessToken = osiamConnector.retrieveAccessToken()
+        def accessToken = osiamConnector.retrieveAccessToken("marissa", "koala", Scope.ALL)
         def statusCode
 
         when:

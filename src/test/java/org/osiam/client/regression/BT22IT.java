@@ -23,6 +23,10 @@
 
 package org.osiam.client.regression;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Locale;
@@ -30,6 +34,8 @@ import java.util.Locale;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.AbstractIntegrationTestBase;
+import org.osiam.client.query.Query;
+import org.osiam.client.query.QueryBuilder;
 import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
@@ -41,11 +47,6 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-
-import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -62,9 +63,9 @@ public class BT22IT extends AbstractIntegrationTestBase {
 
     @Test
     public void searching_for_user_with_filter_on_extension_field_same_case() throws UnsupportedEncodingException {
-        String query = URLEncoder.encode(URN + "." + FIELD + " eq \"female\"", "UTF-8");
+        Query query = new QueryBuilder().filter(URN + "." + FIELD + " eq \"female\"").build();
 
-        SCIMSearchResult<User> result = oConnector.searchUsers("filter=" + query, accessToken);
+        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
 
         assertThat(result.getTotalResults(), is(equalTo(3L)));
     }
@@ -72,9 +73,9 @@ public class BT22IT extends AbstractIntegrationTestBase {
     @Test
     public void searching_for_user_with_filter_on_extension_field_with_wrong_cased_urn()
             throws UnsupportedEncodingException {
-        String query = URLEncoder.encode(URN_WRONG_CASE + "." + FIELD + " eq \"female\"", "UTF-8");
+        Query query = new QueryBuilder().filter(URN_WRONG_CASE + "." + FIELD + " eq \"female\"").build();
 
-        SCIMSearchResult<User> result = oConnector.searchUsers("filter=" + query, accessToken);
+        SCIMSearchResult<User> result = oConnector.searchUsers( query, accessToken);
 
         assertThat(result.getTotalResults(), is(equalTo(3L)));
     }
@@ -82,9 +83,9 @@ public class BT22IT extends AbstractIntegrationTestBase {
     @Test
     public void searching_for_user_with_filter_on_extension_field_with_wrong_cased_field_name()
             throws UnsupportedEncodingException {
-        String query = URLEncoder.encode(URN + "." + FIELD_WRONG_CASE + " eq \"female\"", "UTF-8");
+        Query query = new QueryBuilder().filter(URN + "." + FIELD_WRONG_CASE + " eq \"female\"").build();
 
-        SCIMSearchResult<User> result = oConnector.searchUsers("filter=" + query, accessToken);
+        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
 
         assertThat(result.getTotalResults(), is(equalTo(3L)));
     }
@@ -92,9 +93,9 @@ public class BT22IT extends AbstractIntegrationTestBase {
     @Test
     public void searching_for_user_with_filter_on_extension_field_with_wrong_cased_urn_and_field_name()
             throws UnsupportedEncodingException {
-        String query = URLEncoder.encode(URN_WRONG_CASE + "." + FIELD_WRONG_CASE + " eq \"female\"", "UTF-8");
+        Query query = new QueryBuilder().filter(URN_WRONG_CASE + "." + FIELD_WRONG_CASE + " eq \"female\"").build();
 
-        SCIMSearchResult<User> result = oConnector.searchUsers("filter=" + query, accessToken);
+        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
 
         assertThat(result.getTotalResults(), is(equalTo(3L)));
     }

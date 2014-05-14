@@ -23,23 +23,22 @@
 
 package org.osiam.client;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import static org.junit.Assert.fail;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import static org.junit.Assert.fail;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -61,11 +60,7 @@ public class UserActivationLoginIT extends AbstractIntegrationTestBase {
                 .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
                 .setClientId("example-client")
                 .setClientSecret("secret")
-                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
-                .setUserName(userName)
-                .setPassword(password)
-                .setScope(Scope.ALL)
                 .build()
-                .retrieveAccessToken();
+                .retrieveAccessToken(userName, password, Scope.ALL);
     }
 }

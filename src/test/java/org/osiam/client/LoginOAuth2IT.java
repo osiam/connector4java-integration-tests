@@ -34,9 +34,10 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.management.RuntimeErrorException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
@@ -53,12 +54,11 @@ import org.apache.http.message.BasicNameValuePair;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.exception.ConflictException;
-import org.osiam.client.exception.ForbiddenException;
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
+import org.osiam.client.query.Query;
+import org.osiam.client.query.QueryBuilder;
 import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.Email.Type;
 import org.osiam.resources.scim.SCIMSearchResult;
@@ -102,10 +102,9 @@ public class LoginOAuth2IT {
                 .setClientId(CLIENT_ID)
                 .setClientSecret(CLIENT_SECRET)
                 .setClientRedirectUri(REDIRECT_URI)
-                .setGrantType(GrantType.AUTHORIZATION_CODE).setScope(Scope.ALL)
                 .build();
 
-        loginUri = oConnector.getRedirectLoginUri();
+        loginUri = oConnector.getAuthorizationUri(Scope.ALL);
         defaultHttpClient = new DefaultHttpClient();
     }
 
@@ -124,8 +123,8 @@ public class LoginOAuth2IT {
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
         assertTrue(accessToken != null);
-        String queryString = "filter=" + URLEncoder.encode("userName eq \"ben\"", "UTF-8");
-        SCIMSearchResult<User> result = oConnector.searchUsers(queryString, accessToken);
+        Query query = new QueryBuilder().filter("userName eq \"ben\"").build();
+        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
         User user = result.getResources().get(0);
         assertEquals(result.getTotalResults(), 1);
         assertEquals("ben", user.getUserName());
@@ -139,8 +138,8 @@ public class LoginOAuth2IT {
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
         assertTrue(accessToken != null);
-        String queryString = "filter=" + URLEncoder.encode("userName eq \"ben\"", "UTF-8");
-        SCIMSearchResult<User> result = oConnector.searchUsers(queryString, accessToken);
+        Query query = new QueryBuilder().filter("userName eq \"ben\"").build();
+        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
         User user = result.getResources().get(0);
         assertEquals(result.getTotalResults(), 1);
         assertEquals("ldap",
@@ -153,8 +152,8 @@ public class LoginOAuth2IT {
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
         assertTrue(accessToken != null);
-        String queryString = "filter=" + URLEncoder.encode("userName eq \"marissa\"", "UTF-8");
-        SCIMSearchResult<User> result = oConnector.searchUsers(queryString, accessToken);
+        Query query = new QueryBuilder().filter("userName eq \"marissa\"").build();
+        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
         User user = result.getResources().get(0);
         assertEquals(result.getTotalResults(), 1);
         assertFalse(user.isExtensionPresent("urn:scim:schemas:osiam:2.0:authentication:server"));
@@ -173,17 +172,16 @@ public class LoginOAuth2IT {
                 .setClientId("short-living-client")
                 .setClientSecret("other-secret")
                 .setClientRedirectUri("http://localhost:5001/oauth2")
-                .setGrantType(GrantType.AUTHORIZATION_CODE).setScope(Scope.ALL)
                 .build();
 
-        loginUri = oConnector.getRedirectLoginUri();
+        loginUri = oConnector.getAuthorizationUri();
 
         givenValidAuthCode("ben", "benspassword", "ldap");
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
 
-        String queryString = "filter=" + URLEncoder.encode("userName eq \"ben\"", "UTF-8");
-        SCIMSearchResult<User> result = oConnector.searchUsers(queryString, accessToken);
+        Query query = new QueryBuilder().filter("userName eq \"ben\"").build();
+        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
         User user = result.getResources().get(0);
 
         Email ldapEmail = new Email.Builder().setValue("ben@ben.de").setType(new Type("ldap")).build();
@@ -207,7 +205,7 @@ public class LoginOAuth2IT {
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
 
-        result = oConnector.searchUsers(queryString, accessToken);
+        result = oConnector.searchUsers(query, accessToken);
         user = result.getResources().get(0);
 
         assertEquals(result.getTotalResults(), 1);
@@ -228,28 +226,12 @@ public class LoginOAuth2IT {
         assertEquals("marissa", user.getUserName());
     }
 
-    @Test
-    public void test_successful_login_while_using_httpResponse() throws IOException {
-        givenValidAuthCode("marissa", "koala", "internal");
-        givenAuthCode();
-        givenAccessTokenUsingHttpResponse();
-        assertTrue(accessToken != null);
-        assertNotNull(accessToken.getRefreshToken());
-    }
-
     @Test(expected = ConflictException.class)
     public void getting_acces_token_two_times_raises_exception() throws IOException {
         givenValidAuthCode("marissa", "koala", "internal");
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
         givenAccessTokenUsingAuthCode();
-        fail("exception expected");
-    }
-
-    @Test(expected = ForbiddenException.class)
-    public void user_denied_recognized_correctly() throws IOException {
-        givenDenyResponse();
-        givenAccessTokenUsingHttpResponse();
         fail("exception expected");
     }
 
@@ -271,10 +253,6 @@ public class LoginOAuth2IT {
 
     private void givenAccessTokenUsingAuthCode() {
         accessToken = oConnector.retrieveAccessToken(authCode);
-    }
-
-    private void givenAccessTokenUsingHttpResponse() {
-        accessToken = oConnector.retrieveAccessToken(authCodeResponse);
     }
 
     private void assureLdapLoginProcessFails() throws IOException {
@@ -431,6 +409,9 @@ public class LoginOAuth2IT {
 
     private void givenAuthCode() {
         Header header = authCodeResponse.getLastHeader("Location");
+        if(header == null){
+            throw new RuntimeException("The Location Header is null");
+        }
         HeaderElement[] elements = header.getElements();
         for (HeaderElement actHeaderElement : elements) {
             if (actHeaderElement.getName().contains("code")) {

@@ -45,7 +45,7 @@
 
         <!-- OSIAM -->
         <osiam.version>0.22-SNAPSHOT</osiam.version>
-        <osiam.addon-self-administration.version>0.1-SNAPSHOT</osiam.addon-self-administration.version>
+        <osiam.addon-self-administration.version>1.0-SNAPSHOT</osiam.addon-self-administration.version>
         <osiam.connector4java.version>0.16-SNAPSHOT</osiam.connector4java.version>
     </properties>
 
@@ -201,13 +201,17 @@
                     <artifactId>groovy</artifactId>
                     <groupId>org.codehaus.groovy</groupId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>2.7</version>
+            <version>2.8</version>
         </dependency>
 
         <dependency>

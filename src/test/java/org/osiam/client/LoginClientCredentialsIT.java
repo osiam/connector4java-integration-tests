@@ -30,7 +30,6 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
@@ -65,9 +64,7 @@ public class LoginClientCredentialsIT {
                 setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
                 setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId(clientId).
-                setClientSecret(clientSecret).
-                setGrantType(GrantType.CLIENT_CREDENTIALS).
-                setScope(Scope.ALL);
+                setClientSecret(clientSecret);
         oConnector = oConBuilder.build();
         AccessToken at = oConnector.retrieveAccessToken();
 
@@ -80,9 +77,7 @@ public class LoginClientCredentialsIT {
                 setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
                 setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId(clientId).
-                setClientSecret("wrong" + clientSecret).
-                setGrantType(GrantType.CLIENT_CREDENTIALS).
-                setScope(Scope.ALL);
+                setClientSecret("wrong" + clientSecret);
         oConnector = oConBuilder.build();
         oConnector.retrieveAccessToken();
 

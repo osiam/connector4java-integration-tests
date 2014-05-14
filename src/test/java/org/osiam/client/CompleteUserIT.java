@@ -36,6 +36,8 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.osiam.client.query.Query;
+import org.osiam.client.query.QueryBuilder;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.Entitlement;
@@ -102,13 +104,13 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
 
     @Test
     public void search_for_user_by_complex_query() {
-        String query = getCompletUserQueryString();
-        SCIMSearchResult<User> queryResult = oConnector.searchUsers("filter=" + query, accessToken);
+        Query query = getCompletUserQuery();
+        SCIMSearchResult<User> queryResult = oConnector.searchUsers(query, accessToken);
         assertThat(queryResult.getTotalResults(), is(equalTo(1L)));
     }
 
-    private String getCompletUserQueryString() {
-        return encodeExpected("active eq \"true\""
+    private Query getCompletUserQuery() {
+        return new QueryBuilder().filter("active eq \"true\""
                 + " and addresses.country eq \"Germany\""
                 + " and addresses.formatted eq \"formatted\""
                 + " and addresses.locality eq \"Berlin\""
@@ -155,7 +157,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
                 + " and timezone eq \"DE\""
                 + " and title eq \"title\""
                 + " and userName sw \"user\""
-                + " and x509Certificates eq \"x509Certificate\"");
+                + " and x509Certificates eq \"x509Certificate\"").build();
     }
 
     private User createUserWithUpdatedField() {
