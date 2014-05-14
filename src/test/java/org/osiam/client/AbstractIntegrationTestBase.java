@@ -64,7 +64,7 @@ public abstract class AbstractIntegrationTestBase {
                 .setClientId("short-living-client")
                 .setClientSecret("other-secret");
         oConnector = oConBuilder.build();
-        accessToken = oConnector.retrieveAccessToken();
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ALL);
     }
 
     protected void givenAnInvalidAccessToken() throws Exception {

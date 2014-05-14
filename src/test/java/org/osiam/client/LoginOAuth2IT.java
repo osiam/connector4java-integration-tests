@@ -37,6 +37,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
@@ -54,6 +56,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
 import org.osiam.resources.scim.Email;
@@ -101,7 +104,7 @@ public class LoginOAuth2IT {
                 .setClientRedirectUri(REDIRECT_URI)
                 .build();
 
-        loginUri = oConnector.getRedirectLoginUri();
+        loginUri = oConnector.getAuthorizationUri(Scope.ALL);
         defaultHttpClient = new DefaultHttpClient();
     }
 
@@ -171,7 +174,7 @@ public class LoginOAuth2IT {
                 .setClientRedirectUri("http://localhost:5001/oauth2")
                 .build();
 
-        loginUri = oConnector.getRedirectLoginUri();
+        loginUri = oConnector.getAuthorizationUri();
 
         givenValidAuthCode("ben", "benspassword", "ldap");
         givenAuthCode();
@@ -406,6 +409,9 @@ public class LoginOAuth2IT {
 
     private void givenAuthCode() {
         Header header = authCodeResponse.getLastHeader("Location");
+        if(header == null){
+            throw new RuntimeException("The Location Header is null");
+        }
         HeaderElement[] elements = header.getElements();
         for (HeaderElement actHeaderElement : elements) {
             if (actHeaderElement.getName().contains("code")) {
