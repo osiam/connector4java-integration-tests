@@ -23,10 +23,6 @@
 
 package org.osiam.client;
 
-import static org.springframework.test.util.AssertionErrors.fail;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -37,7 +33,7 @@ import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.Scope;
 
 public abstract class AbstractIntegrationTestBase {
-    
+
     protected static final String VALID_USER_ID = "834b410a-943b-4c80-817a-4465aed037bc";
     protected static final String INVALID_ID = "ffffffff-ffff-ffff-ffff-fffffffffff";
     protected static final String INVALID_STRING = "invalid";
@@ -61,7 +57,7 @@ public abstract class AbstractIntegrationTestBase {
         accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ALL);
     }
 
-    protected void givenAnAccessTokenForOneSecond() throws Exception {
+    protected void givenAnAccessTokenForOneSecond() {
         OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder()
                 .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
                 .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
@@ -75,16 +71,6 @@ public abstract class AbstractIntegrationTestBase {
         accessToken = new AccessToken.Builder(AbstractIntegrationTestBase.INVALID_ID).build();
     }
 
-    protected String encodeExpected(String string) {
-        String encoded = null;
-        try {
-            encoded = URLEncoder.encode(string, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            fail("Unable to encode queryString");
-        }
-        return encoded;
-    }
-    
     protected String dateAsString(int year, int month, int date, int hourOfDay, int minute, int second, int millisecond) {
         Date completeDate = createDate(year, month, date, hourOfDay, minute, second, millisecond);
         return ISODateTimeFormat.dateTime().withZoneUTC().print(completeDate.getTime());

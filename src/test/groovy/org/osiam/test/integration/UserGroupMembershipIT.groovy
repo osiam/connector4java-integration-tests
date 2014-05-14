@@ -89,7 +89,7 @@ class UserGroupMembershipIT extends AbstractIT {
 
     def 'remove member from group'() {
         given:
-		AccessToken accessToken = osiamConnector.retrieveAccessToken()
+        AccessToken accessToken = osiamConnector.retrieveAccessToken()
         def memberGroup1 = osiamConnector.createGroup(new Group.Builder('memberGroup1').build(), accessToken)
         def memberGroup2 = osiamConnector.createGroup(new Group.Builder('memberGroup2').build(), accessToken)
         def memberUser = osiamConnector.createUser(new User.Builder('userMember').setPassword('test').build(), accessToken)
@@ -97,12 +97,15 @@ class UserGroupMembershipIT extends AbstractIT {
         def groupMember1 = new MemberRef.Builder().setValue(memberGroup1.getId()).build()
         def groupMember2 = new MemberRef.Builder().setValue(memberGroup2.getId()).build()
         def userMember3 = new MemberRef.Builder().setValue(memberUser.getId()).build()
-        def parentGroup = new Group.Builder('parent').setMembers([groupMember1, groupMember2, userMember3] as Set).build()
+        def parentGroup = new Group.Builder('parent').setMembers([
+            groupMember1,
+            groupMember2,
+            userMember3] as Set).build()
 
         def retParentGroup = osiamConnector.createGroup(parentGroup, accessToken)
 
-        def updateGroup = new Group.Builder()
-                .setMembers([new MemberRef.Builder(memberGroup1).setOperation('delete').build()] as Set)
+        UpdateGroup updateGroup = new UpdateGroup.Builder()
+                .deleteMember(memberGroup1.getId())
                 .build()
 
         when:
@@ -117,9 +120,9 @@ class UserGroupMembershipIT extends AbstractIT {
 
     def 'remove all members from group'() {
         given:
-		
-		AccessToken accessToken = osiamConnector.retrieveAccessToken()
-		
+
+        AccessToken accessToken = osiamConnector.retrieveAccessToken()
+
         def memberGroup1 = osiamConnector.createGroup(new Group.Builder('memberGroup10').build(), accessToken)
         def memberGroup2 = osiamConnector.createGroup(new Group.Builder('memberGroup20').build(), accessToken)
 
@@ -129,8 +132,8 @@ class UserGroupMembershipIT extends AbstractIT {
 
         def parent = osiamConnector.createGroup(parentGroup, accessToken)
 
-        def updateGroup = new Group.Builder()
-                .setMeta(new Meta.Builder(null, null).setAttributes(['members'] as Set).build())
+        UpdateGroup updateGroup = new UpdateGroup.Builder()
+                .deleteMembers()
                 .build()
 
         when:
@@ -143,24 +146,4 @@ class UserGroupMembershipIT extends AbstractIT {
         persistedParent.getMembers().isEmpty()
     }
 
-    def "ignoring required and read only attributes"(){
-        given:
-        def group = new Group.Builder("Group").build()
-
-        def createdGroup = osiamConnector.createGroup(group, osiamConnector.retrieveAccessToken())
-
-        def updateGroup = new Group.Builder()
-                .setMeta(new Meta.Builder(null, null).setAttributes(["displayName", "id"] as Set).build())
-                .build()
-
-        when:
-        def result = osiamConnector.updateGroup(createdGroup.getId(), updateGroup, osiamConnector.retrieveAccessToken())
-
-        then:
-        result.getDisplayName() == "Group"
-        result.getId() != null
-        def persistedGroup = osiamConnector.getGroup(createdGroup.getId(), osiamConnector.retrieveAccessToken())
-        persistedGroup.getDisplayName() == "Group"
-        persistedGroup.getId() != null
-    }
 }

@@ -59,9 +59,9 @@ public class LoginResourceOwnerPasswordCredentialsIT {
 
     @Test
     public void login_with_resource_owner_password_credentials_grant_should_provide_an_refresh_token() {
-        OsiamConnector osiamConnector = createOsiamConnector("marissa", "koala");
+        OsiamConnector osiamConnector = createOsiamConnector();
 
-        AccessToken at = osiamConnector.retrieveAccessToken();
+        AccessToken at = osiamConnector.retrieveAccessToken("marissa", "koala", Scope.ALL);
 
         assertNotNull("The hole access token object was null.", at);
         assertNotNull("The refresh token was null.", at.getRefreshToken());
@@ -69,18 +69,17 @@ public class LoginResourceOwnerPasswordCredentialsIT {
 
     @Test
     public void login_with_two_users_works() {
-        OsiamConnector osiamConnector = createOsiamConnector("marissa", "koala");
-        AccessToken at = osiamConnector.retrieveAccessToken();
+        OsiamConnector osiamConnector = createOsiamConnector();
+        AccessToken at = osiamConnector.retrieveAccessToken("marissa", "koala", Scope.ALL);
 
-        OsiamConnector osiamConnector2 = createOsiamConnector("marissa02",
-                "koala");
-        AccessToken at2 = osiamConnector2.retrieveAccessToken();
+        OsiamConnector osiamConnector2 = createOsiamConnector();
+        AccessToken at2 = osiamConnector2.retrieveAccessToken("marissa", "koala", Scope.ALL);
 
         assertNotNull(at);
         assertNotNull(at2);
     }
 
-    private OsiamConnector createOsiamConnector(String userName, String password) {
+    private OsiamConnector createOsiamConnector() {
         return new OsiamConnector.Builder()
                 .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
                 .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)

@@ -23,7 +23,10 @@
 
 package org.osiam.test.integration
 
+import org.osiam.client.query.Query
+import org.osiam.client.query.QueryBuilder
 import org.osiam.resources.scim.SCIMSearchResult
+
 import spock.lang.Unroll
 
 class ScimExtensionPresentSearchIT extends AbstractExtensionBaseIT {
@@ -36,10 +39,10 @@ class ScimExtensionPresentSearchIT extends AbstractExtensionBaseIT {
     def 'search for user by #fieldType extension and constraint \'pr\' with query string works'() {
 
         given:
-        def query = URLEncoder.encode("extension.$fieldName pr", 'UTF-8');
+        Query query = new QueryBuilder().filter("extension.$fieldName pr").build()
 
         when:
-        SCIMSearchResult result = osiamConnector.searchUsers("filter=$query", accessToken)
+        SCIMSearchResult result = osiamConnector.searchUsers(query, accessToken)
 
         then:
         result.totalResults == 1

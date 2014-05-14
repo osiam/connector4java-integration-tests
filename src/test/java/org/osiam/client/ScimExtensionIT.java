@@ -43,6 +43,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.query.Query;
+import org.osiam.client.query.QueryBuilder;
 import org.osiam.resources.scim.Extension;
 import org.osiam.resources.scim.Extension.Field;
 import org.osiam.resources.scim.ExtensionFieldType;
@@ -113,7 +114,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
     @Test
     @DatabaseSetup("/database_seeds/ScimExtensionIT/extensions_and_multiple_users.xml")
     public void retrieving_multiple_users_with_extension_via_query_works() {
-        Query query = new Query.Builder(User.class).setFilter("userName co \"existing\"").build();
+        Query query = new QueryBuilder().filter("userName co \"existing\"").build();
 
         SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
 

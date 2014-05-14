@@ -25,7 +25,6 @@ package org.osiam.client;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -38,6 +37,7 @@ import org.osiam.client.exception.ForbiddenException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
+import org.osiam.client.query.QueryBuilder;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.SCIMSearchResult;
 import org.osiam.resources.scim.UpdateGroup;
@@ -299,12 +299,12 @@ public class ScopeIT {
     }
 
     private SCIMSearchResult<User> searchForUsers() {
-        Query query = new Query.Builder(User.class).setStartIndex(1).build();
+        Query query = new QueryBuilder().startIndex(1).build();
         return oConnector.searchUsers(query, accessToken);
     }
 
     private SCIMSearchResult<Group> searchForGroups() {
-        Query query = new Query.Builder(Group.class).setStartIndex(1).build();
+        Query query = new QueryBuilder().startIndex(1).build();
         return oConnector.searchGroups(query, accessToken);
     }
 

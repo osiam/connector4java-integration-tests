@@ -41,7 +41,7 @@ import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.query.Query;
-import org.osiam.client.query.metamodel.User_;
+import org.osiam.client.query.QueryBuilder;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.Name;
@@ -223,10 +223,8 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     private void initialQueryToSearchUser() {
-        query = new Query.Builder(User.class)
-                .setFilter(
-                        new Query.Filter(User.class, User_.userName
-                                .equalTo(IRRELEVANT))).build();
+        query = new QueryBuilder()
+                .filter("userName eq \"" + IRRELEVANT + "\"").build();
     }
 
     private void buildCompleteUser() {

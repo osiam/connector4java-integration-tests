@@ -24,9 +24,10 @@
 package org.osiam.test.integration
 
 import org.osiam.client.query.Query
-import org.osiam.client.query.metamodel.Group_
+import org.osiam.client.query.QueryBuilder
 import org.osiam.resources.scim.Group
 import org.osiam.resources.scim.SCIMSearchResult
+
 import spock.lang.Unroll
 
 class SearchGroupsWithSortByIT extends AbstractIT {
@@ -38,24 +39,23 @@ class SearchGroupsWithSortByIT extends AbstractIT {
     @Unroll
     def 'searching for a Group with sortBy field set to #sortBy and default sort order works'() {
         given:
-        Query.Builder queryBuilder = new Query.Builder(Group)
-        queryBuilder.setSortBy(sortBy)
+        Query query = new QueryBuilder().ascending(sortBy).build()
 
         when:
-        SCIMSearchResult<Group> queryResult = osiamConnector.searchGroups(queryBuilder.build(), accessToken)
+        SCIMSearchResult<Group> queryResult = osiamConnector.searchGroups(query, accessToken)
 
         then:
         queryResult.resources.size() == expectedOrder.size()
         resultsAreInRightOrder(queryResult.resources, expectedOrder)
 
         where:
-        sortBy                   | expectedOrder
-        Group_.displayName       | ['test_group01', 'test_group02', 'test_group03'] as List
-        Group_.externalId        | ['test_group03', 'test_group02', 'test_group01'] as List
+        sortBy              | expectedOrder
+        'displayName'       | ['test_group01', 'test_group02', 'test_group03'] as List
+        'externalId'        | ['test_group03', 'test_group02', 'test_group01'] as List
 
-        Group_.Meta.created      | ['test_group01', 'test_group02', 'test_group03'] as List
-        Group_.Meta.lastModified | ['test_group03', 'test_group02', 'test_group01'] as List
-        Group_.Meta.location     | ['test_group03', 'test_group01', 'test_group02'] as List
+        'meta.created'      | ['test_group01', 'test_group02', 'test_group03'] as List
+        'meta.lastModified' | ['test_group03', 'test_group02', 'test_group01'] as List
+        'meta.location'     | ['test_group03', 'test_group01', 'test_group02'] as List
     }
 
     private def void resultsAreInRightOrder(List<Group> groups, List<String> expectedGroupNameOrder) {

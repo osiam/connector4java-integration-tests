@@ -23,6 +23,7 @@
 
 package org.osiam.client;
 
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -32,6 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.AccessTokenValidationException;
 import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.oauth.Scope;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -66,5 +68,20 @@ public class AccessTokenVaidationIT extends AbstractIntegrationTestBase {
     @Test
     public void accessToken_contains_user_data() {
         assertThat(accessToken.getUserName(), is("marissa"));
+    }
+    
+    @Test
+    public void refreshed_accesstoken_has_new_given_scopes() throws InterruptedException{
+        givenAnAccessTokenForOneSecond();
+        Thread.sleep(1010);
+        accessToken = oConnector.refreshAccessToken(accessToken, Scope.GET, Scope.PATCH);
+        assertThat(accessToken.getScopes().size(), is(2));
+        assertThat(accessToken.getScopes(), contains(Scope.GET, Scope.PATCH));
+    }
+    
+    @Test
+    public void refreshed_accesstoken_with_new_scopes_has_old_scopes(){
+        accessToken = oConnector.refreshAccessToken(accessToken);
+        assertThat(accessToken.getScopes().size(), is(5));
     }
 }
