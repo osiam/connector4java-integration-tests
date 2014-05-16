@@ -599,7 +599,7 @@
             </build>
         </profile>
         <profile>
-            <id>db-seeding-self-admin</id>
+            <id>db-seeding-standard</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
@@ -622,7 +622,7 @@
                             <url>jdbc:h2:tcp://localhost/mem:osiam</url>
                             <username>sa</username>
                             <password>sa</password>
-                            <src>src/test/resources/database_seed_self_administration.xml</src>
+                            <src>src/test/resources/database_seed_standard_setup.xml</src>
                             <type>CLEAN_INSERT</type>
                             <format>flat</format>
                             <ordered>true</ordered>
@@ -647,7 +647,7 @@
             </build>
         </profile>
         <profile>
-            <id>db-seeding-self-admin-pg</id>
+            <id>db-seeding-standard-pg</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
@@ -670,7 +670,7 @@
                             <url>jdbc:postgresql://localhost:5432/ong</url>
                             <username>ong</username>
                             <password>b4s3dg0d</password>
-                            <src>src/test/resources/database_seed_self_administration.xml</src>
+                            <src>src/test/resources/database_seed_standard_setup.xml</src>
                             <type>CLEAN_INSERT</type>
                             <format>flat</format>
                             <ordered>true</ordered>
