@@ -251,7 +251,7 @@
 
     <scim_extension internal_id="100081" urn="extension"/>
     <scim_extension internal_id="100082" urn="urn:org.osiam:scim:extensions:auth-server"/>
-    <scim_extension internal_id="100083" urn="com.osiam.stress.test"/>
+    <scim_extension internal_id="100083" urn="urn:org.osiam:scim:extensions:stress-tests"/>
         
     <scim_extension_field internal_id="100082" is_required="true" name="gender" type="STRING"
                           extension_internal_id="100081"/>
