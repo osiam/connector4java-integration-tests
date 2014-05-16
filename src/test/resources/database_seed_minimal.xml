@@ -38,8 +38,8 @@
     <osiam_client_scopes id="100003" scope="DELETE"/>
 
     <osiam_client internal_id="100004" id="auth-server" redirect_uri="http://localhost:8180/osiam-auth-server"
-        client_secret="auth-secret" accesstokenvalidityseconds="1" refreshtokenvalidityseconds="1" validityinseconds="1"
-        implicit_approval="true" expiry="3000-01-01 00:00:01" />
+        client_secret="auth-secret" accesstokenvalidityseconds="10" refreshtokenvalidityseconds="10" validityinseconds="10"
+        implicit_approval="true" />
     <osiam_client_grants id="100004" grants="client_credentials" />
     <osiam_client_scopes id="100004" scope="GET" />
     <osiam_client_scopes id="100004" scope="POST" />
