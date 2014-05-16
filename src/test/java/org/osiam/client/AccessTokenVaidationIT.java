@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.oauth.Scope;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -46,7 +47,7 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class })
-@DatabaseSetup("/database_seed.xml")
+@DatabaseSetup("/database_seed_minimal.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class AccessTokenVaidationIT extends AbstractIntegrationTestBase {
 
@@ -68,4 +69,17 @@ public class AccessTokenVaidationIT extends AbstractIntegrationTestBase {
         assertThat(accessToken.getUserName(), is("marissa"));
     }
 
+    @Test
+    public void login_works_also_when_auth_server_client_access_token_expired() throws InterruptedException {
+        String userName = "marissa";
+        String password = "koala";
+        
+        accessToken = oConnector.retrieveAccessToken(userName, password, Scope.ALL);
+        
+        Thread.sleep(2000);
+        
+        accessToken = oConnector.retrieveAccessToken(userName, password, Scope.ALL);
+        
+        assertTrue(accessToken != null);
+    }
 }
