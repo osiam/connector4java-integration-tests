@@ -25,6 +25,7 @@ package org.osiam.client;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -252,6 +253,23 @@ public class ScopeIT {
     public void delete_group_in_DELETE_scope_works() {
         retrieveAccessToken(Scope.DELETE);
         oConnector.deleteGroup(VALID_GROUP_ID, accessToken);
+    }
+    
+    @Test
+    public void different_scopes_different_token() {
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder()
+                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setClientId(CLIENT_ID)
+                .setClientSecret(CLIENT_SECRET);
+        oConnector = oConBuilder.build();
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.POST);
+        
+        String postScopesToken = accessToken.getToken();
+        
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.GET);
+        
+        assertFalse(accessToken.getToken().equals(postScopesToken));
     }
 
     private User createUser() {
