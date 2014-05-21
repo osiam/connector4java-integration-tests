@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-  ~ Copyright (C) 2013 tarent AG
-  ~
-  ~ Permission is hereby granted, free of charge, to any person obtaining
-  ~ a copy of this software and associated documentation files (the
-  ~ "Software"), to deal in the Software without restriction, including
-  ~ without limitation the rights to use, copy, modify, merge, publish,
-  ~ distribute, sublicense, and/or sell copies of the Software, and to
-  ~ permit persons to whom the Software is furnished to do so, subject to
-  ~ the following conditions:
-  ~
-  ~ The above copyright notice and this permission notice shall be
-  ~ included in all copies or substantial portions of the Software.
-  ~
-  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-  ~ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-  ~ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-  ~ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-  ~ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-  ~ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-  ~ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-  -->
+    ~ Copyright (C) 2013 tarent AG
+    ~
+    ~ Permission is hereby granted, free of charge, to any person obtaining
+    ~ a copy of this software and associated documentation files (the
+    ~ "Software"), to deal in the Software without restriction, including
+    ~ without limitation the rights to use, copy, modify, merge, publish,
+    ~ distribute, sublicense, and/or sell copies of the Software, and to
+    ~ permit persons to whom the Software is furnished to do so, subject to
+    ~ the following conditions:
+    ~
+    ~ The above copyright notice and this permission notice shall be
+    ~ included in all copies or substantial portions of the Software.
+    ~
+    ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    ~ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    ~ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    ~ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+    ~ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+    ~ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+    ~ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -37,16 +37,16 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
         <java.version>1.7</java.version>
-        <derby.version>10.10.1.1</derby.version>
-        <spring.version>3.2.6.RELEASE</spring.version>
-        <org.hibernate-version>4.3.0.Final</org.hibernate-version>
+        <spring.version>4.0.4.RELEASE</spring.version>
+        <org.hibernate-version>4.3.5.Final</org.hibernate-version>
         <h2.version>1.3.170</h2.version>
-        <groovy.version>2.1.5</groovy.version>
+        <groovy.version>2.3.0</groovy.version>
         <spock.version>0.7-groovy-2.0</spock.version>
 
         <!-- OSIAM -->
-        <osiam.version>0.17.1</osiam.version>
-        <osiam.connector4java.version>0.13</osiam.connector4java.version>
+        <osiam.version>1.0-SNAPSHOT</osiam.version>
+        <osiam.addon-self-administration.version>1.0-SNAPSHOT</osiam.addon-self-administration.version>
+        <osiam.connector4java.version>1.0-SNAPSHOT</osiam.connector4java.version>
     </properties>
 
     <repositories>
@@ -65,98 +65,116 @@
             </snapshots>
         </repository>
     </repositories>
+
     <dependencies>
+
         <dependency>
             <groupId>org.osiam</groupId>
             <artifactId>connector4java</artifactId>
             <version>${osiam.connector4java.version}</version>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
             <version>1.3</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>com.github.springtestdbunit</groupId>
             <artifactId>spring-test-dbunit</artifactId>
-            <version>1.0.1</version>
+            <version>1.1.0</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
             <version>${spring.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>${spring.version}</version>
         </dependency>
+
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>postgresql</groupId>
+            <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>9.1-901.jdbc4</version>
+            <version>9.3-1101-jdbc41</version>
         </dependency>
+
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.0-api</artifactId>
-            <version>1.0.1.Final</version>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
+            <version>1.0.0.Final</version>
         </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.5</version>
+            <version>1.7.6</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${org.hibernate-version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
             <version>${spring.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.dbunit</groupId>
             <artifactId>dbunit</artifactId>
             <version>2.4.9</version>
         </dependency>
+
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>2.3</version>
         </dependency>
+
         <!-- TESTING -->
 
         <dependency>
             <groupId>com.icegreen</groupId>
             <artifactId>greenmail</artifactId>
-            <version>1.3</version>
+            <version>1.3.1b</version>
             <scope>test</scope>
         </dependency>
 
@@ -166,6 +184,7 @@
             <artifactId>groovy-all</artifactId>
             <version>${groovy.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>
@@ -176,15 +195,34 @@
         <dependency>
             <groupId>org.codehaus.groovy.modules.http-builder</groupId>
             <artifactId>http-builder</artifactId>
-            <version>0.5.2</version>
+            <version>0.7.1</version>
             <exclusions>
                 <exclusion>
                     <artifactId>groovy</artifactId>
                     <groupId>org.codehaus.groovy</groupId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>2.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+            <version>1.2.3</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
+
     <build>
         <testResources>
             <testResource>
@@ -197,7 +235,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
+                <version>3.1</version>
                 <extensions>true</extensions>
                 <configuration>
                     <compilerId>groovy-eclipse-compiler</compilerId>
@@ -210,7 +248,7 @@
                     <dependency>
                         <groupId>org.codehaus.groovy</groupId>
                         <artifactId>groovy-eclipse-batch</artifactId>
-                        <version>2.1.5-03</version>
+                        <version>2.1.8-01</version>
                     </dependency>
                     <dependency>
                         <groupId>org.codehaus.groovy</groupId>
@@ -221,7 +259,10 @@
             </plugin>
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.15</version>
+                <version>2.16</version>
+                <configuration>
+                   <trimStackTrace>false</trimStackTrace>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -256,7 +297,7 @@
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.0.2.v20130417</version>
+                <version>9.1.3.v20140225</version>
                 <dependencies>
                     <dependency>
                         <groupId>com.h2database</groupId>
@@ -281,8 +322,8 @@
                             <contextPath>/osiam-auth-server</contextPath>
                         </contextHandler>
                         <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
-                            <war>${project.build.directory}/osiam-registration-module-${osiam.version}</war>
-                            <contextPath>/osiam-registration-module</contextPath>
+                            <war>${project.build.directory}/addon-self-administration-${osiam.addon-self-administration.version}</war>
+                            <contextPath>/addon-self-administration</contextPath>
                         </contextHandler>
                         <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
                             <war>${project.build.directory}/osiam-resource-server-${osiam.version}</war>
@@ -357,7 +398,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>download-osiam-registration-module</id>
+                        <id>download-addon-self-administration</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack</goal>
@@ -366,12 +407,12 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.osiam</groupId>
-                                    <artifactId>osiam-registration-module</artifactId>
-                                    <version>${osiam.version}</version>
+                                    <artifactId>addon-self-administration</artifactId>
+                                    <version>${osiam.addon-self-administration.version}</version>
                                     <type>war</type>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/osiam-registration-module-${osiam.version}</outputDirectory>
+                            <outputDirectory>${project.build.directory}/addon-self-administration-${osiam.addon-self-administration.version}</outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
                     </execution>
@@ -381,6 +422,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.6</version>
+                <configuration>
+                    <includeEmptyDirs>true</includeEmptyDirs>
+                </configuration>
                 <executions>
                     <execution>
                         <id>copy-persistence-config</id>
@@ -395,30 +439,8 @@
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
-                                    <directory>src/test/resources/</directory>
-                                    <includes>
-                                        <include>jpa-configuration.xml</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-osiam-auth-resources</id>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>
-                                ${project.build.directory}/osiam-auth-server-${osiam.version}/WEB-INF/classes
-                            </outputDirectory>
-                            <overwrite>true</overwrite>
-                            <resources>
-                                <resource>
-                                    <directory>src/test/resources/</directory>
-                                    <filtering>true</filtering>
-                                    <include>osiam.properties</include>
+                                    <directory>src/test/resources/resource-server-configuration</directory>
+                                    <include>jpa-configuration.xml</include>
                                 </resource>
                             </resources>
                         </configuration>
@@ -436,30 +458,68 @@
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
-                                    <directory>src/test/resources/</directory>
-                                    <filtering>true</filtering>
-                                    <include>osiam.properties</include>
+                                    <directory>src/test/resources/resource-server-configuration</directory>
+                                    <include>resource-server.properties</include>
                                 </resource>
                             </resources>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>copy-osiam-registration-resources</id>
+                        <id>copy-osiam-auth-resources</id>
                         <phase>generate-test-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                ${project.build.directory}/osiam-registration-module-${osiam.version}/WEB-INF/classes
+                                ${project.build.directory}/osiam-auth-server-${osiam.version}/WEB-INF/classes
                             </outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
-                                    <directory>src/test/resources/</directory>
-                                    <filtering>true</filtering>
-                                    <include>osiam-registration.properties</include>
-                                    <include>osiam.properties</include>
+                                    <directory>src/test/resources/auth-server-configuration</directory>
+                                    <include>**/**</include>
+                                    <exclude>auth-server_pg.properties</exclude>
+                                    <exclude>*.xml</exclude>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-osiam-auth-web-config</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${project.build.directory}/osiam-auth-server-${osiam.version}/WEB-INF
+                            </outputDirectory>
+                            <overwrite>true</overwrite>
+                            <resources>
+                                <resource>
+                                    <directory>src/test/resources/auth-server-configuration</directory>
+                                    <include>user-authentication.xml</include>
+                                    <include>jpa-configuration.xml</include>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-addon-self-administration</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${project.build.directory}/addon-self-administration-${osiam.addon-self-administration.version}/WEB-INF/classes
+                            </outputDirectory>
+                            <overwrite>true</overwrite>
+                            <resources>
+                                <resource>
+                                    <directory>src/test/resources/addon-self-administration-configuration</directory>
+                                    <include>**/**</include>
                                 </resource>
                             </resources>
                         </configuration>
@@ -467,6 +527,30 @@
                 </executions>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>1.3.1</version>
+                    <executions>
+                        <execution>
+                            <id>enforce-versions</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <requireMavenVersion>
+                                        <version>3.0.4</version>
+                                    </requireMavenVersion>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
     <profiles>
         <profile>
@@ -494,6 +578,102 @@
                             <username>sa</username>
                             <password>sa</password>
                             <src>src/test/resources/database_seed.xml</src>
+                            <type>CLEAN_INSERT</type>
+                            <format>flat</format>
+                            <ordered>true</ordered>
+                            <dest>src/test/resources/database_dump.xml</dest>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>seed</id>
+                                <goals>
+                                    <goal>operation</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>dump</id>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>db-seeding-standard</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>dbunit-maven-plugin</artifactId>
+                        <version>1.0-beta-3</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.h2database</groupId>
+                                <artifactId>h2</artifactId>
+                                <version>${h2.version}</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <dataTypeFactoryName>org.dbunit.ext.h2.H2DataTypeFactory</dataTypeFactoryName>
+                            <driver>org.h2.Driver</driver>
+                            <url>jdbc:h2:tcp://localhost/mem:osiam</url>
+                            <username>sa</username>
+                            <password>sa</password>
+                            <src>src/test/resources/database_seed_standard_setup.xml</src>
+                            <type>CLEAN_INSERT</type>
+                            <format>flat</format>
+                            <ordered>true</ordered>
+                            <dest>src/test/resources/database_dump.xml</dest>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>seed</id>
+                                <goals>
+                                    <goal>operation</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>dump</id>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>db-seeding-standard-pg</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>dbunit-maven-plugin</artifactId>
+                        <version>1.0-beta-3</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.postgresql</groupId>
+                                <artifactId>postgresql</artifactId>
+                                <version>9.3-1101-jdbc41</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <dataTypeFactoryName>org.dbunit.ext.postgresql.PostgresqlDataTypeFactory</dataTypeFactoryName>
+                            <driver>org.postgresql.Driver</driver>
+                            <url>jdbc:postgresql://localhost:5432/ong</url>
+                            <username>ong</username>
+                            <password>b4s3dg0d</password>
+                            <src>src/test/resources/database_seed_standard_setup.xml</src>
                             <type>CLEAN_INSERT</type>
                             <format>flat</format>
                             <ordered>true</ordered>

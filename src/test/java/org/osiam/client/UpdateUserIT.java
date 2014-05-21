@@ -35,17 +35,15 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.oauth.GrantType;
-import org.osiam.client.oauth.Scope;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.Entitlement;
@@ -92,7 +90,13 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         assertFalse(isValuePartOfEmailList(returnUser.getEmails(), "hsimpson@atom-example.com"));
         assertFalse(isValuePartOfPhoneNumberList(returnUser.getPhoneNumbers(), "0245817964"));
         assertFalse(isValuePartOfImList(returnUser.getIms(), "ims01"));
-        assertFalse(isValuePartOfPhotoList(returnUser.getPhotos(), "photo01.jpg"));
+        URI uri = null;
+        try {
+            uri = new URI("photo01.jpg");
+        } catch (Exception e) {
+        }
+
+        assertFalse(isValuePartOfPhotoList(returnUser.getPhotos(), uri));
         assertFalse(isValuePartOfRoleList(returnUser.getRoles(), "role01"));
         assertFalse(isValuePartOfAddressList(returnUser.getAddresses(), "formated address 01"));
         assertFalse(isValuePartOfEntitlementList(returnUser.getEntitlements(), "right2"));
@@ -161,7 +165,13 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         assertEquals(originalUser.getIms().size() + 1, returnUser.getIms().size());
         assertTrue(isValuePartOfImList(returnUser.getIms(), "ims03"));
         assertEquals(originalUser.getPhotos().size() + 1, returnUser.getPhotos().size());
-        assertTrue(isValuePartOfPhotoList(returnUser.getPhotos(), "photo03.jpg"));
+        URI uri = null;
+        try {
+            uri = new URI("photo03.jpg");
+        } catch (Exception e) {
+        }
+
+        assertTrue(isValuePartOfPhotoList(returnUser.getPhotos(), uri));
         assertEquals(originalUser.getRoles().size() + 1, returnUser.getRoles().size());
         assertTrue(isValuePartOfRoleList(returnUser.getRoles(), "role03"));
         assertEquals(originalUser.getX509Certificates().size() + 1, returnUser.getX509Certificates().size());
@@ -363,10 +373,10 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         return false;
     }
 
-    private boolean isValuePartOfPhotoList(List<Photo> list, String value) {
+    private boolean isValuePartOfPhotoList(List<Photo> list, URI uri) {
         if (list != null) {
             for (Photo actPhoto : list) {
-                if (actPhoto.getValue().equals(value)) {
+                if (actPhoto.getValueAsURI().equals(uri)) {
                     return true;
                 }
             }
@@ -423,10 +433,19 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         List<Im> ims = new ArrayList<>();
         ims.add(ims01);
         ims.add(ims02);
+        
+        URI uri1 = null;
+        URI uri2 = null;
+        try {
+            uri1 = new URI("photo01.jpg");
+            uri2 = new URI("photo02.jpg");
+        } catch (Exception e) {
+        }
 
-        Photo photo01 = new Photo.Builder().setValue("photo01.jpg").setType(Photo.Type.THUMBNAIL)
+        Photo photo01 = new Photo.Builder().setValue(uri1).setType(Photo.Type.THUMBNAIL)
                 .build();
-        Photo photo02 = new Photo.Builder().setValue("photo02.jpg").build();
+        
+        Photo photo02 = new Photo.Builder().setValue(uri2).build();
         List<Photo> photos = new ArrayList<>();
         photos.add(photo01);
         photos.add(photo02);
@@ -447,8 +466,8 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
                 .setGivenName("givenName").build();
 
         userBuilder.setNickName("irgendwas")
-                .setEmails(emails)
-                .setPhoneNumbers(phoneNumbers)
+                .addEmails(emails)
+                .addPhoneNumbers(phoneNumbers)
                 .setActive(false)
                 .setDisplayName("irgendwas")
                 .setLocale("de")
@@ -458,13 +477,13 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
                 .setTimezone("irgendwas")
                 .setTitle("irgendwas")
                 .setUserType("irgendwas")
-                .setAddresses(addresses)
-                .setIms(ims)
-                .setPhotos(photos)
-                .setRoles(roles)
+                .addAddresses(addresses)
+                .addIms(ims)
+                .addPhotos(photos)
+                .addRoles(roles)
                 .setName(name)
-                .setX509Certificates(certificates)
-                .setEntitlements(entitlements)
+                .addX509Certificates(certificates)
+                .addEntitlements(entitlements)
                 .setExternalId("irgendwas");
         User newUser = userBuilder.build();
 
@@ -538,8 +557,14 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
         PhoneNumber phoneNumber = new PhoneNumber.Builder().setValue("0245817964").setType(PhoneNumber.Type.WORK)
                 .build();
+        
+        URI uri = null;
+        try {
+            uri = new URI("photo01.jpg");
+        } catch (Exception e) {
+        }
 
-        Photo photo = new Photo.Builder().setValue("photo01.jpg").setType(Photo.Type.THUMBNAIL)
+        Photo photo = new Photo.Builder().setValue(uri).setType(Photo.Type.THUMBNAIL)
                 .build();
 
         X509Certificate x509Certificate = new X509Certificate.Builder().setValue("certificate01").build();
@@ -547,7 +572,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         updateUser = new UpdateUser.Builder()
                 .deleteEmail(email)
                 .deleteEntitlement(entitlement)
-                .deleteIms(ims)
+                .deleteIm(ims)
                 .deletePhoneNumber(phoneNumber)
                 .deletePhoto(photo)
                 .deleteRole("role01")
@@ -568,7 +593,14 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
                 .setLocality("New City").setPostalCode("66666").build();
         Entitlement entitlement = new Entitlement.Builder().setValue("right3").build();
         Im ims = new Im.Builder().setValue("ims03").build();
-        Photo photo = new Photo.Builder().setValue("photo03.jpg").build();
+        
+        URI uri = null;
+        try {
+            uri = new URI("photo03.jpg");
+        } catch (Exception e) {
+        }
+
+        Photo photo = new Photo.Builder().setValue(uri).build();
         Role role = new Role.Builder().setValue("role03").build();
         X509Certificate certificate = new X509Certificate.Builder().setValue("certificate03").build();
 
@@ -577,10 +609,10 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
                 .addPhoneNumber(phonenumber)
                 .addAddress(newSimpleAddress)
                 .addEntitlement(entitlement)
-                .addIms(ims)
+                .addIm(ims)
                 .addPhoto(photo)
                 .addRole(role)
-                .addX509Certificate(certificate)// TODO at the second run it will fail
+                .addX509Certificate(certificate)
                 .build();
     }
 
@@ -636,36 +668,24 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         returnUser = oConnector.updateUser(idExistingUser, updateUser, accessToken);
         // also get user again from database to be able to compare with return object
         databaseUser = oConnector.getUser(returnUser.getId(), accessToken);
-        /*
-         * TODO: Uncomment once returnUser and databaseUser are consistent!
-         */
-        // assertTrue(returnUser.equals(databaseUser));
     }
 
     private void makeNewConnectionWithNewPassword() {
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
-                setClientId(CLIENT_ID).
-                setClientSecret(CLIENT_SECRET).
-                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
-                setUserName("UserName").
-                setPassword("Password").
-                setScope(Scope.ALL);
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder()
+                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setClientId(CLIENT_ID)
+                .setClientSecret(CLIENT_SECRET);
         oConnector = oConBuilder.build();
         oConnector.retrieveAccessToken();
     }
 
     private AccessToken retrieveNewAccessToken() {
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
-                setClientId(CLIENT_ID).
-                setClientSecret(CLIENT_SECRET).
-                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
-                setUserName("marissa").
-                setPassword("koala").
-                setScope(Scope.ALL);
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder()
+                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setClientId(CLIENT_ID)
+                .setClientSecret(CLIENT_SECRET);
         oConnector = oConBuilder.build();
         return oConnector.retrieveAccessToken();
     }

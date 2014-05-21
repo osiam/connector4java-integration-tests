@@ -23,7 +23,6 @@
 -->
 
 <dataset>
-    <database_scheme_version version="0.02"/>
     <osiam_client internal_id="100003" id="example-client" redirect_uri="http://localhost:5000/oauth2"
                   client_secret="secret"
                   accesstokenvalidityseconds="2342" refreshtokenvalidityseconds="2342" validityinseconds="1337"
@@ -37,7 +36,15 @@
     <osiam_client_scopes id="100003" scope="PUT"/>
     <osiam_client_scopes id="100003" scope="PATCH"/>
     <osiam_client_scopes id="100003" scope="DELETE"/>
-
+    
+    <osiam_client internal_id="100004" id="auth-server" redirect_uri="http://localhost:8180/osiam-auth-server"
+        client_secret="auth-secret" accesstokenvalidityseconds="10" refreshtokenvalidityseconds="10" validityinseconds="10"
+        implicit_approval="true" />
+    <osiam_client_grants id="100004" grants="client_credentials" />
+    <osiam_client_scopes id="100004" scope="GET" />
+    <osiam_client_scopes id="100004" scope="POST" />
+    <osiam_client_scopes id="100004" scope="PATCH" />
+    
     <scim_meta id="100004" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
     <scim_meta id="100091" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
     <scim_meta id="100092" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
@@ -126,7 +133,5 @@
                 user_internal_id="10009"/>
     <scim_email multi_value_id="1000102" value="oo@aa.de" is_primary="false" type="work"
                 user_internal_id="100010"/>
-
-    <scim_roles multi_value_id="100090" user_internal_id="100001" value="USER"/>
 
 </dataset>

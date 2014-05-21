@@ -29,7 +29,6 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osiam.client.connector.OsiamConnector;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
@@ -60,14 +59,10 @@ public class UserLoginWithEmailAddressAsUserNameIT extends AbstractIntegrationTe
 
     private AccessToken getAccessToken(String userName, String password) {
         return new OsiamConnector.Builder()
-                .setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS)
-                .setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
                 .setClientId("example-client")
                 .setClientSecret("secret")
-                .setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS)
-                .setUserName(userName)
-                .setPassword(password)
-                .setScope(Scope.ALL)
                 .build()
                 .retrieveAccessToken();
     }

@@ -23,7 +23,6 @@
 -->
 
 <dataset>
-    <database_scheme_version version="0.02"/>
     <osiam_client internal_id="100003" id="example-client" redirect_uri="http://localhost:5000/oauth2"
                   client_secret="secret"
                   accesstokenvalidityseconds="2342" refreshtokenvalidityseconds="2342" validityinseconds="1337"
@@ -51,12 +50,20 @@
     <osiam_client_scopes id="100080" scope="PUT"/>
     <osiam_client_scopes id="100080" scope="PATCH"/>
     <osiam_client_scopes id="100080" scope="DELETE"/>
-
+    
+    <osiam_client internal_id="100004" id="auth-server" redirect_uri="http://localhost:8180/osiam-auth-server"
+        client_secret="auth-secret" accesstokenvalidityseconds="10" refreshtokenvalidityseconds="10" validityinseconds="10"
+        implicit_approval="true" />
+    <osiam_client_grants id="100004" grants="client_credentials" />
+    <osiam_client_scopes id="100004" scope="GET" />
+    <osiam_client_scopes id="100004" scope="POST" />
+    <osiam_client_scopes id="100004" scope="PATCH" />
+    
     <scim_meta id="100004" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
     <scim_meta id="100047" created="2013-08-08 19:51:34.498" lastmodified="2013-08-08 19:51:34.498"
                resourcetype="User"/>
 
-    <scim_id internal_id="100046" externalid="bjensen" meta_id="100047" id="834b410a-943b-4c80-817a-4465aed037bc"/>
+    <scim_id internal_id="100046" external_id="bjensen" meta_id="100047" id="834b410a-943b-4c80-817a-4465aed037bc"/>
     <scim_id internal_id="100001" meta_id="100004" id="cef9452e-00a9-4cec-a086-d171374ffbef"/>
 
     <scim_name id="100048" familyname="Jensen" formatted="Ms. Barbara J Jensen III" givenname="Barbara"/>
@@ -89,5 +96,4 @@
     <scim_phonenumber multi_value_id="100104" value="555-555-8377" type="work" user_internal_id="100046"/>
     <scim_phonenumber multi_value_id="100111" value="655-222-8377" type="home" user_internal_id="100046"/>
 
-    <scim_roles multi_value_id="100090" user_internal_id="100001" value="USER"/>
 </dataset>

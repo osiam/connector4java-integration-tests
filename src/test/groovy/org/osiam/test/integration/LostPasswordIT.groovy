@@ -30,6 +30,7 @@ import groovyx.net.http.Method
 
 import javax.mail.Message
 
+import org.osiam.client.oauth.Scope
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.resources.scim.User
@@ -46,7 +47,7 @@ class LostPasswordIT extends AbstractIT {
     def mailServer
 
     def setup() {
-        setupDatabase("database_seed_lost_password.xml")
+        setupDatabase('database_seed_lost_password.xml')
         mailServer = new GreenMail(ServerSetupTest.ALL)
         mailServer.start()
     }
@@ -55,19 +56,20 @@ class LostPasswordIT extends AbstractIT {
         mailServer.stop()
     }
 
-    def "URI: /password/lost/{userId} with POST method for lost password flow activation"() {
+    def 'URI: /password/lost/{userId} with POST method for lost password flow activation'() {
         given:
-        def urn = "urn:scim:schemas:osiam:1.0:Registration"
-        def userId = "cef8452e-00a9-4cec-a086-d171374febef"
-        def accessToken = osiamConnector.retrieveAccessToken()
+        def urn = 'urn:scim:schemas:osiam:2.0:Registration'
+        def userId = 'cef8452e-00a9-4cec-a086-d171374febef'
+        def accessToken = osiamConnector.retrieveAccessToken("marissa", "koala", Scope.ALL)
         def statusCode
 
         when:
         def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
         httpClient.request(Method.POST) { req ->
-            uri.path = REGISTRATION_ENDPOINT + "/password/lost/" + userId
+            uri.path = REGISTRATION_ENDPOINT + '/password/lost/' + userId
             headers.'Authorization' = 'Bearer ' + accessToken.getToken()
+            headers.'Accept-Language' = 'en, en-US'
 
             response.success = { resp ->
                 statusCode = resp.statusLine.statusCode
@@ -82,25 +84,27 @@ class LostPasswordIT extends AbstractIT {
         statusCode == 200
         User user = osiamConnector.getUser(userId, accessToken)
         Extension extension = user.getExtension(urn)
-        extension.getField("oneTimePassword", ExtensionFieldType.STRING) != null
+        extension.getField('oneTimePassword', ExtensionFieldType.STRING) != null
 
         //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
         mailServer.waitForIncomingEmail(5000, 1)
         Message[] messages = mailServer.getReceivedMessages()
         messages.length == 1
-        messages[0].getSubject() == "passwordLost"
-        GreenMailUtil.getBody(messages[0]).contains("To reset your password, please click the link below:")
-        messages[0].getFrom()[0].toString() == "noreply@osiam.org"
-        messages[0].getAllRecipients()[0].toString().equals("george.alexander@osiam.org")
+        messages[0].getSubject().contains('Change of your password')
+        def msg = GreenMailUtil.getBody(messages[0])
+        msg.contains('to reset your password, please click the link below:')
+        msg.contains(userId)
+        messages[0].getFrom()[0].toString() == 'noreply@osiam.org'
+        messages[0].getAllRecipients()[0].toString().equals('george.alexander@osiam.org')
     }
 
-    def "URI: /password/change with POST method to change the old with the new password and validating the user"() {
+    def 'URI: /password/change with POST method to change the old with the new password and validating the user'() {
         given:
-        def urn = "urn:scim:schemas:osiam:1.0:Registration"
-        def accessToken = osiamConnector.retrieveAccessToken()
-        def otp = "cef9452e-00a9-4cec-a086-a171374febef"
-        def userId = "cef9452e-00a9-4cec-a086-d171374febef"
-        def newPassword = "pulverToastMann"
+        def urn = 'urn:scim:schemas:osiam:2.0:Registration'
+        def accessToken = createAccessToken('George', '1234')
+        def otp = 'cef9452e-00a9-4cec-a086-a171374febef'
+        def userId = 'cef9452e-00a9-4cec-a086-d171374febef'
+        def newPassword = 'pulverToastMann'
         def statusCode
         def savedUserId
 
@@ -108,8 +112,8 @@ class LostPasswordIT extends AbstractIT {
         def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
         httpClient.request(Method.POST) {
-            uri.path = REGISTRATION_ENDPOINT + "/password/change"
-            send URLENC, [oneTimePassword : otp, userId : userId, newPassword : newPassword]
+            uri.path = REGISTRATION_ENDPOINT + '/password/change'
+            send URLENC, [oneTimePassword : otp, newPassword : newPassword]
             headers.'Authorization' = 'Bearer ' + accessToken.getToken()
 
             response.success = { resp, json ->
@@ -127,13 +131,13 @@ class LostPasswordIT extends AbstractIT {
         savedUserId == userId
         User user = osiamConnector.getUser(userId, accessToken)
         Extension extension = user.getExtension(urn)
-        extension.isFieldPresent("oneTimePassword") == false
+        extension.isFieldPresent('oneTimePassword') == false
     }
 
-    def "URI: /password/lostForm with GET method to get an html form with input field for the new password including known values as otp and userId"() {
+    def 'URI: /password/lostForm with GET method to get an html form with input field for the new password including known values as otp and userId'() {
         given:
-        def otp = "otpVal"
-        def userId = "userIdVal"
+        def otp = 'otpVal'
+        def userId = 'userIdVal'
 
         def statusCode
         def responseContentType
@@ -143,9 +147,9 @@ class LostPasswordIT extends AbstractIT {
         def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
         httpClient.request(Method.GET, ContentType.TEXT) {
-            uri.path = REGISTRATION_ENDPOINT + "/password/lostForm"
+            uri.path = REGISTRATION_ENDPOINT + '/password/lostForm'
             uri.query = [oneTimePassword : otp, userId : userId]
-            headers.Accept = "text/html"
+            headers.Accept = 'text/html'
 
             response.success = {resp, html ->
                 statusCode = resp.statusLine.statusCode
@@ -163,7 +167,7 @@ class LostPasswordIT extends AbstractIT {
         responseContentType == ContentType.HTML.toString()
         responseContent.contains('\$scope.otp = \'otpVal\'')
         responseContent.contains('\$scope.id = \'userIdVal\'')
-        responseContent.count("ng-model") == 2
-        responseContent.contains('url: \'http://test\'')
+        responseContent.count('ng-model') == 2
+        responseContent.contains('url: \'http://localhost:8180\'')
     }
 }

@@ -23,7 +23,6 @@
 -->
 
 <dataset>
-    <database_scheme_version version="0.02"/>
     <osiam_client internal_id="100003" accesstokenvalidityseconds="2342" client_secret="secret"
                   expiry="1970-01-01 00:00:01.0"
                   id="example-client" implicit_approval="false" redirect_uri="http://localhost:5000/oauth2"
@@ -37,7 +36,15 @@
     <osiam_client_scopes id="100003" scope="PUT"/>
     <osiam_client_scopes id="100003" scope="PATCH"/>
     <osiam_client_scopes id="100003" scope="DELETE"/>
-
+    
+    <osiam_client internal_id="100004" id="auth-server" redirect_uri="http://localhost:8180/osiam-auth-server"
+        client_secret="auth-secret" accesstokenvalidityseconds="10" refreshtokenvalidityseconds="10" validityinseconds="10"
+        implicit_approval="true" />
+    <osiam_client_grants id="100004" grants="client_credentials" />
+    <osiam_client_scopes id="100004" scope="GET" />
+    <osiam_client_scopes id="100004" scope="POST" />
+    <osiam_client_scopes id="100004" scope="PATCH" />
+    
     <scim_meta id="100004" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
     <scim_meta id="100005" created="2013-10-30 23:18:06.408" lastmodified="2013-10-30 23:18:06.408"
                resourcetype="User"/>

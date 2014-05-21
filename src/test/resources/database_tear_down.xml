@@ -23,7 +23,6 @@
 -->
 
 <dataset>
-    <database_scheme_version/>
     <osiam_client />
     <osiam_client_grants />
     <osiam_client_scopes />
@@ -39,8 +38,6 @@
     <scim_im />
     <scim_phonenumber />
     <scim_certificate />
-    <scim_manager />
-    <scim_enterprise />
     <scim_roles />
     <scim_entitlements />
     <scim_extension />

@@ -30,11 +30,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigInteger;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.osiam.client.query.Query;
+import org.osiam.client.query.QueryBuilder;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.Entitlement;
@@ -101,13 +104,13 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
 
     @Test
     public void search_for_user_by_complex_query() {
-        String query = getCompletUserQueryString();
-        SCIMSearchResult<User> queryResult = oConnector.searchUsers("filter=" + query, accessToken);
+        Query query = getCompletUserQuery();
+        SCIMSearchResult<User> queryResult = oConnector.searchUsers(query, accessToken);
         assertThat(queryResult.getTotalResults(), is(equalTo(1L)));
     }
 
-    private String getCompletUserQueryString() {
-        return encodeExpected("active eq \"true\""
+    private Query getCompletUserQuery() {
+        return new QueryBuilder().filter("active eq \"true\""
                 + " and addresses.country eq \"Germany\""
                 + " and addresses.formatted eq \"formatted\""
                 + " and addresses.locality eq \"Berlin\""
@@ -149,12 +152,12 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
                 + " and not (photos.type eq \"" + Photo.Type.THUMBNAIL + "\")"
                 + " and preferredLanguage eq \"german\""
                 + " and profileurl eq \"/user/username\""
-                + " and roles eq \"user_role\""
+                + " and roles eq \"superadmin\""
                 + " and roles.primary eq \"true\""
                 + " and timezone eq \"DE\""
                 + " and title eq \"title\""
                 + " and userName sw \"user\""
-                + " and x509Certificates eq \"x509Certificate\"");
+                + " and x509Certificates eq \"x509Certificate\"").build();
     }
 
     private User createUserWithUpdatedField() {
@@ -187,8 +190,14 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
                 .setType(PhoneNumber.Type.WORK).setValue("03012345678").build();
         phoneNumbers.add(phoneNumber);
         List<Photo> photos = new ArrayList<Photo>();
+        URI uri = null;
+        try {
+            uri = new URI("username.jpg");
+        } catch (Exception e) {
+        }
+
         Photo photo = new Photo.Builder().setPrimary(true)
-                .setType(Photo.Type.PHOTO).setValue("username.jpg").build();
+                .setType(Photo.Type.PHOTO).setValue(uri).build();
         photos.add(photo);
         List<Role> roles = new ArrayList<Role>();
         Role role = new Role.Builder().setPrimary(true).setValue("user_role")
@@ -198,18 +207,18 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         X509Certificate x509Certificat = new X509Certificate.Builder()
                 .setPrimary(true).setValue("x509Certificat").build();
         x509Certificates.add(x509Certificat);
-        Extension extension = new Extension(EXTENSION_URN);
-        extension.addOrUpdateField("gender", "female");
-        extension.addOrUpdateField("age", new BigInteger("22"));
+        Extension extension = new Extension.Builder(EXTENSION_URN)
+                .setField("gender", "female")
+                .setField("age", new BigInteger("22")).build();
         return new User.Builder("complete_add_user").setActive(true)
-                .setAddresses(addresses).setDisplayName("displayName")
-                .setEmails(emails).setEntitlements(entitlements)
-                .setExternalId("externalId").setIms(ims).setLocale("de_DE")
+                .addAddresses(addresses).setDisplayName("displayName")
+                .addEmails(emails).addEntitlements(entitlements)
+                .setExternalId("externalId").addIms(ims).setLocale("de_DE")
                 .setName(name).setNickName("nickname").setPassword("password")
-                .setPhoneNumbers(phoneNumbers).setPhotos(photos)
+                .addPhoneNumbers(phoneNumbers).addPhotos(photos)
                 .setPreferredLanguage("german").setProfileUrl("/user/username")
-                .setRoles(roles).setTimezone("DE").setTitle("title")
-                .setX509Certificates(x509Certificates)
+                .addRoles(roles).setTimezone("DE").setTitle("title")
+                .addX509Certificates(x509Certificates)
                 .addExtension(extension)
                 .build();
     }
@@ -244,8 +253,14 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
                 .setType(PhoneNumber.Type.WORK).setValue("03012345678").build();
         phoneNumbers.add(phoneNumber);
         List<Photo> photos = new ArrayList<Photo>();
+        URI uri = null;
+        try {
+            uri = new URI("username.jpg");
+        } catch (Exception e) {
+        }
+
         Photo photo = new Photo.Builder().setPrimary(true)
-                .setType(Photo.Type.PHOTO).setValue("username.jpg").build();
+                .setType(Photo.Type.PHOTO).setValue(uri).build();
         photos.add(photo);
         List<Role> roles = new ArrayList<Role>();
         Role role = new Role.Builder().setPrimary(true).setValue("user_role")
@@ -255,29 +270,29 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         X509Certificate x509Certificate = new X509Certificate.Builder()
                 .setPrimary(true).setValue("x509Certificat").build();
         x509Certificates.add(x509Certificate);
-        Extension extension = new Extension(EXTENSION_URN);
-        extension.addOrUpdateField("gender", "female");
-        extension.addOrUpdateField("age", new BigInteger("18"));
+        Extension extension = new Extension.Builder(EXTENSION_URN)
+                .setField("gender", "female")
+                .setField("age", new BigInteger("18")).build();
         return new User.Builder("complete_add_user")
                 .setActive(true)
-                .setAddresses(addresses)
+                .addAddresses(addresses)
                 .setDisplayName("displayName")
-                .setEmails(emails)
-                .setEntitlements(entitlements)
+                .addEmails(emails)
+                .addEntitlements(entitlements)
                 .setExternalId("externalId2")
-                .setIms(ims)
+                .addIms(ims)
                 .setLocale("de_DE")
                 .setName(name)
                 .setNickName("nickname")
                 .setPassword("password")
-                .setPhoneNumbers(phoneNumbers)
-                .setPhotos(photos)
+                .addPhoneNumbers(phoneNumbers)
+                .addPhotos(photos)
                 .setPreferredLanguage("german")
                 .setProfileUrl("/user/username")
-                .setRoles(roles)
+                .addRoles(roles)
                 .setTimezone("DE")
                 .setTitle("title")
-                .setX509Certificates(x509Certificates)
+                .addX509Certificates(x509Certificates)
                 .addExtension(extension)
                 .build();
     }
@@ -296,8 +311,8 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         updateUserBuilder.updateX509Certificate(oldUser.getX509Certificates().get(0), expectedUser
                 .getX509Certificates().get(0));
         updateUserBuilder.updateEntitlement(oldUser.getEntitlements().get(0), expectedUser.getEntitlements().get(0));
-        updateUserBuilder.updateIms(oldUser.getIms().get(0), expectedUser.getIms().get(0));
-        updateUserBuilder.updatePhotos(oldUser.getPhotos().get(0), expectedUser.getPhotos().get(0));
+        updateUserBuilder.updateIm(oldUser.getIms().get(0), expectedUser.getIms().get(0));
+        updateUserBuilder.updatePhoto(oldUser.getPhotos().get(0), expectedUser.getPhotos().get(0));
         updateUserBuilder.updateUserName(expectedUser.getUserName());
         updateUserBuilder.updateExtension(expectedUser.getExtension(EXTENSION_URN));
 
@@ -306,7 +321,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
 
     private void assertThatNewUserAndReturnUserAreEqual(User expectedUser, User actualUser) {
         assertThatAddressesAreEqual(expectedUser.getAddresses(), actualUser.getAddresses());
-        assertEquals(expectedUser.getAllExtensions(), actualUser.getAllExtensions());
+        assertEquals(expectedUser.getExtensions(), actualUser.getExtensions());
         assertEquals(expectedUser.getDisplayName(), actualUser.getDisplayName());
         assertThatEmailsAreEqual(expectedUser.getEmails(), actualUser.getEmails());
         assertThatEntitlementsAreEqual(expectedUser.getEntitlements(), actualUser.getEntitlements());
@@ -364,7 +379,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         Photo actualValue = actual.get(0);
 
         assertEquals(expectedValue.getType(), actualValue.getType());
-        assertEquals(expectedValue.getValue(), actualValue.getValue());
+        assertEquals(expectedValue.getValueAsURI().toString(), actualValue.getValueAsURI().toString());
         assertEquals(expectedValue.isPrimary(), actualValue.isPrimary());
     }
 

@@ -23,6 +23,12 @@
 
 package org.osiam.client;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
 import java.util.UUID;
 
 import org.junit.Before;
@@ -31,7 +37,7 @@ import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.query.Query;
-import org.osiam.client.query.metamodel.Group_;
+import org.osiam.client.query.QueryBuilder;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.SCIMSearchResult;
 import org.springframework.test.context.ContextConfiguration;
@@ -46,17 +52,10 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class })
 @DatabaseSetup(value = "/database_seeds/EditGroupServiceIT/groups.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class EditGroupServiceIT extends AbstractIntegrationTestBase {
@@ -158,7 +157,6 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
     }
 
     private Query queryToSearchForGroupWithName(String name) {
-        return new Query.Builder(Group.class)
-                .setFilter(new Query.Filter(Group.class, Group_.displayName.equalTo(name))).build();
+        return new QueryBuilder().filter("displayName eq \"" + name + "\"").build();
     }
 }

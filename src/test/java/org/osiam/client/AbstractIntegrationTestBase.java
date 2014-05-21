@@ -23,23 +23,17 @@
 
 package org.osiam.client;
 
-import org.joda.time.format.ISODateTimeFormat;
-import org.junit.Before;
-import org.osiam.client.connector.OsiamConnector;
-import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.oauth.GrantType;
-import org.osiam.client.oauth.Scope;
-
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import static org.springframework.test.util.AssertionErrors.fail;
+import org.joda.time.format.ISODateTimeFormat;
+import org.junit.Before;
+import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.oauth.Scope;
 
 public abstract class AbstractIntegrationTestBase {
+
     protected static final String VALID_USER_ID = "834b410a-943b-4c80-817a-4465aed037bc";
     protected static final String INVALID_ID = "ffffffff-ffff-ffff-ffff-fffffffffff";
     protected static final String INVALID_STRING = "invalid";
@@ -54,51 +48,29 @@ public abstract class AbstractIntegrationTestBase {
 
     @Before
     public void abstractSetUp() throws Exception {
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
-                setClientId(CLIENT_ID).
-                setClientSecret(CLIENT_SECRET).
-                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
-                setUserName("marissa").
-                setPassword("koala").
-                setScope(Scope.ALL);
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder()
+                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setClientId(CLIENT_ID)
+                .setClientSecret(CLIENT_SECRET);
         oConnector = oConBuilder.build();
-        accessToken = oConnector.retrieveAccessToken();
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ALL);
     }
 
-    protected void givenAnAccessTokenForOneSecond() throws Exception {
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
-                setClientId("short-living-client").
-                setClientSecret("other-secret").
-                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
-                setUserName("marissa").
-                setPassword("koala").
-                setScope(Scope.ALL);
+    protected void givenAnAccessTokenForOneSecond() {
+        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder()
+                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setClientId("short-living-client")
+                .setClientSecret("other-secret");
         oConnector = oConBuilder.build();
-        accessToken = oConnector.retrieveAccessToken();
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ALL);
     }
 
     protected void givenAnInvalidAccessToken() throws Exception {
-        accessToken = new AccessToken();
-        Field tokenField = accessToken.getClass().getDeclaredField("token");
-        tokenField.setAccessible(true);
-        tokenField.set(accessToken, AbstractIntegrationTestBase.INVALID_ID);
-        tokenField.setAccessible(false);
+        accessToken = new AccessToken.Builder(AbstractIntegrationTestBase.INVALID_ID).build();
     }
 
-    protected String encodeExpected(String string) {
-        String encoded = null;
-        try {
-            encoded = URLEncoder.encode(string, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            fail("Unable to encode queryString");
-        }
-        return encoded;
-    }
-    
     protected String dateAsString(int year, int month, int date, int hourOfDay, int minute, int second, int millisecond) {
         Date completeDate = createDate(year, month, date, hourOfDay, minute, second, millisecond);
         return ISODateTimeFormat.dateTime().withZoneUTC().print(completeDate.getTime());

@@ -31,7 +31,7 @@ import java.io.UnsupportedEncodingException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.query.Query;
-import org.osiam.client.query.metamodel.Group_;
+import org.osiam.client.query.QueryBuilder;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.SCIMSearchResult;
 import org.springframework.test.context.ContextConfiguration;
@@ -58,27 +58,25 @@ public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void search_for_group_by_string() {
-        String searchString = encodeExpected("displayName eq \""+ EXPECTED_GROUP_NAME + "\""
+        Query search = new QueryBuilder().filter("displayName eq \""+ EXPECTED_GROUP_NAME + "\""
                 + " and externalid eq \"ext_id_test_group01\""
                 + " and meta.created eq \"" + dateAsString(2013, 6, 31, 21, 43, 18, 0) + "\""
                 + " and meta.lastmodified eq \"" + dateAsString(2013, 6, 31, 21, 43, 18, 0) + "\""
-                + " and members eq \"834b410a-943b-4c80-817a-4465aed037bc\"");
-        whenSingleGroupIsSearchedByQueryString(searchString);
+                + " and members eq \"834b410a-943b-4c80-817a-4465aed037bc\"").build();
+        whenSingleGroupIsSearchedByQueryString(search);
         assertThatQueryResultContainsOnlyValidGroup();
     }
 
     @Test
     public void search_for_group_by_non_used_displayName() {
-        String searchString = encodeExpected("displayName eq \"" + INVALID_STRING + "\"");
-        whenSingleGroupIsSearchedByQueryString(searchString);
+        Query search = new QueryBuilder().filter("displayName eq \"" + INVALID_STRING + "\"").build();
+        whenSingleGroupIsSearchedByQueryString(search);
         assertThatQueryResultContainsNoValidUser();
     }
 
     @Test
     public void search_for_group_with_querybuilder() throws UnsupportedEncodingException {
-        Query.Filter filter = new Query.Filter(Group.class, Group_.displayName.equalTo(EXPECTED_GROUP_NAME));
-        Query query = new Query.Builder(Group.class)
-                .setFilter(filter).build();
+        Query query = new QueryBuilder().filter("displayName eq \"" + EXPECTED_GROUP_NAME + "\"").build();
 
         whenSingleGroupIsSearchedByQueryBuilder(query);
         assertThatQueryResultContainsOnlyValidGroup();
@@ -102,8 +100,8 @@ public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
         assertEquals(queryResult.getTotalResults(), 0);
     }
 
-    private void whenSingleGroupIsSearchedByQueryString(String queryString) {
-        queryResult = oConnector.searchGroups("filter=" + queryString, accessToken);
+    private void whenSingleGroupIsSearchedByQueryString(Query query) {
+        queryResult = oConnector.searchGroups(query, accessToken);
     }
 
     private void whenSingleGroupIsSearchedByQueryBuilder(Query query) {

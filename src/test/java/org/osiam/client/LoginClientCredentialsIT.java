@@ -23,14 +23,13 @@
 
 package org.osiam.client;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osiam.client.connector.OsiamConnector;
-import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.GrantType;
@@ -40,10 +39,10 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -62,12 +61,10 @@ public class LoginClientCredentialsIT {
 	@Test
 	public void login_with_client_credentials(){
         OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
+                setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
+                setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId(clientId).
-                setClientSecret(clientSecret).
-                setGrantType(GrantType.CLIENT_CREDENTIALS).
-                setScope(Scope.ALL);
+                setClientSecret(clientSecret);
         oConnector = oConBuilder.build();
         AccessToken at = oConnector.retrieveAccessToken();
 
@@ -77,31 +74,14 @@ public class LoginClientCredentialsIT {
 	@Test (expected = UnauthorizedException.class)
 	public void login_with_wrong_client_credentials(){
         OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
+                setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
+                setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId(clientId).
-                setClientSecret("wrong" + clientSecret).
-                setGrantType(GrantType.CLIENT_CREDENTIALS).
-                setScope(Scope.ALL);
+                setClientSecret("wrong" + clientSecret);
         oConnector = oConBuilder.build();
-        AccessToken at = oConnector.retrieveAccessToken();
+        oConnector.retrieveAccessToken();
 
-        assertThat(at, is(notNullValue()));
-	}
-
-    @Test (expected = ConflictException.class)
-    public void get_actual_user_rasies_exception(){
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceEndpoint(RESOURCE_ENDPOINT_ADDRESS).
-                setClientId(clientId).
-                setClientSecret(clientSecret).
-                setGrantType(GrantType.CLIENT_CREDENTIALS).
-                setScope(Scope.ALL);
-        oConnector = oConBuilder.build();
-        AccessToken accessToken = oConnector.retrieveAccessToken();
-        oConnector.getCurrentUser(accessToken);
         fail("Exception expected");
-    }
+	}
 
 }

@@ -23,7 +23,10 @@
 
 package org.osiam.test.integration
 
+import org.junit.Before
 import org.osiam.client.exception.ConflictException
+import org.osiam.client.query.Query
+import org.osiam.client.query.QueryBuilder
 import org.osiam.resources.scim.SCIMSearchResult
 
 import spock.lang.Unroll
@@ -38,10 +41,10 @@ public class ScimExtensionSearchIT extends AbstractExtensionBaseIT {
     def 'search for user by #fieldType extension field and constraint #constraint with query string works'() {
 
         given:
-        def query = URLEncoder.encode("extension.$fieldName $constraint \"$queryValue\"", 'UTF-8')
+        Query query = new QueryBuilder().filter("extension.$fieldName $constraint \"$queryValue\"").build()
 
         when:
-        SCIMSearchResult result = osiamConnector.searchUsers("filter=$query", accessToken)
+        SCIMSearchResult result = osiamConnector.searchUsers(query, accessToken)
 
         then:
         result.getTotalResults() == expectedResult
@@ -79,10 +82,10 @@ public class ScimExtensionSearchIT extends AbstractExtensionBaseIT {
     @Unroll
     def 'search for user by #fieldType extension field and constraint #constraint with query string raises exception'() {
         given:
-        def query = URLEncoder.encode("extension.$fieldName $constraint \"irrelevant\"", 'UTF-8')
+        Query query = new QueryBuilder().filter("extension.$fieldName $constraint \"irrelevant\"").build()
 
         when:
-        osiamConnector.searchUsers("filter=$query", accessToken)
+        osiamConnector.searchUsers(query, accessToken)
 
         then:
         thrown(ConflictException)

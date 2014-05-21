@@ -23,20 +23,21 @@
 
 package org.osiam.test.integration
 
+import javax.sql.DataSource
+
 import org.dbunit.database.DatabaseDataSourceConnection
 import org.dbunit.database.IDatabaseConnection
 import org.dbunit.dataset.IDataSet
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder
 import org.dbunit.operation.DatabaseOperation
-import org.osiam.client.connector.OsiamConnector
+import org.osiam.client.OsiamConnector
 import org.osiam.client.oauth.AccessToken
 import org.osiam.client.oauth.GrantType
 import org.osiam.client.oauth.Scope
 import org.springframework.context.ApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext
-import spock.lang.Specification
 
-import javax.sql.DataSource
+import spock.lang.Specification
 
 /**
  * Base class for integration tests.
@@ -54,7 +55,7 @@ abstract class AbstractIT extends Specification {
 
     protected static final String AUTH_ENDPOINT = "http://localhost:8180/osiam-auth-server"
     protected static final String RESOURCE_ENDPOINT = "http://localhost:8180/osiam-resource-server"
-    protected static final String REGISTRATION_ENDPOINT = "http://localhost:8180/osiam-registration-module"
+    protected static final String REGISTRATION_ENDPOINT = "http://localhost:8180/addon-self-administration"
 
     protected OsiamConnector osiamConnector
     protected OsiamConnector osiamConnectorForClientCredentialsGrant
@@ -81,35 +82,38 @@ abstract class AbstractIT extends Specification {
             connection.close()
         }
 
-        osiamConnector = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT).
-                setResourceEndpoint(RESOURCE_ENDPOINT).
-                setClientId(CLIENT_ID).
-                setClientSecret(CLIENT_SECRET).
-                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
-                setUserName(USER_NAME).
-                setPassword(USER_PASSWORD).
-                setScope(Scope.ALL).build()
+        osiamConnector = new OsiamConnector.Builder()
+                .setAuthServerEndpoint(AUTH_ENDPOINT)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT)
+                .setClientId(CLIENT_ID)
+                .setClientSecret(CLIENT_SECRET)
+                .build()
 
-        osiamConnectorForClientCredentialsGrant = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT).
-                setResourceEndpoint(RESOURCE_ENDPOINT).
-                setClientId(CLIENT_ID).
-                setClientSecret(CLIENT_SECRET).
-                setGrantType(GrantType.CLIENT_CREDENTIALS).
-                setScope(Scope.ALL).build()
+        osiamConnectorForClientCredentialsGrant = new OsiamConnector.Builder()
+                .setAuthServerEndpoint(AUTH_ENDPOINT)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT)
+                .setClientId(CLIENT_ID)
+                .setClientSecret(CLIENT_SECRET)
+                .build()
 
-        osiamConnectorForEmailChange = new OsiamConnector.Builder().
-                setAuthServiceEndpoint(AUTH_ENDPOINT).
-                setResourceEndpoint(RESOURCE_ENDPOINT).
-                setClientId(CLIENT_ID).
-                setClientSecret(CLIENT_SECRET).
-                setGrantType(GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS).
-                setUserName(USER_NAME_EMAIL_CHANGE).
-                setPassword(USER_PASSWORD_EMAIL_CHANGE).
-                setScope(Scope.ALL).build()
+        osiamConnectorForEmailChange = new OsiamConnector.Builder()
+                .setAuthServerEndpoint(AUTH_ENDPOINT)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT)
+                .setClientId(CLIENT_ID)
+                .setClientSecret(CLIENT_SECRET)
+                .build()
 
-        accessToken = osiamConnector.retrieveAccessToken()
+        accessToken = osiamConnector.retrieveAccessToken("marissa", "koala", Scope.ALL)
+    }
+
+    def createAccessToken(def userName, def password) {
+        OsiamConnector osiamConnector = new OsiamConnector.Builder()
+                .setAuthServerEndpoint(AUTH_ENDPOINT)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT)
+                .setClientId(CLIENT_ID)
+                .setClientSecret(CLIENT_SECRET)
+                .build()
+        osiamConnector.retrieveAccessToken(userName, password, Scope.ALL)
     }
 
     def cleanup() {
