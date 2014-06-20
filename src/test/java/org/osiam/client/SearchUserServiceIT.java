@@ -132,6 +132,20 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         User transmittedUser = result.getResources().get(0);
         assertThat(transmittedUser.getEmails().get(0).getValue(), is(equalTo(email)));
     }
+    
+    @Test
+    @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_email.xml")
+    public void search_with_double_quotes_less_value_returns_correct_exception_message() {
+        String email = "bjensen@example.com";
+        Query query = new QueryBuilder().filter("emails.value eq " + email + "").build();
+
+        try{
+            oConnector.searchUsers(query, accessToken);
+            fail("expected exception");
+        }catch(ConflictException e){
+            assertTrue(e.getMessage().contains("Please make sure that all values are surrounded by double quotes"));
+        }
+    }
 
     @Test
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_last_modified.xml")
