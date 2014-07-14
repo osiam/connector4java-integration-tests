@@ -261,7 +261,7 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.16</version>
                 <configuration>
-                   <trimStackTrace>false</trimStackTrace>
+                    <trimStackTrace>false</trimStackTrace>
                 </configuration>
                 <executions>
                     <execution>
@@ -416,6 +416,26 @@
                             <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>download-addon-self-administration-plugin</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.osiam.plugins</groupId>
+                                    <artifactId>addon-self-administration-plugin-api</artifactId>
+                                    <version>${osiam.addon-self-administration.version}</version>
+                                    <type>jar</type>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <destFileName>${project.build.directory}/addon-self-administration-plugin.jar</destFileName>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -520,6 +540,7 @@
                                 <resource>
                                     <directory>src/test/resources/addon-self-administration-configuration</directory>
                                     <include>**/**</include>
+                                    <filtering>true</filtering>
                                 </resource>
                             </resources>
                         </configuration>
