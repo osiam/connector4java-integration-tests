@@ -426,12 +426,11 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.osiam.plugins</groupId>
-                                    <artifactId>addon-self-administration-plugin-api</artifactId>
+                                    <artifactId>addon-self-administration-plugin-example-impl</artifactId>
                                     <version>${osiam.addon-self-administration.version}</version>
                                     <type>jar</type>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
                             <destFileName>${project.build.directory}/addon-self-administration-plugin.jar</destFileName>
                             <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
