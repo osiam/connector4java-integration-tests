@@ -539,6 +539,10 @@
                                 <resource>
                                     <directory>src/test/resources/addon-self-administration-configuration</directory>
                                     <include>**/**</include>
+                                </resource>
+                                <resource>
+                                    <directory>src/test/resources/addon-self-administration-configuration</directory>
+                                    <include>addon-self-administration.properties</include>
                                     <filtering>true</filtering>
                                 </resource>
                             </resources>
