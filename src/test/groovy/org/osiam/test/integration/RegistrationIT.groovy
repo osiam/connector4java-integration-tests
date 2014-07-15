@@ -369,4 +369,37 @@ class RegistrationIT extends AbstractIT {
         then:
         responseStatus == 400
     }
+    
+    def 'The plugin caused an validation error for registration of an user'() {
+        given:
+        def accessToken = osiamConnector.retrieveAccessToken()
+
+        def userToRegister = [email: 'email@osiam.com', password: '0123456789']
+
+        def responseStatus
+        def responseContent
+
+        when:
+        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.POST, ContentType.TEXT) { req ->
+            uri.path = REGISTRATION_ENDPOINT + '/registration'
+            send ContentType.URLENC, userToRegister
+
+            response.success = { resp, html ->
+                responseStatus = resp.statusLine.statusCode
+                responseContent = html.text
+            }
+
+            response.failure = { resp, html ->
+                responseStatus = resp.statusLine.statusCode
+                responseContent = html.text
+            }
+        }
+
+        then:
+        responseStatus == 400
+        responseContent.contains('<div class="alert alert-danger">')
+        responseContent.contains('must end with .org!')
+    }
 }
