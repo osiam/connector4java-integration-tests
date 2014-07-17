@@ -141,11 +141,13 @@ class RegistrationIT extends AbstractIT {
         responseStatus == 201
 
         Query query = new QueryBuilder().filter("userName eq \"email@example.org\"").build()
+        Query abc = new QueryBuilder().filter
         SCIMSearchResult<User> users = osiamConnector.searchUsers(query, accessToken)
         User user = users.getResources()[0]
         !user.isActive()
         Extension extension = user.getExtension('urn:scim:schemas:osiam:2.0:Registration')
         extension.getField('activationToken', ExtensionFieldType.STRING) != null
+        user.getGroups().get(0).getDisplay().equalsIgnoreCase("Test")
 
         //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
         mailServer.waitForIncomingEmail(5000, 1)
@@ -282,6 +284,7 @@ class RegistrationIT extends AbstractIT {
         Extension registeredExtension2 = registeredUser.getExtension('urn:client:extension')
         registeredExtension2.getField('age', ExtensionFieldType.STRING) != null
         registeredExtension2.getField('age', ExtensionFieldType.STRING) == '12'
+        registeredUser.getGroups().get(0).getDisplay().equalsIgnoreCase("Test")
 
         //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
         mailServer.waitForIncomingEmail(5000, 1)
@@ -327,6 +330,7 @@ class RegistrationIT extends AbstractIT {
         Extension registeredExtension1 = registeredUser.getExtension('urn:scim:schemas:osiam:2.0:Registration')
         registeredExtension1.getField('activationToken', ExtensionFieldType.STRING) != null
         registeredUser.getExtension('urn:client:extension')
+        registeredUser.getGroups().get(0).getDisplay().equalsIgnoreCase("Test")
 
         then:
         thrown(NoSuchElementException)

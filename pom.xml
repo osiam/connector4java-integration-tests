@@ -331,6 +331,28 @@
                         </contextHandler>
                     </contextHandlers>
                     <jettyXml>src/test/resources/jetty.xml</jettyXml>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>osiam.addon-selfadministration.plugin.user.name</name>
+                            <value>marissa</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <name>osiam.addon-selfadministration.plugin.user.password</name>
+                            <value>koala</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <name>osiam.addon-selfadministration.plugin.osiam.endpoint</name>
+                            <value>http://localhost:8180/</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <name>osiam.addon-selfadministration.plugin.osiam.client.id</name>
+                            <value>example-client</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <name>osiam.addon-selfadministration.plugin.osiam.client.secret</name>
+                            <value>secret</value>
+                        </systemProperty>
+                    </systemProperties>
                 </configuration>
                 <executions>
                     <execution>
