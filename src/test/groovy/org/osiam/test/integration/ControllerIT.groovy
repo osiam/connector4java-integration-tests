@@ -27,6 +27,7 @@ import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
 
+import org.osiam.client.exception.UnauthorizedException
 import org.osiam.client.oauth.AccessToken
 import org.osiam.resources.scim.Email
 import org.osiam.resources.scim.User
@@ -91,8 +92,8 @@ class ControllerIT extends AbstractIT {
         "j"      | "/Users"    | ContentType.XML    | 406                  | null
         "k"      | "/Users"    | "invalid"          | 406                  | null
         "l"      | "/Users"    | "/"                | 406                  | null
-        "m"      | "/Metrics"  |  ContentType.JSON  | 200                  | "application/json"
-        "n"      | "/Metrics/" |  ContentType.JSON  | 200                  | "application/json"
+        "m"      | "/Metrics"  |  ContentType.JSON  | 200                  | "application/json; charset=UTF-8"
+        "n"      | "/Metrics/" |  ContentType.JSON  | 200                  | "application/json; charset=UTF-8"
     }
 
     @Unroll
@@ -244,5 +245,20 @@ class ControllerIT extends AbstractIT {
         then: "the user should be retrieved without triggering an exception"
         responseStatusCode == 200
         responseContent.Resources[0].userName == 'marissa'
+    }
+    
+    def 'OSNG-444: A request to revoke a valid token should invalidate the token'() {
+    
+    	given: 'a valid access token'
+    	AccessToken accessToken = osiamConnectorForClientCredentialsGrant.retrieveAccessToken()
+    	
+    	when: 'a token revokation is performed'
+    	AccessToken validationResult = osiamConnector.validateAccessToken(accessToken)
+    	osiamConnector.revokeAccessToken(accessToken)
+    	osiamConnector.validateAccessToken(accessToken) // authorization should now be invalid
+    	
+    	then: 'the token should be revoked'
+    	validationResult.expired==false
+    	thrown(UnauthorizedException)
     }
 }
