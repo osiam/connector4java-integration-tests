@@ -92,8 +92,8 @@ class ControllerIT extends AbstractIT {
         "j"      | "/Users"    | ContentType.XML    | 406                  | null
         "k"      | "/Users"    | "invalid"          | 406                  | null
         "l"      | "/Users"    | "/"                | 406                  | null
-        "m"      | "/Metrics"  |  ContentType.JSON  | 200                  | "application/json"
-        "n"      | "/Metrics/" |  ContentType.JSON  | 200                  | "application/json"
+        "m"      | "/Metrics"  |  ContentType.JSON  | 200                  | "application/json; charset=UTF-8"
+        "n"      | "/Metrics/" |  ContentType.JSON  | 200                  | "application/json; charset=UTF-8"
     }
 
     @Unroll
