@@ -261,4 +261,28 @@ class ControllerIT extends AbstractIT {
     	validationResult.expired==false
     	thrown(UnauthorizedException)
     }
+    
+    def 'OSNG-444: A request to revoke an invalid token doesnt throw any exception'() {
+        
+        given: 'an invalid access token'
+        AccessToken accessToken = new AccessToken.Builder("invalid").build()
+        
+        when: 'a token revokation is performed'
+        osiamConnector.revokeAccessToken(accessToken)
+        
+        then: 'nothing should happen'
+    }
+    
+    def 'OSNG-444: Multiple requests to revoke a valid token should invalidate the token'() {
+        
+        given: 'a valid access token'
+        AccessToken accessToken = osiamConnectorForClientCredentialsGrant.retrieveAccessToken()
+        
+        when: 'multiple token revokations are performed'
+        AccessToken validationResult = osiamConnector.validateAccessToken(accessToken)
+        osiamConnector.revokeAccessToken(accessToken)
+        osiamConnector.revokeAccessToken(accessToken)
+        
+        then: 'nothing should happen'
+    }
 }
