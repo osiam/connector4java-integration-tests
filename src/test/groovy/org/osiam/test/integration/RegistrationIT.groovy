@@ -146,6 +146,7 @@ class RegistrationIT extends AbstractIT {
         !user.isActive()
         Extension extension = user.getExtension('urn:scim:schemas:osiam:2.0:Registration')
         extension.getField('activationToken', ExtensionFieldType.STRING) != null
+        user.getGroups().get(0).getDisplay().equalsIgnoreCase("Test")
 
         //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
         mailServer.waitForIncomingEmail(5000, 1)
@@ -282,6 +283,7 @@ class RegistrationIT extends AbstractIT {
         Extension registeredExtension2 = registeredUser.getExtension('urn:client:extension')
         registeredExtension2.getField('age', ExtensionFieldType.STRING) != null
         registeredExtension2.getField('age', ExtensionFieldType.STRING) == '12'
+        registeredUser.getGroups().get(0).getDisplay().equalsIgnoreCase("Test")
 
         //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
         mailServer.waitForIncomingEmail(5000, 1)
@@ -327,6 +329,7 @@ class RegistrationIT extends AbstractIT {
         Extension registeredExtension1 = registeredUser.getExtension('urn:scim:schemas:osiam:2.0:Registration')
         registeredExtension1.getField('activationToken', ExtensionFieldType.STRING) != null
         registeredUser.getExtension('urn:client:extension')
+        registeredUser.getGroups().get(0).getDisplay().equalsIgnoreCase("Test")
 
         then:
         thrown(NoSuchElementException)
@@ -368,5 +371,38 @@ class RegistrationIT extends AbstractIT {
 
         then:
         responseStatus == 400
+    }
+    
+    def 'The plugin caused an validation error for registration of an user'() {
+        given:
+        def accessToken = osiamConnector.retrieveAccessToken()
+
+        def userToRegister = [email: 'email@osiam.com', password: '0123456789']
+
+        def responseStatus
+        def responseContent
+
+        when:
+        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.POST, ContentType.TEXT) { req ->
+            uri.path = REGISTRATION_ENDPOINT + '/registration'
+            send ContentType.URLENC, userToRegister
+
+            response.success = { resp, html ->
+                responseStatus = resp.statusLine.statusCode
+                responseContent = html.text
+            }
+
+            response.failure = { resp, html ->
+                responseStatus = resp.statusLine.statusCode
+                responseContent = html.text
+            }
+        }
+
+        then:
+        responseStatus == 400
+        responseContent.contains('<div class="alert alert-danger">')
+        responseContent.contains('must end with .org!')
     }
 }
