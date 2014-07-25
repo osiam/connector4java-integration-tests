@@ -141,7 +141,6 @@ class RegistrationIT extends AbstractIT {
         responseStatus == 201
 
         Query query = new QueryBuilder().filter("userName eq \"email@example.org\"").build()
-        Query abc = new QueryBuilder().filter
         SCIMSearchResult<User> users = osiamConnector.searchUsers(query, accessToken)
         User user = users.getResources()[0]
         !user.isActive()
