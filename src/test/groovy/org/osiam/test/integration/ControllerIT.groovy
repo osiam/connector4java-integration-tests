@@ -27,8 +27,10 @@ import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
 
+import org.osiam.client.OsiamConnector;
 import org.osiam.client.exception.UnauthorizedException
 import org.osiam.client.oauth.AccessToken
+import org.osiam.client.oauth.Scope
 import org.osiam.resources.scim.Email
 import org.osiam.resources.scim.User
 
@@ -252,7 +254,7 @@ class ControllerIT extends AbstractIT {
     	given: 'a valid access token'
     	AccessToken accessToken = osiamConnectorForClientCredentialsGrant.retrieveAccessToken()
     	
-    	when: 'a token revokation is performed'
+    	when: 'a token revocation is performed'
     	AccessToken validationResult = osiamConnector.validateAccessToken(accessToken)
     	osiamConnector.revokeAccessToken(accessToken)
     	osiamConnector.validateAccessToken(accessToken) // authorization should now be invalid
@@ -267,7 +269,7 @@ class ControllerIT extends AbstractIT {
         given: 'an invalid access token'
         AccessToken accessToken = new AccessToken.Builder("invalid").build()
         
-        when: 'a token revokation is performed'
+        when: 'a token revocation is performed'
         osiamConnector.revokeAccessToken(accessToken)
         
         then: 'nothing should happen'
@@ -278,10 +280,37 @@ class ControllerIT extends AbstractIT {
         given: 'a valid access token'
         AccessToken accessToken = osiamConnectorForClientCredentialsGrant.retrieveAccessToken()
         
-        when: 'multiple token revokations are performed'
+        when: 'multiple token revocations are performed'
         AccessToken validationResult = osiamConnector.validateAccessToken(accessToken)
         osiamConnector.revokeAccessToken(accessToken)
         osiamConnector.revokeAccessToken(accessToken)
+        
+        then: 'nothing should happen'
+    }
+    
+    def 'OSNG-467: A request to revoke access tokens of a given user should invalidate his token'() {
+        given: 'a valid access token'
+        def userId = "cef9452e-00a9-4cec-a086-d171374ffbef"
+        AccessToken serviceAccessToken = osiamConnectorForClientCredentialsGrant.retrieveAccessToken()
+        
+        when: 'a token revocation is performed'
+        AccessToken validationResult = osiamConnector.validateAccessToken(accessToken)
+        osiamConnector.revokeAccessTokens(userId, serviceAccessToken)
+        validationResult = osiamConnector.validateAccessToken(accessToken)
+        
+        then: 'the tokens should be invalid'
+        validationResult.expired==false
+        thrown(UnauthorizedException)
+    }
+    
+    def 'OSNG-467: Repeating requests to revoke access tokens of a given user should not have negative effect'() {
+        given: 'valid access tokens'
+        def userId = "cef9452e-00a9-4cec-a086-d171374ffbef"
+        AccessToken serviceAccessToken = osiamConnectorForClientCredentialsGrant.retrieveAccessToken()
+        
+        when: 'multiple token revocations are performed'
+        osiamConnector.revokeAccessTokens(userId, serviceAccessToken)
+        osiamConnector.revokeAccessTokens(userId, serviceAccessToken)
         
         then: 'nothing should happen'
     }
