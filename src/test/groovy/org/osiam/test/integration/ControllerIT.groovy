@@ -322,7 +322,6 @@ class ControllerIT extends AbstractIT {
         given:'active user with valid access token'
         def userId = "cef9452e-00a9-4cec-a086-d171374ffbef"
         AccessToken serviceAccessToken = osiamConnectorForClientCredentialsGrant.retrieveAccessToken()
-        User user = osiamConnector.getUser(userId, serviceAccessToken)
         UpdateUser updateUser = new UpdateUser.Builder().updateActive(false).build()
 
         when:'the user is deactivated'
@@ -339,7 +338,6 @@ class ControllerIT extends AbstractIT {
         given:'active user with valid access token'
         def userId = "cef9452e-00a9-4cec-a086-d171374ffbef"
         AccessToken serviceAccessToken = osiamConnectorForClientCredentialsGrant.retrieveAccessToken()
-        User user = osiamConnector.getUser(userId, serviceAccessToken)
         UpdateUser updateUser = new UpdateUser.Builder().updateDisplayName('Marissa').build()
 
         when:'the user is updated'
@@ -382,5 +380,20 @@ class ControllerIT extends AbstractIT {
         then:'update was successful and the token is still valid'
         replacedUser.getDisplayName() == 'Marissa'
         validationResult.expired == false
+    }
+    
+    def 'OSNG-479: Deleting a user should revoke his access token'() {
+        given:'active user with valid access token'
+        def userId = "cef9452e-00a9-4cec-a086-d171374ffbef"
+        AccessToken serviceAccessToken = osiamConnectorForClientCredentialsGrant.retrieveAccessToken()
+
+        when:'the user is deleted'
+        AccessToken validationResult = osiamConnector.validateAccessToken(accessToken) // should be valid
+        osiamConnector.deleteUser(userId, serviceAccessToken)
+        validationResult = osiamConnector.validateAccessToken(accessToken) // should not be authorized
+
+        then:'the access token should be revoked'
+        validationResult.expired == false
+        thrown(UnauthorizedException)
     }
 }
