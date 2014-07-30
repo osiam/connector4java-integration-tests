@@ -32,6 +32,7 @@ import org.osiam.client.exception.UnauthorizedException
 import org.osiam.client.oauth.AccessToken
 import org.osiam.client.oauth.Scope
 import org.osiam.resources.scim.Email
+import org.osiam.resources.scim.UpdateUser;
 import org.osiam.resources.scim.User
 
 import spock.lang.Unroll
@@ -315,5 +316,38 @@ class ControllerIT extends AbstractIT {
         osiamConnector.revokeAccessTokens(userId, serviceAccessToken)
         
         then: 'nothing should happen'
+    }
+
+    def 'OSNG-467: Deactivating a user should revoke his access token'() {
+        given:'active user with valid access token'
+        def userId = "cef9452e-00a9-4cec-a086-d171374ffbef"
+        AccessToken serviceAccessToken = osiamConnectorForClientCredentialsGrant.retrieveAccessToken()
+        User user = osiamConnector.getUser(userId, serviceAccessToken)
+        UpdateUser updateUser = new UpdateUser.Builder().updateActive(false).build()
+
+        when:'the user is deactivated'
+        AccessToken validationResult = osiamConnector.validateAccessToken(accessToken) // should be valid
+        User updatedUser = osiamConnector.updateUser(userId, updateUser, serviceAccessToken)
+        validationResult = osiamConnector.validateAccessToken(accessToken) // should not be authorized
+
+        then:'the user should be deactivated and the access token should be revoked'
+        updatedUser.isActive()==false
+        thrown(UnauthorizedException)
+    }
+
+    def 'OSNG-467: Updating a user without deactivating him should not revoke his access token'() {
+        given:'active user with valid access token'
+        def userId = "cef9452e-00a9-4cec-a086-d171374ffbef"
+        AccessToken serviceAccessToken = osiamConnectorForClientCredentialsGrant.retrieveAccessToken()
+        User user = osiamConnector.getUser(userId, serviceAccessToken)
+        UpdateUser updateUser = new UpdateUser.Builder().updateDisplayName('Marissa').build()
+
+        when:'the user is updated'
+        User updatedUser = osiamConnector.updateUser(userId, updateUser, serviceAccessToken)
+        AccessToken validationResult = osiamConnector.validateAccessToken(accessToken)
+
+        then:'update was successful and the token is still valid'
+        updatedUser.getDisplayName() == 'Marissa'
+        validationResult.expired == false
     }
 }
