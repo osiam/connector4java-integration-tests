@@ -350,4 +350,37 @@ class ControllerIT extends AbstractIT {
         updatedUser.getDisplayName() == 'Marissa'
         validationResult.expired == false
     }
+
+    def 'OSNG-467: Replacing a user with deactivating him should revoke his access token'() {
+        given:'active user with valid access token'
+        def userId = "cef9452e-00a9-4cec-a086-d171374ffbef"
+        AccessToken serviceAccessToken = osiamConnectorForClientCredentialsGrant.retrieveAccessToken()
+        User user = osiamConnector.getUser(userId, serviceAccessToken)
+        User newUser = new User.Builder(user).setActive(false).build()
+
+        when:'the user is replaced'
+        AccessToken validationResult = osiamConnector.validateAccessToken(accessToken) // should be valid
+        User replacedUser = osiamConnector.replaceUser(userId, newUser, serviceAccessToken)
+        validationResult = osiamConnector.validateAccessToken(accessToken) // should not be authorized
+
+        then:'the user should be deactivated and the access token should be revoked'
+        replacedUser.isActive()==false
+        thrown(UnauthorizedException)
+    }
+
+    def 'OSNG-467: Replacing a user without deactivating him should not revoke his access token'() {
+        given:'active user with valid access token'
+        def userId = "cef9452e-00a9-4cec-a086-d171374ffbef"
+        AccessToken serviceAccessToken = osiamConnectorForClientCredentialsGrant.retrieveAccessToken()
+        User user = osiamConnector.getUser(userId, serviceAccessToken)
+        User newUser = new User.Builder(user).setDisplayName('Marissa').build()
+
+        when:'the user is replaced'
+        User replacedUser = osiamConnector.replaceUser(userId, newUser, serviceAccessToken)
+        AccessToken validationResult = osiamConnector.validateAccessToken(accessToken)
+
+        then:'update was successful and the token is still valid'
+        replacedUser.getDisplayName() == 'Marissa'
+        validationResult.expired == false
+    }
 }
