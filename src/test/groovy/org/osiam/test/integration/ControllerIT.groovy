@@ -298,7 +298,7 @@ class ControllerIT extends AbstractIT {
         
         when: 'a token revocation is performed'
         AccessToken validationResult = osiamConnector.validateAccessToken(accessToken)
-        osiamConnector.revokeAccessTokens(userId, serviceAccessToken)
+        osiamConnector.revokeAllAccessTokens(userId, serviceAccessToken)
         validationResult = osiamConnector.validateAccessToken(accessToken)
         
         then: 'the tokens should be invalid'
@@ -312,8 +312,8 @@ class ControllerIT extends AbstractIT {
         AccessToken serviceAccessToken = osiamConnectorForClientCredentialsGrant.retrieveAccessToken()
         
         when: 'multiple token revocations are performed'
-        osiamConnector.revokeAccessTokens(userId, serviceAccessToken)
-        osiamConnector.revokeAccessTokens(userId, serviceAccessToken)
+        osiamConnector.revokeAllAccessTokens(userId, serviceAccessToken)
+        osiamConnector.revokeAllAccessTokens(userId, serviceAccessToken)
         
         then: 'nothing should happen'
     }
@@ -381,7 +381,7 @@ class ControllerIT extends AbstractIT {
         replacedUser.getDisplayName() == 'Marissa'
         validationResult.expired == false
     }
-    
+
     def 'OSNG-479: Deleting a user should revoke his access token'() {
         given:'active user with valid access token'
         def userId = "cef9452e-00a9-4cec-a086-d171374ffbef"
