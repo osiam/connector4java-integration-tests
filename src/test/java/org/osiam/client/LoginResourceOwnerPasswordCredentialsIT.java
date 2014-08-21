@@ -24,11 +24,12 @@
 package org.osiam.client;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -42,7 +43,7 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 /**
  * Test for resource owner password credentials grant.
- * 
+ *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -77,6 +78,67 @@ public class LoginResourceOwnerPasswordCredentialsIT {
 
         assertNotNull(at);
         assertNotNull(at2);
+    }
+
+    @Test
+    public void multiple_failed_logins(){
+        OsiamConnector osiamConnector = createOsiamConnector();
+
+        for(int i=0; i < 3; i++){
+            try{
+                osiamConnector.retrieveAccessToken("marissa03", "wrongPassword", Scope.ALL);
+            }catch(ConnectionInitializationException e){
+                assertTrue(e.getMessage().contains("Bad credentials"));
+            }
+        }
+
+        try{
+            osiamConnector.retrieveAccessToken("marissa03", "koala", Scope.ALL);
+        }catch(ConnectionInitializationException e){
+            assertTrue(e.getMessage().contains("temporary locked"));
+        }
+    }
+
+    @Test
+    public void multiple_failed_logins_reset(){
+        OsiamConnector osiamConnector = createOsiamConnector();
+
+        for(int i=0; i < 2; i++){
+            try{
+                osiamConnector.retrieveAccessToken("marissa04", "wrongPassword", Scope.ALL);
+            }catch(ConnectionInitializationException e){
+                assertTrue(e.getMessage().contains("Bad credentials"));
+            }
+        }
+
+        osiamConnector.retrieveAccessToken("marissa04", "koala", Scope.ALL);
+
+        for(int i=0; i < 2; i++){
+            try{
+                osiamConnector.retrieveAccessToken("marissa04", "wrongPassword", Scope.ALL);
+            }catch(ConnectionInitializationException e){
+                assertTrue(e.getMessage().contains("Bad credentials"));
+            }
+        }
+        osiamConnector.retrieveAccessToken("marissa04", "koala", Scope.ALL);
+    }
+
+    @Test
+    public void multiple_failed_logins_wait(){
+        OsiamConnector osiamConnector = createOsiamConnector();
+
+        for(int i=0; i < 3; i++){
+            try{
+                osiamConnector.retrieveAccessToken("marissa05", "wrongPassword", Scope.ALL);
+            }catch(ConnectionInitializationException e){
+                assertTrue(e.getMessage().contains("Bad credentials"));
+            }
+        }
+
+        try {
+            Thread.sleep(3000);
+            osiamConnector.retrieveAccessToken("marissa05", "koala", Scope.ALL);
+        } catch (InterruptedException e) {}
     }
 
     private OsiamConnector createOsiamConnector() {
