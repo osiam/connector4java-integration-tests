@@ -220,8 +220,6 @@ class RegistrationIT extends AbstractIT {
         def accessToken = osiamConnector.retrieveAccessToken()
 
         def responseStatus
-        def activeFlag
-        def token
 
         when:
         def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
@@ -243,7 +241,52 @@ class RegistrationIT extends AbstractIT {
         responseStatus == 200
 
         osiamConnector.getUser(createdUserId, accessToken).active
-        token == null
+    }
+
+    def 'The registration controller should act like the user was not already activated if an user activated when he is already activate'() {
+        given:
+        def createdUserId = 'cef9452e-00a9-4cec-a086-d171374febef'
+        def activationToken = 'cef9452e-00a9-4cec-a086-a171374febef'
+
+        def accessToken = osiamConnector.retrieveAccessToken()
+
+        def firstResponseStatus
+        def secondResponseStatus
+
+        when:
+        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.GET) { req ->
+            uri.path = REGISTRATION_ENDPOINT + '/registration/activation'
+            uri.query = [userId:createdUserId, activationToken:activationToken]
+
+            response.success = { resp ->
+                firstResponseStatus = resp.statusLine.statusCode
+            }
+
+            response.failure = { resp ->
+                firstResponseStatus = resp.statusLine.statusCode
+            }
+        }
+
+        httpClient.request(Method.GET) { req ->
+            uri.path = REGISTRATION_ENDPOINT + '/registration/activation'
+            uri.query = [userId:createdUserId, activationToken:activationToken]
+
+            response.success = { resp ->
+                secondResponseStatus = resp.statusLine.statusCode
+            }
+
+            response.failure = { resp ->
+                secondResponseStatus = resp.statusLine.statusCode
+            }
+        }
+
+        then:
+        firstResponseStatus == 200
+        secondResponseStatus == 200
+
+        osiamConnector.getUser(createdUserId, accessToken).active
     }
 
     def 'A registration of an user with client defined extensions'() {
