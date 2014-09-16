@@ -23,64 +23,64 @@
 -->
 
 <dataset>
-    <OSIAM_CLIENT INTERNAL_ID="100003" ACCESSTOKENVALIDITYSECONDS="2342" CLIENT_SECRET="secret"
-        EXPIRY="1970-01-01 00:00:01.0" ID="example-client" IMPLICIT_APPROVAL="false" REDIRECT_URI="http://localhost:5000/oauth2"
-        REFRESHTOKENVALIDITYSECONDS="2342" VALIDITYINSECONDS="1337" />
-    <OSIAM_CLIENT_GRANTS ID="100003" GRANTS="authorization_code" />
-    <OSIAM_CLIENT_GRANTS ID="100003" GRANTS="refresh_token" />
-    <OSIAM_CLIENT_GRANTS ID="100003" GRANTS="password" />
-    <OSIAM_CLIENT_GRANTS ID="100003" GRANTS="client_credentials" />
-    <OSIAM_CLIENT_SCOPES ID="100003" SCOPE="GET" />
-    <OSIAM_CLIENT_SCOPES ID="100003" SCOPE="POST" />
-    <OSIAM_CLIENT_SCOPES ID="100003" SCOPE="PUT" />
-    <OSIAM_CLIENT_SCOPES ID="100003" SCOPE="PATCH" />
-    <OSIAM_CLIENT_SCOPES ID="100003" SCOPE="DELETE" />
-    
-    <OSIAM_CLIENT INTERNAL_ID="100004" ACCESSTOKENVALIDITYSECONDS="10" CLIENT_SECRET="auth-secret"
-                  ID="auth-server" IMPLICIT_APPROVAL="true" REDIRECT_URI="http://localhost:8180/osiam-auth-server"
-                  REFRESHTOKENVALIDITYSECONDS="10" VALIDITYINSECONDS="10"/>
-    <OSIAM_CLIENT_GRANTS ID="100004" GRANTS="client_credentials"/>
-    <OSIAM_CLIENT_SCOPES ID="100004" SCOPE="GET"/>
-    <OSIAM_CLIENT_SCOPES ID="100004" SCOPE="POST"/>
-    <OSIAM_CLIENT_SCOPES ID="100004" SCOPE="PATCH"/>
-    
-    <SCIM_META ID="100004" CREATED="2011-10-10 00:00:00.0" LASTMODIFIED="2011-10-10 00:00:00.0" RESOURCETYPE="User" />
-    <SCIM_META ID="100005" CREATED="2013-10-30 23:18:06.408" LASTMODIFIED="2013-10-30 23:18:06.408"
-        RESOURCETYPE="User" />
-    <SCIM_META ID="100006" CREATED="2013-10-30 23:18:06.408" LASTMODIFIED="2013-10-30 23:18:06.408"
-        RESOURCETYPE="User" />
-    <SCIM_META ID="100007" CREATED="2013-10-30 23:18:06.408" LASTMODIFIED="2013-10-30 23:18:06.408"
-        RESOURCETYPE="User" />
+    <osiam_client internal_id="100003" accesstokenvalidityseconds="2342" client_secret="secret"
+        expiry="1970-01-01 00:00:01.0" id="example-client" implicit_approval="false" redirect_uri="http://localhost:5000/oauth2"
+        refreshtokenvalidityseconds="2342" validityinseconds="1337" />
+    <osiam_client_grants id="100003" grants="authorization_code" />
+    <osiam_client_grants id="100003" grants="refresh_token" />
+    <osiam_client_grants id="100003" grants="password" />
+    <osiam_client_grants id="100003" grants="client_credentials" />
+    <osiam_client_scopes id="100003" scope="GET" />
+    <osiam_client_scopes id="100003" scope="POST" />
+    <osiam_client_scopes id="100003" scope="PUT" />
+    <osiam_client_scopes id="100003" scope="PATCH" />
+    <osiam_client_scopes id="100003" scope="DELETE" />
 
-    <SCIM_ID INTERNAL_ID="100001" ID="cef9452e-00a9-4cec-a086-d171374ffbef" META_ID="100004" />
-    <SCIM_ID INTERNAL_ID="100002" ID="df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d4" META_ID="100005" />
-    <SCIM_ID INTERNAL_ID="100003" ID="df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d5" META_ID="100006" />
-    <SCIM_ID INTERNAL_ID="100004" ID="df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d6" META_ID="100007" />
+    <osiam_client internal_id="100004" accesstokenvalidityseconds="10" client_secret="auth-secret"
+                  id="auth-server" implicit_approval="true" redirect_uri="http://localhost:8180/osiam-auth-server"
+                  refreshtokenvalidityseconds="10" validityinseconds="10"/>
+    <osiam_client_grants id="100004" grants="client_credentials"/>
+    <osiam_client_scopes id="100004" scope="GET"/>
+    <osiam_client_scopes id="100004" scope="POST"/>
+    <osiam_client_scopes id="100004" scope="PATCH"/>
 
-    <SCIM_USER
-        PASSWORD="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
-        USERNAME="marissa" INTERNAL_ID="100001" active="true" />
-    <SCIM_USER
-        PASSWORD="b5b9fbac6ae8e0911ff47d59c91a64d05e2a3ee6fa3aa22e85d21d4b05ba51ec750f56d73a76eed27344638f3b2cefebd70d0b735dd8f657770b038ca9825652"
-        USERNAME="existing1" INTERNAL_ID="100002" active="true" />
-    <SCIM_USER
-        PASSWORD="b5b9fbac6ae8e0911ff47d59c91a64d05e2a3ee6fa3aa22e85d21d4b05ba51ec750f56d73a76eed27344638f3b2cefebd70d0b735dd8f657770b038ca9825652"
-        USERNAME="existing2" INTERNAL_ID="100003" active="true" />
-    <SCIM_USER
-        PASSWORD="b5b9fbac6ae8e0911ff47d59c91a64d05e2a3ee6fa3aa22e85d21d4b05ba51ec750f56d73a76eed27344638f3b2cefebd70d0b735dd8f657770b038ca9825652"
-        USERNAME="existing3" INTERNAL_ID="100004" active="true" />
+    <scim_meta id="100004" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User" />
+    <scim_meta id="100005" created="2013-10-30 23:18:06.408" lastmodified="2013-10-30 23:18:06.408"
+        resourcetype="User" />
+    <scim_meta id="100006" created="2013-10-30 23:18:06.408" lastmodified="2013-10-30 23:18:06.408"
+        resourcetype="User" />
+    <scim_meta id="100007" created="2013-10-30 23:18:06.408" lastmodified="2013-10-30 23:18:06.408"
+        resourcetype="User" />
 
-    <SCIM_EXTENSION INTERNAL_ID="100081" URN="extension" />
+    <scim_id internal_id="100001" id="cef9452e-00a9-4cec-a086-d171374ffbef" meta_id="100004" />
+    <scim_id internal_id="100002" id="df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d4" meta_id="100005" />
+    <scim_id internal_id="100003" id="df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d5" meta_id="100006" />
+    <scim_id internal_id="100004" id="df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d6" meta_id="100007" />
 
-    <SCIM_EXTENSION_FIELD INTERNAL_ID="100082" IS_REQUIRED="false" NAME="gender" TYPE="STRING"
-        EXTENSION_INTERNAL_ID="100081" />
-    <SCIM_EXTENSION_FIELD INTERNAL_ID="100086" IS_REQUIRED="false" NAME="birthday" TYPE="DATE_TIME"
-        EXTENSION_INTERNAL_ID="100081" />
+    <scim_user
+        password="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
+        username="marissa" internal_id="100001" active="true" />
+    <scim_user
+        password="b5b9fbac6ae8e0911ff47d59c91a64d05e2a3ee6fa3aa22e85d21d4b05ba51ec750f56d73a76eed27344638f3b2cefebd70d0b735dd8f657770b038ca9825652"
+        username="existing1" internal_id="100002" active="true" />
+    <scim_user
+        password="b5b9fbac6ae8e0911ff47d59c91a64d05e2a3ee6fa3aa22e85d21d4b05ba51ec750f56d73a76eed27344638f3b2cefebd70d0b735dd8f657770b038ca9825652"
+        username="existing2" internal_id="100003" active="true" />
+    <scim_user
+        password="b5b9fbac6ae8e0911ff47d59c91a64d05e2a3ee6fa3aa22e85d21d4b05ba51ec750f56d73a76eed27344638f3b2cefebd70d0b735dd8f657770b038ca9825652"
+        username="existing3" internal_id="100004" active="true" />
 
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="100001" VALUE="male"
-        EXTENSION_FIELD_INTERNAL_ID="100082" USER_INTERNAL_ID="100002" />
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="100005" VALUE="2008-01-23T04:56:22.000Z"
-        EXTENSION_FIELD_INTERNAL_ID="100086" USER_INTERNAL_ID="100003" />
-    <SCIM_EXTENSION_FIELD_VALUE INTERNAL_ID="100006" VALUE="female"
-        EXTENSION_FIELD_INTERNAL_ID="100082" USER_INTERNAL_ID="100004" />
+    <scim_extension internal_id="100081" urn="extension" />
+
+    <scim_extension_field internal_id="100082" is_required="false" name="gender" type="STRING"
+        extension_internal_id="100081" />
+    <scim_extension_field internal_id="100086" is_required="false" name="birthday" type="DATE_TIME"
+        extension_internal_id="100081" />
+
+    <scim_extension_field_value internal_id="100001" value="male"
+        extension_field_internal_id="100082" user_internal_id="100002" />
+    <scim_extension_field_value internal_id="100005" value="2008-01-23T04:56:22.000Z"
+        extension_field_internal_id="100086" user_internal_id="100003" />
+    <scim_extension_field_value internal_id="100006" value="female"
+        extension_field_internal_id="100082" user_internal_id="100004" />
 </dataset>

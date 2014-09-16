@@ -184,7 +184,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
     public void deleting_a_user_also_deletes_her_extension_values() throws SQLException {
         oConnector.deleteUser(EXISTING_USER_UUID, accessToken);
 
-        String sql = "SELECT count(*) FROM SCIM_EXTENSION_FIELD_VALUE WHERE USER_INTERNAL_ID = 2";
+        String sql = "SELECT count(*) FROM scim_extension_field_value WHERE user_internal_id = 2";
         ResultSet rs = dataSource.getConnection().createStatement().executeQuery(sql);
         rs.next();
 
