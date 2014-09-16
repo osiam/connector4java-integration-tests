@@ -136,7 +136,6 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
 
     @Test
     @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/add_user.xml")
-    @ExpectedDatabase(value = "/database_seeds/ScimExtensionIT/expected_extensions.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void adding_a_user_with_extension_data_to_database_works() {
         Extension extension = createExtensionWithData(URN, extensionData);
         User user = new User.Builder("userName").setPassword("password").addExtension(extension).build();
@@ -145,9 +144,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
 
         User storedUser = oConnector.getUser(uuid, accessToken);
         assertTrue(storedUser.getSchemas().contains(URN));
-        Extension storedExtension = storedUser.getExtension(URN);
-
-        assertExtensionEqualsExtensionMap(storedExtension, extensionData);
+        assertExtensionEqualsExtensionMap(storedUser.getExtension(URN), extensionData);
     }
 
     @Test
@@ -157,7 +154,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
         extensionData.put("gender", new Extension.Field(ExtensionFieldType.STRING, "female"));
         Extension extension = existingUser.getExtension(URN);
         Extension newExtension = new Extension.Builder(extension).setField("gender", "female").build();
-        
+
         User replaceUser =  new User.Builder(existingUser).addExtension(newExtension).build();
 
         oConnector.replaceUser(EXISTING_USER_UUID, replaceUser, accessToken);
