@@ -49,8 +49,6 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
-import com.github.springtestdbunit.annotation.ExpectedDatabase;
-import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -73,14 +71,14 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
     @Test(expected = ConflictException.class)
     public void create_group_without_displayName_raises_exception() {
         group = new Group.Builder().build();
-        createGroup();
+        oConnector.createGroup(group, accessToken);
         fail("Exception expected");
     }
 
     @Test(expected = ConflictException.class)
     public void create_group_with_empty_displayName_raises_exception() {
         group = new Group.Builder("").build();
-        createGroup();
+        oConnector.createGroup(group, accessToken);
         fail("Exception expected");
     }
 
@@ -88,14 +86,14 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
     public void create_group_with_existing_displayName_raises_exception() {
         String existingGroupName = "parent_group";
         group = new Group.Builder(existingGroupName).build();
-        createGroup();
+        oConnector.createGroup(group, accessToken);
         fail("Exception expected");
     }
 
     @Test
     public void creating_a_group_works() {
         group = new Group.Builder(IRRELEVANT).build();
-        Group groupInDb = loadGroup(createGroup().getId());
+        Group groupInDb = oConnector.getGroup(oConnector.createGroup(group, accessToken).getId(), accessToken);
         assertThat(groupInDb.getDisplayName(), is(equalTo(group.getDisplayName())));
     }
 
@@ -103,35 +101,38 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
     public void create_group_with_exing_id_is_ignored() {
         String existingGroupId = "69e1a5dc-89be-4343-976c-b5541af249f4";
         group = new Group.Builder(IRRELEVANT).setId(existingGroupId).build();
-        createGroup();
-        Group groupInDb = loadGroup(existingGroupId);
+        oConnector.createGroup(group, accessToken);
+        Group groupInDb = oConnector.getGroup(existingGroupId, accessToken);
         assertThat(groupInDb.getDisplayName(), not(equalTo(group.getDisplayName())));
     }
 
     @Test(expected = NoResultException.class)
     public void create_group_with_provided_id_ignores_provided_id() {
         group = new Group.Builder(IRRELEVANT).setId(INVALID_ID).build();
-        Group createdGroup = createGroup();
+        Group createdGroup = oConnector.createGroup(group, accessToken);
         assertThat(createdGroup.getId(), not(equalTo(INVALID_ID))); // This might fail once every 8 billion years
-        loadGroup(newId);
+        oConnector.getGroup(newId, accessToken);
         fail("Exception expected");
     }
 
     @Test
     public void created_group_can_be_found_via_query() {
-        Query query = queryToSearchForGroupWithName(IRRELEVANT);
+        Query query = new QueryBuilder().filter("displayName eq \"" + IRRELEVANT + "\"").build();
         group = new Group.Builder(IRRELEVANT).build();
-        createGroup();
+        oConnector.createGroup(group, accessToken);
 
         Group foundGroup = findSingleGroupByQuery(query);
 
         assertThat(foundGroup.getDisplayName(), is(equalTo(IRRELEVANT)));
     }
 
-    @Test
-    @ExpectedDatabase(value = "/database_seeds/EditGroupServiceIT/expected_groups_after_delete.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @Test(expected = NoResultException.class)
     public void delete_group_works() throws Exception {
         oConnector.deleteGroup(VALID_GROUP_ID, accessToken);
+
+        oConnector.getGroup(newId, accessToken);
+
+        fail("Exception expected");
     }
 
     @Test(expected = NoResultException.class)
@@ -148,15 +149,4 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
         return null;
     }
 
-    private Group createGroup() {
-        return oConnector.createGroup(group, accessToken);
-    }
-
-    private Group loadGroup(String id) {
-        return oConnector.getGroup(id, accessToken);
-    }
-
-    private Query queryToSearchForGroupWithName(String name) {
-        return new QueryBuilder().filter("displayName eq \"" + name + "\"").build();
-    }
 }

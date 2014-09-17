@@ -35,6 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ForbiddenException;
+import org.osiam.client.exception.NoResultException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
@@ -86,175 +87,179 @@ public class ScopeIT {
 
     @Test(expected = ForbiddenException.class)
     public void getting_user_in_DELETE_scope_raises_exception() {
-        retrieveAccessToken(Scope.DELETE);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.DELETE);
         retrieveUser();
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void getting_group_in_DELETE_scope_raises_exception() {
-        retrieveAccessToken(Scope.DELETE);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.DELETE);
         retrieveGroup();
         fail("Exception expected");
     }
-    
+
     @Test(expected = ForbiddenException.class)
     public void getting_all_users_in_DELETE_scope_raises_exception() {
-        retrieveAccessToken(Scope.DELETE);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.DELETE);
         getAllUsers();
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void getting_all_groups_in_DELETE_scope_raises_exception() {
-        retrieveAccessToken(Scope.DELETE);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.DELETE);
         getAllGroups();
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void creating_a_user_in_DELETE_scope_raises_exception() {
-        retrieveAccessToken(Scope.DELETE);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.DELETE);
         createUser();
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void creating_a_group_in_DELETE_scope_raises_exception() {
-        retrieveAccessToken(Scope.DELETE);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.DELETE);
         createGroup();
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void getting_current_user_in_DELETE_scope_raises_exception() {
-        retrieveAccessToken(Scope.DELETE);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.DELETE);
         getCurrentUser();
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void updating_user_in_DELETE_scope_raises_exception() {
-        retrieveAccessToken(Scope.DELETE);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.DELETE);
         updateUser();
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void updating_group_in_DELETE_scope_raises_exception() {
-        retrieveAccessToken(Scope.DELETE);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.DELETE);
         updateGroup();
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void searching_for_user_in_DELETE_scope_raises_exception() {
-        retrieveAccessToken(Scope.DELETE);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.DELETE);
         searchForUsers();
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void searching_for_group_in_DELETE_scope_raises_exception() {
-        retrieveAccessToken(Scope.DELETE);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.DELETE);
         searchForGroups();
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void deleting_user_in_GET_scope_raises_exception() {
-        retrieveAccessToken(Scope.GET);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.GET);
         oConnector.deleteUser(VALID_USER_ID, accessToken);
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void deleting_group_in_GET_scope_raises_exception() {
-        retrieveAccessToken(Scope.GET);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.GET);
         oConnector.deleteGroup(VALID_GROUP_ID, accessToken);
         fail("Exception expected");
     }
 
     @Test
     public void get_user_in_GET_scope_works() {
-        retrieveAccessToken(Scope.GET);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.GET);
         assertThat(retrieveUser(), is(notNullValue()));
     }
 
     @Test
     public void get_group_in_GET_scope_works() {
-        retrieveAccessToken(Scope.GET);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.GET);
         assertThat(retrieveGroup(), is(notNullValue()));
     }
 
     @Test
     public void get_all_users_in_GET_scope_works() {
-        retrieveAccessToken(Scope.GET);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.GET);
         assertThat(getAllUsers(), is(notNullValue()));
     }
 
     @Test
     public void get_all_groups_in_GET_scope_works() {
-        retrieveAccessToken(Scope.GET);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.GET);
         assertThat(getAllGroups(), is(notNullValue()));
     }
 
     @Test
     public void get_current_user_in_GET_scope_works() {
-        retrieveAccessToken(Scope.GET);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.GET);
         assertThat(getCurrentUser(), is(notNullValue()));
     }
 
     @Test
     public void create_user_in_POST_scope_works() {
-        retrieveAccessToken(Scope.POST);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.POST);
         assertThat(createUser(), is(notNullValue()));
     }
 
     @Test
     public void create_group_in_POST_scope_works() {
-        retrieveAccessToken(Scope.POST);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.POST);
         assertThat(createGroup(), is(notNullValue()));
     }
 
     @Test
     public void update_user_in_PATCH_scope_works() {
-        retrieveAccessToken(Scope.PATCH);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.PATCH);
         assertThat(updateUser(), is(notNullValue()));
     }
 
     @Test
     public void update_group_in_PATCH_scope_works() {
-        retrieveAccessToken(Scope.ALL);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ALL);
         assertThat(updateGroup(), is(notNullValue()));
     }
 
     @Test
     public void search_for_users_in_GET_scope_works() {
-        retrieveAccessToken(Scope.GET);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.GET);
         assertThat(searchForUsers(), is(notNullValue()));
     }
 
     @Test
     public void search_for_groups_in_GET_scope_works() {
-        retrieveAccessToken(Scope.GET);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.GET);
         assertThat(searchForGroups(), is(notNullValue()));
     }
 
     @Test
     @ExpectedDatabase(value = "/database_expected_scope_delete_user.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void delete_user_in_DELETE_scope_works() {
-        retrieveAccessToken(Scope.DELETE);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.DELETE);
         oConnector.deleteUser(VALID_USER_ID, accessToken);
     }
 
-    @Test
-    @ExpectedDatabase(value = "/database_expected_scope_delete_group.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @Test(expected = NoResultException.class)
     public void delete_group_in_DELETE_scope_works() {
-        retrieveAccessToken(Scope.DELETE);
+        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.DELETE);
+
         oConnector.deleteGroup(VALID_GROUP_ID, accessToken);
+
+        oConnector.getGroup(VALID_GROUP_ID, accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.GET));
+
+        fail("Exception expected");
     }
-    
+
     @Test
     public void different_scopes_different_token() {
         OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder()
@@ -264,11 +269,11 @@ public class ScopeIT {
                 .setClientSecret(CLIENT_SECRET);
         oConnector = oConBuilder.build();
         accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.POST);
-        
+
         String postScopesToken = accessToken.getToken();
-        
+
         accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.GET);
-        
+
         assertFalse(accessToken.getToken().equals(postScopesToken));
     }
 
@@ -280,10 +285,6 @@ public class ScopeIT {
     private Group createGroup() {
         Group group = new Group.Builder("displayName").build();
         return oConnector.createGroup(group, accessToken);
-    }
-
-    private void retrieveAccessToken(Scope... scopes) {
-        accessToken = oConnector.retrieveAccessToken("marissa", "koala", scopes);
     }
 
     private User retrieveUser() {
