@@ -471,7 +471,6 @@
                                     <type>jar</type>
                                 </artifactItem>
                             </artifactItems>
-                            <destFileName>${project.build.directory}/addon-self-administration-plugin.jar</destFileName>
                             <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
                     </execution>
