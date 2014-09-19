@@ -465,8 +465,8 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>org.osiam.plugins</groupId>
-                                    <artifactId>addon-self-administration-plugin-example-impl</artifactId>
+                                    <groupId>org.osiam</groupId>
+                                    <artifactId>addon-self-administration-plugin-example</artifactId>
                                     <version>${osiam.addon-self-administration.version}</version>
                                     <type>jar</type>
                                 </artifactItem>
