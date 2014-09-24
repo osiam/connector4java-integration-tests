@@ -45,8 +45,6 @@
 
         <!-- OSIAM -->
         <osiam.version>1.2-SNAPSHOT</osiam.version>
-        <osiam.addon-self-administration.version>1.2-SNAPSHOT</osiam.addon-self-administration.version>
-        <osiam.connector4java.version>1.2-SNAPSHOT</osiam.connector4java.version>
     </properties>
 
     <repositories>
@@ -71,7 +69,7 @@
         <dependency>
             <groupId>org.osiam</groupId>
             <artifactId>connector4java</artifactId>
-            <version>${osiam.connector4java.version}</version>
+            <version>${osiam.version}</version>
         </dependency>
 
         <dependency>
@@ -340,7 +338,7 @@
                             <contextPath>/osiam-auth-server</contextPath>
                         </contextHandler>
                         <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
-                            <war>${project.build.directory}/addon-self-administration-${osiam.addon-self-administration.version}</war>
+                            <war>${project.build.directory}/addon-self-administration-${osiam.version}</war>
                             <contextPath>/addon-self-administration</contextPath>
                         </contextHandler>
                         <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
@@ -448,11 +446,11 @@
                                 <artifactItem>
                                     <groupId>org.osiam</groupId>
                                     <artifactId>addon-self-administration</artifactId>
-                                    <version>${osiam.addon-self-administration.version}</version>
+                                    <version>${osiam.version}</version>
                                     <type>war</type>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/addon-self-administration-${osiam.addon-self-administration.version}</outputDirectory>
+                            <outputDirectory>${project.build.directory}/addon-self-administration-${osiam.version}</outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
                     </execution>
@@ -467,7 +465,7 @@
                                 <artifactItem>
                                     <groupId>org.osiam</groupId>
                                     <artifactId>addon-self-administration-plugin-example</artifactId>
-                                    <version>${osiam.addon-self-administration.version}</version>
+                                    <version>${osiam.version}</version>
                                     <type>jar</type>
                                 </artifactItem>
                             </artifactItems>
@@ -571,7 +569,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                ${project.build.directory}/addon-self-administration-${osiam.addon-self-administration.version}/WEB-INF/classes
+                                ${project.build.directory}/addon-self-administration-${osiam.version}/WEB-INF/classes
                             </outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>
