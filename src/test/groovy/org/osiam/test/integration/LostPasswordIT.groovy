@@ -98,7 +98,43 @@ class LostPasswordIT extends AbstractIT {
         messages[0].getAllRecipients()[0].toString().equals('george.alexander@osiam.org')
     }
 
-    def 'URI: /password/change with POST method to change the old with the new password and validating the user'() {
+    def 'URI: /password/change/{userId} with POST method to change the old with the new password as client'() {
+        given:
+        def urn = 'urn:scim:schemas:osiam:2.0:Registration'
+        def accessToken = createClientAccessToken()
+        def otp = 'cef9452e-00a9-4cec-a086-a171374febef'
+        def userId = 'cef9452e-00a9-4cec-a086-d171374febef'
+        def newPassword = 'pulverToastMann'
+        def statusCode
+        def savedUserId
+
+        when:
+        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.POST) {
+            uri.path = REGISTRATION_ENDPOINT + '/password/change/' + userId
+            send URLENC, [oneTimePassword : otp, newPassword : newPassword]
+            headers.'Authorization' = 'Bearer ' + accessToken.getToken()
+
+            response.success = { resp, json ->
+                statusCode = resp.statusLine.statusCode
+                savedUserId = json.id
+            }
+
+            response.failure = { resp ->
+                statusCode = resp.statusLine.statusCode
+            }
+        }
+
+        then:
+        statusCode == 200
+        savedUserId == userId
+        User user = osiamConnector.getUser(userId, accessToken)
+        Extension extension = user.getExtension(urn)
+        extension.isFieldPresent('oneTimePassword') == false
+    }
+
+    def 'URI: /password/change with POST method to change the old with the new password as user'() {
         given:
         def urn = 'urn:scim:schemas:osiam:2.0:Registration'
         def accessToken = createAccessToken('George', '1234')

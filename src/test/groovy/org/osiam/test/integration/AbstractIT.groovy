@@ -116,6 +116,16 @@ abstract class AbstractIT extends Specification {
         osiamConnector.retrieveAccessToken(userName, password, Scope.ALL)
     }
 
+    def createClientAccessToken() {
+        OsiamConnector osiamConnector = new OsiamConnector.Builder()
+                .setAuthServerEndpoint(AUTH_ENDPOINT)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT)
+                .setClientId(CLIENT_ID)
+                .setClientSecret(CLIENT_SECRET)
+                .build()
+        osiamConnector.retrieveAccessToken(Scope.ALL)
+    }
+
     def cleanup() {
         // Load Spring context configuration.
         ApplicationContext ac = new ClassPathXmlApplicationContext("context.xml")
