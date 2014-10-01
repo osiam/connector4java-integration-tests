@@ -82,21 +82,23 @@ class ControllerIT extends AbstractIT {
         assert responseContentType == expectedResponseType
 
         where:
-        testCase | requestPath | contentType        | expectedResponseCode | expectedResponseType
-        "a"      | "/Users"    | ContentType.JSON   | 200                  | "application/json;charset=UTF-8"
-        "b"      | "/Users/"   | ContentType.JSON   | 200                  | "application/json;charset=UTF-8"
-        "c"      | "/Groups"   | ContentType.JSON   | 200                  | "application/json;charset=UTF-8"
-        "d"      | "/Groups/"  | ContentType.JSON   | 200                  | "application/json;charset=UTF-8"
-        "e"      | "/Users"    | ContentType.ANY    | 200                  | "application/json;charset=UTF-8"
-        "f"      | "/Users"    | ContentType.TEXT   | 406                  | null
-        "g"      | "/Users"    | ContentType.BINARY | 406                  | null
-        "h"      | "/Users"    | ContentType.HTML   | 406                  | null
-        "i"      | "/Users"    | ContentType.URLENC | 406                  | null
-        "j"      | "/Users"    | ContentType.XML    | 406                  | null
-        "k"      | "/Users"    | "invalid"          | 406                  | null
-        "l"      | "/Users"    | "/"                | 406                  | null
-        "m"      | "/Metrics"  |  ContentType.JSON  | 200                  | "application/json; charset=UTF-8"
-        "n"      | "/Metrics/" |  ContentType.JSON  | 200                  | "application/json; charset=UTF-8"
+        testCase | requestPath                    | contentType        | expectedResponseCode | expectedResponseType
+        "a"      | "/Users"                       | ContentType.JSON   | 200                  | "application/json;charset=UTF-8"
+        "b"      | "/Users/"                      | ContentType.JSON   | 200                  | "application/json;charset=UTF-8"
+        "c"      | "/Groups"                      | ContentType.JSON   | 200                  | "application/json;charset=UTF-8"
+        "d"      | "/Groups/"                     | ContentType.JSON   | 200                  | "application/json;charset=UTF-8"
+        "e"      | "/Users"                       | ContentType.ANY    | 200                  | "application/json;charset=UTF-8"
+        "f"      | "/Users"                       | ContentType.TEXT   | 406                  | null
+        "g"      | "/Users"                       | ContentType.BINARY | 406                  | null
+        "h"      | "/Users"                       | ContentType.HTML   | 406                  | null
+        "i"      | "/Users"                       | ContentType.URLENC | 406                  | null
+        "j"      | "/Users"                       | ContentType.XML    | 406                  | null
+        "k"      | "/Users"                       | "invalid"          | 406                  | null
+        "l"      | "/Users"                       | "/"                | 406                  | null
+        "m"      | "/Metrics"                     |  ContentType.JSON  | 200                  | "application/json; charset=UTF-8"
+        "n"      | "/Metrics/"                    |  ContentType.JSON  | 200                  | "application/json; charset=UTF-8"
+        "o"      | "/osiam/extension-definition"  |  ContentType.JSON  | 200                  | "application/json;charset=UTF-8"
+        "p"      | "/osiam/extension-definition/" |  ContentType.JSON  | 200                  | "application/json;charset=UTF-8"
     }
 
     @Unroll
@@ -249,72 +251,72 @@ class ControllerIT extends AbstractIT {
         responseStatusCode == 200
         responseContent.Resources[0].userName == 'marissa'
     }
-    
+
     def 'OSNG-444: A request to revoke a valid token should invalidate the token'() {
-    
+
     	given: 'a valid access token'
     	AccessToken accessToken = osiamConnectorForClientCredentialsGrant.retrieveAccessToken()
-    	
+
     	when: 'a token revocation is performed'
     	AccessToken validationResult = osiamConnector.validateAccessToken(accessToken)
     	osiamConnector.revokeAccessToken(accessToken)
     	osiamConnector.validateAccessToken(accessToken) // authorization should now be invalid
-    	
+
     	then: 'the token should be revoked'
     	validationResult.expired==false
     	thrown(UnauthorizedException)
     }
-    
+
     def 'OSNG-444: A request to revoke an invalid token is not authorized'() {
-        
+
         given: 'an invalid access token'
         AccessToken accessToken = new AccessToken.Builder("invalid").build()
-        
+
         when: 'a token revocation is performed'
         osiamConnector.revokeAccessToken(accessToken)
-        
+
         then: 'the request is not authorized'
         thrown(UnauthorizedException)
     }
-    
+
     def 'OSNG-444: Subsequent requests to revoke a valid token should not be authorized'() {
-        
+
         given: 'a valid access token'
         AccessToken accessToken = osiamConnectorForClientCredentialsGrant.retrieveAccessToken()
-        
+
         when: 'multiple token revocations are performed'
         AccessToken validationResult = osiamConnector.validateAccessToken(accessToken)
         osiamConnector.revokeAccessToken(accessToken)
         osiamConnector.revokeAccessToken(accessToken)
-        
+
         then: 'subsequent requests are not authorized'
         thrown(UnauthorizedException)
     }
-    
+
     def 'OSNG-467: A request to revoke access tokens of a given user should invalidate his token'() {
         given: 'a valid access token'
         def userId = "cef9452e-00a9-4cec-a086-d171374ffbef"
         AccessToken serviceAccessToken = osiamConnectorForClientCredentialsGrant.retrieveAccessToken()
-        
+
         when: 'a token revocation is performed'
         AccessToken validationResult = osiamConnector.validateAccessToken(accessToken)
         osiamConnector.revokeAllAccessTokens(userId, serviceAccessToken)
         validationResult = osiamConnector.validateAccessToken(accessToken)
-        
+
         then: 'the tokens should be invalid'
         validationResult.expired==false
         thrown(UnauthorizedException)
     }
-    
+
     def 'OSNG-467: Repeating requests to revoke access tokens of a given user should not have negative effect'() {
         given: 'valid access tokens'
         def userId = "cef9452e-00a9-4cec-a086-d171374ffbef"
         AccessToken serviceAccessToken = osiamConnectorForClientCredentialsGrant.retrieveAccessToken()
-        
+
         when: 'multiple token revocations are performed'
         osiamConnector.revokeAllAccessTokens(userId, serviceAccessToken)
         osiamConnector.revokeAllAccessTokens(userId, serviceAccessToken)
-        
+
         then: 'nothing should happen'
     }
 
