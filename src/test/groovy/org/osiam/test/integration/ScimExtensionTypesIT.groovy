@@ -23,6 +23,10 @@
 
 package org.osiam.test.integration
 
+import groovyx.net.http.HTTPBuilder
+import groovyx.net.http.Method
+
+import org.osiam.client.oauth.Scope
 import org.osiam.client.exception.ConflictException
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.User
@@ -82,4 +86,63 @@ class ScimExtensionTypesIT extends AbstractExtensionBaseIT {
         FIELD_NAME_REFERENCE | FIELD_TYPE_REFERENCE | STRING_VALUE
     }
 
+    def 'URI: /osiam/extension-definition will return all persisted extension definitions'() {
+        given:
+        def accessToken = osiamConnector.retrieveAccessToken("marissa", "koala", Scope.ALL)
+        def statusCode
+        def jsonContent
+
+        when:
+        def httpClient = new HTTPBuilder(RESOURCE_ENDPOINT)
+
+        httpClient.request(Method.GET) { req ->
+            uri.path = RESOURCE_ENDPOINT + '/osiam/extension-definition'
+            headers.'Authorization' = 'Bearer ' + accessToken.getToken()
+
+            response.success = { resp, json ->
+                statusCode = resp.statusLine.statusCode
+                jsonContent = json
+            }
+
+            response.failure = { resp ->
+                statusCode = resp.statusLine.statusCode
+            }
+        }
+
+        then:
+        statusCode == 200
+        jsonContent[0].urn == 'extension'
+        jsonContent[0].namedTypePairs.birthday == 'DATE_TIME'
+        jsonContent[0].namedTypePairs.weight == 'DECIMAL'
+        jsonContent[0].namedTypePairs.mother == 'REFERENCE'
+        jsonContent[0].namedTypePairs.newsletter == 'BOOLEAN'
+        jsonContent[0].namedTypePairs.age == 'INTEGER'
+        jsonContent[0].namedTypePairs.gender == 'STRING'
+        jsonContent[0].namedTypePairs.photo == 'BINARY'
+    }
+
+    def 'URI: /osiam/extension-definition needs an authentication'() {
+        given:
+        def statusCode
+
+        when:
+        def httpClient = new HTTPBuilder(RESOURCE_ENDPOINT)
+
+        httpClient.request(Method.GET) { req ->
+            uri.path = RESOURCE_ENDPOINT + '/osiam/extension-definition'
+            headers.'Authorization' = 'Bearer NOT-VALID'
+
+            response.success = { resp, json ->
+                statusCode = resp.statusLine.statusCode
+                jsonContent = json
+            }
+
+            response.failure = { resp ->
+                statusCode = resp.statusLine.statusCode
+            }
+        }
+
+        then:
+        statusCode == 401
+    }
 }
