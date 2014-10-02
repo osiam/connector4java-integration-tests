@@ -44,7 +44,7 @@
         <spock.version>0.7-groovy-2.0</spock.version>
 
         <!-- OSIAM -->
-        <osiam.version>1.2-SNAPSHOT</osiam.version>
+        <osiam.version>1.2</osiam.version>
     </properties>
 
     <repositories>
