@@ -134,6 +134,37 @@ class LostPasswordIT extends AbstractIT {
         extension.isFieldPresent('oneTimePassword') == false
     }
 
+    def 'URI: /password/change/{userId} returns forbidden when the password has already been reset with the onetime password'() {
+        given:
+        def accessToken = createClientAccessToken()
+        def otp = 'cef9452e-00a9-4cec-a086-a171374febef'
+        def userId = 'cef9452e-00a9-4cec-a086-d171374febef'
+        def newPassword = 'new_password'
+        def statusCode
+
+        when:
+        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.POST) {
+            uri.path = REGISTRATION_ENDPOINT + '/password/change/' + userId
+            send URLENC, [oneTimePassword : otp, newPassword : newPassword]
+            headers.'Authorization' = 'Bearer ' + accessToken.getToken()
+        }
+
+        httpClient.request(Method.POST) {
+            uri.path = REGISTRATION_ENDPOINT + '/password/change/' + userId
+            send URLENC, [oneTimePassword : otp, newPassword : newPassword]
+            headers.'Authorization' = 'Bearer ' + accessToken.getToken()
+
+            response.failure = { resp ->
+                statusCode = resp.statusLine.statusCode
+            }
+        }
+
+        then:
+        statusCode == 403
+    }
+
     def 'URI: /password/change with POST method to change the old with the new password as user'() {
         given:
         def urn = 'urn:scim:schemas:osiam:2.0:Registration'
