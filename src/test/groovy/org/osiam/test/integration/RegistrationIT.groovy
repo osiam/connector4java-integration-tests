@@ -118,7 +118,6 @@ class RegistrationIT extends AbstractIT {
         def userToRegister = [email: 'email@example.org', password: 'password']
 
         def responseStatus
-        def createdUserId
 
         when:
         HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
@@ -129,10 +128,6 @@ class RegistrationIT extends AbstractIT {
             body = userToRegister
 
             response.success = { resp ->
-                responseStatus = resp.statusLine.statusCode
-            }
-
-            response.failure = { resp ->
                 responseStatus = resp.statusLine.statusCode
             }
         }
@@ -163,7 +158,6 @@ class RegistrationIT extends AbstractIT {
         def userToRegister = [email: 'email@example.org', password: 'password']
 
         def responseStatus
-        def createdUserId
 
         when:
         HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
@@ -174,10 +168,6 @@ class RegistrationIT extends AbstractIT {
             body = userToRegister
 
             response.success = { resp ->
-                responseStatus = resp.statusLine.statusCode
-            }
-
-            response.failure = { resp ->
                 responseStatus = resp.statusLine.statusCode
             }
         }
@@ -231,10 +221,6 @@ class RegistrationIT extends AbstractIT {
             response.success = { resp ->
                 responseStatus = resp.statusLine.statusCode
             }
-
-            response.failure = { resp ->
-                responseStatus = resp.statusLine.statusCode
-            }
         }
 
         then:
@@ -263,10 +249,6 @@ class RegistrationIT extends AbstractIT {
             response.success = { resp ->
                 firstResponseStatus = resp.statusLine.statusCode
             }
-
-            response.failure = { resp ->
-                firstResponseStatus = resp.statusLine.statusCode
-            }
         }
 
         httpClient.request(Method.GET) { req ->
@@ -274,10 +256,6 @@ class RegistrationIT extends AbstractIT {
             uri.query = [userId:createdUserId, activationToken:activationToken]
 
             response.success = { resp ->
-                secondResponseStatus = resp.statusLine.statusCode
-            }
-
-            response.failure = { resp ->
                 secondResponseStatus = resp.statusLine.statusCode
             }
         }
@@ -306,10 +284,6 @@ class RegistrationIT extends AbstractIT {
             body = userToRegister
 
             response.success = { resp, json ->
-                responseStatus = resp.statusLine.statusCode
-            }
-
-            response.failure = { resp ->
                 responseStatus = resp.statusLine.statusCode
             }
         }
@@ -359,10 +333,6 @@ class RegistrationIT extends AbstractIT {
             response.success = { resp, json ->
                 responseStatus = resp.statusLine.statusCode
             }
-
-            response.failure = { resp ->
-                responseStatus = resp.statusLine.statusCode
-            }
         }
 
         Query queryString = new QueryBuilder().filter("userName eq \"email@example.org\"").build()
@@ -387,12 +357,10 @@ class RegistrationIT extends AbstractIT {
         Message[] messages = mailServer.getReceivedMessages()
         messages.length == 1
     }
-    
-    def 'A registration of an user with malformed email and blank password gets bad request'() {
-        given:
-        def accessToken = osiamConnector.retrieveAccessToken()
 
-        def userToRegister = [email: 'email', password: ' ']
+    def 'Registration of a user with malformed email returns HTTP status 400 (bad request)'() {
+        given:
+        def userToRegister = [email: 'email']
 
         def responseStatus
 
@@ -403,9 +371,27 @@ class RegistrationIT extends AbstractIT {
             uri.path = REGISTRATION_ENDPOINT + '/registration'
             body = userToRegister
 
-            response.success = { resp, json ->
+            response.failure = { resp ->
                 responseStatus = resp.statusLine.statusCode
             }
+        }
+
+        then:
+        responseStatus == 400
+    }
+
+    def 'Registration of a user with malformed email and empty password returns HTTP status 400 (bad request)'() {
+        given:
+        def userToRegister = [email: 'email', password: '', profileUrl: 'not an url', photo: ' hello ']
+
+        def responseStatus
+
+        when:
+        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.POST, ContentType.URLENC) { req ->
+            uri.path = REGISTRATION_ENDPOINT + '/registration'
+            body = userToRegister
 
             response.failure = { resp ->
                 responseStatus = resp.statusLine.statusCode
@@ -418,8 +404,6 @@ class RegistrationIT extends AbstractIT {
     
     def 'The plugin caused an validation error for registration of an user'() {
         given:
-        def accessToken = osiamConnector.retrieveAccessToken()
-
         def userToRegister = [email: 'email@osiam.com', password: '0123456789']
 
         def responseStatus
@@ -431,11 +415,6 @@ class RegistrationIT extends AbstractIT {
         httpClient.request(Method.POST, ContentType.TEXT) { req ->
             uri.path = REGISTRATION_ENDPOINT + '/registration'
             send ContentType.URLENC, userToRegister
-
-            response.success = { resp, html ->
-                responseStatus = resp.statusLine.statusCode
-                responseContent = html.text
-            }
 
             response.failure = { resp, html ->
                 responseStatus = resp.statusLine.statusCode
