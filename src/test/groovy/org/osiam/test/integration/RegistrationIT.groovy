@@ -427,4 +427,33 @@ class RegistrationIT extends AbstractIT {
         responseContent.contains('<div class="alert alert-danger">')
         responseContent.contains('must end with .org!')
     }
+
+    def 'The registration controller should escape the displayName'() {
+        given:
+        def userToRegister = [email: 'email@example.org', password: 'password', displayName: "<script>alert('hello!');</script>"]
+
+        def responseStatus
+
+        when:
+        HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.POST, ContentType.URLENC) { req ->
+            headers.'Accept-Language' = 'en, en-US'
+            uri.path = REGISTRATION_ENDPOINT + '/registration'
+            body = userToRegister
+
+            response.success = { resp ->
+                responseStatus = resp.statusLine.statusCode
+            }
+        }
+
+        then:
+        responseStatus == 201
+
+        Query query = new QueryBuilder().filter("userName eq \"email@example.org\"").build()
+        SCIMSearchResult<User> users = osiamConnector.searchUsers(query, accessToken)
+        User user = users.getResources()[0]
+        user.emails[0].value == 'email@example.org'
+        user.displayName == '&lt;script&gt;alert(&#39;hello!&#39;);&lt;/script&gt;'
+    }
 }
