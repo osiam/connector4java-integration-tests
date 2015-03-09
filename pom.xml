@@ -22,10 +22,9 @@
     ~ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <!-- refer to sonatype parent pom for publishment to maven central -->
 
     <groupId>org.osiam.client</groupId>
     <artifactId>integration-tests</artifactId>
@@ -37,14 +36,20 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
         <java.version>1.7</java.version>
-        <spring.version>4.1.0.RELEASE</spring.version>
-        <org.hibernate-version>4.3.6.Final</org.hibernate-version>
-        <h2.version>1.3.170</h2.version>
-        <groovy.version>2.3.6</groovy.version>
-        <spock.version>0.7-groovy-2.0</spock.version>
+
+        <version.spring>4.1.5.RELEASE</version.spring>
+        <version.hibernate>4.3.8.Final</version.hibernate>
+        <version.h2>1.3.170</version.h2>
+        <version.groovy>2.3.10</version.groovy>
+        <version.spock>1.0-groovy-2.3</version.spock>
 
         <!-- OSIAM -->
-        <osiam.version>1.4-SNAPSHOT</osiam.version>
+        <version.osiam.server>1.4-SNAPSHOT</version.osiam.server>
+        <version.osiam.addon-self-administration>1.4-SNAPSHOT</version.osiam.addon-self-administration>
+        <version.osiam.addon-self-administration-plugin-example>
+            1.4-SNAPSHOT
+        </version.osiam.addon-self-administration-plugin-example>
+        <version.osiam.connector4java>1.5-SNAPSHOT</version.osiam.connector4java>
     </properties>
 
     <repositories>
@@ -69,13 +74,13 @@
         <dependency>
             <groupId>org.osiam</groupId>
             <artifactId>connector4java</artifactId>
-            <version>${osiam.version}</version>
+            <version>${version.osiam.connector4java}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.3.1</version>
+            <version>4.4</version>
         </dependency>
 
         <dependency>
@@ -87,7 +92,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
 
@@ -108,37 +113,37 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
-            <version>${spring.version}</version>
+            <version>${version.spring}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
-            <version>${spring.version}</version>
+            <version>${version.spring}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
+            <version>${version.spring}</version>
         </dependency>
 
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>${h2.version}</version>
+            <version>${version.h2}</version>
         </dependency>
 
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>9.3-1101-jdbc41</version>
+            <version>9.3-1103-jdbc41</version>
         </dependency>
 
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.6</version>
+            <version>5.1.34</version>
         </dependency>
 
         <dependency>
@@ -150,26 +155,26 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.7</version>
+            <version>1.7.10</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>${org.hibernate-version}</version>
+            <version>${version.hibernate}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
-            <version>${spring.version}</version>
+            <version>${version.spring}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>${spring.version}</version>
+            <version>${version.spring}</version>
             <scope>test</scope>
         </dependency>
 
@@ -182,7 +187,7 @@
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
-            <version>2.4</version>
+            <version>2.7</version>
         </dependency>
 
         <!-- TESTING -->
@@ -190,7 +195,7 @@
         <dependency>
             <groupId>com.icegreen</groupId>
             <artifactId>greenmail</artifactId>
-            <version>1.3.1b</version>
+            <version>1.4.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -198,13 +203,13 @@
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
-            <version>${groovy.version}</version>
+            <version>${version.groovy}</version>
         </dependency>
 
         <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>
-            <version>${spock.version}</version>
+            <version>${version.spock}</version>
         </dependency>
 
         <!-- Groovy HTTP Builder: needed for API testing -->
@@ -227,7 +232,7 @@
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>2.12</version>
+            <version>2.17</version>
         </dependency>
 
         <dependency>
@@ -264,12 +269,12 @@
                     <dependency>
                         <groupId>org.codehaus.groovy</groupId>
                         <artifactId>groovy-eclipse-batch</artifactId>
-                        <version>2.1.8-01</version>
+                        <version>2.3.7-01</version>
                     </dependency>
                     <dependency>
                         <groupId>org.codehaus.groovy</groupId>
                         <artifactId>groovy-eclipse-compiler</artifactId>
-                        <version>2.8.0-01</version>
+                        <version>2.9.1-01</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -313,12 +318,12 @@
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.2.3.v20140905</version>
+                <version>9.2.10.v20150310</version>
                 <dependencies>
                     <dependency>
                         <groupId>com.h2database</groupId>
                         <artifactId>h2</artifactId>
-                        <version>${h2.version}</version>
+                        <version>${version.h2}</version>
                     </dependency>
                 </dependencies>
                 <configuration>
@@ -334,15 +339,17 @@
                     <stopKey>STOP</stopKey>
                     <contextHandlers>
                         <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
-                            <war>${project.build.directory}/osiam-auth-server-${osiam.version}</war>
+                            <war>${project.build.directory}/osiam-auth-server-${version.osiam.server}</war>
                             <contextPath>/osiam-auth-server</contextPath>
                         </contextHandler>
                         <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
-                            <war>${project.build.directory}/addon-self-administration-${osiam.version}</war>
+                            <war>
+                                ${project.build.directory}/addon-self-administration-${version.osiam.addon-self-administration}
+                            </war>
                             <contextPath>/addon-self-administration</contextPath>
                         </contextHandler>
                         <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
-                            <war>${project.build.directory}/osiam-resource-server-${osiam.version}</war>
+                            <war>${project.build.directory}/osiam-resource-server-${version.osiam.server}</war>
                             <contextPath>/osiam-resource-server</contextPath>
                         </contextHandler>
                     </contextHandlers>
@@ -406,11 +413,12 @@
                                 <artifactItem>
                                     <groupId>org.osiam</groupId>
                                     <artifactId>osiam-resource-server</artifactId>
-                                    <version>${osiam.version}</version>
+                                    <version>${version.osiam.server}</version>
                                     <type>war</type>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/osiam-resource-server-${osiam.version}
+                            <outputDirectory>
+                                ${project.build.directory}/osiam-resource-server-${version.osiam.server}
                             </outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
@@ -426,11 +434,11 @@
                                 <artifactItem>
                                     <groupId>org.osiam</groupId>
                                     <artifactId>osiam-auth-server</artifactId>
-                                    <version>${osiam.version}</version>
+                                    <version>${version.osiam.server}</version>
                                     <type>war</type>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/osiam-auth-server-${osiam.version}
+                            <outputDirectory>${project.build.directory}/osiam-auth-server-${version.osiam.server}
                             </outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
@@ -446,11 +454,13 @@
                                 <artifactItem>
                                     <groupId>org.osiam</groupId>
                                     <artifactId>addon-self-administration</artifactId>
-                                    <version>${osiam.version}</version>
+                                    <version>${version.osiam.addon-self-administration}</version>
                                     <type>war</type>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/addon-self-administration-${osiam.version}</outputDirectory>
+                            <outputDirectory>
+                                ${project.build.directory}/addon-self-administration-${version.osiam.addon-self-administration}
+                            </outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
                     </execution>
@@ -465,7 +475,7 @@
                                 <artifactItem>
                                     <groupId>org.osiam</groupId>
                                     <artifactId>addon-self-administration-plugin-example</artifactId>
-                                    <version>${osiam.version}</version>
+                                    <version>${version.osiam.addon-self-administration-plugin-example}</version>
                                     <type>jar</type>
                                 </artifactItem>
                             </artifactItems>
@@ -490,7 +500,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                ${project.build.directory}/osiam-resource-server-${osiam.version}/WEB-INF/
+                                ${project.build.directory}/osiam-resource-server-${version.osiam.server}/WEB-INF/
                             </outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>
@@ -509,7 +519,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                ${project.build.directory}/osiam-resource-server-${osiam.version}/WEB-INF/classes
+                                ${project.build.directory}/osiam-resource-server-${version.osiam.server}/WEB-INF/classes
                             </outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>
@@ -528,7 +538,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                ${project.build.directory}/osiam-auth-server-${osiam.version}/WEB-INF/classes
+                                ${project.build.directory}/osiam-auth-server-${version.osiam.server}/WEB-INF/classes
                             </outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>
@@ -549,7 +559,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                ${project.build.directory}/osiam-auth-server-${osiam.version}/WEB-INF
+                                ${project.build.directory}/osiam-auth-server-${version.osiam.server}/WEB-INF
                             </outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>
@@ -569,7 +579,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                ${project.build.directory}/addon-self-administration-${osiam.version}/WEB-INF/classes
+                                ${project.build.directory}/addon-self-administration-${version.osiam.addon-self-administration}/WEB-INF/classes
                             </outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>
@@ -629,7 +639,7 @@
                             <dependency>
                                 <groupId>com.h2database</groupId>
                                 <artifactId>h2</artifactId>
-                                <version>${h2.version}</version>
+                                <version>${version.h2}</version>
                             </dependency>
                         </dependencies>
                         <configuration>
@@ -677,7 +687,7 @@
                             <dependency>
                                 <groupId>com.h2database</groupId>
                                 <artifactId>h2</artifactId>
-                                <version>${h2.version}</version>
+                                <version>${version.h2}</version>
                             </dependency>
                         </dependencies>
                         <configuration>
@@ -725,11 +735,12 @@
                             <dependency>
                                 <groupId>org.postgresql</groupId>
                                 <artifactId>postgresql</artifactId>
-                                <version>9.3-1102-jdbc41</version>
+                                <version>9.3-1103-jdbc41</version>
                             </dependency>
                         </dependencies>
                         <configuration>
-                            <dataTypeFactoryName>org.dbunit.ext.postgresql.PostgresqlDataTypeFactory</dataTypeFactoryName>
+                            <dataTypeFactoryName>org.dbunit.ext.postgresql.PostgresqlDataTypeFactory
+                            </dataTypeFactoryName>
                             <driver>org.postgresql.Driver</driver>
                             <url>jdbc:postgresql://localhost:5432/ong</url>
                             <username>ong</username>
