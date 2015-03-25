@@ -56,16 +56,16 @@
         <repository>
             <id>osiam releases repo</id>
             <url>https://maven-repo.evolvis.org/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>osiam snapshots repo</id>
             <url>https://maven-repo.evolvis.org/snapshots</url>
             <releases>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
         </repository>
     </repositories>
 
