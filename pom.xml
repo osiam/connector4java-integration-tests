@@ -477,6 +477,7 @@
                                     <artifactId>addon-self-administration-plugin-example</artifactId>
                                     <version>${version.osiam.addon-self-administration-plugin-example}</version>
                                     <type>jar</type>
+                                    <destFileName>addon-self-administration-plugin-example-${version.osiam.addon-self-administration-plugin-example}.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>
                             <overWriteSnapshots>true</overWriteSnapshots>
