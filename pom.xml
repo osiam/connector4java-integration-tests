@@ -527,6 +527,10 @@
                                     <directory>src/test/resources/resource-server-configuration</directory>
                                     <include>resource-server.properties</include>
                                 </resource>
+                                <resource>
+                                    <directory>src/test/resources</directory>
+                                    <include>log4j.properties</include>
+                                </resource>
                             </resources>
                         </configuration>
                     </execution>
@@ -547,6 +551,10 @@
                                     <include>**/**</include>
                                     <exclude>auth-server_pg.properties</exclude>
                                     <exclude>*.xml</exclude>
+                                </resource>
+                                <resource>
+                                    <directory>src/test/resources</directory>
+                                    <include>log4j.properties</include>
                                 </resource>
                             </resources>
                         </configuration>
@@ -591,6 +599,10 @@
                                     <directory>src/test/resources/addon-self-administration-configuration</directory>
                                     <include>addon-self-administration.properties</include>
                                     <filtering>true</filtering>
+                                </resource>
+                                <resource>
+                                    <directory>src/test/resources</directory>
+                                    <include>log4j.properties</include>
                                 </resource>
                             </resources>
                         </configuration>
