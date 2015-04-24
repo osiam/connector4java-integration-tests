@@ -104,13 +104,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
 
     @Test
     public void search_for_user_by_complex_query() {
-        Query query = getCompletUserQuery();
-        SCIMSearchResult<User> queryResult = oConnector.searchUsers(query, accessToken);
-        assertThat(queryResult.getTotalResults(), is(equalTo(1L)));
-    }
-
-    private Query getCompletUserQuery() {
-        return new QueryBuilder().filter("active eq \"true\""
+        Query query = new QueryBuilder().filter("active eq \"true\""
                 + " and addresses.country eq \"Germany\""
                 + " and addresses.formatted eq \"formatted\""
                 + " and addresses.locality eq \"Berlin\""
@@ -158,6 +152,8 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
                 + " and title eq \"title\""
                 + " and userName sw \"user\""
                 + " and x509Certificates eq \"x509Certificate\"").build();
+        SCIMSearchResult<User> queryResult = oConnector.searchUsers(query, accessToken);
+        assertThat(queryResult.getTotalResults(), is(equalTo(1L)));
     }
 
     private User createUserWithUpdatedField() {
