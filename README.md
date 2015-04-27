@@ -1,4 +1,4 @@
-connector4java-integration-tests [![Build Status](https://travis-ci.org/osiam/connector4java-integration-tests.png?branch=master)](https://travis-ci.org/osiam/connector4java-integration-tests)
+connector4java-integration-tests [![Circle CI](https://circleci.com/gh/osiam/connector4java-integration-tests.svg?style=svg)](https://circleci.com/gh/osiam/connector4java-integration-tests)
 ================================
 
 The integration-tests for OSIAM.

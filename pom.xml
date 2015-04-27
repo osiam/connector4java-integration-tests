@@ -593,6 +593,7 @@
                             <exclude>mysql</exclude>
                             <removeIntermediateImages>true</removeIntermediateImages>
                             <cache>false</cache>
+                            <permissionErrorTolerant>true</permissionErrorTolerant>
                         </configuration>
                         <executions>
                             <execution>
@@ -684,6 +685,7 @@
                             <exclude>postgres</exclude>
                             <removeIntermediateImages>true</removeIntermediateImages>
                             <cache>false</cache>
+                            <permissionErrorTolerant>true</permissionErrorTolerant>
                         </configuration>
                         <executions>
                             <execution>

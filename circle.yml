@@ -1,0 +1,16 @@
+machine:
+  services:
+    - docker
+  environment:
+    DOCKER_HOST: http://localhost:2375
+
+database:
+  pre:
+    - sudo service mysql stop && sudo service postgresql stop
+
+test:
+  pre:
+    - echo 'DOCKER_OPTS="${DOCKER_OPTS} -H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock"' | sudo tee -a /etc/default/docker
+    - sudo restart docker
+  override:
+    - mvn clean verify -P postgres

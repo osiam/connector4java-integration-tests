@@ -48,7 +48,7 @@ public abstract class AbstractIntegrationTestBase {
 
     static {
         OsiamConnector.setConnectTimeout(10000);
-        OsiamConnector.setReadTimeout(10000);
+        OsiamConnector.setReadTimeout(30000);
     }
 
     @Before
