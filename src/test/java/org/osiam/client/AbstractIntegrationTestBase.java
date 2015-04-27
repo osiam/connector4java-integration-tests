@@ -46,6 +46,11 @@ public abstract class AbstractIntegrationTestBase {
     protected OsiamConnector oConnector;
     protected AccessToken accessToken;
 
+    static {
+        OsiamConnector.setConnectTimeout(10000);
+        OsiamConnector.setReadTimeout(10000);
+    }
+
     @Before
     public void abstractSetUp() throws Exception {
         OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder()

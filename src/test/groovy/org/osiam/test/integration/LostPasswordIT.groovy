@@ -23,37 +23,23 @@
 
 package org.osiam.test.integration
 
-import static groovyx.net.http.ContentType.URLENC
 import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
-
-import javax.mail.Message
-
 import org.osiam.client.oauth.Scope
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.resources.scim.User
 
-import com.icegreen.greenmail.util.GreenMail
-import com.icegreen.greenmail.util.GreenMailUtil
-import com.icegreen.greenmail.util.ServerSetupTest
+import static groovyx.net.http.ContentType.URLENC
 
 /**
  * Integration test for lost password controller
  */
 class LostPasswordIT extends AbstractIT {
 
-    def mailServer
-
     def setup() {
         setupDatabase('database_seed_lost_password.xml')
-        mailServer = new GreenMail(ServerSetupTest.ALL)
-        mailServer.start()
-    }
-
-    def cleanup() {
-        mailServer.stop()
     }
 
     def 'URI: /password/lost/{userId} with POST method for lost password flow activation'() {
@@ -85,17 +71,6 @@ class LostPasswordIT extends AbstractIT {
         User user = osiamConnector.getUser(userId, accessToken)
         Extension extension = user.getExtension(urn)
         extension.getField('oneTimePassword', ExtensionFieldType.STRING) != null
-
-        //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
-        mailServer.waitForIncomingEmail(5000, 1)
-        Message[] messages = mailServer.getReceivedMessages()
-        messages.length == 1
-        messages[0].getSubject().contains('Change of your password')
-        def msg = GreenMailUtil.getBody(messages[0])
-        msg.contains('to reset your password, please click the link below:')
-        msg.contains(userId)
-        messages[0].getFrom()[0].toString() == 'noreply@osiam.org'
-        messages[0].getAllRecipients()[0].toString().equals('george.alexander@osiam.org')
     }
 
     def 'URI: /password/change/{userId} with POST method to change the old with the new password as client'() {
@@ -113,7 +88,7 @@ class LostPasswordIT extends AbstractIT {
 
         httpClient.request(Method.POST) {
             uri.path = REGISTRATION_ENDPOINT + '/password/change/' + userId
-            send URLENC, [oneTimePassword : otp, newPassword : newPassword]
+            send URLENC, [oneTimePassword: otp, newPassword: newPassword]
             headers.'Authorization' = 'Bearer ' + accessToken.getToken()
 
             response.success = { resp, json ->
@@ -147,13 +122,13 @@ class LostPasswordIT extends AbstractIT {
 
         httpClient.request(Method.POST) {
             uri.path = REGISTRATION_ENDPOINT + '/password/change/' + userId
-            send URLENC, [oneTimePassword : otp, newPassword : newPassword]
+            send URLENC, [oneTimePassword: otp, newPassword: newPassword]
             headers.'Authorization' = 'Bearer ' + accessToken.getToken()
         }
 
         httpClient.request(Method.POST) {
             uri.path = REGISTRATION_ENDPOINT + '/password/change/' + userId
-            send URLENC, [oneTimePassword : otp, newPassword : newPassword]
+            send URLENC, [oneTimePassword: otp, newPassword: newPassword]
             headers.'Authorization' = 'Bearer ' + accessToken.getToken()
 
             response.failure = { resp ->
@@ -180,7 +155,7 @@ class LostPasswordIT extends AbstractIT {
 
         httpClient.request(Method.POST) {
             uri.path = REGISTRATION_ENDPOINT + '/password/change'
-            send URLENC, [oneTimePassword : otp, newPassword : newPassword]
+            send URLENC, [oneTimePassword: otp, newPassword: newPassword]
             headers.'Authorization' = 'Bearer ' + accessToken.getToken()
 
             response.success = { resp, json ->
@@ -215,10 +190,10 @@ class LostPasswordIT extends AbstractIT {
 
         httpClient.request(Method.GET, ContentType.TEXT) {
             uri.path = REGISTRATION_ENDPOINT + '/password/lostForm'
-            uri.query = [oneTimePassword : otp, userId : userId]
+            uri.query = [oneTimePassword: otp, userId: userId]
             headers.Accept = 'text/html'
 
-            response.success = {resp, html ->
+            response.success = { resp, html ->
                 statusCode = resp.statusLine.statusCode
                 responseContentType = resp.headers.'Content-Type'
                 responseContent = html.text

@@ -1,0 +1,20 @@
+packaging:
+  add:
+    - target/osiam-auth-server
+    - target/osiam-resource-server
+    - target/addon-self-administration
+    - target/dependency/addon-self-administration-plugin-example.jar
+
+links:
+  - ${database.container}:${database.container}
+
+ports:
+  - 8180
+
+healthChecks:
+  pings:
+    - url: http://localhost:8180/manager/text/list
+      timeout: 250000
+      pattern: osiam-resource-server:running
+
+tag: ${project.artifactId}_tomcat-${database.container}

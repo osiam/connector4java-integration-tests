@@ -47,12 +47,6 @@ abstract class AbstractIT extends Specification {
     protected static final String CLIENT_ID = "example-client"
     private static final String CLIENT_SECRET = "secret"
 
-    private static final String USER_NAME = "marissa"
-    private static final String USER_PASSWORD = "koala"
-
-    private static final String USER_NAME_EMAIL_CHANGE = "GeorgeAlexander"
-    private static final String USER_PASSWORD_EMAIL_CHANGE = "koala"
-
     protected static final String AUTH_ENDPOINT = "http://localhost:8180/osiam-auth-server"
     protected static final String RESOURCE_ENDPOINT = "http://localhost:8180/osiam-resource-server"
     protected static final String REGISTRATION_ENDPOINT = "http://localhost:8180/addon-self-administration"
@@ -60,6 +54,11 @@ abstract class AbstractIT extends Specification {
     protected OsiamConnector osiamConnector
     protected OsiamConnector osiamConnectorForClientCredentialsGrant
     protected OsiamConnector osiamConnectorForEmailChange
+
+    static {
+        OsiamConnector.setConnectTimeout(10000);
+        OsiamConnector.setReadTimeout(10000);
+    }
 
     def AccessToken accessToken
 
