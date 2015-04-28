@@ -33,8 +33,6 @@ import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
-import org.osiam.client.oauth.GrantType;
-import org.osiam.client.oauth.Scope;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.UpdateGroup;
 import org.osiam.resources.scim.UpdateUser;
@@ -67,7 +65,6 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
             fail("expected exception");
         } catch (NoResultException e) {
             String errorMessage = e.getMessage();
-            printOutErrorMessage(errorMessage);
             assertTrue(errorMessage.contains("User"));
             assertTrue(errorMessage.contains("not found"));
         }
@@ -83,7 +80,6 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
             fail("expected exception");
         } catch (NoResultException e) {
             String errorMessage = e.getMessage();
-            printOutErrorMessage(errorMessage);
             assertTrue(errorMessage.contains("Group"));
             assertTrue(errorMessage.contains("not found"));
         }
@@ -99,7 +95,6 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
             fail("expected exception");
         } catch (NoResultException e) {
             String errorMessage = e.getMessage();
-            printOutErrorMessage(errorMessage);
             assertTrue(errorMessage.contains("User"));
             assertTrue(errorMessage.contains("not found"));
         }
@@ -116,7 +111,6 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
             fail("expected exception");
         } catch (ConflictException e) {
             String errorMessage = e.getMessage();
-            printOutErrorMessage(errorMessage);
             assertTrue(errorMessage.contains("userName"));
             assertTrue(errorMessage.contains("mandatory"));
         }
@@ -133,7 +127,6 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
             fail("expected exception");
         } catch (ConflictException e) {
             String errorMessage = e.getMessage();
-            printOutErrorMessage(errorMessage);
             assertTrue(errorMessage.contains("displayName"));
             assertTrue(errorMessage.contains("mandatory"));
         }
@@ -151,7 +144,6 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
             fail("expected exception");
         } catch (ConflictException e) {
             String errorMessage = e.getMessage();
-            printOutErrorMessage(errorMessage);
             assertTrue(errorMessage.contains("user"));
             assertTrue(errorMessage.contains("already taken"));
         }
@@ -169,7 +161,6 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
             fail("expected exception");
         } catch (ConflictException e) {
             String errorMessage = e.getMessage();
-            printOutErrorMessage(errorMessage);
             assertTrue(errorMessage.contains("user") && errorMessage.contains("already taken"));
         }
     }
@@ -187,7 +178,6 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
             fail("expected exception");
         } catch (ConflictException e) {
             String errorMessage = e.getMessage();
-            printOutErrorMessage(errorMessage);
             assertTrue(errorMessage.contains("user") && errorMessage.contains("already taken"));
         }
     }
@@ -205,7 +195,6 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
             fail("expected exception");
         } catch (ConflictException e) {
             String errorMessage = e.getMessage();
-            printOutErrorMessage(errorMessage);
             assertTrue(errorMessage.contains("group") && errorMessage.contains("already taken"));
         }
     }
@@ -223,7 +212,6 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
             fail("expected exception");
         } catch (ConflictException e) {
             String errorMessage = e.getMessage();
-            printOutErrorMessage(errorMessage);
             assertTrue(errorMessage.contains("user") && errorMessage.contains("already taken"));
         }
     }
@@ -241,7 +229,6 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
             fail("expected exception");
         } catch (ConflictException e) {
             String errorMessage = e.getMessage();
-            printOutErrorMessage(errorMessage);
             assertTrue(errorMessage.contains("group") && errorMessage.contains("already taken"));
         }
     }
@@ -260,7 +247,6 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
             fail("expected exception");
         } catch (ConflictException e) {
             String errorMessage = e.getMessage();
-            printOutErrorMessage(errorMessage);
             assertTrue(errorMessage.contains("user") && errorMessage.contains("already taken"));
         }
     }
@@ -279,7 +265,6 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
             fail("expected exception");
         } catch (ConflictException e) {
             String errorMessage = e.getMessage();
-            printOutErrorMessage(errorMessage);
             assertTrue(errorMessage.contains("user") && errorMessage.contains("already taken"));
         }
     }
@@ -298,7 +283,6 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
             fail("expected exception");
         } catch (ConflictException e) {
             String errorMessage = e.getMessage();
-            printOutErrorMessage(errorMessage);
             assertTrue(errorMessage.contains("group") && errorMessage.contains("already taken"));
         }
     }
@@ -317,7 +301,6 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
             fail("expected exception");
         } catch (ConflictException e) {
             String errorMessage = e.getMessage();
-            printOutErrorMessage(errorMessage);
             assertTrue(errorMessage.contains("group") && errorMessage.contains("already taken"));
         }
     }
@@ -334,7 +317,6 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
             fail("expected exception");
         } catch (ConflictException e) {
             String errorMessage = e.getMessage();
-            printOutErrorMessage(errorMessage);
             assertTrue(errorMessage.contains("group") && errorMessage.contains("displayname")
                     && errorMessage.contains("already taken"));
         }
@@ -352,7 +334,6 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
             fail("expected exception");
         } catch (ConflictException e) {
             String errorMessage = e.getMessage();
-            printOutErrorMessage(errorMessage);
             assertTrue(errorMessage.contains("group"));
             assertTrue(errorMessage.contains("externalId"));
             assertTrue(errorMessage.contains("already taken"));
@@ -374,15 +355,7 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
             oConnector.retrieveAccessToken();
         } catch (UnauthorizedException e) {
             String errorMessage = e.getMessage();
-            printOutErrorMessage(errorMessage);
             assertTrue(errorMessage.contains("Bad credentials"));
         }
     }
-
-    private void printOutErrorMessage(String errorMessage) {
-        final StackTraceElement[] ste = Thread.currentThread().getStackTrace();
-        String methodName = ste[2].getMethodName();
-        System.out.println("The error message for " + methodName + " is: " + errorMessage);
-    }
 }
-

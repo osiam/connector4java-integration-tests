@@ -23,31 +23,18 @@
 
 package org.osiam.test.integration
 
-import groovyx.net.http.ContentType
-import groovyx.net.http.HTTPBuilder
-import groovyx.net.http.Method
-import spock.lang.Ignore
-
-import javax.mail.Message
-
-import org.osiam.client.query.Query
-import org.osiam.client.query.QueryBuilder
-import org.osiam.resources.helper.UserDeserializer
-import org.osiam.resources.scim.Email
-import org.osiam.resources.scim.Extension
-import org.osiam.resources.scim.ExtensionFieldType
-import org.osiam.resources.scim.Name
-import org.osiam.resources.scim.SCIMSearchResult
-import org.osiam.resources.scim.User
-
-import spock.lang.Shared
-
 import com.fasterxml.jackson.core.Version
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
-import com.icegreen.greenmail.util.GreenMail
-import com.icegreen.greenmail.util.GreenMailUtil
-import com.icegreen.greenmail.util.ServerSetupTest
+import groovyx.net.http.ContentType
+import groovyx.net.http.HTTPBuilder
+import groovyx.net.http.Method
+import org.osiam.client.query.Query
+import org.osiam.client.query.QueryBuilder
+import org.osiam.resources.helper.UserDeserializer
+import org.osiam.resources.scim.*
+import spock.lang.Ignore
+import spock.lang.Shared
 
 /**
  * This test covers the controller for registration purpose.
@@ -56,8 +43,6 @@ class RegistrationIT extends AbstractIT {
 
     @Shared
     ObjectMapper mapper
-
-    def mailServer
 
     def setupSpec() {
         mapper = new ObjectMapper()
@@ -68,13 +53,6 @@ class RegistrationIT extends AbstractIT {
 
     def setup() {
         setupDatabase('database_seed_registration.xml')
-
-        mailServer = new GreenMail(ServerSetupTest.ALL)
-        mailServer.start()
-    }
-
-    def cleanup() {
-        mailServer.stop()
     }
 
     def 'The registration controller should return a rendered html'() {
@@ -143,15 +121,6 @@ class RegistrationIT extends AbstractIT {
         Extension extension = user.getExtension('urn:scim:schemas:osiam:2.0:Registration')
         extension.getField('activationToken', ExtensionFieldType.STRING) != null
         user.getGroups().get(0).getDisplay().equalsIgnoreCase("Test")
-
-        //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
-        mailServer.waitForIncomingEmail(5000, 1)
-        Message[] messages = mailServer.getReceivedMessages()
-        messages.length == 1
-        messages[0].getSubject().contains('Confirmation of your registration')
-        GreenMailUtil.getBody(messages[0]).contains('your account has been created')
-        messages[0].getFrom()[0].toString() == 'noreply@osiam.org'
-        messages[0].getAllRecipients()[0].toString().equals('email@example.org')
     }
 
     def 'A german user should get a german email text'() {
@@ -175,15 +144,6 @@ class RegistrationIT extends AbstractIT {
 
         then:
         responseStatus == 201
-
-        //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
-        mailServer.waitForIncomingEmail(5000, 1)
-        Message[] messages = mailServer.getReceivedMessages()
-        messages.length == 1
-        messages[0].getSubject().contains('Bestätigung der Registrierung')
-        GreenMailUtil.getBody(messages[0]).contains('ihr Account wurde erstellt.')
-        messages[0].getFrom()[0].toString() == 'noreply@osiam.org'
-        messages[0].getAllRecipients()[0].toString().equals('email@example.org')
     }
 
     def getUserAsStringWithExtension() {
@@ -217,7 +177,7 @@ class RegistrationIT extends AbstractIT {
 
         httpClient.request(Method.GET) { req ->
             uri.path = REGISTRATION_ENDPOINT + '/registration/activation'
-            uri.query = [userId:createdUserId, activationToken:activationToken]
+            uri.query = [userId: createdUserId, activationToken: activationToken]
 
             response.success = { resp ->
                 responseStatus = resp.statusLine.statusCode
@@ -245,7 +205,7 @@ class RegistrationIT extends AbstractIT {
 
         httpClient.request(Method.GET) { req ->
             uri.path = REGISTRATION_ENDPOINT + '/registration/activation'
-            uri.query = [userId:createdUserId, activationToken:activationToken]
+            uri.query = [userId: createdUserId, activationToken: activationToken]
 
             response.success = { resp ->
                 firstResponseStatus = resp.statusLine.statusCode
@@ -254,7 +214,7 @@ class RegistrationIT extends AbstractIT {
 
         httpClient.request(Method.GET) { req ->
             uri.path = REGISTRATION_ENDPOINT + '/registration/activation'
-            uri.query = [userId:createdUserId, activationToken:activationToken]
+            uri.query = [userId: createdUserId, activationToken: activationToken]
 
             response.success = { resp ->
                 secondResponseStatus = resp.statusLine.statusCode
@@ -302,15 +262,6 @@ class RegistrationIT extends AbstractIT {
         registeredExtension2.getField('age', ExtensionFieldType.STRING) != null
         registeredExtension2.getField('age', ExtensionFieldType.STRING) == '12'
         registeredUser.getGroups().get(0).getDisplay().equalsIgnoreCase("Test")
-
-        //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
-        mailServer.waitForIncomingEmail(5000, 1)
-        Message[] messages = mailServer.getReceivedMessages()
-        messages.length == 1
-        messages[0].getSubject().contains('Confirmation of your registration')
-        GreenMailUtil.getBody(messages[0]).contains('your account has been created')
-        messages[0].getFrom()[0].toString() == 'noreply@osiam.org'
-        messages[0].getAllRecipients()[0].toString().equals('email@example.org')
     }
 
     def 'A registration of an user with not allowed field nickName and existing extension but not the field'() {
@@ -319,8 +270,8 @@ class RegistrationIT extends AbstractIT {
 
         // email, password are always allowed, displayName is allowed and nickName is disallowed by config
         // extension 'urn:client:extension' is only allowed with field 'age' and not 'gender'
-        def userToRegister = [email: 'email@example.org', password: 'password', displayName: 'displayName', nickName: 'nickname',
-            'extensions[\'urn:client:extension\'].fields[\'gender\']': 'M']
+        def userToRegister = [email: 'email@example.org', password: 'password', displayName: 'displayName',
+                              nickName: 'nickname', 'extensions[\'urn:client:extension\'].fields[\'gender\']': 'M']
 
         def responseStatus
 
@@ -352,11 +303,6 @@ class RegistrationIT extends AbstractIT {
         registeredUser.displayName == 'displayName'
 
         responseStatus == 201
-
-        //Waiting at least 5 seconds for an E-Mail but aborts instantly if one E-Mail was received
-        mailServer.waitForIncomingEmail(5000, 1)
-        Message[] messages = mailServer.getReceivedMessages()
-        messages.length == 1
     }
 
     def 'Registration of a user with malformed email returns HTTP status 400 (bad request)'() {
@@ -432,7 +378,8 @@ class RegistrationIT extends AbstractIT {
     @Ignore("always fails, maybe this test is not valid anymore?")
     def 'The registration controller should escape the displayName'() {
         given:
-        def userToRegister = [email: 'email@example.org', password: 'password', displayName: "<script>alert('hello!');</script>"]
+        def userToRegister = [email      : 'email@example.org', password: 'password',
+                              displayName: "<script>alert('hello!');</script>"]
 
         def responseStatus
 

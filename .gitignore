@@ -1,9 +1,8 @@
 .idea
 *iml
 target/
-.vagrant
 .classpath
 .project
 .settings
 /target
-.DS_Store
+integration-tests.properties
