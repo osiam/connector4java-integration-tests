@@ -14,3 +14,4 @@ test:
     - sudo restart docker
   override:
     - mvn clean verify -P postgres
+    - mvn clean verify -P mysql
