@@ -37,8 +37,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.management.RuntimeErrorException;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
@@ -163,7 +161,48 @@ public class LoginOAuth2IT {
     @Test
     @Ignore("Fails mostly on Jenkins")
     public void if_ldap_user_login_but_internal_user_already_exists_error_will_be_shown() throws IOException {
-        assureLdapLoginProcessFails();
+        String currentRedirectUri;
+        String username = "marissa";
+        String password = "koala";
+        String provider = "ldap";
+
+        {
+            HttpGet httpGet = new HttpGet(loginUri);
+            defaultHttpClient.execute(httpGet);
+            httpGet.releaseConnection();
+        }
+
+        {
+            HttpPost httpPost = new HttpPost(
+                    AUTH_ENDPOINT_ADDRESS + "/login/check");
+
+            List<NameValuePair> loginCredentials = new ArrayList<>();
+            loginCredentials
+                    .add(new BasicNameValuePair("username", username));
+            loginCredentials.add(new BasicNameValuePair("password", password));
+            loginCredentials.add(new BasicNameValuePair("provider", provider));
+            UrlEncodedFormEntity loginCredentialsEntity = new UrlEncodedFormEntity(
+                    loginCredentials, "UTF-8");
+
+            httpPost.setEntity(loginCredentialsEntity);
+            HttpResponse response = defaultHttpClient.execute(httpPost);
+
+            currentRedirectUri = response.getLastHeader("Location").getValue();
+
+            httpPost.releaseConnection();
+        }
+
+        assertTrue(currentRedirectUri.contains("login/error"));
+
+        {
+            HttpGet httpGet = new HttpGet(currentRedirectUri);
+            httpGet.setHeader("Accept-Language", "de-DE");
+            HttpResponse response = defaultHttpClient.execute(httpGet);
+            InputStream content = response.getEntity().getContent();
+            String inputStreamStringValue = IOUtils.toString(content, "UTF-8");
+            assertThat(inputStreamStringValue, containsString("Anmeldung über ldap nicht möglich"));
+            httpGet.releaseConnection();
+        }
     }
 
     @Test
@@ -255,51 +294,6 @@ public class LoginOAuth2IT {
 
     private void givenAccessTokenUsingAuthCode() {
         accessToken = oConnector.retrieveAccessToken(authCode);
-    }
-
-    private void assureLdapLoginProcessFails() throws IOException {
-        String currentRedirectUri;
-        String username = "marissa";
-        String password = "koala";
-        String provider = "ldap";
-
-        {
-            HttpGet httpGet = new HttpGet(loginUri);
-            defaultHttpClient.execute(httpGet);
-            httpGet.releaseConnection();
-        }
-
-        {
-            HttpPost httpPost = new HttpPost(
-                    AUTH_ENDPOINT_ADDRESS + "/login/check");
-
-            List<NameValuePair> loginCredentials = new ArrayList<>();
-            loginCredentials
-                    .add(new BasicNameValuePair("username", username));
-            loginCredentials.add(new BasicNameValuePair("password", password));
-            loginCredentials.add(new BasicNameValuePair("provider", provider));
-            UrlEncodedFormEntity loginCredentialsEntity = new UrlEncodedFormEntity(
-                    loginCredentials, "UTF-8");
-
-            httpPost.setEntity(loginCredentialsEntity);
-            HttpResponse response = defaultHttpClient.execute(httpPost);
-
-            currentRedirectUri = response.getLastHeader("Location").getValue();
-
-            httpPost.releaseConnection();
-        }
-
-        assertTrue(currentRedirectUri.contains("login/error"));
-
-        {
-            HttpGet httpGet = new HttpGet(currentRedirectUri);
-            httpGet.setHeader("Accept-Language", "de-DE");
-            HttpResponse response = defaultHttpClient.execute(httpGet);
-            InputStream content = response.getEntity().getContent();
-            String inputStreamStringValue = IOUtils.toString(content, "UTF-8");
-            assertThat(inputStreamStringValue, containsString("Anmeldung über ldap nicht möglich"));
-            httpGet.releaseConnection();
-        }
     }
 
     private String givenValidAuthCode(String username, String password, String provider) throws IOException {

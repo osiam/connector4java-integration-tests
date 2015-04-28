@@ -23,14 +23,11 @@
 
 package org.osiam.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;

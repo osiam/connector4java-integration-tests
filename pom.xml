@@ -413,25 +413,6 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>copy-persistence-config</id>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>
-                                ${project.build.directory}/osiam-resource-server/WEB-INF/
-                            </outputDirectory>
-                            <overwrite>true</overwrite>
-                            <resources>
-                                <resource>
-                                    <directory>src/test/resources/resource-server-configuration</directory>
-                                    <include>jpa-configuration.xml</include>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>copy-osiam-resource-resources</id>
                         <phase>generate-test-resources</phase>
                         <goals>
@@ -489,7 +470,6 @@
                                 <resource>
                                     <directory>src/test/resources/auth-server-configuration</directory>
                                     <include>user-authentication.xml</include>
-                                    <include>jpa-configuration.xml</include>
                                 </resource>
                             </resources>
                         </configuration>

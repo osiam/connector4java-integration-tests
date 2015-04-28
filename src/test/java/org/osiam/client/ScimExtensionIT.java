@@ -23,11 +23,8 @@
 
 package org.osiam.client;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import java.math.BigInteger;
 import java.sql.ResultSet;
@@ -44,12 +41,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
-import org.osiam.resources.scim.Extension;
+import org.osiam.resources.scim.*;
 import org.osiam.resources.scim.Extension.Field;
-import org.osiam.resources.scim.ExtensionFieldType;
-import org.osiam.resources.scim.SCIMSearchResult;
-import org.osiam.resources.scim.UpdateUser;
-import org.osiam.resources.scim.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -60,8 +53,6 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
-import com.github.springtestdbunit.annotation.ExpectedDatabase;
-import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
