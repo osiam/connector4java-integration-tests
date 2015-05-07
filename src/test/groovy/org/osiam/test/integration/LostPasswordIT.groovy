@@ -26,6 +26,7 @@ package org.osiam.test.integration
 import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
+import org.osiam.client.oauth.AccessToken
 import org.osiam.client.oauth.Scope
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
@@ -38,19 +39,20 @@ import static groovyx.net.http.ContentType.URLENC
  */
 class LostPasswordIT extends AbstractIT {
 
+    def urn = 'urn:scim:schemas:osiam:2.0:Registration'
+
     def setup() {
         setupDatabase('database_seed_lost_password.xml')
     }
 
-    def 'URI: /password/lost/{userId} with POST method for lost password flow activation'() {
+    def 'Initiate the lost password activation flow'() {
         given:
-        def urn = 'urn:scim:schemas:osiam:2.0:Registration'
-        def userId = 'cef8452e-00a9-4cec-a086-d171374febef'
-        def accessToken = osiamConnector.retrieveAccessToken("marissa", "koala", Scope.ALL)
+        def userId = '69e1a5dc-89be-4343-976c-b5541af249f5'
+        AccessToken accessToken = osiamConnector.retrieveAccessToken("marissa", "koala", Scope.ALL)
         def statusCode
 
         when:
-        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+        HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
         httpClient.request(Method.POST) { req ->
             uri.path = REGISTRATION_ENDPOINT + '/password/lost/' + userId
@@ -58,10 +60,6 @@ class LostPasswordIT extends AbstractIT {
             headers.'Accept-Language' = 'en, en-US'
 
             response.success = { resp ->
-                statusCode = resp.statusLine.statusCode
-            }
-
-            response.failure = { resp ->
                 statusCode = resp.statusLine.statusCode
             }
         }
@@ -73,10 +71,9 @@ class LostPasswordIT extends AbstractIT {
         extension.getField('oneTimePassword', ExtensionFieldType.STRING) != null
     }
 
-    def 'URI: /password/change/{userId} with POST method to change the old with the new password as client'() {
+    def 'As a client I can change the password of an user with a valid onetime password'() {
         given:
-        def urn = 'urn:scim:schemas:osiam:2.0:Registration'
-        def accessToken = createClientAccessToken()
+        AccessToken accessToken = createClientAccessToken()
         def otp = 'cef9452e-00a9-4cec-a086-a171374febef'
         def userId = 'cef9452e-00a9-4cec-a086-d171374febef'
         def newPassword = 'pulverToastMann'
@@ -84,7 +81,7 @@ class LostPasswordIT extends AbstractIT {
         def savedUserId
 
         when:
-        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+        HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
         httpClient.request(Method.POST) {
             uri.path = REGISTRATION_ENDPOINT + '/password/change/' + userId
@@ -94,10 +91,6 @@ class LostPasswordIT extends AbstractIT {
             response.success = { resp, json ->
                 statusCode = resp.statusLine.statusCode
                 savedUserId = json.id
-            }
-
-            response.failure = { resp ->
-                statusCode = resp.statusLine.statusCode
             }
         }
 
@@ -109,16 +102,47 @@ class LostPasswordIT extends AbstractIT {
         extension.isFieldPresent('oneTimePassword') == false
     }
 
-    def 'URI: /password/change/{userId} returns forbidden when the password has already been reset with the onetime password'() {
+    def 'As a client I can change the password of an user with a non expired onetime password'() {
         given:
-        def accessToken = createClientAccessToken()
+        AccessToken accessToken = createClientAccessToken()
+        def otp = '69e1a5dc-89be-4343-976c-b6641af249f7'
+        def userId = '69e1a5dc-89be-4343-976c-b6641af249f7'
+        def newPassword = 'pulverToastMann'
+        def statusCode
+        def savedUserId
+
+        when:
+        HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.POST) {
+            uri.path = REGISTRATION_ENDPOINT + '/password/change/' + userId
+            send URLENC, [oneTimePassword: otp, newPassword: newPassword]
+            headers.'Authorization' = 'Bearer ' + accessToken.getToken()
+
+            response.success = { resp, json ->
+                statusCode = resp.statusLine.statusCode
+                savedUserId = json.id
+            }
+        }
+
+        then:
+        statusCode == 200
+        savedUserId == userId
+        User user = osiamConnector.getUser(userId, accessToken)
+        Extension extension = user.getExtension(urn)
+        extension.isFieldPresent('oneTimePassword') == false
+    }
+
+    def 'As a client I can not change the password of an user with a already used onetime password'() {
+        given:
+        AccessToken accessToken = createClientAccessToken()
         def otp = 'cef9452e-00a9-4cec-a086-a171374febef'
         def userId = 'cef9452e-00a9-4cec-a086-d171374febef'
         def newPassword = 'new_password'
         def statusCode
 
         when:
-        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+        HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
         httpClient.request(Method.POST) {
             uri.path = REGISTRATION_ENDPOINT + '/password/change/' + userId
@@ -140,10 +164,34 @@ class LostPasswordIT extends AbstractIT {
         statusCode == 403
     }
 
-    def 'URI: /password/change with POST method to change the old with the new password as user'() {
+    def 'As a client I can not change the password of an user with a expired onetime password'() {
         given:
-        def urn = 'urn:scim:schemas:osiam:2.0:Registration'
-        def accessToken = createAccessToken('George', '1234')
+        AccessToken accessToken = createClientAccessToken()
+        def otp = '69e1a5dc-89be-4343-976c-b5541af249f5'
+        def userId = '69e1a5dc-89be-4343-976c-b5541af249f5'
+        def newPassword = 'new_password'
+        def statusCode
+
+        when:
+        HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.POST) {
+            uri.path = REGISTRATION_ENDPOINT + '/password/change/' + userId
+            send URLENC, [oneTimePassword: otp, newPassword: newPassword]
+            headers.'Authorization' = 'Bearer ' + accessToken.getToken()
+
+            response.failure = { resp ->
+                statusCode = resp.statusLine.statusCode
+            }
+        }
+
+        then:
+        statusCode == 403
+    }
+
+    def 'As a user I can change my password with a valid onetime password'() {
+        given:
+        AccessToken accessToken = createAccessToken('George', '1234')
         def otp = 'cef9452e-00a9-4cec-a086-a171374febef'
         def userId = 'cef9452e-00a9-4cec-a086-d171374febef'
         def newPassword = 'pulverToastMann'
@@ -151,7 +199,7 @@ class LostPasswordIT extends AbstractIT {
         def savedUserId
 
         when:
-        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+        HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
         httpClient.request(Method.POST) {
             uri.path = REGISTRATION_ENDPOINT + '/password/change'
@@ -161,10 +209,6 @@ class LostPasswordIT extends AbstractIT {
             response.success = { resp, json ->
                 statusCode = resp.statusLine.statusCode
                 savedUserId = json.id
-            }
-
-            response.failure = { resp ->
-                statusCode = resp.statusLine.statusCode
             }
         }
 
@@ -176,7 +220,94 @@ class LostPasswordIT extends AbstractIT {
         extension.isFieldPresent('oneTimePassword') == false
     }
 
-    def 'URI: /password/lostForm with GET method to get an html form with input field for the new password including known values as otp and userId'() {
+    def 'As a user I can change my password with a non expired onetime password'() {
+        given:
+        AccessToken accessToken = createAccessToken('Elisabeth', '1234')
+        def otp = '69e1a5dc-89be-4343-976c-b6641af249f7'
+        def userId = '69e1a5dc-89be-4343-976c-b6641af249f7'
+        def newPassword = 'pulverToastMann'
+        def statusCode
+        def savedUserId
+
+        when:
+        HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.POST) {
+            uri.path = REGISTRATION_ENDPOINT + '/password/change'
+            send URLENC, [oneTimePassword: otp, newPassword: newPassword]
+            headers.'Authorization' = 'Bearer ' + accessToken.getToken()
+
+            response.success = { resp, json ->
+                statusCode = resp.statusLine.statusCode
+                savedUserId = json.id
+            }
+        }
+
+        then:
+        statusCode == 200
+        savedUserId == userId
+        User user = osiamConnector.getUser(userId, accessToken)
+        Extension extension = user.getExtension(urn)
+        extension.isFieldPresent('oneTimePassword') == false
+    }
+
+    def 'As a user I can not change my password with a already used onetime password'() {
+        given:
+        AccessToken accessToken = createAccessToken('Elisabeth', '1234')
+        def otp = '69e1a5dc-89be-4343-976c-b6641af249f7'
+        def userId = '69e1a5dc-89be-4343-976c-b6641af249f7'
+        def newPassword = 'pulverToastMann'
+        def statusCode
+
+        when:
+        HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.POST) {
+            uri.path = REGISTRATION_ENDPOINT + '/password/change/' + userId
+            send URLENC, [oneTimePassword: otp, newPassword: newPassword]
+            headers.'Authorization' = 'Bearer ' + accessToken.getToken()
+        }
+
+        httpClient.request(Method.POST) {
+            uri.path = REGISTRATION_ENDPOINT + '/password/change/' + userId
+            send URLENC, [oneTimePassword: otp, newPassword: newPassword]
+            headers.'Authorization' = 'Bearer ' + accessToken.getToken()
+
+            response.failure = { resp ->
+                statusCode = resp.statusLine.statusCode
+            }
+        }
+
+        then:
+        statusCode == 403
+    }
+
+    def 'As a user I can not change my password with an expired onetime password'() {
+        given:
+        AccessToken accessToken = createAccessToken('Harry', '1234')
+        def otp = '69e1a5dc-89be-4343-976c-b5541af249f5'
+        def userId = '69e1a5dc-89be-4343-976c-b5541af249f5'
+        def newPassword = 'new_password'
+        def statusCode
+
+        when:
+        HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.POST) {
+            uri.path = REGISTRATION_ENDPOINT + '/password/change/' + userId
+            send URLENC, [oneTimePassword: otp, newPassword: newPassword]
+            headers.'Authorization' = 'Bearer ' + accessToken.getToken()
+
+            response.failure = { resp ->
+                statusCode = resp.statusLine.statusCode
+            }
+        }
+
+        then:
+        statusCode == 403
+    }
+
+    def 'The retrieved html form contains the onetime password and the userId'() {
         given:
         def otp = 'otpVal'
         def userId = 'userIdVal'
@@ -186,7 +317,7 @@ class LostPasswordIT extends AbstractIT {
         def responseContent
 
         when:
-        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+        HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
         httpClient.request(Method.GET, ContentType.TEXT) {
             uri.path = REGISTRATION_ENDPOINT + '/password/lostForm'
@@ -197,10 +328,6 @@ class LostPasswordIT extends AbstractIT {
                 statusCode = resp.statusLine.statusCode
                 responseContentType = resp.headers.'Content-Type'
                 responseContent = html.text
-            }
-
-            response.failure = { resp ->
-                statusCode = resp.statusLine.statusCode
             }
         }
 
