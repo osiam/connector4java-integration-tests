@@ -163,10 +163,64 @@ class RegistrationIT extends AbstractIT {
         return mapper.writeValueAsString(user)
     }
 
-    def 'The registration controller should activate the user if a POST request was send to "/registration/activation" with user id and activation code as parameter'() {
+    def 'The user should be activated with a token without the expiration time'() {
         given:
         def createdUserId = 'cef9452e-00a9-4cec-a086-d171374febef'
         def activationToken = 'cef9452e-00a9-4cec-a086-a171374febef'
+
+        def accessToken = osiamConnector.retrieveAccessToken()
+
+        def responseStatus
+
+        when:
+        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.GET) { req ->
+            uri.path = REGISTRATION_ENDPOINT + '/registration/activation'
+            uri.query = [userId: createdUserId, activationToken: activationToken]
+
+            response.success = { resp ->
+                responseStatus = resp.statusLine.statusCode
+            }
+        }
+
+        then:
+        responseStatus == 200
+
+        osiamConnector.getUser(createdUserId, accessToken).active
+    }
+
+    def 'The user should not be active if the token is expired'() {
+        given:
+        def createdUserId = '69e1a5dc-89be-4343-976c-b8841af249f4'
+        def activationToken = 'cef9452e-11a9-4cec-a086-a171374febef'
+
+        def accessToken = osiamConnector.retrieveAccessToken()
+
+        def responseStatus
+
+        when:
+        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.GET) { req ->
+            uri.path = REGISTRATION_ENDPOINT + '/registration/activation'
+            uri.query = [userId: createdUserId, activationToken: activationToken]
+
+            response.failure = { resp ->
+                responseStatus = resp.statusLine.statusCode
+            }
+        }
+
+        then:
+        responseStatus == 400
+
+        osiamConnector.getUser(createdUserId, accessToken).active == false
+    }
+
+    def 'The user should be active if the token is valid'() {
+        given:
+        def createdUserId = '69e1a5dc-89be-4343-976c-b8841af249f5'
+        def activationToken = 'cef9452e-10a9-4cec-a086-a171374febee'
 
         def accessToken = osiamConnector.retrieveAccessToken()
 
