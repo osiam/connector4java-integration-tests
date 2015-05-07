@@ -13,5 +13,5 @@ test:
     - echo 'DOCKER_OPTS="${DOCKER_OPTS} -H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock"' | sudo tee -a /etc/default/docker
     - sudo restart docker
   override:
-    - mvn clean verify -P postgres
-    - mvn clean verify -P mysql
+    - mvn verify -P postgres
+    - mvn verify -P mysql

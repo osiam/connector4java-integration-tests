@@ -26,6 +26,7 @@ package org.osiam.test.integration
 import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
+import org.osiam.client.oauth.AccessToken
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.resources.scim.User
@@ -41,14 +42,14 @@ class ChangeEmailIT extends AbstractIT {
         setupDatabase('database_seed_change_email.xml')
     }
 
-    def 'The /email endpoint with HTTP method GET should provide an HTML form for change email purpose'() {
+    def 'Response with a HTML form to change the current user email'() {
         given:
         def statusCode
         def responseContent
         def responseContentType
 
         when:
-        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+        HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
         httpClient.request(Method.GET, ContentType.TEXT) {
             uri.path = REGISTRATION_ENDPOINT + '/email'
@@ -58,10 +59,6 @@ class ChangeEmailIT extends AbstractIT {
                 statusCode = resp.statusLine.statusCode
                 responseContentType = resp.headers.'Content-Type'
                 responseContent = html.text
-            }
-
-            response.failure = { resp ->
-                statusCode = resp.statusLine.statusCode
             }
         }
 
@@ -73,9 +70,9 @@ class ChangeEmailIT extends AbstractIT {
         responseContent.contains('url: \'http://localhost:8180\'')
     }
 
-    def 'The /email/change endpoint should generate confirmation token, saving the new email temporary and sending an email to the new address'() {
+    def 'The requested email change creates confirmation token and saves new email temporary'() {
         given:
-        def accessToken = createAccessToken('GeorgeAlexander', '12345')
+        AccessToken accessToken = createAccessToken('GeorgeAlexander', '12345')
         def userId = '7d33bcbe-a54c-43d8-867e-f6146164941e'
         def newEmailValue = 'newEmailForGeorgeAlexander@osiam.org'
         def urn = 'urn:scim:schemas:osiam:2.0:Registration'
@@ -83,7 +80,7 @@ class ChangeEmailIT extends AbstractIT {
         def responseStatusCode
 
         when:
-        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+        HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
         httpClient.request(Method.POST) {
             uri.path = REGISTRATION_ENDPOINT + '/email/change'
@@ -95,10 +92,6 @@ class ChangeEmailIT extends AbstractIT {
                 responseStatusCode = resp.statusLine.statusCode
 
             }
-
-            response.failure = { resp ->
-                responseStatusCode = resp.statusLine.statusCode
-            }
         }
 
         then:
@@ -109,9 +102,9 @@ class ChangeEmailIT extends AbstractIT {
         extension.getField('tempMail', ExtensionFieldType.STRING) == newEmailValue
     }
 
-    def 'The /email/confirm endpoint with HTTP method POST should verify the confirmation token, saving the email as primary email and sending an email to the old address'() {
+    def 'The confirmation of the new email removes the old one and set the new one as primary'() {
         given:
-        def accessToken = osiamConnector.retrieveAccessToken()
+        AccessToken accessToken = osiamConnector.retrieveAccessToken()
         def userId = 'cef9452e-00a9-4cec-a086-d171374febef'
         def confirmToken = 'cef9452e-00a9-4cec-a086-a171374febef'
         def urn = 'urn:scim:schemas:osiam:2.0:Registration'
@@ -122,7 +115,7 @@ class ChangeEmailIT extends AbstractIT {
         def temp
 
         when:
-        def httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+        HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
 
         httpClient.request(Method.POST) {
             uri.path = REGISTRATION_ENDPOINT + '/email/confirm'
@@ -133,10 +126,6 @@ class ChangeEmailIT extends AbstractIT {
             response.success = { resp, json ->
                 responseStatusCode = resp.statusLine.statusCode
                 savedUserId = json.id
-            }
-
-            response.failure = { resp ->
-                responseStatusCode = resp.statusLine.statusCode
             }
         }
 
@@ -153,5 +142,99 @@ class ChangeEmailIT extends AbstractIT {
                 temp = it.getValue()
         }
         temp == newEmailValue
+    }
+
+    def 'The confirmation with a non expired token of the new email removes the old one and set the new one as primary'() {
+        given:
+        AccessToken accessToken = osiamConnector.retrieveAccessToken()
+        def userId = '69e1a5dc-89be-4343-976c-b6641af249f7'
+        def confirmToken = '69e1a5dc-89be-4343-976c-b6641af249f7'
+        def urn = 'urn:scim:schemas:osiam:2.0:Registration'
+        def newEmailValue = 'newEmailForElisabeth@osiam.org'
+
+        def savedUserId
+        def responseStatusCode
+        def temp
+
+        when:
+        HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.POST) {
+            uri.path = REGISTRATION_ENDPOINT + '/email/confirm'
+            send URLENC, [userId: userId, confirmToken: confirmToken]
+            headers.'Authorization' = 'Bearer ' + accessToken.getToken()
+            headers.'Accept-Language' = 'en, en-US'
+
+            response.success = { resp, json ->
+                responseStatusCode = resp.statusLine.statusCode
+                savedUserId = json.id
+            }
+        }
+
+        then:
+        responseStatusCode == 200
+        userId == savedUserId
+        User user = osiamConnector.getUser(userId, accessToken)
+        Extension extension = user.getExtension(urn)
+        extension.isFieldPresent('emailConfirmToken') == false
+        extension.isFieldPresent('tempMail') == false
+        user.getEmails().size() == 1
+        user.getEmails().each {
+            if (it.isPrimary())
+                temp = it.getValue()
+        }
+        temp == newEmailValue
+    }
+
+    def 'The confirmation of the new email fails when token is not valid'() {
+        given:
+        AccessToken accessToken = osiamConnector.retrieveAccessToken()
+        def userId = 'cef9452e-00a9-4cec-a086-d171374febef'
+        def confirmToken = 'invalid_token'
+
+        def responseStatusCode
+
+        when:
+        HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.POST) {
+            uri.path = REGISTRATION_ENDPOINT + '/email/confirm'
+            send URLENC, [userId: userId, confirmToken: confirmToken]
+            headers.'Authorization' = 'Bearer ' + accessToken.getToken()
+            headers.'Accept-Language' = 'en, en-US'
+
+            response.failure = { resp, json ->
+                responseStatusCode = resp.statusLine.statusCode
+            }
+        }
+
+        then:
+        responseStatusCode == 403
+    }
+
+    def 'The confirmation of the new email fails when token is expired'() {
+        given:
+        AccessToken accessToken = osiamConnector.retrieveAccessToken()
+        def userId = '69e1a5dc-89be-4343-976c-b5541af249f5'
+        def confirmToken = '69e1a5dc-89be-4343-976c-b5541af249f5'
+
+        def responseStatusCode
+
+        when:
+        HTTPBuilder httpClient = new HTTPBuilder(REGISTRATION_ENDPOINT)
+
+        httpClient.request(Method.POST) {
+            uri.path = REGISTRATION_ENDPOINT + '/email/confirm'
+            send URLENC, [userId: userId, confirmToken: confirmToken]
+            headers.'Authorization' = 'Bearer ' + accessToken.getToken()
+            headers.'Accept-Language' = 'en, en-US'
+
+            response.failure = { resp ->
+                responseStatusCode = resp.statusLine.statusCode
+            }
+        }
+
+        then:
+        responseStatusCode == 403
     }
 }
