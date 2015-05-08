@@ -8,10 +8,12 @@ database:
   pre:
     - sudo service mysql stop && sudo service postgresql stop
 
-test:
-  pre:
+dependencies:
+  override:
     - echo 'DOCKER_OPTS="${DOCKER_OPTS} -H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock"' | sudo tee -a /etc/default/docker
     - sudo restart docker
+
+test:
   override:
-    - mvn verify -P postgres
-    - mvn verify -P mysql
+    - case $CIRCLE_NODE_INDEX in 0) mvn verify -P postgres ;; 1) mvn verify -P mysql ;; esac:
+        parallel: true
