@@ -34,6 +34,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.query.Query;
@@ -102,6 +103,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         assertThatNewUserAndReturnUserAreEqual(patchedUser, updatedUser);
     }
 
+    @Ignore
     @Test
     public void search_for_user_by_complex_query() {
         Query query = new QueryBuilder().filter("active eq \"true\""
