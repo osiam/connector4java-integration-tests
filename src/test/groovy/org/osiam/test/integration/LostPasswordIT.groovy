@@ -39,7 +39,7 @@ import static groovyx.net.http.ContentType.URLENC
  */
 class LostPasswordIT extends AbstractIT {
 
-    def urn = 'urn:scim:schemas:osiam:2.0:Registration'
+    def urn = 'urn:org.osiam:scim:extensions:addon-self-administration'
 
     def setup() {
         setupDatabase('database_seed_lost_password.xml')
