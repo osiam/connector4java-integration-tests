@@ -72,7 +72,7 @@
     <scim_group_scim_id groups_internal_id="100052" members_internal_id="100061"/>
     <scim_group_scim_id groups_internal_id="100052" members_internal_id="100062"/>
 
-    <scim_extension internal_id="100081" urn="urn:scim:schemas:osiam:2.0:Registration"/>
+    <scim_extension internal_id="100081" urn="urn:org.osiam:scim:extensions:addon-self-administration"/>
     <scim_extension internal_id="100084" urn="urn:client:extension"/>
 
     <scim_extension_field internal_id="100082" is_required="true" name="activationToken" type="STRING"
