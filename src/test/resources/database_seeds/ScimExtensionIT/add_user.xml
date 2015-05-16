@@ -24,7 +24,6 @@
 
 <dataset>
     <osiam_client internal_id="100003" accesstokenvalidityseconds="2342" client_secret="secret"
-                  expiry="1970-01-01 00:00:01.0"
                   id="example-client" implicit_approval="false" redirect_uri="http://localhost:5000/oauth2"
                   refreshtokenvalidityseconds="2342" validityinseconds="1337"/>
     <osiam_client_grants id="100003" grants="authorization_code"/>

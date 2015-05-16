@@ -82,7 +82,7 @@ public class ClientManagementIT extends AbstractIntegrationTestBase {
                 + "\"redirectUri\":\"http://localhost:5055/oauth2\",\"client_secret\":\"secret-2\","
                 + "\"scope\":[\"POST\",\"PATCH\",\"GET\",\"DELETE\",\"PUT\"],"
                 + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\",\"password\"],"
-                + "\"implicit\":false,\"validityInSeconds\":1337,\"expiry\":-3599000}";
+                + "\"implicit\":false,\"validityInSeconds\":1337}";
 
         String response = client.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
                 .request(MediaType.APPLICATION_JSON)
