@@ -46,6 +46,17 @@
     <osiam_client_scopes id="100004" scope="POST"/>
     <osiam_client_scopes id="100004" scope="PATCH"/>
 
+    <osiam_client internal_id="100005" id="addon-self-administration-client"
+                  redirect_uri="http://localhost:8180/addon-self-administration" client_secret="super-secret"
+                  accesstokenvalidityseconds="300" refreshtokenvalidityseconds="0" validityinseconds="0"
+                  implicit_approval="false"/>
+    <osiam_client_scopes id="100005" scope="GET"/>
+    <osiam_client_scopes id="100005" scope="POST"/>
+    <osiam_client_scopes id="100005" scope="PUT"/>
+    <osiam_client_scopes id="100005" scope="PATCH"/>
+    <osiam_client_scopes id="100005" scope="DELETE"/>
+    <osiam_client_grants id="100005" grants="client_credentials"/>
+
     <scim_meta id="100004" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
     <scim_meta id="100053" created="2013-07-31 21:43:18.0" lastmodified="2013-07-31 21:43:18.0" resourcetype="Group"/>
     <scim_meta id="100061" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
