@@ -47,7 +47,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.params.CookiePolicy;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -88,7 +89,7 @@ public class LoginOAuth2IT {
     private static String REDIRECT_URI = "http://localhost:5000/oauth2";
     private OsiamConnector oConnector;
     private URI loginUri;
-    private DefaultHttpClient defaultHttpClient;
+    private CloseableHttpClient httpClient;
     private String authCode;
     private AccessToken accessToken;
     private HttpResponse authCodeResponse;
@@ -104,7 +105,7 @@ public class LoginOAuth2IT {
                 .build();
 
         loginUri = oConnector.getAuthorizationUri(Scope.ALL);
-        defaultHttpClient = new DefaultHttpClient();
+        httpClient = HttpClientBuilder.create().build();
     }
 
     @Test
@@ -168,7 +169,7 @@ public class LoginOAuth2IT {
 
         {
             HttpGet httpGet = new HttpGet(loginUri);
-            defaultHttpClient.execute(httpGet);
+            httpClient.execute(httpGet);
             httpGet.releaseConnection();
         }
 
@@ -185,7 +186,7 @@ public class LoginOAuth2IT {
                     loginCredentials, "UTF-8");
 
             httpPost.setEntity(loginCredentialsEntity);
-            HttpResponse response = defaultHttpClient.execute(httpPost);
+            HttpResponse response = httpClient.execute(httpPost);
 
             currentRedirectUri = response.getLastHeader("Location").getValue();
 
@@ -197,7 +198,7 @@ public class LoginOAuth2IT {
         {
             HttpGet httpGet = new HttpGet(currentRedirectUri);
             httpGet.setHeader("Accept-Language", "de-DE");
-            HttpResponse response = defaultHttpClient.execute(httpGet);
+            HttpResponse response = httpClient.execute(httpGet);
             InputStream content = response.getEntity().getContent();
             String inputStreamStringValue = IOUtils.toString(content, "UTF-8");
             assertThat(inputStreamStringValue, containsString("Anmeldung über ldap nicht möglich"));
@@ -238,7 +239,7 @@ public class LoginOAuth2IT {
 
         oConnector.updateUser(user.getId(), updateUser, accessToken);
 
-        defaultHttpClient = new DefaultHttpClient();
+        httpClient = HttpClientBuilder.create().build();
 
         Thread.sleep(1000);
 
@@ -301,7 +302,7 @@ public class LoginOAuth2IT {
 
         {
             HttpGet httpGet = new HttpGet(loginUri);
-            defaultHttpClient.execute(httpGet);
+            httpClient.execute(httpGet);
             httpGet.releaseConnection();
         }
 
@@ -318,7 +319,7 @@ public class LoginOAuth2IT {
                     loginCredentials, "UTF-8");
 
             httpPost.setEntity(loginCredentialsEntity);
-            HttpResponse response = defaultHttpClient.execute(httpPost);
+            HttpResponse response = httpClient.execute(httpPost);
 
             currentRedirectUri = response.getLastHeader("Location").getValue();
 
@@ -330,7 +331,7 @@ public class LoginOAuth2IT {
             httpGet.getParams().setParameter(ClientPNames.COOKIE_POLICY,
                     CookiePolicy.NETSCAPE);
             httpGet.getParams().setBooleanParameter("http.protocol.handle-redirects", false);
-            defaultHttpClient.execute(httpGet);
+            httpClient.execute(httpGet);
             httpGet.releaseConnection();
         }
 
@@ -345,7 +346,7 @@ public class LoginOAuth2IT {
                     loginCredentials, "UTF-8");
 
             httpPost.setEntity(loginCredentialsEntity);
-            authCodeResponse = defaultHttpClient.execute(httpPost);
+            authCodeResponse = httpClient.execute(httpPost);
 
             httpPost.releaseConnection();
         }
@@ -357,7 +358,7 @@ public class LoginOAuth2IT {
 
         {
             HttpGet httpGet = new HttpGet(loginUri);
-            defaultHttpClient.execute(httpGet);
+            httpClient.execute(httpGet);
             httpGet.releaseConnection();
         }
 
@@ -373,7 +374,7 @@ public class LoginOAuth2IT {
                     loginCredentials, "UTF-8");
 
             httpPost.setEntity(loginCredentialsEntity);
-            HttpResponse response = defaultHttpClient.execute(httpPost);
+            HttpResponse response = httpClient.execute(httpPost);
 
             currentRedirectUri = response.getLastHeader("Location").getValue();
 
@@ -382,7 +383,7 @@ public class LoginOAuth2IT {
 
         {
             HttpGet httpGet = new HttpGet(currentRedirectUri);
-            defaultHttpClient.execute(httpGet);
+            httpClient.execute(httpGet);
             httpGet.releaseConnection();
         }
 
@@ -397,7 +398,7 @@ public class LoginOAuth2IT {
                     loginCredentials, "UTF-8");
 
             httpPost.setEntity(loginCredentialsEntity);
-            authCodeResponse = defaultHttpClient.execute(httpPost);
+            authCodeResponse = httpClient.execute(httpPost);
 
             httpPost.releaseConnection();
         }
@@ -405,7 +406,7 @@ public class LoginOAuth2IT {
 
     private void givenAuthCode() {
         Header header = authCodeResponse.getLastHeader("Location");
-        if(header == null){
+        if (header == null) {
             throw new RuntimeException("The Location Header is null");
         }
         HeaderElement[] elements = header.getElements();
