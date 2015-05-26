@@ -23,6 +23,7 @@
 
 package org.osiam.test.integration
 
+import com.icegreen.greenmail.util.GreenMailUtil
 import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
@@ -31,6 +32,8 @@ import org.osiam.client.oauth.Scope
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.resources.scim.User
+
+import javax.mail.Message
 
 import static groovyx.net.http.ContentType.URLENC
 
@@ -67,6 +70,16 @@ class LostPasswordIT extends AbstractIT {
         User user = OSIAM_CONNECTOR.getUser(userId, accessToken)
         Extension extension = user.getExtension(SELF_ADMIN_URN)
         extension.getField('oneTimePassword', ExtensionFieldType.STRING) != null
+
+        Message[] messages = fetchEmail('harry@osiam.org')
+        messages.length == 1
+        Message message = messages[0]
+        message.getSubject().contains('Change of your password')
+        def msg = GreenMailUtil.getBody(message)
+        msg.contains('to reset your password, please click the link below:')
+        msg.contains(userId)
+        message.getFrom()[0].toString() == 'noreply@osiam.org'
+        message.getAllRecipients()[0].toString().equals('harry@osiam.org')
     }
 
     def 'As a client I can change the password of an user with a valid onetime password'() {

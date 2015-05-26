@@ -23,6 +23,7 @@
 
 package org.osiam.test.integration
 
+import com.icegreen.greenmail.util.GreenMailUtil
 import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
@@ -30,6 +31,8 @@ import org.osiam.client.oauth.AccessToken
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.resources.scim.User
+
+import javax.mail.Message
 
 import static groovyx.net.http.ContentType.URLENC
 
@@ -89,7 +92,10 @@ class ChangeEmailIT extends AbstractIT {
 
             response.success = { resp ->
                 responseStatusCode = resp.statusLine.statusCode
+            }
 
+            response.failure = { resp ->
+                responseStatusCode = resp.statusLine.statusCode
             }
         }
 
@@ -99,6 +105,16 @@ class ChangeEmailIT extends AbstractIT {
         Extension extension = user.getExtension(SELF_ADMIN_URN)
         extension.getField('emailConfirmToken', ExtensionFieldType.STRING) != null
         extension.getField('tempMail', ExtensionFieldType.STRING) == newEmailValue
+
+        Message[] messages = fetchEmail(newEmailValue)
+        messages.length == 1
+        messages[0].getSubject().contains('Confirm your new email address')
+        def msg = GreenMailUtil.getBody(messages[0])
+        msg.contains('to change your e-mail address, please click the link below:')
+        msg.contains(userId)
+        msg.contains('George Alexander')
+        messages[0].getFrom()[0].toString() == 'noreply@osiam.org'
+        messages[0].getAllRecipients()[0].toString().equals('newEmailForGeorgeAlexander@osiam.org')
     }
 
     def 'The confirmation of the new email removes the old one and set the new one as primary'() {
@@ -181,6 +197,14 @@ class ChangeEmailIT extends AbstractIT {
                 temp = it.getValue()
         }
         temp == newEmailValue
+
+        Message[] messages = fetchEmail('elisabeth@osiam.org')
+        messages.length == 1
+        Message message = messages[0];
+        message.getSubject().contains('Your email has been successfully changed')
+        GreenMailUtil.getBody(message).contains('your e-mail address has been changed successfully.')
+        message.getFrom()[0].toString() == 'noreply@osiam.org'
+        message.getAllRecipients()[0].toString().equals('elisabeth@osiam.org')
     }
 
     def 'The confirmation of the new email fails when token is not valid'() {
