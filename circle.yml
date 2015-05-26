@@ -12,10 +12,6 @@ dependencies:
     - sudo restart docker
     - mvn -U dependency:resolve generate-resources
 
-database:
-  pre:
-    - sudo service mysql stop && sudo service postgresql stop
-
 test:
   override:
     - /bin/bash circle.sh:
