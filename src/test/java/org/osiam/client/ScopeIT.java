@@ -32,6 +32,7 @@ import static org.junit.Assert.fail;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ForbiddenException;
@@ -219,6 +220,7 @@ public class ScopeIT {
     }
 
     @Test
+    @Ignore("Does not work anymore with new scopes. Method-based scopes will be removed soon!")
     public void update_user_in_PATCH_scope_works() {
         accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.PATCH);
         assertThat(updateUser(), is(notNullValue()));
@@ -243,6 +245,7 @@ public class ScopeIT {
     }
 
     @Test
+    @Ignore("Does not work anymore with new scopes. Method-based scopes will be removed soon!")
     @ExpectedDatabase(value = "/database_expected_scope_delete_user.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void delete_user_in_DELETE_scope_works() {
         accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.DELETE);
