@@ -1,4 +1,4 @@
-FROM tomcat:8-jre8
+FROM tomcat:7-jre7
 
 COPY osiam-resource-server $CATALINA_HOME/webapps/osiam-resource-server
 COPY osiam-auth-server $CATALINA_HOME/webapps/osiam-auth-server
