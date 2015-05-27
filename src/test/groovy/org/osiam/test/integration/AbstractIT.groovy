@@ -23,8 +23,6 @@
 
 package org.osiam.test.integration
 
-import javax.sql.DataSource
-
 import org.dbunit.database.DatabaseDataSourceConnection
 import org.dbunit.database.IDatabaseConnection
 import org.dbunit.dataset.IDataSet
@@ -32,12 +30,12 @@ import org.dbunit.dataset.xml.FlatXmlDataSetBuilder
 import org.dbunit.operation.DatabaseOperation
 import org.osiam.client.OsiamConnector
 import org.osiam.client.oauth.AccessToken
-import org.osiam.client.oauth.GrantType
 import org.osiam.client.oauth.Scope
 import org.springframework.context.ApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext
-
 import spock.lang.Specification
+
+import javax.sql.DataSource
 
 /**
  * Base class for integration tests.
