@@ -49,7 +49,7 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
         DbUnitTestExecutionListener.class })
 @DatabaseSetup("/database_seed_minimal.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
-public class AccessTokenVaidationIT extends AbstractIntegrationTestBase {
+public class AccessTokenValidationIT extends AbstractIntegrationTestBase {
 
     @Test
     public void valid_accesstoken_can_be_confirmed() {
@@ -73,13 +73,13 @@ public class AccessTokenVaidationIT extends AbstractIntegrationTestBase {
     public void login_works_also_when_auth_server_client_access_token_expired() throws InterruptedException {
         String userName = "marissa";
         String password = "koala";
-        
+
         accessToken = oConnector.retrieveAccessToken(userName, password, Scope.ALL);
-        
+
         Thread.sleep(2000);
-        
+
         accessToken = oConnector.retrieveAccessToken(userName, password, Scope.ALL);
-        
+
         assertTrue(accessToken != null);
     }
 }
