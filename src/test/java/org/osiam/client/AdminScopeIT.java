@@ -25,15 +25,23 @@ package org.osiam.client;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import org.json.JSONException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.osiam.client.exception.ForbiddenException;
+import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
@@ -327,6 +335,110 @@ public class AdminScopeIT {
         SCIMSearchResult<Group> groups = oConnector.searchGroups(query, accessToken);
 
         assertThat(groups.getTotalResults(), is(equalTo(1L)));
+    }
+
+
+    @Test(expected = UnauthorizedException.class)
+    public void can_revoke_access_token() {
+        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+
+        oConnector.revokeAccessToken(accessToken);
+
+        oConnector.validateAccessToken(accessToken);
+        fail("Exception expected");
+    }
+
+    @Test(expected = UnauthorizedException.class)
+    public void can_revoke_all_access_tokens() {
+        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+
+        oConnector.revokeAllAccessTokens(OWN_USER_ID, accessToken);
+
+        oConnector.validateAccessToken(accessToken);
+        fail("Exception expected");
+    }
+
+    @Test
+    public void can_validate_access_token() {
+        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+
+        accessToken = oConnector.validateAccessToken(accessToken);
+
+        assertThat(accessToken.getUserId(), is(equalTo(OWN_USER_ID)));
+        assertThat(accessToken.getUserName(), is(equalTo("marissa")));
+    }
+
+    @Test(expected = UnauthorizedException.class)
+    public void can_revoke_all_access_tokens_of_another_user() {
+        AccessToken accessTokenOfOtherUser = oConnector.retrieveAccessToken("bjensen", "koala", Scope.ADMIN);
+        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+
+        oConnector.revokeAllAccessTokens(OTHER_USER_ID, accessToken);
+
+        oConnector.validateAccessToken(accessTokenOfOtherUser);
+        fail("Exception expected");
+    }
+
+    @Test
+    public void can_retrieve_a_client() {
+        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+
+        Response response = client.target("http://localhost:8180/osiam-auth-server")
+                .path("Client").path("example-client")
+                .request(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + accessToken.getToken())
+                .get();
+
+        assertThat(response.getStatus(), is(equalTo(200)));
+    }
+
+    @Test
+    public void can_create_a_client() {
+        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+        String clientAsJsonString = "{\"id\":\"example-client-2\",\"accessTokenValiditySeconds\":2342,\"refreshTokenValiditySeconds\":2342,"
+                + "\"redirectUri\":\"http://localhost:5055/oauth2\",\"client_secret\":\"secret-2\","
+                + "\"scope\":[\"POST\",\"PATCH\",\"GET\",\"DELETE\",\"PUT\"],"
+                + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\",\"password\"],"
+                + "\"implicit\":false,\"validityInSeconds\":1337}";
+
+        Response response = client.target("http://localhost:8180/osiam-auth-server")
+                .path("Client")
+                .request(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + accessToken.getToken())
+                .post(Entity.entity(clientAsJsonString, MediaType.APPLICATION_JSON));
+
+        assertThat(response.getStatus(), is(equalTo(201)));
+    }
+
+    @Test
+    public void can_delete_a_client() throws IOException {
+        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+
+        Response response = client.target("http://localhost:8180/osiam-auth-server")
+                .path("Client").path("example-client")
+                .request(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + accessToken.getToken())
+                .delete();
+
+        assertThat(response.getStatus(), is(equalTo(200)));
+    }
+
+    @Test
+    public void can_update_a_client() throws JSONException {
+        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+        String clientAsJsonString = "{\"id\":\"example-client\",\"accessTokenValiditySeconds\":1,\"refreshTokenValiditySeconds\":1,"
+                + "\"redirectUri\":\"http://newhost:5000/oauth2\",\"client_secret\":\"secret\","
+                + "\"scope\":[\"POST\",\"PATCH\",\"GET\",\"DELETE\"],"
+                + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\"],"
+                + "\"implicit\":true,\"validityInSeconds\":1}";
+
+        Response response = client.target("http://localhost:8180/osiam-auth-server")
+                .path("Client").path("example-client")
+                .request(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + accessToken.getToken())
+                .put(Entity.entity(clientAsJsonString, MediaType.APPLICATION_JSON));
+
+        assertThat(response.getStatus(), is(equalTo(200)));
     }
 
 }
