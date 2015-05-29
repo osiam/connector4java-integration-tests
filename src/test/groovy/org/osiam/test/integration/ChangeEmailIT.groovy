@@ -75,7 +75,6 @@ class ChangeEmailIT extends AbstractIT {
         AccessToken accessToken = createAccessToken('GeorgeAlexander', '12345')
         def userId = '7d33bcbe-a54c-43d8-867e-f6146164941e'
         def newEmailValue = 'newEmailForGeorgeAlexander@osiam.org'
-        def urn = 'urn:org.osiam:scim:extensions:addon-self-administration'
 
         def responseStatusCode
 
@@ -97,7 +96,7 @@ class ChangeEmailIT extends AbstractIT {
         then:
         responseStatusCode == 200
         User user = osiamConnector.getUser(userId, accessToken)
-        Extension extension = user.getExtension(urn)
+        Extension extension = user.getExtension(SELF_ADMIN_URN)
         extension.getField('emailConfirmToken', ExtensionFieldType.STRING) != null
         extension.getField('tempMail', ExtensionFieldType.STRING) == newEmailValue
     }
@@ -107,7 +106,6 @@ class ChangeEmailIT extends AbstractIT {
         AccessToken accessToken = osiamConnector.retrieveAccessToken()
         def userId = 'cef9452e-00a9-4cec-a086-d171374febef'
         def confirmToken = 'cef9452e-00a9-4cec-a086-a171374febef'
-        def urn = 'urn:org.osiam:scim:extensions:addon-self-administration'
         def newEmailValue = 'newEmailForGeorge@osiam.org'
 
         def savedUserId
@@ -133,7 +131,7 @@ class ChangeEmailIT extends AbstractIT {
         responseStatusCode == 200
         userId == savedUserId
         User user = osiamConnector.getUser(userId, accessToken)
-        Extension extension = user.getExtension(urn)
+        Extension extension = user.getExtension(SELF_ADMIN_URN)
         extension.isFieldPresent('emailConfirmToken') == false
         extension.isFieldPresent('tempMail') == false
         user.getEmails().size() == 2
@@ -149,7 +147,6 @@ class ChangeEmailIT extends AbstractIT {
         AccessToken accessToken = osiamConnector.retrieveAccessToken()
         def userId = '69e1a5dc-89be-4343-976c-b6641af249f7'
         def confirmToken = '69e1a5dc-89be-4343-976c-b6641af249f7'
-        def urn = 'urn:org.osiam:scim:extensions:addon-self-administration'
         def newEmailValue = 'newEmailForElisabeth@osiam.org'
 
         def savedUserId
@@ -175,7 +172,7 @@ class ChangeEmailIT extends AbstractIT {
         responseStatusCode == 200
         userId == savedUserId
         User user = osiamConnector.getUser(userId, accessToken)
-        Extension extension = user.getExtension(urn)
+        Extension extension = user.getExtension(SELF_ADMIN_URN)
         extension.isFieldPresent('emailConfirmToken') == false
         extension.isFieldPresent('tempMail') == false
         user.getEmails().size() == 1
