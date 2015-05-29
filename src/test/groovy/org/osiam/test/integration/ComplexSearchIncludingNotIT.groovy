@@ -46,7 +46,7 @@ class ComplexSearchIncludingNotIT extends AbstractIT {
         Query query = new QueryBuilder().filter(filter).build()
 
         when:
-        SCIMSearchResult<User> result = osiamConnector.searchUsers(query, accessToken)
+        SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(query, accessToken)
 
         then:
         result.getResources().size() == 2
@@ -63,7 +63,7 @@ class ComplexSearchIncludingNotIT extends AbstractIT {
         Query query = new QueryBuilder().filter(filter).build()
 
         when:
-        SCIMSearchResult<User> result = osiamConnector.searchUsers(query, accessToken)
+        SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(query, accessToken)
 
         then:
         result.getResources().size() == 2
@@ -77,7 +77,7 @@ class ComplexSearchIncludingNotIT extends AbstractIT {
         Query query = new QueryBuilder().filter('userName eq "george \\"alexander\\""').build()
 
         when:
-        SCIMSearchResult<User> result = osiamConnector.searchUsers(query, accessToken)
+        SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(query, accessToken)
 
         then:
         result.getResources().size() == 1
@@ -91,7 +91,7 @@ class ComplexSearchIncludingNotIT extends AbstractIT {
         Query query = new QueryBuilder().filter('userName eq george0').build()
 
         when:
-        osiamConnector.searchUsers(query, accessToken)
+        OSIAM_CONNECTOR.searchUsers(query, accessToken)
 
         then:
         thrown(ConflictException)

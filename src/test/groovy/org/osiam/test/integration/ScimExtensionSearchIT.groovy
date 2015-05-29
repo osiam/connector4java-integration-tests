@@ -23,7 +23,6 @@
 
 package org.osiam.test.integration
 
-import org.junit.Before
 import org.osiam.client.exception.ConflictException
 import org.osiam.client.query.Query
 import org.osiam.client.query.QueryBuilder
@@ -44,7 +43,7 @@ public class ScimExtensionSearchIT extends AbstractExtensionBaseIT {
         Query query = new QueryBuilder().filter("extension.$fieldName $constraint \"$queryValue\"").build()
 
         when:
-        SCIMSearchResult result = osiamConnector.searchUsers(query, accessToken)
+        SCIMSearchResult result = OSIAM_CONNECTOR.searchUsers(query, accessToken)
 
         then:
         result.getTotalResults() == expectedResult
@@ -85,7 +84,7 @@ public class ScimExtensionSearchIT extends AbstractExtensionBaseIT {
         Query query = new QueryBuilder().filter("extension.$fieldName $constraint \"irrelevant\"").build()
 
         when:
-        osiamConnector.searchUsers(query, accessToken)
+        OSIAM_CONNECTOR.searchUsers(query, accessToken)
 
         then:
         thrown(ConflictException)

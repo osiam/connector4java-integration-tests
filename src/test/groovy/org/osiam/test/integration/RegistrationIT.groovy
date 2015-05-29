@@ -123,7 +123,7 @@ class RegistrationIT extends AbstractIT {
         responseStatus == 200
 
         Query query = new QueryBuilder().filter("userName eq \"email@example.org\"").build()
-        SCIMSearchResult<User> users = osiamConnector.searchUsers(query, accessToken)
+        SCIMSearchResult<User> users = OSIAM_CONNECTOR.searchUsers(query, accessToken)
         User user = users.getResources()[0]
         !user.isActive()
         Extension extension = user.getExtension(SELF_ADMIN_URN)
@@ -159,7 +159,7 @@ class RegistrationIT extends AbstractIT {
         def createdUserId = 'cef9452e-00a9-4cec-a086-d171374febef'
         def activationToken = 'cef9452e-00a9-4cec-a086-a171374febef'
 
-        AccessToken accessToken = osiamConnector.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
 
         def responseStatus
 
@@ -178,7 +178,7 @@ class RegistrationIT extends AbstractIT {
         then:
         responseStatus == 200
 
-        osiamConnector.getUser(createdUserId, accessToken).active
+        OSIAM_CONNECTOR.getUser(createdUserId, accessToken).active
     }
 
     def 'The user should not be active if the token is expired'() {
@@ -186,7 +186,7 @@ class RegistrationIT extends AbstractIT {
         def createdUserId = '69e1a5dc-89be-4343-976c-b8841af249f4'
         def activationToken = 'cef9452e-11a9-4cec-a086-a171374febef'
 
-        AccessToken accessToken = osiamConnector.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
 
         def responseStatus
 
@@ -204,7 +204,7 @@ class RegistrationIT extends AbstractIT {
 
         then:
         responseStatus == 400
-        osiamConnector.getUser(createdUserId, accessToken).active == false
+        OSIAM_CONNECTOR.getUser(createdUserId, accessToken).active == false
     }
 
     def 'The user should be active if the token is valid'() {
@@ -212,7 +212,7 @@ class RegistrationIT extends AbstractIT {
         def createdUserId = '69e1a5dc-89be-4343-976c-b8841af249f5'
         def activationToken = 'cef9452e-10a9-4cec-a086-a171374febee'
 
-        def accessToken = osiamConnector.retrieveAccessToken()
+        def accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
 
         def responseStatus
 
@@ -231,7 +231,7 @@ class RegistrationIT extends AbstractIT {
         then:
         responseStatus == 200
 
-        osiamConnector.getUser(createdUserId, accessToken).active
+        OSIAM_CONNECTOR.getUser(createdUserId, accessToken).active
     }
 
     def 'The registration controller should act like the user was not already activated if an user activated when he is already activate'() {
@@ -239,7 +239,7 @@ class RegistrationIT extends AbstractIT {
         def createdUserId = 'cef9452e-00a9-4cec-a086-d171374febef'
         def activationToken = 'cef9452e-00a9-4cec-a086-a171374febef'
 
-        AccessToken accessToken = osiamConnector.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
 
         def firstResponseStatus
         def secondResponseStatus
@@ -269,12 +269,12 @@ class RegistrationIT extends AbstractIT {
         firstResponseStatus == 200
         secondResponseStatus == 200
 
-        osiamConnector.getUser(createdUserId, accessToken).active
+        OSIAM_CONNECTOR.getUser(createdUserId, accessToken).active
     }
 
     def 'A registration of an user with client defined extensions'() {
         given:
-        AccessToken accessToken = osiamConnector.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
 
         def userToRegister = [email: 'email@example.org', password: 'password',
                               'extensions[\'urn:client:extension\'].fields[\'age\']': 12]
@@ -298,7 +298,7 @@ class RegistrationIT extends AbstractIT {
         responseStatus == 200
 
         Query query = new QueryBuilder().filter("userName eq \"email@example.org\"").build()
-        SCIMSearchResult<User> users = osiamConnector.searchUsers(query, accessToken)
+        SCIMSearchResult<User> users = OSIAM_CONNECTOR.searchUsers(query, accessToken)
         User registeredUser = users.getResources()[0]
 
         Extension registeredExtension1 = registeredUser.getExtension(SELF_ADMIN_URN)
@@ -311,7 +311,7 @@ class RegistrationIT extends AbstractIT {
 
     def 'A registration of an user with not allowed field nickName and existing extension but not the field'() {
         given:
-        AccessToken accessToken = osiamConnector.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
 
         // email, password are always allowed, displayName is allowed and nickName is disallowed by config
         // extension 'urn:client:extension' is only allowed with field 'age' and not 'gender'
@@ -333,7 +333,7 @@ class RegistrationIT extends AbstractIT {
         }
 
         Query queryString = new QueryBuilder().filter("userName eq \"email@example.org\"").build()
-        SCIMSearchResult<User> users = osiamConnector.searchUsers(queryString, accessToken)
+        SCIMSearchResult<User> users = OSIAM_CONNECTOR.searchUsers(queryString, accessToken)
         User registeredUser = users.getResources()[0]
 
         Extension registeredExtension1 = registeredUser.getExtension(SELF_ADMIN_URN)
@@ -405,7 +405,7 @@ class RegistrationIT extends AbstractIT {
         responseStatus == 200
 
         Query query = new QueryBuilder().filter("userName eq \"email@example.org\"").build()
-        SCIMSearchResult<User> users = osiamConnector.searchUsers(query, accessToken)
+        SCIMSearchResult<User> users = OSIAM_CONNECTOR.searchUsers(query, accessToken)
         User user = users.getResources()[0]
         user.emails[0].value == 'email@example.org'
         user.displayName == '&lt;script&gt;alert(&#39;hello!&#39;);&lt;/script&gt;'

@@ -42,32 +42,37 @@ import javax.sql.DataSource
  */
 abstract class AbstractIT extends Specification {
 
-    protected static final String CLIENT_ID = "example-client"
-    private static final String CLIENT_SECRET = "secret"
+    private static final String CLIENT_ID = 'example-client'
+    private static final String CLIENT_SECRET = 'secret'
 
-    protected static final String AUTH_ENDPOINT = "http://localhost:8180/osiam-auth-server"
-    protected static final String RESOURCE_ENDPOINT = "http://localhost:8180/osiam-resource-server"
-    protected static final String REGISTRATION_ENDPOINT = "http://localhost:8180/addon-self-administration"
+    private static final String AUTH_ENDPOINT = 'http://localhost:8180/osiam-auth-server'
+    protected static final String RESOURCE_ENDPOINT = 'http://localhost:8180/osiam-resource-server'
+    protected static final String REGISTRATION_ENDPOINT = 'http://localhost:8180/addon-self-administration'
 
     protected static final String SELF_ADMIN_URN = 'urn:org.osiam:scim:extensions:addon-self-administration'
 
-    protected OsiamConnector osiamConnector
-    protected OsiamConnector osiamConnectorForClientCredentialsGrant
-    protected OsiamConnector osiamConnectorForEmailChange
+    protected static OsiamConnector OSIAM_CONNECTOR
+
+    protected AccessToken accessToken
 
     static {
         OsiamConnector.setConnectTimeout(10000);
         OsiamConnector.setReadTimeout(10000);
-    }
 
-    def AccessToken accessToken
+        OSIAM_CONNECTOR = new OsiamConnector.Builder()
+                .setAuthServerEndpoint(AUTH_ENDPOINT)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT)
+                .setClientId(CLIENT_ID)
+                .setClientSecret(CLIENT_SECRET)
+                .build()
+    }
 
     def setupDatabase(String seedFileName) {
 
         // Load Spring context configuration.
-        ApplicationContext ac = new ClassPathXmlApplicationContext("context.xml")
+        ApplicationContext ac = new ClassPathXmlApplicationContext('context.xml')
         // Get dataSource configuration.
-        DataSource dataSource = (DataSource) ac.getBean("dataSource")
+        DataSource dataSource = (DataSource) ac.getBean('dataSource')
         // Establish database connection.
         IDatabaseConnection connection = new DatabaseDataSourceConnection(dataSource)
         // Load the initialization data from file.
@@ -81,31 +86,10 @@ abstract class AbstractIT extends Specification {
             connection.close()
         }
 
-        osiamConnector = new OsiamConnector.Builder()
-                .setAuthServerEndpoint(AUTH_ENDPOINT)
-                .setResourceServerEndpoint(RESOURCE_ENDPOINT)
-                .setClientId(CLIENT_ID)
-                .setClientSecret(CLIENT_SECRET)
-                .build()
-
-        osiamConnectorForClientCredentialsGrant = new OsiamConnector.Builder()
-                .setAuthServerEndpoint(AUTH_ENDPOINT)
-                .setResourceServerEndpoint(RESOURCE_ENDPOINT)
-                .setClientId(CLIENT_ID)
-                .setClientSecret(CLIENT_SECRET)
-                .build()
-
-        osiamConnectorForEmailChange = new OsiamConnector.Builder()
-                .setAuthServerEndpoint(AUTH_ENDPOINT)
-                .setResourceServerEndpoint(RESOURCE_ENDPOINT)
-                .setClientId(CLIENT_ID)
-                .setClientSecret(CLIENT_SECRET)
-                .build()
-
-        accessToken = osiamConnector.retrieveAccessToken("marissa", "koala", Scope.ALL)
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken('marissa', 'koala', Scope.ALL)
     }
 
-    def createAccessToken(def userName, def password) {
+    def createAccessToken(String userName, String password) {
         OsiamConnector osiamConnector = new OsiamConnector.Builder()
                 .setAuthServerEndpoint(AUTH_ENDPOINT)
                 .setResourceServerEndpoint(RESOURCE_ENDPOINT)
@@ -115,26 +99,16 @@ abstract class AbstractIT extends Specification {
         osiamConnector.retrieveAccessToken(userName, password, Scope.ALL)
     }
 
-    def createClientAccessToken() {
-        OsiamConnector osiamConnector = new OsiamConnector.Builder()
-                .setAuthServerEndpoint(AUTH_ENDPOINT)
-                .setResourceServerEndpoint(RESOURCE_ENDPOINT)
-                .setClientId(CLIENT_ID)
-                .setClientSecret(CLIENT_SECRET)
-                .build()
-        osiamConnector.retrieveAccessToken(Scope.ALL)
-    }
-
     def cleanup() {
         // Load Spring context configuration.
-        ApplicationContext ac = new ClassPathXmlApplicationContext("context.xml")
+        ApplicationContext ac = new ClassPathXmlApplicationContext('context.xml')
         // Get dataSource configuration.
-        DataSource dataSource = (DataSource) ac.getBean("dataSource")
+        DataSource dataSource = (DataSource) ac.getBean('dataSource')
         // Establish database connection.
         IDatabaseConnection connection = new DatabaseDataSourceConnection(dataSource)
         // Load the initialization data from file.
 
-        IDataSet initData = new FlatXmlDataSetBuilder().build(ac.getResource("database_tear_down.xml").getFile())
+        IDataSet initData = new FlatXmlDataSetBuilder().build(ac.getResource('database_tear_down.xml').getFile())
 
         // Insert initialization data into database.
         try {

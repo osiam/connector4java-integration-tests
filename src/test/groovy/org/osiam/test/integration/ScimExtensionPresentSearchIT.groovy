@@ -42,7 +42,7 @@ class ScimExtensionPresentSearchIT extends AbstractExtensionBaseIT {
         Query query = new QueryBuilder().filter("extension.$fieldName pr").build()
 
         when:
-        SCIMSearchResult result = osiamConnector.searchUsers(query, accessToken)
+        SCIMSearchResult result = OSIAM_CONNECTOR.searchUsers(query, accessToken)
 
         then:
         result.totalResults == 1

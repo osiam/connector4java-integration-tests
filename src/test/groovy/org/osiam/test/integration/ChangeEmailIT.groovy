@@ -95,7 +95,7 @@ class ChangeEmailIT extends AbstractIT {
 
         then:
         responseStatusCode == 200
-        User user = osiamConnector.getUser(userId, accessToken)
+        User user = OSIAM_CONNECTOR.getUser(userId, accessToken)
         Extension extension = user.getExtension(SELF_ADMIN_URN)
         extension.getField('emailConfirmToken', ExtensionFieldType.STRING) != null
         extension.getField('tempMail', ExtensionFieldType.STRING) == newEmailValue
@@ -103,7 +103,7 @@ class ChangeEmailIT extends AbstractIT {
 
     def 'The confirmation of the new email removes the old one and set the new one as primary'() {
         given:
-        AccessToken accessToken = osiamConnector.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
         def userId = 'cef9452e-00a9-4cec-a086-d171374febef'
         def confirmToken = 'cef9452e-00a9-4cec-a086-a171374febef'
         def newEmailValue = 'newEmailForGeorge@osiam.org'
@@ -130,7 +130,7 @@ class ChangeEmailIT extends AbstractIT {
         then:
         responseStatusCode == 200
         userId == savedUserId
-        User user = osiamConnector.getUser(userId, accessToken)
+        User user = OSIAM_CONNECTOR.getUser(userId, accessToken)
         Extension extension = user.getExtension(SELF_ADMIN_URN)
         extension.isFieldPresent('emailConfirmToken') == false
         extension.isFieldPresent('tempMail') == false
@@ -144,7 +144,7 @@ class ChangeEmailIT extends AbstractIT {
 
     def 'The confirmation with a non expired token of the new email removes the old one and set the new one as primary'() {
         given:
-        AccessToken accessToken = osiamConnector.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
         def userId = '69e1a5dc-89be-4343-976c-b6641af249f7'
         def confirmToken = '69e1a5dc-89be-4343-976c-b6641af249f7'
         def newEmailValue = 'newEmailForElisabeth@osiam.org'
@@ -171,7 +171,7 @@ class ChangeEmailIT extends AbstractIT {
         then:
         responseStatusCode == 200
         userId == savedUserId
-        User user = osiamConnector.getUser(userId, accessToken)
+        User user = OSIAM_CONNECTOR.getUser(userId, accessToken)
         Extension extension = user.getExtension(SELF_ADMIN_URN)
         extension.isFieldPresent('emailConfirmToken') == false
         extension.isFieldPresent('tempMail') == false
@@ -185,7 +185,7 @@ class ChangeEmailIT extends AbstractIT {
 
     def 'The confirmation of the new email fails when token is not valid'() {
         given:
-        AccessToken accessToken = osiamConnector.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
         def userId = 'cef9452e-00a9-4cec-a086-d171374febef'
         def confirmToken = 'invalid_token'
 
@@ -211,7 +211,7 @@ class ChangeEmailIT extends AbstractIT {
 
     def 'The confirmation of the new email fails when token is expired'() {
         given:
-        AccessToken accessToken = osiamConnector.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
         def userId = '69e1a5dc-89be-4343-976c-b5541af249f5'
         def confirmToken = '69e1a5dc-89be-4343-976c-b5541af249f5'
 

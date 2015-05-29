@@ -42,7 +42,7 @@ class SearchGroupsWithSortByIT extends AbstractIT {
         Query query = new QueryBuilder().ascending(sortBy).build()
 
         when:
-        SCIMSearchResult<Group> queryResult = osiamConnector.searchGroups(query, accessToken)
+        SCIMSearchResult<Group> queryResult = OSIAM_CONNECTOR.searchGroups(query, accessToken)
 
         then:
         queryResult.resources.size() == expectedOrder.size()
