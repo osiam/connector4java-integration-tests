@@ -126,7 +126,7 @@ class RegistrationIT extends AbstractIT {
         SCIMSearchResult<User> users = osiamConnector.searchUsers(query, accessToken)
         User user = users.getResources()[0]
         !user.isActive()
-        Extension extension = user.getExtension('urn:org.osiam:scim:extensions:addon-self-administration')
+        Extension extension = user.getExtension(SELF_ADMIN_URN)
         extension.getField('activationToken', ExtensionFieldType.STRING) != null
         user.getGroups().get(0).getDisplay().equalsIgnoreCase("Test")
     }
@@ -301,7 +301,7 @@ class RegistrationIT extends AbstractIT {
         SCIMSearchResult<User> users = osiamConnector.searchUsers(query, accessToken)
         User registeredUser = users.getResources()[0]
 
-        Extension registeredExtension1 = registeredUser.getExtension('urn:org.osiam:scim:extensions:addon-self-administration')
+        Extension registeredExtension1 = registeredUser.getExtension(SELF_ADMIN_URN)
         registeredExtension1.getField('activationToken', ExtensionFieldType.STRING) != null
         Extension registeredExtension2 = registeredUser.getExtension('urn:client:extension')
         registeredExtension2.getField('age', ExtensionFieldType.STRING) != null
@@ -336,7 +336,7 @@ class RegistrationIT extends AbstractIT {
         SCIMSearchResult<User> users = osiamConnector.searchUsers(queryString, accessToken)
         User registeredUser = users.getResources()[0]
 
-        Extension registeredExtension1 = registeredUser.getExtension('urn:org.osiam:scim:extensions:addon-self-administration')
+        Extension registeredExtension1 = registeredUser.getExtension(SELF_ADMIN_URN)
         registeredExtension1.getField('activationToken', ExtensionFieldType.STRING) != null
         registeredUser.getExtension('urn:client:extension')
         registeredUser.getGroups().get(0).getDisplay().equalsIgnoreCase("Test")

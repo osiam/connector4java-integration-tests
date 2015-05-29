@@ -39,8 +39,6 @@ import static groovyx.net.http.ContentType.URLENC
  */
 class LostPasswordIT extends AbstractIT {
 
-    def urn = 'urn:org.osiam:scim:extensions:addon-self-administration'
-
     def setup() {
         setupDatabase('database_seed_lost_password.xml')
     }
@@ -67,7 +65,7 @@ class LostPasswordIT extends AbstractIT {
         then:
         statusCode == 200
         User user = osiamConnector.getUser(userId, accessToken)
-        Extension extension = user.getExtension(urn)
+        Extension extension = user.getExtension(SELF_ADMIN_URN)
         extension.getField('oneTimePassword', ExtensionFieldType.STRING) != null
     }
 
@@ -98,7 +96,7 @@ class LostPasswordIT extends AbstractIT {
         statusCode == 200
         savedUserId == userId
         User user = osiamConnector.getUser(userId, accessToken)
-        Extension extension = user.getExtension(urn)
+        Extension extension = user.getExtension(SELF_ADMIN_URN)
         extension.isFieldPresent('oneTimePassword') == false
     }
 
@@ -129,7 +127,7 @@ class LostPasswordIT extends AbstractIT {
         statusCode == 200
         savedUserId == userId
         User user = osiamConnector.getUser(userId, accessToken)
-        Extension extension = user.getExtension(urn)
+        Extension extension = user.getExtension(SELF_ADMIN_URN)
         extension.isFieldPresent('oneTimePassword') == false
     }
 
@@ -216,7 +214,7 @@ class LostPasswordIT extends AbstractIT {
         statusCode == 200
         savedUserId == userId
         User user = osiamConnector.getUser(userId, accessToken)
-        Extension extension = user.getExtension(urn)
+        Extension extension = user.getExtension(SELF_ADMIN_URN)
         extension.isFieldPresent('oneTimePassword') == false
     }
 
@@ -247,7 +245,7 @@ class LostPasswordIT extends AbstractIT {
         statusCode == 200
         savedUserId == userId
         User user = osiamConnector.getUser(userId, accessToken)
-        Extension extension = user.getExtension(urn)
+        Extension extension = user.getExtension(SELF_ADMIN_URN)
         extension.isFieldPresent('oneTimePassword') == false
     }
 

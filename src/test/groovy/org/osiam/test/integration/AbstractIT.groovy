@@ -49,6 +49,8 @@ abstract class AbstractIT extends Specification {
     protected static final String RESOURCE_ENDPOINT = "http://localhost:8180/osiam-resource-server"
     protected static final String REGISTRATION_ENDPOINT = "http://localhost:8180/addon-self-administration"
 
+    protected static final String SELF_ADMIN_URN = 'urn:org.osiam:scim:extensions:addon-self-administration'
+
     protected OsiamConnector osiamConnector
     protected OsiamConnector osiamConnectorForClientCredentialsGrant
     protected OsiamConnector osiamConnectorForEmailChange
