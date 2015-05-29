@@ -40,7 +40,6 @@ import javax.ws.rs.core.Response;
 import org.json.JSONException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osiam.client.exception.ForbiddenException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.Scope;
@@ -77,6 +76,71 @@ public class AdminScopeIT {
             .setClientSecret("secret")
             .build();
     Client client = ClientBuilder.newClient();
+
+    @Test
+    public void can_access_ServiceProviderConfigs_endpoint() {
+        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+
+        Response response = client.target("http://localhost:8180/osiam-resource-server")
+                .path("ServiceProviderConfigs")
+                .request(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + accessToken.getToken())
+                .post(Entity.entity("irrelevant", MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+
+        assertThat(response.getStatus(), is(equalTo(200)));
+    }
+
+    @Test
+    public void can_access_root() {
+        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+
+        Response response = client.target("http://localhost:8180/osiam-resource-server")
+                .path("/")
+                .request(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + accessToken.getToken())
+                .get();
+
+        assertThat(response.getStatus(), is(equalTo(501)));
+    }
+
+    @Test
+    public void can_access_root_with_post() {
+        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+
+        Response response = client.target("http://localhost:8180/osiam-resource-server")
+                .path(".search")
+                .request(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + accessToken.getToken())
+                .post(Entity.entity("irrelevant", MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+
+        assertThat(response.getStatus(), is(equalTo(501)));
+    }
+
+    @Test
+    public void can_access_metrics_endpoint() {
+        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+
+        Response response = client.target("http://localhost:8180/osiam-resource-server")
+                .path("Metrics")
+                .request(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + accessToken.getToken())
+                .get();
+
+        assertThat(response.getStatus(), is(equalTo(200)));
+    }
+
+    @Test
+    public void can_access_extensions_endpoint() {
+        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+
+        Response response = client.target("http://localhost:8180/osiam-resource-server")
+                .path("osiam").path("extension-definition")
+                .request(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + accessToken.getToken())
+                .get();
+
+        assertThat(response.getStatus(), is(equalTo(200)));
+    }
 
     @Test
     public void can_get_own_user() {
