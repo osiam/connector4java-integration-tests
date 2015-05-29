@@ -46,7 +46,7 @@ class ScimExtensionTypesIT extends AbstractExtensionBaseIT {
         User.Builder userBuilder = new User.Builder("irrelevant").addExtension(extension)
 
         when:
-        osiamConnector.createUser(userBuilder.build(), accessToken)
+        OSIAM_CONNECTOR.createUser(userBuilder.build(), accessToken)
 
         then:
         thrown(ConflictException)
@@ -88,7 +88,7 @@ class ScimExtensionTypesIT extends AbstractExtensionBaseIT {
 
     def 'URI: /osiam/extension-definition will return all persisted extension definitions'() {
         given:
-        def accessToken = osiamConnector.retrieveAccessToken("marissa", "koala", Scope.ALL)
+        def accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ALL)
         def statusCode
         def jsonContent
 

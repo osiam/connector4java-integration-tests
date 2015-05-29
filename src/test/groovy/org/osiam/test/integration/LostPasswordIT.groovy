@@ -46,7 +46,7 @@ class LostPasswordIT extends AbstractIT {
     def 'Initiate the lost password activation flow'() {
         given:
         def userId = '69e1a5dc-89be-4343-976c-b5541af249f5'
-        AccessToken accessToken = osiamConnector.retrieveAccessToken("marissa", "koala", Scope.ALL)
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ALL)
         def statusCode
 
         when:
@@ -64,14 +64,13 @@ class LostPasswordIT extends AbstractIT {
 
         then:
         statusCode == 200
-        User user = osiamConnector.getUser(userId, accessToken)
+        User user = OSIAM_CONNECTOR.getUser(userId, accessToken)
         Extension extension = user.getExtension(SELF_ADMIN_URN)
         extension.getField('oneTimePassword', ExtensionFieldType.STRING) != null
     }
 
     def 'As a client I can change the password of an user with a valid onetime password'() {
         given:
-        AccessToken accessToken = createClientAccessToken()
         def otp = 'cef9452e-00a9-4cec-a086-a171374febef'
         def userId = 'cef9452e-00a9-4cec-a086-d171374febef'
         def newPassword = 'pulverToastMann'
@@ -95,14 +94,13 @@ class LostPasswordIT extends AbstractIT {
         then:
         statusCode == 200
         savedUserId == userId
-        User user = osiamConnector.getUser(userId, accessToken)
+        User user = OSIAM_CONNECTOR.getUser(userId, accessToken)
         Extension extension = user.getExtension(SELF_ADMIN_URN)
         extension.isFieldPresent('oneTimePassword') == false
     }
 
     def 'As a client I can change the password of an user with a non expired onetime password'() {
         given:
-        AccessToken accessToken = createClientAccessToken()
         def otp = '69e1a5dc-89be-4343-976c-b6641af249f7'
         def userId = '69e1a5dc-89be-4343-976c-b6641af249f7'
         def newPassword = 'pulverToastMann'
@@ -126,14 +124,13 @@ class LostPasswordIT extends AbstractIT {
         then:
         statusCode == 200
         savedUserId == userId
-        User user = osiamConnector.getUser(userId, accessToken)
+        User user = OSIAM_CONNECTOR.getUser(userId, accessToken)
         Extension extension = user.getExtension(SELF_ADMIN_URN)
         extension.isFieldPresent('oneTimePassword') == false
     }
 
     def 'As a client I can not change the password of an user with a already used onetime password'() {
         given:
-        AccessToken accessToken = createClientAccessToken()
         def otp = 'cef9452e-00a9-4cec-a086-a171374febef'
         def userId = 'cef9452e-00a9-4cec-a086-d171374febef'
         def newPassword = 'new_password'
@@ -164,7 +161,6 @@ class LostPasswordIT extends AbstractIT {
 
     def 'As a client I can not change the password of an user with a expired onetime password'() {
         given:
-        AccessToken accessToken = createClientAccessToken()
         def otp = '69e1a5dc-89be-4343-976c-b5541af249f5'
         def userId = '69e1a5dc-89be-4343-976c-b5541af249f5'
         def newPassword = 'new_password'
@@ -213,7 +209,7 @@ class LostPasswordIT extends AbstractIT {
         then:
         statusCode == 200
         savedUserId == userId
-        User user = osiamConnector.getUser(userId, accessToken)
+        User user = OSIAM_CONNECTOR.getUser(userId, accessToken)
         Extension extension = user.getExtension(SELF_ADMIN_URN)
         extension.isFieldPresent('oneTimePassword') == false
     }
@@ -244,7 +240,7 @@ class LostPasswordIT extends AbstractIT {
         then:
         statusCode == 200
         savedUserId == userId
-        User user = osiamConnector.getUser(userId, accessToken)
+        User user = OSIAM_CONNECTOR.getUser(userId, accessToken)
         Extension extension = user.getExtension(SELF_ADMIN_URN)
         extension.isFieldPresent('oneTimePassword') == false
     }

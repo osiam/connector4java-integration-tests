@@ -42,7 +42,7 @@ class SearchUsersWithSortByIT extends AbstractIT {
         Query query = new QueryBuilder().ascending(sortBy).build()
 
         when:
-        SCIMSearchResult<User> queryResult = osiamConnector.searchUsers(query, accessToken)
+        SCIMSearchResult<User> queryResult = OSIAM_CONNECTOR.searchUsers(query, accessToken)
 
         then:
         queryResult.resources.size() == expectedOrder.size()
