@@ -34,6 +34,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,32 +75,37 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
     private static final String VALID_USER_ID = "d83c0f36-4e77-407d-94c9-2ca7e4cb7cf1";
     private static final String EXTENSION_URN = "extension";
 
+    @Before
+    public void setup() {
+        retrieveAccessTokenForMarissa();
+    }
+
     @Test
     public void create_complete_user_works() {
         User newUser = initializeUserWithAllAttributes();
-        User retUser = oConnector.createUser(newUser, accessToken);
-        User dbUser = oConnector.getUser(retUser.getId(), accessToken);
+        User retUser = OSIAM_CONNECTOR.createUser(newUser, accessToken);
+        User dbUser = OSIAM_CONNECTOR.getUser(retUser.getId(), accessToken);
         assertThatNewUserAndReturnUserAreEqual(newUser, dbUser);
     }
 
     @Test
     public void update_all_attributes_of_one_user_works() {
-        User oldUser = oConnector.getUser(VALID_USER_ID, accessToken);
+        User oldUser = OSIAM_CONNECTOR.getUser(VALID_USER_ID, accessToken);
         User expectedUser = createUserWithUpdatedField();
         UpdateUser updateUser = createUpdateUser(oldUser, expectedUser);
-        User dbUser = oConnector.updateUser(VALID_USER_ID, updateUser, accessToken);
+        User dbUser = OSIAM_CONNECTOR.updateUser(VALID_USER_ID, updateUser, accessToken);
         assertThatNewUserAndReturnUserAreEqual(expectedUser, dbUser);
     }
 
     @Test
     public void delete_User_who_has_all_attributes() {
-        oConnector.deleteUser(VALID_USER_ID, accessToken);
+        OSIAM_CONNECTOR.deleteUser(VALID_USER_ID, accessToken);
     }
 
     @Test
     public void replace_user_with_has_all_attributes() {
         User patchedUser = new User.Builder(createUserWithUpdatedField()).build();
-        User updatedUser = oConnector.replaceUser(VALID_USER_ID, patchedUser, accessToken);
+        User updatedUser = OSIAM_CONNECTOR.replaceUser(VALID_USER_ID, patchedUser, accessToken);
         assertThatNewUserAndReturnUserAreEqual(patchedUser, updatedUser);
     }
 
@@ -154,7 +160,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
                 + " and title eq \"title\""
                 + " and userName sw \"user\""
                 + " and x509Certificates eq \"x509Certificate\"").build();
-        SCIMSearchResult<User> queryResult = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> queryResult = OSIAM_CONNECTOR.searchUsers(query, accessToken);
         assertThat(queryResult.getTotalResults(), is(equalTo(1L)));
     }
 

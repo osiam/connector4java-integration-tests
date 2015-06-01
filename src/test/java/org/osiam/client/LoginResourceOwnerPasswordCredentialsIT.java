@@ -51,101 +51,77 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
         DbUnitTestExecutionListener.class })
 @DatabaseSetup("/database_seed_login_password_credentials.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
-public class LoginResourceOwnerPasswordCredentialsIT {
-
-    protected static final String AUTH_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-auth-server";
-    protected static final String RESOURCE_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-resource-server";
-    protected String clientId = "example-client";
-    protected String clientSecret = "secret";
+public class LoginResourceOwnerPasswordCredentialsIT extends AbstractIntegrationTestBase {
 
     @Test
     public void login_with_resource_owner_password_credentials_grant_should_provide_an_refresh_token() {
-        OsiamConnector osiamConnector = createOsiamConnector();
-
-        AccessToken at = osiamConnector.retrieveAccessToken("marissa", "koala", Scope.ALL);
-
-        assertNotNull("The hole access token object was null.", at);
-        assertNotNull("The refresh token was null.", at.getRefreshToken());
+        retrieveAccessTokenForMarissa();
+        assertNotNull("The hole access token object was null.", accessToken);
+        assertNotNull("The refresh token was null.", accessToken.getRefreshToken());
     }
 
     @Test
     public void login_with_two_users_works() {
-        OsiamConnector osiamConnector = createOsiamConnector();
-        AccessToken at = osiamConnector.retrieveAccessToken("marissa", "koala", Scope.ALL);
+        retrieveAccessTokenForMarissa();
+        AccessToken at2 = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ALL);
 
-        OsiamConnector osiamConnector2 = createOsiamConnector();
-        AccessToken at2 = osiamConnector2.retrieveAccessToken("marissa", "koala", Scope.ALL);
-
-        assertNotNull(at);
+        assertNotNull(accessToken);
         assertNotNull(at2);
     }
 
     @Test
-    public void multiple_failed_logins(){
-        OsiamConnector osiamConnector = createOsiamConnector();
-
-        for(int i=0; i < 3; i++){
-            try{
-                osiamConnector.retrieveAccessToken("marissa03", "wrongPassword", Scope.ALL);
-            }catch(ConnectionInitializationException e){
+    public void multiple_failed_logins() {
+        for (int i = 0; i < 3; i++) {
+            try {
+                OSIAM_CONNECTOR.retrieveAccessToken("marissa03", "wrongPassword", Scope.ALL);
+            } catch (ConnectionInitializationException e) {
                 assertTrue(e.getMessage().contains("Bad credentials"));
             }
         }
 
-        try{
-            osiamConnector.retrieveAccessToken("marissa03", "koala", Scope.ALL);
-        }catch(ConnectionInitializationException e){
+        try {
+            OSIAM_CONNECTOR.retrieveAccessToken("marissa03", "koala", Scope.ALL);
+        } catch (ConnectionInitializationException e) {
             assertTrue(e.getMessage().contains("temporary locked"));
         }
     }
 
     @Test
-    public void multiple_failed_logins_reset(){
-        OsiamConnector osiamConnector = createOsiamConnector();
-
-        for(int i=0; i < 2; i++){
-            try{
-                osiamConnector.retrieveAccessToken("marissa04", "wrongPassword", Scope.ALL);
-            }catch(ConnectionInitializationException e){
+    public void multiple_failed_logins_reset() {
+        for (int i = 0; i < 2; i++) {
+            try {
+                OSIAM_CONNECTOR.retrieveAccessToken("marissa04", "wrongPassword", Scope.ALL);
+            } catch (ConnectionInitializationException e) {
                 assertTrue(e.getMessage().contains("Bad credentials"));
             }
         }
 
-        osiamConnector.retrieveAccessToken("marissa04", "koala", Scope.ALL);
+        OSIAM_CONNECTOR.retrieveAccessToken("marissa04", "koala", Scope.ALL);
 
-        for(int i=0; i < 2; i++){
-            try{
-                osiamConnector.retrieveAccessToken("marissa04", "wrongPassword", Scope.ALL);
-            }catch(ConnectionInitializationException e){
+        for (int i = 0; i < 2; i++) {
+            try {
+                OSIAM_CONNECTOR.retrieveAccessToken("marissa04", "wrongPassword", Scope.ALL);
+            } catch (ConnectionInitializationException e) {
                 assertTrue(e.getMessage().contains("Bad credentials"));
             }
         }
-        osiamConnector.retrieveAccessToken("marissa04", "koala", Scope.ALL);
+        OSIAM_CONNECTOR.retrieveAccessToken("marissa04", "koala", Scope.ALL);
     }
 
     @Test
-    public void multiple_failed_logins_wait(){
-        OsiamConnector osiamConnector = createOsiamConnector();
-
-        for(int i=0; i < 3; i++){
-            try{
-                osiamConnector.retrieveAccessToken("marissa05", "wrongPassword", Scope.ALL);
-            }catch(ConnectionInitializationException e){
+    public void multiple_failed_logins_wait() {
+        for (int i = 0; i < 3; i++) {
+            try {
+                OSIAM_CONNECTOR.retrieveAccessToken("marissa05", "wrongPassword", Scope.ALL);
+            } catch (ConnectionInitializationException e) {
                 assertTrue(e.getMessage().contains("Bad credentials"));
             }
         }
 
         try {
             Thread.sleep(3000);
-            osiamConnector.retrieveAccessToken("marissa05", "koala", Scope.ALL);
-        } catch (InterruptedException e) {}
-    }
-
-    private OsiamConnector createOsiamConnector() {
-        return new OsiamConnector.Builder()
-                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
-                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
-                .setClientId(clientId).setClientSecret(clientSecret)
-                .build();
+            OSIAM_CONNECTOR.retrieveAccessToken("marissa05", "koala", Scope.ALL);
+        } catch (InterruptedException e) {
+        }
     }
 }

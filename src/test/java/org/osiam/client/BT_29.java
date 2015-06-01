@@ -28,6 +28,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertThat;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.query.Query;
@@ -55,12 +56,17 @@ public class BT_29 extends AbstractIntegrationTestBase {
     private static final String USER_NAME_MARISSA = "marissa";
     private static final String ID_MARISSA = "cef9452e-00a9-4cec-a086-d171374ffbef";
 
+    @Before
+    public void setup() {
+        retrieveAccessTokenForMarissa();
+    }
+
     @Test
     public void searchForUser() {
         for (int i = 0; i < 300; i++) {
             Query q = new QueryBuilder().filter("userName eq \"" + USER_NAME_MARISSA + "\"").build();
 
-            SCIMSearchResult<User> result = oConnector.searchUsers(q, accessToken);
+            SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(q, accessToken);
 
             assertThat((int) result.getTotalResults(), greaterThan(0));
         }
@@ -69,7 +75,7 @@ public class BT_29 extends AbstractIntegrationTestBase {
     @Test
     public void retrieveUser() {
         for (int i = 0; i < 300; i++) {
-            User user = oConnector.getUser(ID_MARISSA, accessToken);
+            User user = OSIAM_CONNECTOR.getUser(ID_MARISSA, accessToken);
 
             assertThat(user, is(notNullValue()));
         }

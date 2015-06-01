@@ -51,8 +51,8 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class })
 @DatabaseSetup("/database_seed_groups.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class GroupServiceIT extends AbstractIntegrationTestBase {
@@ -65,11 +65,12 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
     @Before
     public void setUp() throws Exception {
         created = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(EXPECTED_CREATED_DATE);
+        retrieveAccessTokenForMarissa();
     }
 
     @Test
     public void all_members_are_transmitted() {
-        Group group = oConnector.getGroup(VALID_GROUP_ID, accessToken);
+        Group group = OSIAM_CONNECTOR.getGroup(VALID_GROUP_ID, accessToken);
 
         Set<MemberRef> members = group.getMembers();
 
@@ -79,7 +80,7 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void group_member_is_the_expected_one() {
-        Group group = oConnector.getGroup(VALID_GROUP_ID, accessToken);
+        Group group = OSIAM_CONNECTOR.getGroup(VALID_GROUP_ID, accessToken);
 
         for (MemberRef actMember : group.getMembers()) {
             assertThat(actMember.getValue(), is(equalTo(VALID_USER_ID)));
@@ -88,7 +89,7 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void ensure_all_values_are_deserialized_correctly() throws Exception {
-        Group group = oConnector.getGroup(VALID_GROUP_ID, accessToken);
+        Group group = OSIAM_CONNECTOR.getGroup(VALID_GROUP_ID, accessToken);
 
         assertThat(group.getId(), is(equalTo(VALID_GROUP_ID)));
         assertThat(group.getMeta().getCreated(), is(equalTo(created)));
@@ -98,8 +99,7 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
 
     @Test(expected = NoResultException.class)
     public void get_an_invalid_group_raises_exception() throws Exception {
-        oConnector.getGroup(INVALID_ID, accessToken);
+        OSIAM_CONNECTOR.getGroup(INVALID_ID, accessToken);
         fail("Exception expected");
     }
-
 }

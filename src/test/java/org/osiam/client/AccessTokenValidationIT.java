@@ -52,20 +52,22 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 public class AccessTokenValidationIT extends AbstractIntegrationTestBase {
 
     @Test
-    public void valid_accesstoken_can_be_confirmed() {
-        AccessToken validatedAccesToken = oConnector.validateAccessToken(accessToken);
-        assertTrue(validatedAccesToken != null);
+    public void valid_access_token_can_be_confirmed() {
+        retrieveAccessTokenForMarissa();
+        AccessToken validatedAccessToken = OSIAM_CONNECTOR.validateAccessToken(accessToken);
+        assertTrue(validatedAccessToken != null);
     }
 
     @Test(expected = UnauthorizedException.class)
-    public void invalid_accesstoken_can_be_reconized() {
+    public void invalid_access_token_can_be_recognized() {
         AccessToken invalidAccessToken = new AccessToken.Builder("invalid").build();
-        oConnector.validateAccessToken(invalidAccessToken);
+        OSIAM_CONNECTOR.validateAccessToken(invalidAccessToken);
         fail("Exception expected");
     }
 
     @Test
     public void accessToken_contains_user_data() {
+        retrieveAccessTokenForMarissa();
         assertThat(accessToken.getUserName(), is("marissa"));
     }
 
@@ -74,11 +76,11 @@ public class AccessTokenValidationIT extends AbstractIntegrationTestBase {
         String userName = "marissa";
         String password = "koala";
 
-        accessToken = oConnector.retrieveAccessToken(userName, password, Scope.ALL);
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken(userName, password, Scope.ALL);
 
         Thread.sleep(2000);
 
-        accessToken = oConnector.retrieveAccessToken(userName, password, Scope.ALL);
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken(userName, password, Scope.ALL);
 
         assertTrue(accessToken != null);
     }

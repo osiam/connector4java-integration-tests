@@ -23,9 +23,13 @@
 
 package org.osiam.client;
 
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -75,32 +79,17 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class })
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
-public class LoginOAuth2IT {
+public class LoginOAuth2IT extends AbstractIntegrationTestBase {
 
-    protected static final String AUTH_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-auth-server";
-    protected static final String RESOURCE_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-resource-server";
-    private static String CLIENT_ID = "example-client";
-    private static String CLIENT_SECRET = "secret";
-    private static String REDIRECT_URI = "http://localhost:5000/oauth2";
-    private OsiamConnector oConnector;
-    private URI loginUri;
-    private CloseableHttpClient httpClient;
+    private URI loginUri = OSIAM_CONNECTOR.getAuthorizationUri(Scope.ALL);
+    private CloseableHttpClient httpClient = HttpClientBuilder.create().build();
     private String authCode;
     private AccessToken accessToken;
     private HttpResponse authCodeResponse;
 
     @Before
-    public void setUp() throws Exception {
-        oConnector = new OsiamConnector.Builder()
-                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
-                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
-                .setClientId(CLIENT_ID)
-                .setClientSecret(CLIENT_SECRET)
-                .setClientRedirectUri(REDIRECT_URI)
-                .build();
-
-        loginUri = oConnector.getAuthorizationUri(Scope.ALL);
-        httpClient = HttpClientBuilder.create().build();
+    public void before() {
+        loginUri = OSIAM_CONNECTOR.getAuthorizationUri(Scope.ALL);
     }
 
     @Test
@@ -163,7 +152,7 @@ public class LoginOAuth2IT {
         givenAccessTokenUsingAuthCode();
         assertTrue(accessToken != null);
         Query query = new QueryBuilder().filter("userName eq \"ben\"").build();
-        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(query, accessToken);
         User user = result.getResources().get(0);
         assertEquals(result.getTotalResults(), 1);
         assertEquals("ben", user.getUserName());
@@ -179,7 +168,7 @@ public class LoginOAuth2IT {
         givenAccessTokenUsingAuthCode();
         assertTrue(accessToken != null);
         Query query = new QueryBuilder().filter("userName eq \"ben\"").build();
-        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(query, accessToken);
         User user = result.getResources().get(0);
         assertEquals(result.getTotalResults(), 1);
         assertEquals("ldap",
@@ -194,7 +183,7 @@ public class LoginOAuth2IT {
         givenAccessTokenUsingAuthCode();
         assertTrue(accessToken != null);
         Query query = new QueryBuilder().filter("userName eq \"marissa\"").build();
-        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(query, accessToken);
         User user = result.getResources().get(0);
         assertEquals(result.getTotalResults(), 1);
         assertFalse(user.isExtensionPresent("urn:scim:schemas:osiam:2.0:authentication:server"));
@@ -251,7 +240,7 @@ public class LoginOAuth2IT {
     @Test
     @DatabaseSetup("/database_seed.xml")
     public void test_successful_update_user_with_ldap_relogin() throws IOException, InterruptedException {
-        oConnector = new OsiamConnector.Builder()
+        final OsiamConnector connector = new OsiamConnector.Builder()
                 .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
                 .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
                 .setClientId("short-living-client")
@@ -259,14 +248,16 @@ public class LoginOAuth2IT {
                 .setClientRedirectUri("http://localhost:5001/oauth2")
                 .build();
 
-        loginUri = oConnector.getAuthorizationUri();
+        accessToken = connector.retrieveAccessToken();
+
+        loginUri = connector.getAuthorizationUri();
 
         givenValidAuthCode("ben", "benspassword", "ldap");
         givenAuthCode();
-        givenAccessTokenUsingAuthCode();
+        accessToken = connector.retrieveAccessToken(authCode);
 
         Query query = new QueryBuilder().filter("userName eq \"ben\"").build();
-        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = connector.searchUsers(query, accessToken);
         User user = result.getResources().get(0);
 
         Email ldapEmail = new Email.Builder().setValue("ben@ben.de").setType(new Type("ldap")).build();
@@ -280,17 +271,15 @@ public class LoginOAuth2IT {
         UpdateUser updateUser = new UpdateUser.Builder().updateNickName("benNickname")
                 .addEmail(newEmail).addEmail(toBeDeleteLdapEmail).deleteEmail(ldapEmail).build();
 
-        oConnector.updateUser(user.getId(), updateUser, accessToken);
-
-        httpClient = HttpClientBuilder.create().build();
+        connector.updateUser(user.getId(), updateUser, accessToken);
 
         Thread.sleep(1000);
 
         givenValidAuthCode("ben", "benspassword", "ldap");
         givenAuthCode();
-        givenAccessTokenUsingAuthCode();
+        accessToken = connector.retrieveAccessToken(authCode);
 
-        result = oConnector.searchUsers(query, accessToken);
+        result = connector.searchUsers(query, accessToken);
         user = result.getResources().get(0);
 
         assertEquals(result.getTotalResults(), 1);
@@ -308,13 +297,13 @@ public class LoginOAuth2IT {
         givenValidAuthCode("marissa", "koala", "internal");
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
-        User user = oConnector.getCurrentUser(accessToken);
+        User user = OSIAM_CONNECTOR.getCurrentUser(accessToken);
         assertEquals("marissa", user.getUserName());
     }
 
     @Test(expected = ConflictException.class)
     @DatabaseSetup("/database_seed.xml")
-    public void getting_acces_token_two_times_raises_exception() throws IOException {
+    public void getting_access_token_two_times_raises_exception() throws IOException {
         givenValidAuthCode("marissa", "koala", "internal");
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
@@ -341,7 +330,7 @@ public class LoginOAuth2IT {
     }
 
     private void givenAccessTokenUsingAuthCode() {
-        accessToken = oConnector.retrieveAccessToken(authCode);
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken(authCode);
     }
 
     private String givenValidAuthCode(String username, String password, String provider) throws IOException {
@@ -354,8 +343,7 @@ public class LoginOAuth2IT {
         }
 
         {
-            HttpPost httpPost = new HttpPost(
-                    AUTH_ENDPOINT_ADDRESS + "/login/check");
+            HttpPost httpPost = new HttpPost(AUTH_ENDPOINT_ADDRESS + "/login/check");
 
             List<NameValuePair> loginCredentials = new ArrayList<>();
             loginCredentials
@@ -419,5 +407,4 @@ public class LoginOAuth2IT {
             throw new Error("Could not find any auth code or error message in the given Response");
         }
     }
-
 }

@@ -23,7 +23,9 @@
 
 package org.osiam.client;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,40 +43,26 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class })
 @DatabaseSetup("/database_seed.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
-public class RefreshTokenGrantIT {
-
-    protected static final String AUTH_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-auth-server";
-    protected static final String RESOURCE_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-resource-server";
-    protected String clientId = "example-client";
-    protected String clientSecret = "secret";
+public class RefreshTokenGrantIT extends AbstractIntegrationTestBase {
 
     @Test
-    public void refreshing_an_access_token_should_provide_a_new_access_token(){
+    public void refreshing_an_access_token_should_provide_a_new_access_token() {
+        retrieveAccessTokenForMarissa();
+        assertNotNull("The access token was null.", accessToken.getToken());
+        assertNotNull("The refresh token was null.", accessToken.getRefreshToken());
 
-        //Get a access token.
-        OsiamConnector connectorWithROPC = new OsiamConnector.Builder()
-                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
-                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
-                .setClientId(clientId)
-                .setClientSecret(clientSecret)
-                .build();
-
-        AccessToken accessTokenROPC = connectorWithROPC.retrieveAccessToken("marissa", "koala", Scope.ALL);
-        assertNotNull("The access token was null.", accessTokenROPC.getToken());
-        assertNotNull("The refresh token was null.", accessTokenROPC.getRefreshToken());
-
-        //Refresh the previously token with the retrieved refresh token
-        AccessToken accessTokenRF = connectorWithROPC.refreshAccessToken(accessTokenROPC);
+        // Refresh the previously token with the retrieved refresh token
+        AccessToken accessTokenRF = OSIAM_CONNECTOR.refreshAccessToken(accessToken);
 
         assertNotNull("The access token after refresh was null.", accessTokenRF.getToken());
         assertNotNull("The refresh token after refresh was null.", accessTokenRF.getRefreshToken());
 
-        //Check the the refresh token is equal and the access token is a new one
-        assertEquals("The refresh tokens were not equal.", accessTokenROPC.getRefreshToken(), accessTokenRF.getRefreshToken());
-        assertNotEquals("The access tokens were equal.", accessTokenROPC.getToken(), accessTokenRF.getToken());
+        // Check the the refresh token is equal and the access token is a new one
+        assertEquals("The refresh tokens were not equal.", accessToken.getRefreshToken(), accessTokenRF.getRefreshToken());
+        assertNotEquals("The access tokens were equal.", accessToken.getToken(), accessTokenRF.getToken());
     }
 }
