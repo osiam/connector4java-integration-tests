@@ -58,27 +58,28 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class EditGroupServiceIT extends AbstractIntegrationTestBase {
 
-    private String newId;
     private static final String IRRELEVANT = "irrelevant";
+    private String newId;
     private Group group;
 
     @Before
     public void setUp() {
         group = null;
         newId = UUID.randomUUID().toString();
+        retrieveAccessTokenForMarissa();
     }
 
     @Test(expected = ConflictException.class)
     public void create_group_without_displayName_raises_exception() {
         group = new Group.Builder().build();
-        oConnector.createGroup(group, accessToken);
+        OSIAM_CONNECTOR.createGroup(group, accessToken);
         fail("Exception expected");
     }
 
     @Test(expected = ConflictException.class)
     public void create_group_with_empty_displayName_raises_exception() {
         group = new Group.Builder("").build();
-        oConnector.createGroup(group, accessToken);
+        OSIAM_CONNECTOR.createGroup(group, accessToken);
         fail("Exception expected");
     }
 
@@ -86,32 +87,33 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
     public void create_group_with_existing_displayName_raises_exception() {
         String existingGroupName = "parent_group";
         group = new Group.Builder(existingGroupName).build();
-        oConnector.createGroup(group, accessToken);
+        OSIAM_CONNECTOR.createGroup(group, accessToken);
         fail("Exception expected");
     }
 
     @Test
     public void creating_a_group_works() {
         group = new Group.Builder(IRRELEVANT).build();
-        Group groupInDb = oConnector.getGroup(oConnector.createGroup(group, accessToken).getId(), accessToken);
+        Group groupInDb = OSIAM_CONNECTOR
+                .getGroup(OSIAM_CONNECTOR.createGroup(group, accessToken).getId(), accessToken);
         assertThat(groupInDb.getDisplayName(), is(equalTo(group.getDisplayName())));
     }
 
     @Test
-    public void create_group_with_exing_id_is_ignored() {
+    public void create_group_with_existing_id_is_ignored() {
         String existingGroupId = "69e1a5dc-89be-4343-976c-b5541af249f4";
         group = new Group.Builder(IRRELEVANT).setId(existingGroupId).build();
-        oConnector.createGroup(group, accessToken);
-        Group groupInDb = oConnector.getGroup(existingGroupId, accessToken);
+        OSIAM_CONNECTOR.createGroup(group, accessToken);
+        Group groupInDb = OSIAM_CONNECTOR.getGroup(existingGroupId, accessToken);
         assertThat(groupInDb.getDisplayName(), not(equalTo(group.getDisplayName())));
     }
 
     @Test(expected = NoResultException.class)
     public void create_group_with_provided_id_ignores_provided_id() {
         group = new Group.Builder(IRRELEVANT).setId(INVALID_ID).build();
-        Group createdGroup = oConnector.createGroup(group, accessToken);
+        Group createdGroup = OSIAM_CONNECTOR.createGroup(group, accessToken);
         assertThat(createdGroup.getId(), not(equalTo(INVALID_ID))); // This might fail once every 8 billion years
-        oConnector.getGroup(newId, accessToken);
+        OSIAM_CONNECTOR.getGroup(newId, accessToken);
         fail("Exception expected");
     }
 
@@ -119,7 +121,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
     public void created_group_can_be_found_via_query() {
         Query query = new QueryBuilder().filter("displayName eq \"" + IRRELEVANT + "\"").build();
         group = new Group.Builder(IRRELEVANT).build();
-        oConnector.createGroup(group, accessToken);
+        OSIAM_CONNECTOR.createGroup(group, accessToken);
 
         Group foundGroup = findSingleGroupByQuery(query);
 
@@ -128,21 +130,21 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
 
     @Test(expected = NoResultException.class)
     public void delete_group_works() throws Exception {
-        oConnector.deleteGroup(VALID_GROUP_ID, accessToken);
+        OSIAM_CONNECTOR.deleteGroup(VALID_GROUP_ID, accessToken);
 
-        oConnector.getGroup(newId, accessToken);
+        OSIAM_CONNECTOR.getGroup(newId, accessToken);
 
         fail("Exception expected");
     }
 
     @Test(expected = NoResultException.class)
-    public void delete_nonexistant_group_raises_exception() throws Exception {
-        oConnector.deleteGroup(INVALID_ID, accessToken);
+    public void delete_non_existing_group_raises_exception() throws Exception {
+        OSIAM_CONNECTOR.deleteGroup(INVALID_ID, accessToken);
         fail("Exception ");
     }
 
     private Group findSingleGroupByQuery(Query query) {
-        SCIMSearchResult<Group> result = oConnector.searchGroups(query, accessToken);
+        SCIMSearchResult<Group> result = OSIAM_CONNECTOR.searchGroups(query, accessToken);
         if (result.getResources().size() == 1) {
             return result.getResources().get(0);
         }

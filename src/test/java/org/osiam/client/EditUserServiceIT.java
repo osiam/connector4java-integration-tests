@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
@@ -70,26 +71,29 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
     private static final String USER_NAME_EXISTING_USER = "hsimpson";
 
     private String NEW_ID = UUID.randomUUID().toString();
-
     private User newUser;
     private User returnedUser;
     private User dbUser;
     private String validId = null;
-
     private Query query;
+
+    @Before
+    public void setup() {
+        retrieveAccessTokenForMarissa();
+    }
 
     @Test(expected = ConflictException.class)
     public void create_user_with_no_username_raises_exception() {
         initializeUserWithNoUserName();
         createUser();
-        fail("Exception excpected");
+        fail("Exception expected");
     }
 
     @Test(expected = ConflictException.class)
     public void create_user_with_existing_username_raises_exception() {
         initializeUserWithExistingUserName();
         createUser();
-        fail("Exception excpected");
+        fail("Exception expected");
     }
 
     @Test
@@ -103,7 +107,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void create_user_with_existing_id() {
-        initializeSimpleUserWithID(ID_EXISTING_USER.toString());
+        initializeSimpleUserWithID(ID_EXISTING_USER);
         createUser();
         loadUser(ID_EXISTING_USER);
         assertEquals(USER_NAME_EXISTING_USER, dbUser.getUserName());
@@ -111,9 +115,9 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void given_id_to_new_user_has_changed_after_saving() {
-        initializeSimpleUserWithID(NEW_ID.toString());
+        initializeSimpleUserWithID(NEW_ID);
         createUser();
-        assertNotSame(NEW_ID.toString(), returnedUser.getId());
+        assertNotSame(NEW_ID, returnedUser.getId());
     }
 
     @Test
@@ -131,7 +135,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void id_return_user_same_as_new_loaded_id() {
-        initializeSimpleUserWithID(NEW_ID.toString());
+        initializeSimpleUserWithID(NEW_ID);
         createUser();
         initialQueryToSearchUser();
         loadSingleUserByQuery();
@@ -141,7 +145,6 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void create_complete_user() {
-
         try {
             buildCompleteUser();
             createUser();
@@ -152,7 +155,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
             assertEqualsUser(newUser, dbUser);
         } finally {
             if (returnedUser != null) {
-                oConnector.deleteUser(returnedUser.getId(), accessToken);
+                OSIAM_CONNECTOR.deleteUser(returnedUser.getId(), accessToken);
             }
         }
     }
@@ -203,11 +206,11 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     private void loadUser(String id) {
-        dbUser = oConnector.getUser(id, accessToken);
+        dbUser = OSIAM_CONNECTOR.getUser(id, accessToken);
     }
 
     private void loadSingleUserByQuery() {
-        SCIMSearchResult<User> result = oConnector.searchUsers(query,
+        SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(query,
                 accessToken);
         if (result.getResources().size() == 0) {
             dbUser = null;
@@ -219,7 +222,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     private void createUser() {
-        returnedUser = oConnector.createUser(newUser, accessToken);
+        returnedUser = OSIAM_CONNECTOR.createUser(newUser, accessToken);
     }
 
     private void initialQueryToSearchUser() {
@@ -230,7 +233,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
     private void buildCompleteUser() {
         Address address = new Address.Builder()
                 .setStreetAddress("Example Street 22").setCountry("Germany")
-                .setFormatted("Complete Adress").setLocality("de")
+                .setFormatted("Complete Address").setLocality("de")
                 .setPostalCode("111111").setRegion("Berlin").build();
         List<Address> addresses = new ArrayList<>();
         addresses.add(address);
@@ -249,7 +252,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
 
         newUser = new User.Builder(IRRELEVANT).setPassword("password")
                 .setActive(true).addAddresses(addresses).setLocale("de")
-                .setName(name).setNickName("aNicknane").setTitle("Dr.")
+                .setName(name).setNickName("aNickname").setTitle("Dr.")
                 .addEmails(emails).build();
     }
 
@@ -279,8 +282,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
         for (int count = 0; count < expectedMultiValuedAttributes.size(); count++) {
             Email expectedEmail = expectedMultiValuedAttributes.get(count);
             Email actualEmail = getMultiAttributeWithValue(
-                    actualMultiValuedAttributes, expectedEmail.getValue()
-                            .toString());
+                    actualMultiValuedAttributes, expectedEmail.getValue());
             if (actualEmail == null) {
                 fail("MultiValueAttribute " + expectedEmail.getValue()
                         + " could not be found");
@@ -296,14 +298,14 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
 
     private Email getMultiAttributeWithValue(List<Email> multiValuedAttributes,
             String expectedValue) {
-        Email mutliVal = null;
+        Email email = null;
         for (Email actAttribute : multiValuedAttributes) {
-            if (actAttribute.getValue().toString().equals(expectedValue)) {
-                mutliVal = actAttribute;
+            if (actAttribute.getValue().equals(expectedValue)) {
+                email = actAttribute;
                 break;
             }
         }
-        return mutliVal;
+        return email;
     }
 
     private void assertEqualsName(Name expectedName, Name actualName) {
@@ -339,7 +341,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     private void whenUserIsDeleted() {
-        oConnector.deleteUser(validId, accessToken);
+        OSIAM_CONNECTOR.deleteUser(validId, accessToken);
     }
 
     private void givenAValidUserIDForDeletion() throws Exception {
@@ -348,7 +350,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
 
     private void assertThatUserIsRemoveFromServer() {
         try {
-            oConnector.getUser(validId, accessToken);
+            OSIAM_CONNECTOR.getUser(validId, accessToken);
         } catch (NoResultException e) {
             return;
         } catch (Exception e) {
@@ -356,5 +358,4 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
         }
         fail();
     }
-
 }

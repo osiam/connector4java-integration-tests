@@ -28,11 +28,8 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 
 import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -40,52 +37,42 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-public class OAuthSecurityIT {
-
-    protected static final String AUTH_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-auth-server";
-    protected static final String RESOURCE_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-resource-server";
-
-    private Client client;
-    
-    @Before
-    public void setUp() throws Exception {
-        client = ClientBuilder.newClient();
-    }
+public class OAuthSecurityIT extends AbstractIntegrationTestBase {
 
     @Test(expected = NotAuthorizedException.class)
     public void client_is_secured() throws IOException {
-        client.target(AUTH_ENDPOINT_ADDRESS + "/Client")
+        CLIENT.target(AUTH_ENDPOINT_ADDRESS + "/Client")
                 .path("example-client")
                 .request(MediaType.APPLICATION_JSON)
                 .get(String.class);
-            
+
         fail("Exception expected");
     }
-    
+
     @Test(expected = NotAuthorizedException.class)
     public void users_is_secured() throws IOException {
-        client.target(RESOURCE_ENDPOINT_ADDRESS + "/Users")
+        CLIENT.target(RESOURCE_ENDPOINT_ADDRESS + "/Users")
                 .request(MediaType.APPLICATION_JSON)
                 .get(String.class);
-            
+
         fail("Exception expected");
     }
-    
+
     @Test(expected = NotAuthorizedException.class)
     public void groups_is_secured() throws IOException {
-        client.target(RESOURCE_ENDPOINT_ADDRESS + "/Groups")
+        CLIENT.target(RESOURCE_ENDPOINT_ADDRESS + "/Groups")
                 .request(MediaType.APPLICATION_JSON)
                 .get(String.class);
-            
+
         fail("Exception expected");
     }
-    
+
     @Test(expected = NotAuthorizedException.class)
     public void metrics_is_secured() throws IOException {
-        client.target(RESOURCE_ENDPOINT_ADDRESS + "/Metrics")
+        CLIENT.target(RESOURCE_ENDPOINT_ADDRESS + "/Metrics")
                 .request(MediaType.APPLICATION_JSON)
                 .get(String.class);
-            
+
         fail("Exception expected");
     }
 }

@@ -1,7 +1,8 @@
 package org.osiam.client.regression;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +34,7 @@ public class Bug251 extends AbstractIntegrationTestBase {
                 .ascending("name.formatted")
                 .build();
 
-        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(query, accessToken);
 
         assertThat(result.getResources().size(), is(equalTo(2)));
     }
@@ -44,7 +45,7 @@ public class Bug251 extends AbstractIntegrationTestBase {
                 .ascending("name.familyName")
                 .build();
 
-        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(query, accessToken);
 
         assertThat(result.getResources().size(), is(equalTo(2)));
     }
@@ -55,7 +56,7 @@ public class Bug251 extends AbstractIntegrationTestBase {
                 .ascending("name.givenName")
                 .build();
 
-        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(query, accessToken);
 
         assertThat(result.getResources().size(), is(equalTo(2)));
     }
@@ -66,7 +67,7 @@ public class Bug251 extends AbstractIntegrationTestBase {
                 .ascending("name.middleName")
                 .build();
 
-        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(query, accessToken);
 
         assertThat(result.getResources().size(), is(equalTo(2)));
     }
@@ -77,7 +78,7 @@ public class Bug251 extends AbstractIntegrationTestBase {
                 .ascending("name.honorificPrefix")
                 .build();
 
-        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(query, accessToken);
 
         assertThat(result.getResources().size(), is(equalTo(2)));
     }
@@ -88,7 +89,7 @@ public class Bug251 extends AbstractIntegrationTestBase {
                 .ascending("name.honorificSuffix")
                 .build();
 
-        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(query, accessToken);
 
         assertThat(result.getResources().size(), is(equalTo(2)));
     }

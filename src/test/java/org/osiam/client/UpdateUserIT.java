@@ -39,11 +39,12 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
-import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.oauth.Scope;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.Entitlement;
@@ -73,15 +74,20 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class UpdateUserIT extends AbstractIntegrationTestBase {
 
+    private static String IRRELEVANT = "Irrelevant";
     private String idExistingUser = "7d33bcbe-a54c-43d8-867e-f6146164941e";
     private UpdateUser updateUser;
     private User originalUser;
     private User returnUser;
     private User databaseUser;
-    private static String IRRELEVANT = "Irrelevant";
+
+    @Before
+    public void setUp() {
+        retrieveAccessTokenForMarissa();
+    }
 
     @Test
-    public void delete_multivalue_attributes() {
+    public void delete_multi_value_attributes() {
         getOriginalUser("dma");
         createUpdateUserWithMultiDeleteFields();
 
@@ -115,7 +121,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void REGT_015_delete_multivalue_attributes_twice() {
+    public void REGT_015_delete_multi_value_attributes_twice() {
         getOriginalUser("dma");
         createUpdateUserWithMultiDeleteFields();
 
@@ -131,7 +137,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void delete_all_multivalue_attributes() {
+    public void delete_all_multi_value_attributes() {
         getOriginalUser("dama");
         createUpdateUserWithMultiAllDeleteFields();
 
@@ -148,7 +154,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void add_multivalue_attributes() {
+    public void add_multi_value_attributes() {
         getOriginalUser("ama");
         createUpdateUserWithMultiAddFields();
 
@@ -226,7 +232,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
         updateUser();
 
-        makeNewConnectionWithNewPassword();
+        OSIAM_CONNECTOR.retrieveAccessToken("UserName", "Password", Scope.ALL);
     }
 
     @Test
@@ -260,13 +266,13 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void update_attributes_doesnt_change_the_password() {
+    public void update_attributes_does_not_change_the_password() {
         getOriginalUser("uadctp");
         createUpdateUserWithUpdateFieldsWithoutPassword();
 
         updateUser();
 
-        assertThat(retrieveNewAccessToken(), is(notNullValue()));
+        assertThat(OSIAM_CONNECTOR.retrieveAccessToken(IRRELEVANT, "geheim", Scope.ALL), is(notNullValue()));
     }
 
     @Test(expected = ConflictException.class)
@@ -287,7 +293,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void deleting_and_add_of_same_mailadress_works() {
+    public void deleting_and_add_of_same_mail_address_works() {
         getOriginalUser(IRRELEVANT);
         createUpdateUserWhereTheSameEmailIsSetToDeleteAndAdd();
         updateUser();
@@ -433,7 +439,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         List<Im> ims = new ArrayList<>();
         ims.add(ims01);
         ims.add(ims02);
-        
+
         URI uri1 = null;
         URI uri2 = null;
         try {
@@ -444,7 +450,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
         Photo photo01 = new Photo.Builder().setValue(uri1).setType(Photo.Type.THUMBNAIL)
                 .build();
-        
+
         Photo photo02 = new Photo.Builder().setValue(uri2).build();
         List<Photo> photos = new ArrayList<>();
         photos.add(photo01);
@@ -487,7 +493,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
                 .setExternalId("irgendwas");
         User newUser = userBuilder.build();
 
-        originalUser = oConnector.createUser(newUser, accessToken);
+        originalUser = OSIAM_CONNECTOR.createUser(newUser, accessToken);
         idExistingUser = originalUser.getId();
     }
 
@@ -513,7 +519,6 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     private void createUpdateUserWithUpdateFieldsWithoutPassword() {
         Name newName = new Name.Builder().setFamilyName("newFamilyName").build();
         updateUser = new UpdateUser.Builder()
-
                 .updateUserName(IRRELEVANT)
                 .updateNickName(IRRELEVANT)
                 .updateExternalId(IRRELEVANT)
@@ -557,7 +562,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
         PhoneNumber phoneNumber = new PhoneNumber.Builder().setValue("0245817964").setType(PhoneNumber.Type.WORK)
                 .build();
-        
+
         URI uri = null;
         try {
             uri = new URI("photo01.jpg");
@@ -593,7 +598,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
                 .setLocality("New City").setPostalCode("66666").build();
         Entitlement entitlement = new Entitlement.Builder().setValue("right3").build();
         Im ims = new Im.Builder().setValue("ims03").build();
-        
+
         URI uri = null;
         try {
             uri = new URI("photo03.jpg");
@@ -665,29 +670,9 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     private void updateUser() {
-        returnUser = oConnector.updateUser(idExistingUser, updateUser, accessToken);
+        returnUser = OSIAM_CONNECTOR.updateUser(idExistingUser, updateUser, accessToken);
         // also get user again from database to be able to compare with return object
-        databaseUser = oConnector.getUser(returnUser.getId(), accessToken);
-    }
-
-    private void makeNewConnectionWithNewPassword() {
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder()
-                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
-                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
-                .setClientId(CLIENT_ID)
-                .setClientSecret(CLIENT_SECRET);
-        oConnector = oConBuilder.build();
-        oConnector.retrieveAccessToken();
-    }
-
-    private AccessToken retrieveNewAccessToken() {
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder()
-                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
-                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
-                .setClientId(CLIENT_ID)
-                .setClientSecret(CLIENT_SECRET);
-        oConnector = oConBuilder.build();
-        return oConnector.retrieveAccessToken();
+        databaseUser = OSIAM_CONNECTOR.getUser(returnUser.getId(), accessToken);
     }
 
     private Address getAddress(List<Address> addresses, String formatted) {

@@ -31,8 +31,6 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.util.Collections;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -47,7 +45,12 @@ import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
 import org.osiam.client.user.BasicUser;
-import org.osiam.resources.scim.*;
+import org.osiam.resources.scim.Email;
+import org.osiam.resources.scim.Group;
+import org.osiam.resources.scim.MemberRef;
+import org.osiam.resources.scim.UpdateGroup;
+import org.osiam.resources.scim.UpdateUser;
+import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -64,32 +67,24 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
         DbUnitTestExecutionListener.class })
 @DatabaseSetup("/database_seed_me_scope.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
-public class MeScopeIT {
+public class MeScopeIT extends AbstractIntegrationTestBase {
 
     private static final String OWN_USER_ID = "cef9452e-00a9-4cec-a086-d171374ffbef";
     private static final String OTHER_USER_ID = "834b410a-943b-4c80-817a-4465aed037bc";
     private static final String GROUP_ID = "69e1a5dc-89be-4343-976c-b5541af249f4";
 
-    private final OsiamConnector oConnector = new OsiamConnector.Builder()
-            .setAuthServerEndpoint(AbstractIntegrationTestBase.AUTH_ENDPOINT_ADDRESS)
-            .setResourceServerEndpoint(AbstractIntegrationTestBase.RESOURCE_ENDPOINT_ADDRESS)
-            .setClientId("example-client")
-            .setClientSecret("secret")
-            .build();
-    Client client = ClientBuilder.newClient();
-
     @Test
     public void can_get_own_user() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        User user = oConnector.getUser(OWN_USER_ID, accessToken);
+        User user = OSIAM_CONNECTOR.getUser(OWN_USER_ID, accessToken);
 
         assertThat(user.getUserName(), is(equalTo("marissa")));
     }
 
     @Test
     public void can_update_own_user() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
         Email email = new Email.Builder()
                 .setValue("marrisa@example.com")
                 .setType(Email.Type.HOME)
@@ -100,7 +95,7 @@ public class MeScopeIT {
                 .addEmail(email)
                 .build();
 
-        User user = oConnector.updateUser(OWN_USER_ID, updateUser, accessToken);
+        User user = OSIAM_CONNECTOR.updateUser(OWN_USER_ID, updateUser, accessToken);
 
         assertThat(user.getDisplayName(), is(equalTo("Marissa")));
         assertThat(user.getEmails().get(0).getValue(), is(equalTo("marrisa@example.com")));
@@ -109,8 +104,8 @@ public class MeScopeIT {
 
     @Test
     public void can_replace_own_user() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
-        User originalUser = oConnector.getUser(OWN_USER_ID, accessToken);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
+        User originalUser = OSIAM_CONNECTOR.getUser(OWN_USER_ID, accessToken);
         Email email = new Email.Builder()
                 .setValue("marrisa@example.com")
                 .setType(Email.Type.HOME)
@@ -121,7 +116,7 @@ public class MeScopeIT {
                 .addEmail(email)
                 .build();
 
-        User user = oConnector.replaceUser(OWN_USER_ID, replaceUser, accessToken);
+        User user = OSIAM_CONNECTOR.replaceUser(OWN_USER_ID, replaceUser, accessToken);
 
         assertThat(user.getDisplayName(), is(equalTo("Marissa")));
         assertThat(user.getEmails().get(0).getValue(), is(equalTo("marrisa@example.com")));
@@ -130,34 +125,34 @@ public class MeScopeIT {
 
     @Test
     public void can_delete_own_user() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        oConnector.deleteUser(OWN_USER_ID, accessToken);
+        OSIAM_CONNECTOR.deleteUser(OWN_USER_ID, accessToken);
     }
 
     @Test
     public void can_get_me_basic() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        BasicUser user = oConnector.getCurrentUserBasic(accessToken);
+        BasicUser user = OSIAM_CONNECTOR.getCurrentUserBasic(accessToken);
 
         assertThat(user.getUserName(), is(equalTo("marissa")));
     }
 
     @Test
     public void can_get_me() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        User user = oConnector.getCurrentUser(accessToken);
+        User user = OSIAM_CONNECTOR.getCurrentUser(accessToken);
 
         assertThat(user.getUserName(), is(equalTo("marissa")));
     }
 
     @Test
     public void can_access_ServiceProviderConfigs_endpoint() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        Response response = client.target("http://localhost:8180/osiam-resource-server")
+        Response response = CLIENT.target("http://localhost:8180/osiam-resource-server")
                 .path("ServiceProviderConfigs")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())
@@ -168,57 +163,57 @@ public class MeScopeIT {
 
     @Test(expected = ForbiddenException.class)
     public void cannot_get_all_users() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        oConnector.getAllUsers(accessToken);
+        OSIAM_CONNECTOR.getAllUsers(accessToken);
 
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void cannot_search_for_own_user() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
         Query query = new QueryBuilder().filter("userName eq \"marissa\"").build();
 
-        oConnector.searchUsers(query, accessToken);
+        OSIAM_CONNECTOR.searchUsers(query, accessToken);
 
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void cannot_search_for_any_users() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
         Query query = new QueryBuilder()
                 .filter("meta.created gt \"2010-10-10T00:00:00.000\"")
                 .build();
 
-        oConnector.searchUsers(query, accessToken);
+        OSIAM_CONNECTOR.searchUsers(query, accessToken);
 
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void cannot_create_user() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
         User user = new User.Builder("newUser").build();
 
-        oConnector.createUser(user, accessToken);
+        OSIAM_CONNECTOR.createUser(user, accessToken);
 
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void cannot_get_other_user() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        oConnector.getUser(OTHER_USER_ID, accessToken);
+        OSIAM_CONNECTOR.getUser(OTHER_USER_ID, accessToken);
 
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void cannot_update_other_user() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
         Email email = new Email.Builder()
                 .setValue("marrisa@example.com")
                 .setType(Email.Type.HOME)
@@ -228,15 +223,15 @@ public class MeScopeIT {
                 .addEmail(email)
                 .build();
 
-        oConnector.updateUser(OTHER_USER_ID, updateUser, accessToken);
+        OSIAM_CONNECTOR.updateUser(OTHER_USER_ID, updateUser, accessToken);
 
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void cannot_replace_other_user() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
-        User originalUser = oConnector.getUser(OWN_USER_ID, accessToken);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
+        User originalUser = OSIAM_CONNECTOR.getUser(OWN_USER_ID, accessToken);
         Email email = new Email.Builder()
                 .setValue("marrisa@example.com")
                 .setType(Email.Type.HOME)
@@ -246,32 +241,32 @@ public class MeScopeIT {
                 .addEmail(email)
                 .build();
 
-        oConnector.replaceUser(OTHER_USER_ID, replaceUser, accessToken);
+        OSIAM_CONNECTOR.replaceUser(OTHER_USER_ID, replaceUser, accessToken);
 
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void cannot_delete_other_user() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        oConnector.deleteUser(OTHER_USER_ID, accessToken);
+        OSIAM_CONNECTOR.deleteUser(OTHER_USER_ID, accessToken);
 
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void cannot_get_group() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        oConnector.getGroup(GROUP_ID, accessToken);
+        OSIAM_CONNECTOR.getGroup(GROUP_ID, accessToken);
 
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void cannot_create_group() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
         MemberRef memberRef = new MemberRef.Builder()
                 .setValue(OWN_USER_ID)
                 .setType(MemberRef.Type.USER)
@@ -280,27 +275,27 @@ public class MeScopeIT {
                 .setMembers(Collections.singleton(memberRef))
                 .build();
 
-        oConnector.createGroup(group, accessToken);
+        OSIAM_CONNECTOR.createGroup(group, accessToken);
 
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void cannot_update_group() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
         UpdateGroup updateGroup = new UpdateGroup.Builder()
                 .addMember(OWN_USER_ID)
                 .updateDisplayName("newDisplayName")
                 .build();
 
-        oConnector.updateGroup(GROUP_ID, updateGroup, accessToken);
+        OSIAM_CONNECTOR.updateGroup(GROUP_ID, updateGroup, accessToken);
 
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void cannot_replace_group() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
         MemberRef memberRef = new MemberRef.Builder()
                 .setValue(OWN_USER_ID)
                 .setType(MemberRef.Type.USER)
@@ -309,44 +304,44 @@ public class MeScopeIT {
                 .setMembers(Collections.singleton(memberRef))
                 .build();
 
-        oConnector.replaceGroup(GROUP_ID, group, accessToken);
+        OSIAM_CONNECTOR.replaceGroup(GROUP_ID, group, accessToken);
 
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void cannot_delete_group() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        oConnector.deleteGroup(GROUP_ID, accessToken);
+        OSIAM_CONNECTOR.deleteGroup(GROUP_ID, accessToken);
 
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void cannot_get_all_groups() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        oConnector.getAllGroups(accessToken);
+        OSIAM_CONNECTOR.getAllGroups(accessToken);
 
         fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
     public void cannot_search_for_groups() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
         Query query = new QueryBuilder().filter("displayName eq \"test_group01\"").build();
 
-        oConnector.searchGroups(query, accessToken);
+        OSIAM_CONNECTOR.searchGroups(query, accessToken);
 
         fail("Exception expected");
     }
 
     @Test
     public void cannot_access_root() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        Response response = client.target("http://localhost:8180/osiam-resource-server")
+        Response response = CLIENT.target("http://localhost:8180/osiam-resource-server")
                 .path("/")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())
@@ -357,9 +352,9 @@ public class MeScopeIT {
 
     @Test
     public void cannot_access_root_with_post() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        Response response = client.target("http://localhost:8180/osiam-resource-server")
+        Response response = CLIENT.target("http://localhost:8180/osiam-resource-server")
                 .path(".search")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())
@@ -370,9 +365,9 @@ public class MeScopeIT {
 
     @Test
     public void cannot_access_metrics_endpoint() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        Response response = client.target("http://localhost:8180/osiam-resource-server")
+        Response response = CLIENT.target("http://localhost:8180/osiam-resource-server")
                 .path("Metrics")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())
@@ -383,9 +378,9 @@ public class MeScopeIT {
 
     @Test
     public void cannot_access_extensions_endpoint() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        Response response = client.target("http://localhost:8180/osiam-resource-server")
+        Response response = CLIENT.target("http://localhost:8180/osiam-resource-server")
                 .path("osiam").path("extension-definition")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())
@@ -396,29 +391,29 @@ public class MeScopeIT {
 
     @Test(expected = UnauthorizedException.class)
     public void can_revoke_access_token() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        oConnector.revokeAccessToken(accessToken);
+        OSIAM_CONNECTOR.revokeAccessToken(accessToken);
 
-        oConnector.validateAccessToken(accessToken);
+        OSIAM_CONNECTOR.validateAccessToken(accessToken);
         fail("Exception expected");
     }
 
     @Test(expected = UnauthorizedException.class)
     public void can_revoke_all_access_tokens() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        oConnector.revokeAllAccessTokens(OWN_USER_ID, accessToken);
+        OSIAM_CONNECTOR.revokeAllAccessTokens(OWN_USER_ID, accessToken);
 
-        oConnector.validateAccessToken(accessToken);
+        OSIAM_CONNECTOR.validateAccessToken(accessToken);
         fail("Exception expected");
     }
 
     @Test
     public void can_validate_access_token() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        accessToken = oConnector.validateAccessToken(accessToken);
+        accessToken = OSIAM_CONNECTOR.validateAccessToken(accessToken);
 
         assertThat(accessToken.getUserId(), is(equalTo(OWN_USER_ID)));
         assertThat(accessToken.getUserName(), is(equalTo("marissa")));
@@ -426,18 +421,18 @@ public class MeScopeIT {
 
     @Test(expected = ForbiddenException.class)
     public void cannot_revoke_all_access_tokens_of_another_user() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        oConnector.revokeAllAccessTokens(OTHER_USER_ID, accessToken);
+        OSIAM_CONNECTOR.revokeAllAccessTokens(OTHER_USER_ID, accessToken);
 
         fail("Exception expected");
     }
 
     @Test
     public void cannot_retrieve_a_client() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        Response response = client.target("http://localhost:8180/osiam-auth-server")
+        Response response = CLIENT.target("http://localhost:8180/osiam-auth-server")
                 .path("Client").path("example-client")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())
@@ -448,14 +443,14 @@ public class MeScopeIT {
 
     @Test
     public void cannot_create_a_client() {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
         String clientAsJsonString = "{\"id\":\"example-client-2\",\"accessTokenValiditySeconds\":2342,\"refreshTokenValiditySeconds\":2342,"
                 + "\"redirectUri\":\"http://localhost:5055/oauth2\",\"client_secret\":\"secret-2\","
                 + "\"scope\":[\"POST\",\"PATCH\",\"GET\",\"DELETE\",\"PUT\"],"
                 + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\",\"password\"],"
                 + "\"implicit\":false,\"validityInSeconds\":1337}";
 
-        Response response = client.target("http://localhost:8180/osiam-auth-server")
+        Response response = CLIENT.target("http://localhost:8180/osiam-auth-server")
                 .path("Client")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())
@@ -466,9 +461,9 @@ public class MeScopeIT {
 
     @Test
     public void cannot_delete_a_client() throws IOException {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        Response response = client.target("http://localhost:8180/osiam-auth-server")
+        Response response = CLIENT.target("http://localhost:8180/osiam-auth-server")
                 .path("Client").path("example-client")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())
@@ -479,14 +474,14 @@ public class MeScopeIT {
 
     @Test
     public void cannot_update_a_client() throws JSONException {
-        AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ME);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
         String clientAsJsonString = "{\"id\":\"example-client\",\"accessTokenValiditySeconds\":1,\"refreshTokenValiditySeconds\":1,"
                 + "\"redirectUri\":\"http://newhost:5000/oauth2\",\"client_secret\":\"secret\","
                 + "\"scope\":[\"POST\",\"PATCH\",\"GET\",\"DELETE\"],"
                 + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\"],"
                 + "\"implicit\":true,\"validityInSeconds\":1}";
 
-        Response response = client.target("http://localhost:8180/osiam-auth-server")
+        Response response = CLIENT.target("http://localhost:8180/osiam-auth-server")
                 .path("Client").path("example-client")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())
@@ -494,5 +489,4 @@ public class MeScopeIT {
 
         assertThat(response.getStatus(), is(equalTo(403)));
     }
-
 }

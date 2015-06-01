@@ -56,7 +56,7 @@ public class SearchByExtensionIT extends AbstractIntegrationTestBase {
         Query query = new QueryBuilder().filter(
                 "userName co \"existing\" AND extension.gender eq \"male\" AND extension.birthday pr").build();
 
-        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(query, accessToken);
 
         assertThat(result.getTotalResults(), is(1L));
     }
@@ -65,7 +65,7 @@ public class SearchByExtensionIT extends AbstractIntegrationTestBase {
     @DatabaseSetup(value = "/database_seeds/SearchByExtensionIT/search_by_extensions_with_not.xml")
     public void search_user_with_not_returns_right_user() {
         Query query = new QueryBuilder().filter("not (extension.gender eq \"male\")").build();
-        SCIMSearchResult<User> queryResult = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> queryResult = OSIAM_CONNECTOR.searchUsers(query, accessToken);
         assertThat(queryResult.getTotalResults(), is(equalTo(1L)));
         assertThat(queryResult.getResources().get(0).getUserName(), is(equalTo("existing3")));
     }
@@ -75,7 +75,7 @@ public class SearchByExtensionIT extends AbstractIntegrationTestBase {
     public void search_user_with_not_and_present_returns_right_user() {
         Query query = new QueryBuilder().filter("not (extension.gender pr)")
                 .ascending("username").build();
-        SCIMSearchResult<User> queryResult = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> queryResult = OSIAM_CONNECTOR.searchUsers(query, accessToken);
         assertThat(queryResult.getTotalResults(), is(equalTo(2L)));
         assertThat(queryResult.getResources().get(0).getUserName(), is(equalTo("existing2")));
         assertThat(queryResult.getResources().get(1).getUserName(), is(equalTo("marissa")));
@@ -86,7 +86,7 @@ public class SearchByExtensionIT extends AbstractIntegrationTestBase {
     public void search_user_with_not_and_present_and_equal_field_returns_right_user() {
         Query query = new QueryBuilder().filter("not (extension.gender pr and extension.gender eq \"male\")")
                 .ascending("username").build();
-        SCIMSearchResult<User> queryResult = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> queryResult = OSIAM_CONNECTOR.searchUsers(query, accessToken);
         assertThat(queryResult.getTotalResults(), is(equalTo(3L)));
         assertThat(queryResult.getResources().get(0).getUserName(), is(equalTo("existing2")));
         assertThat(queryResult.getResources().get(1).getUserName(), is(equalTo("existing3")));

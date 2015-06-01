@@ -28,6 +28,7 @@ import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.query.Query;
@@ -46,8 +47,8 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class })
 @DatabaseSetup("/database_seed.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
@@ -56,9 +57,14 @@ public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
     private static String VALID_GROUP_ID = "69e1a5dc-89be-4343-976c-b5541af249f4";
     private SCIMSearchResult<Group> queryResult;
 
+    @Before
+    public void setUp() {
+        retrieveAccessTokenForMarissa();
+    }
+
     @Test
     public void search_for_group_by_string() {
-        Query search = new QueryBuilder().filter("displayName eq \""+ EXPECTED_GROUP_NAME + "\""
+        Query search = new QueryBuilder().filter("displayName eq \"" + EXPECTED_GROUP_NAME + "\""
                 + " and externalid eq \"ext_id_test_group01\""
                 + " and meta.created eq \"" + dateAsString(2013, 6, 31, 21, 43, 18, 0) + "\""
                 + " and meta.lastmodified eq \"" + dateAsString(2013, 6, 31, 21, 43, 18, 0) + "\""
@@ -101,10 +107,10 @@ public class SearchGroupServiceIT extends AbstractIntegrationTestBase {
     }
 
     private void whenSingleGroupIsSearchedByQueryString(Query query) {
-        queryResult = oConnector.searchGroups(query, accessToken);
+        queryResult = OSIAM_CONNECTOR.searchGroups(query, accessToken);
     }
 
     private void whenSingleGroupIsSearchedByQueryBuilder(Query query) {
-        queryResult = oConnector.searchGroups(query, accessToken);
+        queryResult = OSIAM_CONNECTOR.searchGroups(query, accessToken);
     }
 }

@@ -30,14 +30,13 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.json.JSONException;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -63,15 +62,18 @@ public class ClientManagementIT extends AbstractIntegrationTestBase {
     private static final String AUTHORIZATION = "Authorization";
     private static final String BEARER = "Bearer ";
 
-    Client client = ClientBuilder.newClient();
+    @Before
+    public void setup() {
+        retrieveAccessTokenForMarissa();
+    }
 
     @Test
     public void get_client_by_id() {
-        String output = client.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
-            .path("example-client")
-            .request(MediaType.APPLICATION_JSON)
-            .header(AUTHORIZATION, BEARER + accessToken.getToken())
-            .get(String.class);
+        String output = CLIENT.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
+                .path("example-client")
+                .request(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, BEARER + accessToken.getToken())
+                .get(String.class);
 
         assertThat(output, containsString("example-client"));
     }
@@ -84,18 +86,17 @@ public class ClientManagementIT extends AbstractIntegrationTestBase {
                 + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\",\"password\"],"
                 + "\"implicit\":false,\"validityInSeconds\":1337}";
 
-        String response = client.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
+        String response = CLIENT.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
                 .request(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, BEARER + accessToken.getToken())
                 .post(Entity.entity(clientAsJsonString, MediaType.APPLICATION_JSON), String.class);
-
 
         assertThat(response, containsString("example-client-2"));
     }
 
     @Test
     public void delete_client() throws IOException {
-        Response deleteResponse = client.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
+        Response deleteResponse = CLIENT.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
                 .path("short-living-client")
                 .request(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, BEARER + accessToken.getToken())
@@ -104,7 +105,7 @@ public class ClientManagementIT extends AbstractIntegrationTestBase {
         assertThat(deleteResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
         deleteResponse.close();
 
-        Response getResponse = client.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
+        Response getResponse = CLIENT.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
                 .path("short-living-client")
                 .request(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, BEARER + accessToken.getToken())
@@ -120,7 +121,7 @@ public class ClientManagementIT extends AbstractIntegrationTestBase {
                 + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\"],"
                 + "\"implicit\":true,\"validityInSeconds\":1}";
 
-        String updated = client.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
+        String updated = CLIENT.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
                 .path("example-client")
                 .request(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, BEARER + accessToken.getToken())

@@ -23,6 +23,10 @@
 
 package org.osiam.client;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.resources.scim.Extension;
@@ -37,10 +41,6 @@ import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
@@ -48,16 +48,19 @@ import static org.junit.Assert.assertThat;
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 @DatabaseSetup(value = "/database_seeds/SearchByExtensionIT/extensions.xml")
 public class EmptyDateIT extends AbstractIntegrationTestBase {
-    
+
     @Test
     public void replace_user_with_empty_date_extension_fail() {
-        User user = oConnector.getUser("df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d4", accessToken);
-        Extension emptyExtension = new Extension.Builder(user.getExtension("extension")).setField("birthday", "").build();
+        retrieveAccessTokenForMarissa();
+
+        User user = OSIAM_CONNECTOR.getUser("df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d4", accessToken);
+        Extension emptyExtension = new Extension.Builder(user.getExtension("extension")).setField("birthday", "")
+                .build();
         User replaceUser = new User.Builder(user).addExtension(emptyExtension).build();
-        
-        User replacedUser = oConnector.replaceUser("df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d4", replaceUser, accessToken);
-        
+
+        User replacedUser = OSIAM_CONNECTOR.replaceUser("df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d4", replaceUser,
+                accessToken);
+
         assertThat(replacedUser.getExtension("extension").isFieldPresent("birthday"), is(equalTo(false)));
     }
-
 }

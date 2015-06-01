@@ -34,9 +34,11 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.oauth.Scope;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.Name;
@@ -54,96 +56,111 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-		DbUnitTestExecutionListener.class })
+        DbUnitTestExecutionListener.class })
 @DatabaseSetup("/database_seed_users.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class UserServiceIT extends AbstractIntegrationTestBase {
 
-	private User deserializedUser;
+    private User deserializedUser;
 
-	@Test
-	public void all_emails_are_transmitted() {
+    @Before
+    public void setUp() {
+        retrieveAccessTokenForMarissa();
+    }
 
-		whenAValidUserIsDeserialized();
-		List<Email> emails = deserializedUser.getEmails();
+    @Test
+    public void all_emails_are_transmitted() {
 
-		assertThat(emails, hasSize(1));
-	}
+        whenAValidUserIsDeserialized();
+        List<Email> emails = deserializedUser.getEmails();
 
-	@Test
-	public void emails_are_deserialized_correctly() throws Exception {
+        assertThat(emails, hasSize(1));
+    }
 
-		whenAValidUserIsDeserialized();
+    @Test
+    public void emails_are_deserialized_correctly() throws Exception {
 
-		Email email = deserializedUser.getEmails().get(0);
+        whenAValidUserIsDeserialized();
 
-		assertThat(email.getValue(), is(equalTo("bjensen@example.com")));
-		assertThat(email.getType(), is(equalTo(Email.Type.WORK)));
-	}
+        Email email = deserializedUser.getEmails().get(0);
 
-	@Test
-	public void name_is_deserialized_correctly() throws Exception {
+        assertThat(email.getValue(), is(equalTo("bjensen@example.com")));
+        assertThat(email.getType(), is(equalTo(Email.Type.WORK)));
+    }
 
-		whenAValidUserIsDeserialized();
+    @Test
+    public void name_is_deserialized_correctly() throws Exception {
 
-		Name name = deserializedUser.getName();
+        whenAValidUserIsDeserialized();
 
-		assertThat(name.getFamilyName(), is(equalTo("Jensen")));
-		assertThat(name.getFormatted(), is(equalTo("Ms. Barbara J Jensen III")));
-		assertThat(name.getGivenName(), is(equalTo("Barbara")));
-		assertThat(name.getHonorificPrefix(), is(nullValue()));
-		assertThat(name.getHonorificSuffix(), is(nullValue()));
-		assertThat(name.getMiddleName(), is(nullValue()));
-	}
+        Name name = deserializedUser.getName();
 
-	@Test
-	public void all_addresses_are_transmitted() {
+        assertThat(name.getFamilyName(), is(equalTo("Jensen")));
+        assertThat(name.getFormatted(), is(equalTo("Ms. Barbara J Jensen III")));
+        assertThat(name.getGivenName(), is(equalTo("Barbara")));
+        assertThat(name.getHonorificPrefix(), is(nullValue()));
+        assertThat(name.getHonorificSuffix(), is(nullValue()));
+        assertThat(name.getMiddleName(), is(nullValue()));
+    }
 
-		whenAValidUserIsDeserialized();
-		List<Address> addresses = deserializedUser.getAddresses();
+    @Test
+    public void all_addresses_are_transmitted() {
 
-		assertThat(addresses, hasSize(2));
-	}
+        whenAValidUserIsDeserialized();
+        List<Address> addresses = deserializedUser.getAddresses();
 
-	@Test
-	public void address_is_deserialized_correctly() {
+        assertThat(addresses, hasSize(2));
+    }
 
-		whenAValidUserIsDeserialized();
+    @Test
+    public void address_is_deserialized_correctly() {
 
-		Address address = deserializedUser.getAddresses().get(0);
-		assertThat(address.getCountry(), is(equalTo("Germany")));
-		assertThat(address.getLocality(), is(equalTo("Berlin")));
-		assertThat(address.getRegion(), is(equalTo("Berlin")));
-		assertThat(address.getPostalCode(), is(equalTo("10777")));
-		assertThat(address.getStreetAddress(), is(startsWith("Hauptstr. ")));
-	}
+        whenAValidUserIsDeserialized();
 
-	@Test
-	public void password_is_not_transmitted() throws Exception {
-		whenAValidUserIsDeserialized();
+        Address address = deserializedUser.getAddresses().get(0);
+        assertThat(address.getCountry(), is(equalTo("Germany")));
+        assertThat(address.getLocality(), is(equalTo("Berlin")));
+        assertThat(address.getRegion(), is(equalTo("Berlin")));
+        assertThat(address.getPostalCode(), is(equalTo("10777")));
+        assertThat(address.getStreetAddress(), is(startsWith("Hauptstr. ")));
+    }
 
-		assertThat(deserializedUser.getPassword(), isEmptyString());
-	}
+    @Test
+    public void password_is_not_transmitted() throws Exception {
+        whenAValidUserIsDeserialized();
 
-	@Test(expected = UnauthorizedException.class)
-	public void provide_an_invalid_access_token_raises_exception()
-			throws Exception {
-		givenAnInvalidAccessToken();
+        assertThat(deserializedUser.getPassword(), isEmptyString());
+    }
 
-		whenAValidUserIsDeserialized();
-		fail("Exception expected");
-	}
+    @Test(expected = UnauthorizedException.class)
+    public void provide_an_invalid_access_token_raises_exception()
+            throws Exception {
+        givenAnInvalidAccessToken();
 
-	@Test(expected = UnauthorizedException.class)
-	public void access_token_is_expired() throws Exception {
-		givenAnAccessTokenForOneSecond();
-		Thread.sleep(1000);
-		whenAValidUserIsDeserialized();
-		fail("Exception expected");
-	}
+        whenAValidUserIsDeserialized();
+        fail("Exception expected");
+    }
 
-	private void whenAValidUserIsDeserialized() {
-		deserializedUser = oConnector.getUser(VALID_USER_ID, accessToken);
-	}
+    @Test(expected = UnauthorizedException.class)
+    public void access_token_is_expired() throws Exception {
+        givenAnAccessTokenForOneSecond();
+        Thread.sleep(1000);
+        whenAValidUserIsDeserialized();
+        fail("Exception expected");
+    }
 
+    protected void givenAnAccessTokenForOneSecond() {
+        final OsiamConnector osiamConnector = new OsiamConnector.Builder()
+                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setClientId("short-living-client")
+                .setClientSecret("other-secret")
+                .build();
+        accessToken = osiamConnector.retrieveAccessToken("marissa", "koala", Scope.ALL);
+        osiamConnector.getUser(VALID_USER_ID, accessToken);
+    }
+
+    private void whenAValidUserIsDeserialized() {
+        deserializedUser = OSIAM_CONNECTOR.getUser(VALID_USER_ID, accessToken);
+    }
 }

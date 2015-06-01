@@ -27,8 +27,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+
 import org.joda.time.format.ISODateTimeFormat;
-import org.junit.Before;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.Scope;
 
@@ -43,36 +45,29 @@ public abstract class AbstractIntegrationTestBase {
     protected static final String RESOURCE_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-resource-server";
     protected static final String CLIENT_ID = "example-client";
     protected static final String CLIENT_SECRET = "secret";
-    protected OsiamConnector oConnector;
-    protected AccessToken accessToken;
+    protected static final OsiamConnector OSIAM_CONNECTOR;
+    protected static final Client CLIENT = ClientBuilder.newClient();
 
     static {
         OsiamConnector.setConnectTimeout(10000);
         OsiamConnector.setReadTimeout(30000);
-    }
 
-    @Before
-    public void abstractSetUp() throws Exception {
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder()
+        OSIAM_CONNECTOR = new OsiamConnector.Builder()
                 .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
                 .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
                 .setClientId(CLIENT_ID)
-                .setClientSecret(CLIENT_SECRET);
-        oConnector = oConBuilder.build();
-        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ALL);
+                .setClientSecret(CLIENT_SECRET)
+                .setClientRedirectUri("http://localhost:5000/oauth2")
+                .build();
     }
 
-    protected void givenAnAccessTokenForOneSecond() {
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder()
-                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
-                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
-                .setClientId("short-living-client")
-                .setClientSecret("other-secret");
-        oConnector = oConBuilder.build();
-        accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.ALL);
+    protected AccessToken accessToken;
+
+    protected void retrieveAccessTokenForMarissa() {
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ALL);
     }
 
-    protected void givenAnInvalidAccessToken() throws Exception {
+    protected void givenAnInvalidAccessToken() {
         accessToken = new AccessToken.Builder(AbstractIntegrationTestBase.INVALID_ID).build();
     }
 
