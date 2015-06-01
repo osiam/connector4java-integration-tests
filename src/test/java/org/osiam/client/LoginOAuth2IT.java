@@ -23,13 +23,9 @@
 
 package org.osiam.client;
 
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -78,7 +74,6 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class })
-@DatabaseSetup("/database_seed.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class LoginOAuth2IT {
 
@@ -109,6 +104,7 @@ public class LoginOAuth2IT {
     }
 
     @Test
+    @DatabaseSetup("/database_seed.xml")
     public void test_successful_login() throws IOException {
         givenValidAuthCode("marissa", "koala", "internal");
         givenAuthCode();
@@ -118,6 +114,49 @@ public class LoginOAuth2IT {
     }
 
     @Test
+    @DatabaseSetup("/database_seed.xml")
+    public void the_approval_will_be_remembered() throws IOException {
+        givenValidAuthCode("marissa", "koala", "internal");
+        givenAuthCode();
+        givenAccessTokenUsingAuthCode();
+
+        {
+            HttpGet httpGet = new HttpGet(loginUri);
+            httpGet.getParams().setParameter(ClientPNames.COOKIE_POLICY,
+                    CookiePolicy.NETSCAPE);
+            httpGet.getParams().setBooleanParameter("http.protocol.handle-redirects", false);
+            authCodeResponse = httpClient.execute(httpGet);
+            httpGet.releaseConnection();
+        }
+        givenAuthCode();
+        givenAccessTokenUsingAuthCode();
+
+        assertTrue(accessToken != null);
+        assertNotNull(accessToken.getRefreshToken());
+    }
+
+    @Test
+    @DatabaseSetup("/database_seeds/LoginOAuth2IT/database_seed_zero_validity.xml")
+    public void the_approval_will_not_be_remembered_if_validity_is_zero() throws IOException {
+        givenValidAuthCode("marissa", "koala", "internal");
+        givenAuthCode();
+        givenAccessTokenUsingAuthCode();
+
+        {
+            HttpGet httpGet = new HttpGet(loginUri);
+            httpGet.getParams().setParameter(ClientPNames.COOKIE_POLICY,
+                    CookiePolicy.NETSCAPE);
+            httpGet.getParams().setBooleanParameter("http.protocol.handle-redirects", false);
+            authCodeResponse = httpClient.execute(httpGet);
+            httpGet.releaseConnection();
+        }
+
+        String response = IOUtils.toString(authCodeResponse.getEntity().getContent());
+        assertThat(response, containsString("<title>Access confirmation</title>"));
+    }
+
+    @Test
+    @DatabaseSetup("/database_seed.xml")
     public void test_successful_ldap_login() throws IOException {
         givenValidAuthCode("ben", "benspassword", "ldap");
         givenAuthCode();
@@ -133,6 +172,7 @@ public class LoginOAuth2IT {
     }
 
     @Test
+    @DatabaseSetup("/database_seed.xml")
     public void test_origin_is_set_successful_after_ldap_login() throws IOException {
         givenValidAuthCode("ben", "benspassword", "ldap");
         givenAuthCode();
@@ -147,6 +187,7 @@ public class LoginOAuth2IT {
     }
 
     @Test
+    @DatabaseSetup("/database_seed.xml")
     public void test_origin_is_not_set_after_internal_login() throws IOException {
         givenValidAuthCode("marissa", "koala", "internal");
         givenAuthCode();
@@ -161,6 +202,7 @@ public class LoginOAuth2IT {
 
     @Test
     @Ignore("Fails mostly on Jenkins")
+    @DatabaseSetup("/database_seed.xml")
     public void if_ldap_user_login_but_internal_user_already_exists_error_will_be_shown() throws IOException {
         String currentRedirectUri;
         String username = "marissa";
@@ -207,6 +249,7 @@ public class LoginOAuth2IT {
     }
 
     @Test
+    @DatabaseSetup("/database_seed.xml")
     public void test_successful_update_user_with_ldap_relogin() throws IOException, InterruptedException {
         oConnector = new OsiamConnector.Builder()
                 .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
@@ -260,6 +303,7 @@ public class LoginOAuth2IT {
     }
 
     @Test
+    @DatabaseSetup("/database_seed.xml")
     public void login_and_get_me_user() throws IOException {
         givenValidAuthCode("marissa", "koala", "internal");
         givenAuthCode();
@@ -269,6 +313,7 @@ public class LoginOAuth2IT {
     }
 
     @Test(expected = ConflictException.class)
+    @DatabaseSetup("/database_seed.xml")
     public void getting_acces_token_two_times_raises_exception() throws IOException {
         givenValidAuthCode("marissa", "koala", "internal");
         givenAuthCode();
@@ -278,6 +323,7 @@ public class LoginOAuth2IT {
     }
 
     @Test
+    @DatabaseSetup("/database_seed.xml")
     public void test_failure_login_when_client_not_set() throws IOException {
         givenValidAuthCode("marissa", "koala", "internal");
         givenAuthCode();
@@ -287,6 +333,7 @@ public class LoginOAuth2IT {
     }
 
     @Test
+    @DatabaseSetup("/database_seed.xml")
     public void test_failure_login_when_user_not_active() throws IOException {
         String redirectUri = givenValidAuthCode("ewilley", "ewilley", "internal");
         assertTrue(accessToken == null);
@@ -351,57 +398,6 @@ public class LoginOAuth2IT {
             httpPost.releaseConnection();
         }
         return currentRedirectUri;
-    }
-
-    private void givenDenyResponse() throws IOException {
-        String currentRedirectUri;
-
-        {
-            HttpGet httpGet = new HttpGet(loginUri);
-            httpClient.execute(httpGet);
-            httpGet.releaseConnection();
-        }
-
-        {
-            HttpPost httpPost = new HttpPost(
-                    AUTH_ENDPOINT_ADDRESS + "/login/check");
-
-            List<NameValuePair> loginCredentials = new ArrayList<>();
-            loginCredentials
-                    .add(new BasicNameValuePair("username", "marissa"));
-            loginCredentials.add(new BasicNameValuePair("password", "koala"));
-            UrlEncodedFormEntity loginCredentialsEntity = new UrlEncodedFormEntity(
-                    loginCredentials, "UTF-8");
-
-            httpPost.setEntity(loginCredentialsEntity);
-            HttpResponse response = httpClient.execute(httpPost);
-
-            currentRedirectUri = response.getLastHeader("Location").getValue();
-
-            httpPost.releaseConnection();
-        }
-
-        {
-            HttpGet httpGet = new HttpGet(currentRedirectUri);
-            httpClient.execute(httpGet);
-            httpGet.releaseConnection();
-        }
-
-        {
-            HttpPost httpPost = new HttpPost(
-                    AUTH_ENDPOINT_ADDRESS + "/oauth/authorize");
-
-            List<NameValuePair> loginCredentials = new ArrayList<>();
-            loginCredentials.add(new BasicNameValuePair("user_oauth_approval",
-                    "false"));
-            UrlEncodedFormEntity loginCredentialsEntity = new UrlEncodedFormEntity(
-                    loginCredentials, "UTF-8");
-
-            httpPost.setEntity(loginCredentialsEntity);
-            authCodeResponse = httpClient.execute(httpPost);
-
-            httpPost.releaseConnection();
-        }
     }
 
     private void givenAuthCode() {
