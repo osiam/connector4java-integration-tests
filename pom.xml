@@ -46,9 +46,9 @@
         <version.docker-maven-plugin>2.8.4</version.docker-maven-plugin>
 
         <!-- OSIAM -->
-        <version.osiam.auth-server>2.1-SNAPSHOT</version.osiam.auth-server>
-        <version.osiam.resource-server>2.1-SNAPSHOT</version.osiam.resource-server>
-        <version.osiam.addon-self-administration>1.5-SNAPSHOT</version.osiam.addon-self-administration>
+        <version.osiam.auth-server>2.1.2</version.osiam.auth-server>
+        <version.osiam.resource-server>2.1</version.osiam.resource-server>
+        <version.osiam.addon-self-administration>1.5</version.osiam.addon-self-administration>
         <version.osiam.addon-self-administration-plugin-example>
             1.4-SNAPSHOT
         </version.osiam.addon-self-administration-plugin-example>
