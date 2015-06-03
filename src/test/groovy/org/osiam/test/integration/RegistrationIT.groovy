@@ -26,6 +26,7 @@ package org.osiam.test.integration
 import com.fasterxml.jackson.core.Version
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
+import com.icegreen.greenmail.util.GreenMailUtil
 import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
@@ -40,6 +41,7 @@ import org.osiam.resources.scim.User
 import spock.lang.Ignore
 import spock.lang.Shared
 
+import javax.mail.Message
 import javax.ws.rs.client.Client
 import javax.ws.rs.client.ClientBuilder
 import javax.ws.rs.client.Entity
@@ -129,6 +131,14 @@ class RegistrationIT extends AbstractIT {
         Extension extension = user.getExtension(SELF_ADMIN_URN)
         extension.getField('activationToken', ExtensionFieldType.STRING) != null
         user.getGroups().get(0).getDisplay().equalsIgnoreCase("Test")
+
+        Message[] messages = fetchEmail('email@example.org')
+        messages.length == 1
+        Message message = messages[0]
+        message.getSubject().contains('Confirmation of your registration')
+        GreenMailUtil.getBody(message).contains('your account has been created')
+        message.getFrom()[0].toString() == 'noreply@osiam.org'
+        message.getAllRecipients()[0].toString().equals('email@example.org')
     }
 
     def 'A german user should get a german email text'() {
@@ -152,6 +162,14 @@ class RegistrationIT extends AbstractIT {
 
         then:
         responseStatus == 200
+
+        Message[] messages = fetchEmail('email@example.org')
+        messages.length == 1
+        Message message = messages[0]
+        message.getSubject().contains('Bestätigung der Registrierung')
+        GreenMailUtil.getBody(message).contains('ihr Account wurde erstellt.')
+        message.getFrom()[0].toString() == 'noreply@osiam.org'
+        message.getAllRecipients()[0].toString().equals('email@example.org')
     }
 
     def 'The user should be activated with a token without the expiration time'() {
@@ -307,6 +325,14 @@ class RegistrationIT extends AbstractIT {
         registeredExtension2.getField('age', ExtensionFieldType.STRING) != null
         registeredExtension2.getField('age', ExtensionFieldType.STRING) == '12'
         registeredUser.getGroups().get(0).getDisplay().equalsIgnoreCase("Test")
+
+        Message[] messages = fetchEmail('email@example.org')
+        messages.length == 1
+        Message message = messages[0]
+        message.getSubject().contains('Confirmation of your registration')
+        GreenMailUtil.getBody(message).contains('your account has been created')
+        message.getFrom()[0].toString() == 'noreply@osiam.org'
+        message.getAllRecipients()[0].toString().equals('email@example.org')
     }
 
     def 'A registration of an user with not allowed field nickName and existing extension but not the field'() {
@@ -348,6 +374,9 @@ class RegistrationIT extends AbstractIT {
         registeredUser.displayName == 'displayName'
 
         responseStatus == 200
+
+        Message[] messages = fetchEmail('email@example.org')
+        messages.length == 1
     }
 
     def 'Registration of a user with malformed email and empty password returns with specific error messages'() {
