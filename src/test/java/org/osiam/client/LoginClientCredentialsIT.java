@@ -23,8 +23,10 @@
 
 package org.osiam.client;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,42 +44,30 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class })
 @DatabaseSetup("/database_seed.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
-public class LoginClientCredentialsIT {
+public class LoginClientCredentialsIT extends AbstractIntegrationTestBase {
 
-    protected static final String AUTH_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-auth-server";
-    protected static final String RESOURCE_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-resource-server";
-    protected String clientId = "example-client";
-    protected String clientSecret = "secret";
-    protected OsiamConnector oConnector;
-
-	@Test
-	public void login_with_client_credentials(){
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
-                setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
-                setClientId(clientId).
-                setClientSecret(clientSecret);
-        oConnector = oConBuilder.build();
-        AccessToken at = oConnector.retrieveAccessToken();
+    @Test
+    public void login_with_client_credentials() {
+        AccessToken at = OSIAM_CONNECTOR.retrieveAccessToken();
 
         assertThat(at, is(notNullValue()));
-	}
+    }
 
-	@Test (expected = UnauthorizedException.class)
-	public void login_with_wrong_client_credentials(){
-        OsiamConnector.Builder oConBuilder = new OsiamConnector.Builder().
+    @Test(expected = UnauthorizedException.class)
+    public void login_with_wrong_client_credentials() {
+        final OsiamConnector connectorWithWrongSecret = new OsiamConnector.Builder().
                 setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
                 setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
-                setClientId(clientId).
-                setClientSecret("wrong" + clientSecret);
-        oConnector = oConBuilder.build();
-        oConnector.retrieveAccessToken();
+                setClientId("example-client").
+                setClientSecret("wrongsecret")
+                .build();
+        connectorWithWrongSecret.retrieveAccessToken();
 
         fail("Exception expected");
-	}
+    }
 
 }

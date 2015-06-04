@@ -57,9 +57,11 @@ public class ReplaceUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void replace_user_which_not_existing_raises_exception() {
+        retrieveAccessTokenForMarissa();
+
         User patchedUser = new User.Builder(USER_NAME_EXISTING_USER).build();
         try {
-            oConnector.replaceUser(NOT_EXISTING_ID, patchedUser, accessToken);
+            OSIAM_CONNECTOR.replaceUser(NOT_EXISTING_ID, patchedUser, accessToken);
             fail("Exception expected");
         } catch (NoResultException e) {
             assertThat(e.getMessage(), containsString("not found"));

@@ -23,8 +23,11 @@
 
 package org.osiam.client;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.math.BigInteger;
 import java.sql.ResultSet;
@@ -41,8 +44,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
-import org.osiam.resources.scim.*;
+import org.osiam.resources.scim.Extension;
 import org.osiam.resources.scim.Extension.Field;
+import org.osiam.resources.scim.ExtensionFieldType;
+import org.osiam.resources.scim.SCIMSearchResult;
+import org.osiam.resources.scim.UpdateUser;
+import org.osiam.resources.scim.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -90,12 +97,13 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
         extensionDataToPatch.put("photo", new Extension.Field(ExtensionFieldType.BINARY, "Y2hhbmdlZA=="));
         extensionDataToPatch.put("mother", new Extension.Field(ExtensionFieldType.REFERENCE,
                 "https://www.example.com/Users/99"));
+        retrieveAccessTokenForMarissa();
     }
 
     @Test
     @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/extensions.xml")
     public void retrieving_a_user_with_extension_works() {
-        User storedUser = oConnector.getUser(EXISTING_USER_UUID, accessToken);
+        User storedUser = OSIAM_CONNECTOR.getUser(EXISTING_USER_UUID, accessToken);
 
         assertTrue(storedUser.getSchemas().contains(URN));
         Extension storedExtension = storedUser.getExtension(URN);
@@ -107,7 +115,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
     public void retrieving_multiple_users_with_extension_via_query_works() {
         Query query = new QueryBuilder().filter("userName co \"existing\"").build();
 
-        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(query, accessToken);
 
         assertThat(result.getResources().size(), is(3));
         for (User storedUser : result.getResources()) {
@@ -131,9 +139,9 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
         Extension extension = createExtensionWithData(URN, extensionData);
         User user = new User.Builder("userName").setPassword("password").addExtension(extension).build();
 
-        String uuid = oConnector.createUser(user, accessToken).getId();
+        String uuid = OSIAM_CONNECTOR.createUser(user, accessToken).getId();
 
-        User storedUser = oConnector.getUser(uuid, accessToken);
+        User storedUser = OSIAM_CONNECTOR.getUser(uuid, accessToken);
         assertTrue(storedUser.getSchemas().contains(URN));
         assertExtensionEqualsExtensionMap(storedUser.getExtension(URN), extensionData);
     }
@@ -141,16 +149,16 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
     @Test
     @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/extensions.xml")
     public void replacing_a_user_with_extension_data_to_database_works() {
-        User existingUser = oConnector.getUser(EXISTING_USER_UUID, accessToken);
+        User existingUser = OSIAM_CONNECTOR.getUser(EXISTING_USER_UUID, accessToken);
         extensionData.put("gender", new Extension.Field(ExtensionFieldType.STRING, "female"));
         Extension extension = existingUser.getExtension(URN);
         Extension newExtension = new Extension.Builder(extension).setField("gender", "female").build();
 
-        User replaceUser =  new User.Builder(existingUser).addExtension(newExtension).build();
+        User replaceUser = new User.Builder(existingUser).addExtension(newExtension).build();
 
-        oConnector.replaceUser(EXISTING_USER_UUID, replaceUser, accessToken);
+        OSIAM_CONNECTOR.replaceUser(EXISTING_USER_UUID, replaceUser, accessToken);
 
-        User storedUser = oConnector.getUser(EXISTING_USER_UUID, accessToken);
+        User storedUser = OSIAM_CONNECTOR.getUser(EXISTING_USER_UUID, accessToken);
         Extension storedExtension = storedUser.getExtension(URN);
 
         assertExtensionEqualsExtensionMap(storedExtension, extensionData);
@@ -162,9 +170,9 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
         Extension extension = createExtensionWithData(URN, extensionDataToPatch);
         UpdateUser patchUser = new UpdateUser.Builder().updateExtension(extension).build();
 
-        oConnector.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
+        OSIAM_CONNECTOR.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
 
-        User storedUser = oConnector.getUser(EXISTING_USER_UUID, accessToken);
+        User storedUser = OSIAM_CONNECTOR.getUser(EXISTING_USER_UUID, accessToken);
         Extension storedExtension = storedUser.getExtension(URN);
 
         assertExtensionEqualsExtensionMap(storedExtension, extensionDataToPatch);
@@ -173,7 +181,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
     @Test
     @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/extensions.xml")
     public void deleting_a_user_also_deletes_her_extension_values() throws SQLException {
-        oConnector.deleteUser(EXISTING_USER_UUID, accessToken);
+        OSIAM_CONNECTOR.deleteUser(EXISTING_USER_UUID, accessToken);
 
         String sql = "SELECT count(*) FROM scim_extension_field_value WHERE user_internal_id = 2";
         ResultSet rs = dataSource.getConnection().createStatement().executeQuery(sql);
@@ -188,9 +196,9 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
         Extension extension = createExtensionWithData(URN, extensionDataToPatch);
         UpdateUser patchUser = new UpdateUser.Builder().updateExtension(extension).build();
 
-        oConnector.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
+        OSIAM_CONNECTOR.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
 
-        User storedUser = oConnector.getUser(EXISTING_USER_UUID, accessToken);
+        User storedUser = OSIAM_CONNECTOR.getUser(EXISTING_USER_UUID, accessToken);
         Extension storedExtension = storedUser.getExtension(URN);
 
         assertExtensionEqualsExtensionMap(storedExtension, extensionDataToPatch);
@@ -204,7 +212,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
         Extension extension = createExtensionWithData(URN, extensionDataToPatch);
         UpdateUser patchUser = new UpdateUser.Builder().updateExtension(extension).build();
 
-        User updatedUser = oConnector.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
+        User updatedUser = OSIAM_CONNECTOR.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
 
         Extension storedExtension = updatedUser.getExtension(URN);
         assertEquals(BigInteger.valueOf(28), storedExtension.getField("age", ExtensionFieldType.INTEGER));
@@ -215,7 +223,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
     public void deleting_extension_works() {
         UpdateUser patchUser = new UpdateUser.Builder().deleteExtension(URN).build();
 
-        User updatedUser = oConnector.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
+        User updatedUser = OSIAM_CONNECTOR.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
 
         updatedUser.getExtension(URN);
         fail("expected exception");
@@ -226,7 +234,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
     public void deleting_extension_field_works() {
         UpdateUser patchUser = new UpdateUser.Builder().deleteExtensionField(URN, "gender").build();
 
-        User updatedUser = oConnector.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
+        User updatedUser = OSIAM_CONNECTOR.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
 
         assertThat(updatedUser.getExtension(URN).isFieldPresent("gender"), is(false));
         assertThat(updatedUser.getExtension(URN).isFieldPresent("newsletter"), is(true));
@@ -238,7 +246,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
         Extension updateExtension = new Extension.Builder(URN).setField("gender", "female").build();
         UpdateUser patchUser = new UpdateUser.Builder().updateExtension(updateExtension).build();
 
-        User updatedUser = oConnector.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
+        User updatedUser = OSIAM_CONNECTOR.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
 
         assertThat(updatedUser.getExtension(URN).getField("gender", ExtensionFieldType.STRING), is("female"));
     }
@@ -249,7 +257,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
         Extension updateExtension = new Extension.Builder(URN).setField("newsletter", true).build();
         UpdateUser patchUser = new UpdateUser.Builder().updateExtension(updateExtension).build();
 
-        User updatedUser = oConnector.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
+        User updatedUser = OSIAM_CONNECTOR.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
 
         assertThat(updatedUser.getExtension(URN).getField("newsletter", ExtensionFieldType.BOOLEAN), is(true));
     }
@@ -260,7 +268,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
         Extension updateExtension = new Extension.Builder(URN).setField("gender", "").build();
         UpdateUser patchUser = new UpdateUser.Builder().updateExtension(updateExtension).build();
 
-        User updatedUser = oConnector.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
+        User updatedUser = OSIAM_CONNECTOR.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
 
         assertThat(updatedUser.getExtension(URN).getField("gender", ExtensionFieldType.STRING), is("male"));
     }
@@ -272,7 +280,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
         UpdateUser patchUser = new UpdateUser.Builder().updateExtension(updateExtension)
                 .deleteExtensionField(URN, "gender").build();
 
-        User updatedUser = oConnector.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
+        User updatedUser = OSIAM_CONNECTOR.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
 
         assertThat(updatedUser.getExtension(URN).getField("gender", ExtensionFieldType.STRING), is("female"));
     }

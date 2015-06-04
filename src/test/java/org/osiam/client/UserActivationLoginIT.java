@@ -28,7 +28,6 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConnectionInitializationException;
-import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.Scope;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -42,25 +41,15 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class })
 @DatabaseSetup(value = "/database_seed_activation.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class UserActivationLoginIT extends AbstractIntegrationTestBase {
 
     @Test(expected = ConnectionInitializationException.class)
     public void log_in_as_an_deactivated_user_is_impossible() {
-        getAccessToken("hsimpson", "koala");
+        OSIAM_CONNECTOR.retrieveAccessToken("hsimpson", "koala", Scope.ALL);
         fail("Exception expected");
-    }
-
-    private AccessToken getAccessToken(String userName, String password) {
-        return new OsiamConnector.Builder()
-                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
-                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
-                .setClientId("example-client")
-                .setClientSecret("secret")
-                .build()
-                .retrieveAccessToken(userName, password, Scope.ALL);
     }
 }

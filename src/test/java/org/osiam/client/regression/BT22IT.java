@@ -23,8 +23,9 @@
 
 package org.osiam.client.regression;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
@@ -63,7 +64,7 @@ public class BT22IT extends AbstractIntegrationTestBase {
     public void searching_for_user_with_filter_on_extension_field_same_case() throws UnsupportedEncodingException {
         Query query = new QueryBuilder().filter(URN + "." + FIELD + " eq \"female\"").build();
 
-        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(query, accessToken);
 
         assertThat(result.getTotalResults(), is(equalTo(3L)));
     }
@@ -73,7 +74,7 @@ public class BT22IT extends AbstractIntegrationTestBase {
             throws UnsupportedEncodingException {
         Query query = new QueryBuilder().filter(URN_WRONG_CASE + "." + FIELD + " eq \"female\"").build();
 
-        SCIMSearchResult<User> result = oConnector.searchUsers( query, accessToken);
+        SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(query, accessToken);
 
         assertThat(result.getTotalResults(), is(equalTo(3L)));
     }
@@ -83,7 +84,7 @@ public class BT22IT extends AbstractIntegrationTestBase {
             throws UnsupportedEncodingException {
         Query query = new QueryBuilder().filter(URN + "." + FIELD_WRONG_CASE + " eq \"female\"").build();
 
-        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(query, accessToken);
 
         assertThat(result.getTotalResults(), is(equalTo(3L)));
     }
@@ -93,7 +94,7 @@ public class BT22IT extends AbstractIntegrationTestBase {
             throws UnsupportedEncodingException {
         Query query = new QueryBuilder().filter(URN_WRONG_CASE + "." + FIELD_WRONG_CASE + " eq \"female\"").build();
 
-        SCIMSearchResult<User> result = oConnector.searchUsers(query, accessToken);
+        SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(query, accessToken);
 
         assertThat(result.getTotalResults(), is(equalTo(3L)));
     }

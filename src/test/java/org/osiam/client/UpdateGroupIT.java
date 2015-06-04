@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
@@ -55,8 +56,8 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class })
 @DatabaseSetup("/database_seed.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class UpdateGroupIT extends AbstractIntegrationTestBase {
@@ -71,6 +72,11 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
     private UpdateGroup updateGroup;
     private Group returnGroup;
     private Group originalGroup;
+
+    @Before
+    public void setUp() {
+        retrieveAccessTokenForMarissa();
+    }
 
     @Test
     public void update_all_single_values() {
@@ -169,7 +175,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
         assertNotNull(value);
     }
 
-    @Test (expected = ConflictException.class)
+    @Test(expected = ConflictException.class)
     public void updating_the_displayname_to_existing_displayname_raises_exception() {
         createUpdateGroupWithNewDisplayName("test_group06");
 
@@ -239,11 +245,10 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
 
         groupBuilder
                 .setMembers(members)
-                .setExternalId(IRRELEVANT)
-        ;
+                .setExternalId(IRRELEVANT);
         Group newGroup = groupBuilder.build();
 
-        originalGroup = oConnector.createGroup(newGroup, accessToken);
+        originalGroup = OSIAM_CONNECTOR.createGroup(newGroup, accessToken);
         idExistingGroup = originalGroup.getId();
     }
 
@@ -261,7 +266,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
     }
 
     private void updateGroup() {
-        returnGroup = oConnector.updateGroup(idExistingGroup, updateGroup, accessToken);
+        returnGroup = OSIAM_CONNECTOR.updateGroup(idExistingGroup, updateGroup, accessToken);
     }
 
     private void createUpdateGroupWithNewDisplayName(String displayName) {

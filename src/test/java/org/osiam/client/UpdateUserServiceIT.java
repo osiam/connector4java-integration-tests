@@ -55,13 +55,14 @@ public class UpdateUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void replace_user_which_not_existing_raises_exception() {
+        retrieveAccessTokenForMarissa();
+
         UpdateUser patchedUser = new UpdateUser.Builder().build();
         try {
-            oConnector.updateUser(NOT_EXISTING_ID, patchedUser, accessToken);
+            OSIAM_CONNECTOR.updateUser(NOT_EXISTING_ID, patchedUser, accessToken);
             fail("Exception expected");
         } catch (NoResultException e) {
             assertThat(e.getMessage(), containsString("not found"));
         }
     }
-
 }

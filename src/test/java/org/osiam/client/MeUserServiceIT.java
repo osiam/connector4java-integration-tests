@@ -54,7 +54,9 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void get_current_user_basic_returns_correct_user() throws Exception {
-        BasicUser basicUser = oConnector.getCurrentUserBasic(accessToken);
+        retrieveAccessTokenForMarissa();
+
+        BasicUser basicUser = OSIAM_CONNECTOR.getCurrentUserBasic(accessToken);
 
         assertEquals("cef9452e-00a9-4cec-a086-d171374ffbef", basicUser.getId());
         assertEquals("marissa", basicUser.getUserName());
@@ -69,24 +71,18 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void get_current_user_returns_correct_user() throws Exception {
-        User user = oConnector.getCurrentUser(accessToken);
+        retrieveAccessTokenForMarissa();
+
+        User user = OSIAM_CONNECTOR.getCurrentUser(accessToken);
 
         assertEquals("cef9452e-00a9-4cec-a086-d171374ffbef", user.getId());
         assertEquals("marissa", user.getUserName());
     }
 
-    @Test (expected = ConflictException.class)
-    public void get_current_user_while_loged_in_with_client_credential_raises_exception() throws Exception{
-        OsiamConnector connectorForClient = new OsiamConnector.Builder()
-                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
-                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
-                .setClientId(CLIENT_ID)
-                .setClientSecret(CLIENT_SECRET)
-                .build();
-
-        connectorForClient.getCurrentUserBasic(connectorForClient.retrieveAccessToken());
+    @Test(expected = ConflictException.class)
+    public void get_current_user_while_logged_in_with_client_credential_raises_exception() throws Exception {
+        OSIAM_CONNECTOR.getCurrentUserBasic(OSIAM_CONNECTOR.retrieveAccessToken());
 
         fail("Exception expected");
     }
-
 }
