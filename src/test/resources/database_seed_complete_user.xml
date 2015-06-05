@@ -46,23 +46,23 @@
     <osiam_client_scopes id="100004" scope="POST"/>
     <osiam_client_scopes id="100004" scope="PATCH"/>
 
-	<scim_name id="100001" familyname="" formatted="" givenname="" honorificprefix="" honorificsuffix="" middlename="" />
-	<scim_name id="100002" familyname="familyName" formatted="formatted" givenname="name" honorificprefix="Dr." honorificsuffix="Mr." middlename="middleName" />
+	<scim_name id="100001" family_name="" formatted="" given_name="" honorific_prefix="" honorific_suffix="" middle_name="" />
+	<scim_name id="100002" family_name="familyName" formatted="formatted" given_name="name" honorific_prefix="Dr." honorific_suffix="Mr." middle_name="middleName" />
 
-	<scim_meta id="100004" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User" />
-	<scim_meta id="100005" created="2014-01-27 14:32:11.0" lastmodified="2014-01-27 14:32:11.0" resourcetype="User" />
-	<scim_meta id="100006" created="2014-01-27 14:32:11.978" lastmodified="2014-01-27 14:32:11.978" resourcetype="Group" />
+	<scim_meta id="100004" created="2011-10-10 00:00:00.0" last_modified="2011-10-10 00:00:00.0" resource_type="User" />
+	<scim_meta id="100005" created="2014-01-27 14:32:11.0" last_modified="2014-01-27 14:32:11.0" resource_type="User" />
+	<scim_meta id="100006" created="2014-01-27 14:32:11.978" last_modified="2014-01-27 14:32:11.978" resource_type="Group" />
 
-	<scim_id internal_id="100002" external_id="externalId" id="d83c0f36-4e77-407d-94c9-2ca7e4cb7cf1" meta_id="100005" />
-	<scim_id internal_id="100001" id="cef9452e-00a9-4cec-a086-d171374ffbef" meta_id="100004" />
-	<scim_id internal_id="100003" external_id="GrExternalId1" id="ddf772b2-a864-44d7-a58b-3fdd6e647b7b" meta_id="100006" />
+	<scim_id internal_id="100002" external_id="externalId" id="d83c0f36-4e77-407d-94c9-2ca7e4cb7cf1" meta="100005" />
+	<scim_id internal_id="100001" id="cef9452e-00a9-4cec-a086-d171374ffbef" meta="100004" />
+	<scim_id internal_id="100003" external_id="GrExternalId1" id="ddf772b2-a864-44d7-a58b-3fdd6e647b7b" meta="100006" />
 
-	<scim_user active="true" displayname="marissa" locale="" nickname="marissa" password="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
-	   preferredlanguage="" profileurl="" timezone="" title="" username="marissa" internal_id="100001" name_id="100001" />
-	<scim_user active="true" displayname="displayName" locale="de_DE" nickname="nickname" password="2daa4905bb67d4101aca3c7fb673be0d1659a147e5e9da406e230808664c576313f7e0e7c98b77f5281d6e9f87f83e25aff68fc93ee6438dca298143cc585a31"
-	   preferredlanguage="german" profileurl="/user/username" timezone="DE" title="title" username="username" internal_id="100002" name_id="100002" />
+	<scim_user active="true" display_name="marissa" locale="" nick_name="marissa" password="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
+	   preferred_language="" profile_url="" timezone="" title="" user_name="marissa" internal_id="100001" name="100001" />
+	<scim_user active="true" display_name="displayName" locale="de_DE" nick_name="nickname" password="2daa4905bb67d4101aca3c7fb673be0d1659a147e5e9da406e230808664c576313f7e0e7c98b77f5281d6e9f87f83e25aff68fc93ee6438dca298143cc585a31"
+	   preferred_language="german" profile_url="/user/username" timezone="DE" title="title" user_name="username" internal_id="100002" name="100002" />
 
-	<scim_address multi_value_id="100001" is_primary="true" country="Germany" formatted="formatted" locality="Berlin" postalcode="12345" region="Berlin" streetaddress="Voltastr. 5" type="work" user_internal_id="100002" />
+	<scim_address multi_value_id="100001" is_primary="true" country="Germany" formatted="formatted" locality="Berlin" postal_code="12345" region="Berlin" street_address="Voltastr. 5" type="work" user_internal_id="100002" />
 
 	<scim_certificate multi_value_id="100001" value="x509Certificate" user_internal_id="100002" is_primary="true" />
 
@@ -70,9 +70,9 @@
 
 	<scim_entitlements multi_value_id="100001" is_primary="false" value="entitlement" type="irrelevant" user_internal_id="100002" />
 
-	<scim_group displayname="group1" internal_id="100003" />
+	<scim_group display_name="group1" internal_id="100003" />
 
-	<scim_group_scim_id groups_internal_id="100003" members_internal_id="100002"/>
+	<scim_group_members groups="100003" members="100002"/>
 
 	<scim_im multi_value_id="100001" value="aim" type="aim" user_internal_id="100002" is_primary="false"/>
 
@@ -86,15 +86,15 @@
 
 	<scim_extension internal_id="100081" urn="extension"/>
 
-    <scim_extension_field internal_id="100082" is_required="false" name="gender" type="STRING" extension_internal_id="100081"/>
-    <scim_extension_field internal_id="100083" is_required="false" name="newsletter" type="BOOLEAN" extension_internal_id="100081"/>
-    <scim_extension_field internal_id="100084" is_required="false" name="age" type="INTEGER" extension_internal_id="100081"/>
-    <scim_extension_field internal_id="100085" is_required="false" name="weight" type="DECIMAL" extension_internal_id="100081"/>
-    <scim_extension_field internal_id="100086" is_required="false" name="birthday" type="DATE_TIME" extension_internal_id="100081"/>
-    <scim_extension_field internal_id="100087" is_required="false" name="photo" type="BINARY" extension_internal_id="100081"/>
-    <scim_extension_field internal_id="100088" is_required="false" name="mother" type="REFERENCE" extension_internal_id="100081"/>
+    <scim_extension_field internal_id="100082" required="false" name="gender" type="STRING" extension="100081"/>
+    <scim_extension_field internal_id="100083" required="false" name="newsletter" type="BOOLEAN" extension="100081"/>
+    <scim_extension_field internal_id="100084" required="false" name="age" type="INTEGER" extension="100081"/>
+    <scim_extension_field internal_id="100085" required="false" name="weight" type="DECIMAL" extension="100081"/>
+    <scim_extension_field internal_id="100086" required="false" name="birthday" type="DATE_TIME" extension="100081"/>
+    <scim_extension_field internal_id="100087" required="false" name="photo" type="BINARY" extension="100081"/>
+    <scim_extension_field internal_id="100088" required="false" name="mother" type="REFERENCE" extension="100081"/>
 
-    <scim_extension_field_value internal_id="100001" value="male" extension_field_internal_id="100082" user_internal_id="100002"/>
-    <scim_extension_field_value internal_id="100017" value="100000000000000000018" extension_field_internal_id="100084" user_internal_id="100002"/>
+    <scim_extension_field_value internal_id="100001" value="male" extension_field="100082" user_internal_id="100002"/>
+    <scim_extension_field_value internal_id="100017" value="100000000000000000018" extension_field="100084" user_internal_id="100002"/>
 
 </dataset>

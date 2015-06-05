@@ -31,7 +31,7 @@
     <scim_name />
     <scim_user/>
     <scim_group />
-    <scim_group_scim_id />
+    <scim_group_members />
     <scim_email />
     <scim_address />
     <scim_photo />

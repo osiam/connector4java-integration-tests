@@ -57,49 +57,49 @@
     <osiam_client_scopes id="100005" scope="DELETE"/>
     <osiam_client_grants id="100005" grants="client_credentials"/>
 
-    <scim_meta id="100004" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
-    <scim_meta id="100053" created="2013-07-31 21:43:18.0" lastmodified="2013-07-31 21:43:18.0" resourcetype="Group"/>
-    <scim_meta id="100061" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
-    <scim_meta id="100062" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
-    <scim_meta id="100063" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
+    <scim_meta id="100004" created="2011-10-10 00:00:00.0" last_modified="2011-10-10 00:00:00.0" resource_type="User"/>
+    <scim_meta id="100053" created="2013-07-31 21:43:18.0" last_modified="2013-07-31 21:43:18.0" resource_type="Group"/>
+    <scim_meta id="100061" created="2011-10-10 00:00:00.0" last_modified="2011-10-10 00:00:00.0" resource_type="User"/>
+    <scim_meta id="100062" created="2011-10-10 00:00:00.0" last_modified="2011-10-10 00:00:00.0" resource_type="User"/>
+    <scim_meta id="100063" created="2011-10-10 00:00:00.0" last_modified="2011-10-10 00:00:00.0" resource_type="User"/>
 
-    <scim_id internal_id="100001" meta_id="100004" id="cef9452e-00a9-4cec-a086-d171374ffbef"/>
-    <scim_id internal_id="100052" meta_id="100053" id="69e1a5dc-89be-4343-976c-b5541af249f4"/>
-    <scim_id internal_id="100060" meta_id="100061" id="cef9452e-00a9-4cec-a086-d171374febef"/>
-    <scim_id internal_id="100061" meta_id="100062" id="69e1a5dc-89be-4343-976c-b8841af249f4"/>
-    <scim_id internal_id="100062" meta_id="100063" id="69e1a5dc-89be-4343-976c-b8841af249f5"/>
+    <scim_id internal_id="100001" meta="100004" id="cef9452e-00a9-4cec-a086-d171374ffbef"/>
+    <scim_id internal_id="100052" meta="100053" id="69e1a5dc-89be-4343-976c-b5541af249f4"/>
+    <scim_id internal_id="100060" meta="100061" id="cef9452e-00a9-4cec-a086-d171374febef"/>
+    <scim_id internal_id="100061" meta="100062" id="69e1a5dc-89be-4343-976c-b8841af249f4"/>
+    <scim_id internal_id="100062" meta="100063" id="69e1a5dc-89be-4343-976c-b8841af249f5"/>
 
     <scim_user
             password="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
-            username="marissa" internal_id="100001" active="true"/>
+            user_name="marissa" internal_id="100001" active="true"/>
 
-    <scim_user password="1234" username="George" internal_id="100060" active="false"/>
-    <scim_user password="1234" username="Harry" internal_id="100061" active="false"/>
-    <scim_user password="1234" username="Elisabeth" internal_id="100062" active="false"/>
+    <scim_user password="1234" user_name="George" internal_id="100060" active="false"/>
+    <scim_user password="1234" user_name="Harry" internal_id="100061" active="false"/>
+    <scim_user password="1234" user_name="Elisabeth" internal_id="100062" active="false"/>
 
-    <scim_group displayname="test_group01" internal_id="100052"/>
+    <scim_group display_name="test_group01" internal_id="100052"/>
 
-    <scim_group_scim_id groups_internal_id="100052" members_internal_id="100060"/>
-    <scim_group_scim_id groups_internal_id="100052" members_internal_id="100061"/>
-    <scim_group_scim_id groups_internal_id="100052" members_internal_id="100062"/>
+    <scim_group_members groups="100052" members="100060"/>
+    <scim_group_members groups="100052" members="100061"/>
+    <scim_group_members groups="100052" members="100062"/>
 
     <scim_extension internal_id="100081" urn="urn:org.osiam:scim:extensions:addon-self-administration"/>
     <scim_extension internal_id="100084" urn="urn:client:extension"/>
 
-    <scim_extension_field internal_id="100082" is_required="true" name="activationToken" type="STRING"
-                          extension_internal_id="100081"/>
-    <scim_extension_field internal_id="100085" is_required="true" name="age" type="STRING"
-                          extension_internal_id="100084"/>
+    <scim_extension_field internal_id="100082" required="true" name="activationToken" type="STRING"
+                          extension="100081"/>
+    <scim_extension_field internal_id="100085" required="true" name="age" type="STRING"
+                          extension="100084"/>
 
     <scim_extension_field_value internal_id="100083" value="cef9452e-00a9-4cec-a086-a171374febef"
-                                extension_field_internal_id="100082" user_internal_id="100060"/>
-    <scim_extension_field_value internal_id="100084" value="12" extension_field_internal_id="100085"
+                                extension_field="100082" user_internal_id="100060"/>
+    <scim_extension_field_value internal_id="100084" value="12" extension_field="100085"
                                 user_internal_id="100060"/>
 
     <scim_extension_field_value internal_id="100085" value="cef9452e-11a9-4cec-a086-a171374febef:1259535600000"
-                                extension_field_internal_id="100082" user_internal_id="100061"/>
+                                extension_field="100082" user_internal_id="100061"/>
 
     <scim_extension_field_value internal_id="100086" value="cef9452e-10a9-4cec-a086-a171374febee:32500911600000"
-                                extension_field_internal_id="100082" user_internal_id="100062"/>
+                                extension_field="100082" user_internal_id="100062"/>
 
 </dataset>

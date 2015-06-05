@@ -47,30 +47,30 @@
     <osiam_client_scopes id="100004" scope="POST"/>
     <osiam_client_scopes id="100004" scope="PATCH"/>
 
-	<scim_name id="1" familyname="" formatted="" givenname=""
-		honorificprefix="" honorificsuffix="" middlename="" />
-	<scim_name id="2" familyname="familyName1" formatted="formatted1"
-		givenname="givenName1" honorificprefix="hPrefix1" honorificsuffix="hSuffix1"
-		middlename="middleName1" />
+	<scim_name id="1" family_name="" formatted="" given_name=""
+		honorific_prefix="" honorific_suffix="" middle_name="" />
+	<scim_name id="2" family_name="familyName1" formatted="formatted1"
+		given_name="givenName1" honorific_prefix="hPrefix1" honorific_suffix="hSuffix1"
+		middle_name="middleName1" />
 
 	<scim_meta id="100004" created="2011-10-10 00:00:00.0"
-		lastmodified="2011-10-10 00:00:00.0" resourcetype="User" />
+		last_modified="2011-10-10 00:00:00.0" resource_type="User" />
 	<scim_meta id="100005" created="2014-01-27 17:07:55.37"
-		lastmodified="2014-01-27 17:07:55.37" resourcetype="User" />
+		last_modified="2014-01-27 17:07:55.37" resource_type="User" />
 
 	<scim_id internal_id="100001" id="cef9452e-00a9-4cec-a086-d171374ffbef"
-		meta_id="100004" />
+		meta="100004" />
 	<scim_id internal_id="100002" external_id="externalId1"
-		id="3f060eff-7061-4575-a5e5-066e87113e65" meta_id="100005" />
+		id="3f060eff-7061-4575-a5e5-066e87113e65" meta="100005" />
 
-	<scim_user active="true" displayname="marissa" locale=""
-		nickname="marissa"
+	<scim_user active="true" display_name="marissa" locale=""
+		nick_name="marissa"
 		password="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
-		preferredlanguage="" profileurl="" timezone="" title="" username="marissa"
-		internal_id="100001" name_id="1" />
-	<scim_user active="true" displayname="user1DisplayName"
+		preferred_language="" profile_url="" timezone="" title="" user_name="marissa"
+		internal_id="100001" name="1" />
+	<scim_user active="true" display_name="user1DisplayName"
 		password="82556377dfba11fea342dcd08904d9c436dcf4967da01c19c3541c0cf955ac6bcd9e9a40e1a4e2829f166a69f8130a7a5d8f7fdba41f0f1a0dcc434a8fbef684"
-		username="user1" internal_id="100002" name_id="2" />
+		user_name="user1" internal_id="100002" name="2" />
 
 	<scim_email multi_value_id="1" is_primary="false" value="email1@other.com"
 		type="other" user_internal_id="100002" />
@@ -78,7 +78,7 @@
 	<scim_extension internal_id="100081"
 		urn="extension" />
 	<scim_extension_field internal_id="100082" name="stringValue"
-		is_required="true" type="STRING" extension_internal_id="100081" />
+		required="true" type="STRING" extension="100081" />
 	<scim_extension_field_value internal_id="5"
-		value="Hello 1" extension_field_internal_id="100082" user_internal_id="100002" />
+		value="Hello 1" extension_field="100082" user_internal_id="100002" />
 </dataset>
