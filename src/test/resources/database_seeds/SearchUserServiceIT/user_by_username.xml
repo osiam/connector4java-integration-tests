@@ -45,73 +45,73 @@
     <osiam_client_scopes id="100004" scope="POST" />
     <osiam_client_scopes id="100004" scope="PATCH" />
     
-    <scim_meta id="100004" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
-    <scim_meta id="100006" created="2013-08-08 19:45:20.816" lastmodified="2013-08-08 19:45:20.816"
-               resourcetype="User"/>
-    <scim_meta id="100010" created="2013-08-08 19:45:37.407" lastmodified="2013-08-08 19:45:37.407"
-               resourcetype="User"/>
-    <scim_meta id="100014" created="2013-08-08 19:45:47.18" lastmodified="2013-08-08 19:45:47.18" resourcetype="User"/>
-    <scim_meta id="100022" created="2013-08-08 19:46:12.738" lastmodified="2013-08-08 19:46:12.738"
-               resourcetype="User"/>
-    <scim_meta id="100026" created="2013-08-08 19:46:20.638" lastmodified="2013-08-08 19:46:20.638"
-               resourcetype="User"/>
-    <scim_meta id="100030" created="2013-08-08 19:46:26.798" lastmodified="2013-08-08 19:46:26.798"
-               resourcetype="User"/>
-    <scim_meta id="100034" created="2013-08-08 19:47:26.151" lastmodified="2013-08-08 19:47:26.151"
-               resourcetype="User"/>
-    <scim_meta id="100043" created="2013-08-08 19:47:51.781" lastmodified="2013-08-08 19:47:51.781"
-               resourcetype="User"/>
-    <scim_meta id="100047" created="2013-08-08 19:51:34.498" lastmodified="2013-08-08 19:51:34.498"
-               resourcetype="User"/>
-    <scim_meta id="100050" created="2013-08-08 19:53:43.221" lastmodified="2013-08-08 19:53:43.221"
-               resourcetype="User"/>
+    <scim_meta id="100004" created="2011-10-10 00:00:00.0" last_modified="2011-10-10 00:00:00.0" resource_type="User"/>
+    <scim_meta id="100006" created="2013-08-08 19:45:20.816" last_modified="2013-08-08 19:45:20.816"
+               resource_type="User"/>
+    <scim_meta id="100010" created="2013-08-08 19:45:37.407" last_modified="2013-08-08 19:45:37.407"
+               resource_type="User"/>
+    <scim_meta id="100014" created="2013-08-08 19:45:47.18" last_modified="2013-08-08 19:45:47.18" resource_type="User"/>
+    <scim_meta id="100022" created="2013-08-08 19:46:12.738" last_modified="2013-08-08 19:46:12.738"
+               resource_type="User"/>
+    <scim_meta id="100026" created="2013-08-08 19:46:20.638" last_modified="2013-08-08 19:46:20.638"
+               resource_type="User"/>
+    <scim_meta id="100030" created="2013-08-08 19:46:26.798" last_modified="2013-08-08 19:46:26.798"
+               resource_type="User"/>
+    <scim_meta id="100034" created="2013-08-08 19:47:26.151" last_modified="2013-08-08 19:47:26.151"
+               resource_type="User"/>
+    <scim_meta id="100043" created="2013-08-08 19:47:51.781" last_modified="2013-08-08 19:47:51.781"
+               resource_type="User"/>
+    <scim_meta id="100047" created="2013-08-08 19:51:34.498" last_modified="2013-08-08 19:51:34.498"
+               resource_type="User"/>
+    <scim_meta id="100050" created="2013-08-08 19:53:43.221" last_modified="2013-08-08 19:53:43.221"
+               resource_type="User"/>
 
-    <scim_id internal_id="100005" external_id="bthomson" meta_id="100006" id="618b398c-0110-43f2-95df-d1bc4e7d2b4a"/>
-    <scim_id internal_id="100009" external_id="adavies" meta_id="100010" id="03dc8f50-acaa-44d6-9401-bdfc5e10e821"/>
-    <scim_id internal_id="100013" external_id="cmiller" meta_id="100014" id="ac3bacc9-915d-4bab-9145-9eb600d5e5bf"/>
-    <scim_id internal_id="100021" external_id="dcooper" meta_id="100022" id="d6f323e2-c717-4ab6-af9c-e639b50a948c"/>
-    <scim_id internal_id="100025" external_id="epalmer" meta_id="100026" id="db566580-08a7-44fa-be0f-d30f1c0ff2df"/>
-    <scim_id internal_id="100029" external_id="gbarker" meta_id="100030" id="df4ca43d-2811-4ade-aed9-75a1ba990dac"/>
-    <scim_id internal_id="100033" external_id="hsimpson" meta_id="100034" id="7d33bcbe-a54c-43d8-867e-f6146164941e"/>
-    <scim_id internal_id="100042" external_id="kmorris" meta_id="100043" id="aba67300-74f1-4e51-a68a-0a6c5c45b79c"/>
-    <scim_id internal_id="100046" external_id="bjensen" meta_id="100047" id="834b410a-943b-4c80-817a-4465aed037bc"/>
-    <scim_id internal_id="100049" external_id="ewilley" meta_id="100050" id="781d9891-9114-4cd5-813a-77c3f4b0e15f"/>
-    <scim_id internal_id="100001" meta_id="100004" id="cef9452e-00a9-4cec-a086-d171374ffbef"/>
+    <scim_id internal_id="100005" external_id="bthomson" meta="100006" id="618b398c-0110-43f2-95df-d1bc4e7d2b4a"/>
+    <scim_id internal_id="100009" external_id="adavies" meta="100010" id="03dc8f50-acaa-44d6-9401-bdfc5e10e821"/>
+    <scim_id internal_id="100013" external_id="cmiller" meta="100014" id="ac3bacc9-915d-4bab-9145-9eb600d5e5bf"/>
+    <scim_id internal_id="100021" external_id="dcooper" meta="100022" id="d6f323e2-c717-4ab6-af9c-e639b50a948c"/>
+    <scim_id internal_id="100025" external_id="epalmer" meta="100026" id="db566580-08a7-44fa-be0f-d30f1c0ff2df"/>
+    <scim_id internal_id="100029" external_id="gbarker" meta="100030" id="df4ca43d-2811-4ade-aed9-75a1ba990dac"/>
+    <scim_id internal_id="100033" external_id="hsimpson" meta="100034" id="7d33bcbe-a54c-43d8-867e-f6146164941e"/>
+    <scim_id internal_id="100042" external_id="kmorris" meta="100043" id="aba67300-74f1-4e51-a68a-0a6c5c45b79c"/>
+    <scim_id internal_id="100046" external_id="bjensen" meta="100047" id="834b410a-943b-4c80-817a-4465aed037bc"/>
+    <scim_id internal_id="100049" external_id="ewilley" meta="100050" id="781d9891-9114-4cd5-813a-77c3f4b0e15f"/>
+    <scim_id internal_id="100001" meta="100004" id="cef9452e-00a9-4cec-a086-d171374ffbef"/>
 
     <scim_user
             password="42db3b474c2a54f6b1c3c352e4436274de6b0239432c9a6c2d51c62e54b28ad1e3ecbb306f7748890934e3dae4292e339189c8bb7af55f68de9855ca455f19e4"
-            displayname="BarbaraJ." locale="de" nickname="Barbara" preferredlanguage="de"
-            profileurl="http://babaraJ.com" timezone="UTC" title="Dr."
-            username="bjensen" usertype="user" internal_id="100046" active="false"/>
-    <scim_user displayname="BeccyT." locale="de" nickname="Beccy"
+            display_name="BarbaraJ." locale="de" nick_name="Barbara" preferred_language="de"
+            profile_url="http://babaraJ.com" timezone="UTC" title="Dr."
+            user_name="bjensen" user_type="user" internal_id="100046" active="false"/>
+    <scim_user display_name="BeccyT." locale="de" nick_name="Beccy"
                password="908661cbdcd4795f95926b57e9979a80969f7ef55cec4c3dcfccabcae55d32f2a1eae227a91fd41df1462c2bb7b60c136beb75666d7bb60ff859ff886788a349"
-               title="Dr." username="jcambell" internal_id="100005" active="false"/>
-    <scim_user displayname="AdelineD." locale="de" nickname="Adeline"
+               title="Dr." user_name="jcambell" internal_id="100005" active="false"/>
+    <scim_user display_name="AdelineD." locale="de" nick_name="Adeline"
                password="de80fa5f5b167a83e57d0f388f1f1964b8c3b991347eb71d7d74ed8823e88d592b19762ca78b58982aa85bb28a3b4596a97346daeabfcf2913bdc400e9af4b67"
-               title="Prof." username="adavies" internal_id="100009" active="false"/>
-    <scim_user displayname="CarolinaM." locale="de" nickname="Carolina"
+               title="Prof." user_name="adavies" internal_id="100009" active="false"/>
+    <scim_user display_name="CarolinaM." locale="de" nick_name="Carolina"
                password="1fb68a8abc646ade5a1b75317269ff097374da7b39663adc5930bd92b21d8fce409eabc31ab60450c13046a533c4a7632c26fe75c72f12f4aa798aa034980ed1"
-               username="cmiller" internal_id="100013" active="false"/>
-    <scim_user displayname="DanielC." locale="de" nickname="Daniel"
+               user_name="cmiller" internal_id="100013" active="false"/>
+    <scim_user display_name="DanielC." locale="de" nick_name="Daniel"
                password="5adcf124d1edbad344f8bf4cac60d63dd3c071b58a2514a1a4b96837da370de4cd962d7275a6903b5c2c4a82712dc3b0c43a9f99c4a29631708af1352a86a0bf"
-               title="" username="dcooper" internal_id="100021" active="false"/>
-    <scim_user displayname="EmilP." locale="de" nickname="Emil"
+               title="" user_name="dcooper" internal_id="100021" active="false"/>
+    <scim_user display_name="EmilP." locale="de" nick_name="Emil"
                password="bff691b597ddc20e9368e6a887d6f7575968c17e164da805c07e3c59df467cde7cb4db9d2bbaaee644950c3eeab8e7c246e65f655cb0c05b93fc5d17a8ae01c8"
-               title="" username="epalmer" internal_id="100025" active="false"/>
-    <scim_user displayname="GreggB." locale="de" nickname="Gregg"
+               title="" user_name="epalmer" internal_id="100025" active="false"/>
+    <scim_user display_name="GreggB." locale="de" nick_name="Gregg"
                password="bd8e5a6e09890f7dc8328a1264f947d2756b376f6d93d920cbe506621f9d2a5332557248e5fc2e0463a2f87e9921d29f0421178654df3165c9a811cac01a0681"
-               title="" username="gparker" internal_id="100029" active="false"/>
-    <scim_user displayname="HomerS." locale="us" nickname="Homer"
+               title="" user_name="gparker" internal_id="100029" active="false"/>
+    <scim_user display_name="HomerS." locale="us" nick_name="Homer"
                password="b14df56c6c14c33162ea39d97f3cc060314163f979a319111e3a4e32233ae3c842d507dbd61e8f745683b9868987f9c3b3baa3778332a3c12d92099a2e30737e"
-               title="King" username="hsimpson" internal_id="100033" active="true"/>
-    <scim_user displayname="KennyM." locale="de" nickname="Kenny"
+               title="King" user_name="hsimpson" internal_id="100033" active="true"/>
+    <scim_user display_name="KennyM." locale="de" nick_name="Kenny"
                password="7b41aceb545dd17af963140cc34147e78e9f57776b6175a31d4206cfa8010aa412706b36ff2a3ff857d41040c45cf4134cf0d315eff4612bb1004c56a5527126"
-               title="Dr." username="kmorris" internal_id="100042" active="false"/>
+               title="Dr." user_name="kmorris" internal_id="100042" active="false"/>
     <scim_user
             password="4e2e1ceaa25f4e1a4ec7436e3abc8e4c6ee4ad042778aede3412973eccda52ab213e5c84dc36113bf4dae95f0459a6ce264f6e8bcd7c9b30439cb5e60969aa9f"
-            username="ewilley" internal_id="100049" active="false"/>
+            user_name="ewilley" internal_id="100049" active="false"/>
     <scim_user
             password="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
-            username="marissa" internal_id="100001" active="true"/>
+            user_name="marissa" internal_id="100001" active="true"/>
 
 </dataset>
