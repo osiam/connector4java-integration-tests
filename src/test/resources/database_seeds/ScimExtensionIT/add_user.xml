@@ -23,9 +23,9 @@
 -->
 
 <dataset>
-    <osiam_client internal_id="100003" accesstokenvalidityseconds="2342" client_secret="secret"
+    <osiam_client internal_id="100003" access_token_validity_seconds="2342" client_secret="secret"
                   id="example-client" implicit_approval="false" redirect_uri="http://localhost:5000/oauth2"
-                  refreshtokenvalidityseconds="2342" validityinseconds="1337"/>
+                  refresh_token_validity_seconds="2342" validity_in_seconds="1337"/>
     <osiam_client_grants id="100003" grants="authorization_code"/>
     <osiam_client_grants id="100003" grants="refresh_token"/>
     <osiam_client_grants id="100003" grants="password"/>
@@ -37,7 +37,7 @@
     <osiam_client_scopes id="100003" scope="DELETE"/>
     
     <osiam_client internal_id="100004" id="auth-server" redirect_uri="http://localhost:8180/osiam-auth-server"
-        client_secret="auth-secret" accesstokenvalidityseconds="10" refreshtokenvalidityseconds="10" validityinseconds="10"
+        client_secret="auth-secret" access_token_validity_seconds="10" refresh_token_validity_seconds="10" validity_in_seconds="10"
         implicit_approval="true" />
     <osiam_client_grants id="100004" grants="client_credentials" />
     <osiam_client_scopes id="100004" scope="GET" />
