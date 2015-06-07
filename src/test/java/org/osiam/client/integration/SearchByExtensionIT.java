@@ -27,6 +27,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.AbstractIntegrationTestBase;
@@ -49,6 +50,11 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DbUnitTestExecutionListener.class })
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class SearchByExtensionIT extends AbstractIntegrationTestBase {
+
+    @Before
+    public void setup() {
+        retrieveAccessTokenForMarissa();
+    }
 
     @Test
     @DatabaseSetup(value = "/database_seeds/SearchByExtensionIT/extensions.xml")

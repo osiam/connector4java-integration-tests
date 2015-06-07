@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.AbstractIntegrationTestBase;
@@ -27,6 +28,11 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 @DatabaseSetup(value = "/database_seeds/Bug251/database_seed.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class Bug251 extends AbstractIntegrationTestBase {
+
+    @Before
+    public void setup() {
+        retrieveAccessTokenForMarissa();
+    }
 
     @Test
     public void sorting_by_formatted_does_not_remove_users_without_a_name_set_from_result() {
