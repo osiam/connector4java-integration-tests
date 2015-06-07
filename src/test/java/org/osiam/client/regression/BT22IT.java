@@ -30,6 +30,7 @@ import static org.junit.Assert.assertThat;
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.AbstractIntegrationTestBase;
@@ -59,6 +60,11 @@ public class BT22IT extends AbstractIntegrationTestBase {
 
     private static final String FIELD = "gender";
     private static final String FIELD_WRONG_CASE = FIELD.toUpperCase(Locale.ENGLISH);
+
+    @Before
+    public void setup() {
+        retrieveAccessTokenForMarissa();
+    }
 
     @Test
     public void searching_for_user_with_filter_on_extension_field_same_case() throws UnsupportedEncodingException {
@@ -98,5 +104,4 @@ public class BT22IT extends AbstractIntegrationTestBase {
 
         assertThat(result.getTotalResults(), is(equalTo(3L)));
     }
-
 }
