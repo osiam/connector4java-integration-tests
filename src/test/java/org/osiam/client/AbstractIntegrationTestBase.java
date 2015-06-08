@@ -23,17 +23,13 @@
 
 package org.osiam.client;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
+import java.util.*;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.*;
 
-import org.glassfish.jersey.jackson.JacksonFeature;
-import org.joda.time.format.ISODateTimeFormat;
-import org.osiam.client.oauth.AccessToken;
-import org.osiam.client.oauth.Scope;
+import org.glassfish.jersey.jackson.*;
+import org.joda.time.format.*;
+import org.osiam.client.oauth.*;
 
 public abstract class AbstractIntegrationTestBase {
 
@@ -42,8 +38,8 @@ public abstract class AbstractIntegrationTestBase {
     protected static final String INVALID_STRING = "invalid";
     protected static final String DELETE_USER_ID = "618b398c-0110-43f2-95df-d1bc4e7d2b4a";
     protected static final String VALID_GROUP_ID = "69e1a5dc-89be-4343-976c-b5541af249f4";
-    protected static final String AUTH_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-auth-server";
-    protected static final String RESOURCE_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-resource-server";
+    protected static final String AUTH_ENDPOINT_ADDRESS;
+    protected static final String RESOURCE_ENDPOINT_ADDRESS;
     protected static final String CLIENT_ID = "example-client";
     protected static final String CLIENT_SECRET = "secret";
     protected static final OsiamConnector OSIAM_CONNECTOR;
@@ -52,6 +48,10 @@ public abstract class AbstractIntegrationTestBase {
     static {
         OsiamConnector.setConnectTimeout(Integer.parseInt(System.getProperty("connector.timeout", "-1")));
         OsiamConnector.setReadTimeout(Integer.parseInt(System.getProperty("connector.timeout", "-1")));
+
+        final String osiamHost = System.getProperty("osiam.test.host", "http://localhost:8180");
+        AUTH_ENDPOINT_ADDRESS = osiamHost + "/osiam-auth-server";
+        RESOURCE_ENDPOINT_ADDRESS = osiamHost + "/osiam-resource-server";
 
         OSIAM_CONNECTOR = new OsiamConnector.Builder()
                 .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
