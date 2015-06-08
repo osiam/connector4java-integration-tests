@@ -50,20 +50,32 @@ abstract class AbstractIT extends Specification {
 
     private static final String CLIENT_ID = 'example-client'
     private static final String CLIENT_SECRET = 'secret'
+    private static final String AUTH_ENDPOINT
 
-    private static final String AUTH_ENDPOINT = 'http://localhost:8180/osiam-auth-server'
-    protected static final String RESOURCE_ENDPOINT = 'http://localhost:8180/osiam-resource-server'
-    protected static final String REGISTRATION_ENDPOINT = 'http://localhost:8180/addon-self-administration'
-
+    protected static final String RESOURCE_ENDPOINT
+    protected static final String REGISTRATION_ENDPOINT
     protected static final String SELF_ADMIN_URN = 'urn:org.osiam:scim:extensions:addon-self-administration'
+    protected static final OsiamConnector OSIAM_CONNECTOR
 
-    protected static OsiamConnector OSIAM_CONNECTOR
+    private static String OSIAM_MAIL_HOST
+    private static int OSIAM_MAIL_PORT
+
+    private POP3Store store
+    private Folder inbox
 
     protected AccessToken accessToken
 
     static {
         OsiamConnector.setConnectTimeout(Integer.parseInt(System.getProperty("connector.timeout", "-1")));
         OsiamConnector.setReadTimeout(Integer.parseInt(System.getProperty("connector.timeout", "-1")));
+
+        OSIAM_MAIL_HOST = System.getProperty('osiam.mail.host', 'localhost')
+        OSIAM_MAIL_PORT = System.getProperty('osiam.mail.port', '11110').toInteger()
+
+        final String osiamHost = System.getProperty('osiam.test.host', 'http://localhost:8180')
+        AUTH_ENDPOINT = "${osiamHost}/osiam-auth-server"
+        RESOURCE_ENDPOINT = "${osiamHost}/osiam-resource-server"
+        REGISTRATION_ENDPOINT = "${osiamHost}/addon-self-administration"
 
         OSIAM_CONNECTOR = new OsiamConnector.Builder()
                 .setAuthServerEndpoint(AUTH_ENDPOINT)
@@ -72,9 +84,6 @@ abstract class AbstractIT extends Specification {
                 .setClientSecret(CLIENT_SECRET)
                 .build()
     }
-
-    POP3Store store
-    Folder inbox
 
     def setupDatabase(String seedFileName) {
 
@@ -110,7 +119,7 @@ abstract class AbstractIT extends Specification {
         final Properties properties = System.getProperties()
         final Session session = Session.getDefaultInstance(properties)
         store = (POP3Store) session.getStore(ServerSetup.PROTOCOL_POP3)
-        store.connect('localhost', 11110, userNameAndPassword, userNameAndPassword)
+        store.connect(OSIAM_MAIL_HOST, OSIAM_MAIL_PORT, userNameAndPassword, userNameAndPassword)
         inbox = store.getFolder('INBOX')
         inbox.open(Folder.READ_WRITE)
         final Message[] messages = inbox.getMessages()
