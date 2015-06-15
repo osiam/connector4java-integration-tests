@@ -23,17 +23,20 @@
 
 package org.osiam.client;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.resources.scim.Group;
+import org.osiam.resources.scim.MemberRef;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -118,5 +121,22 @@ public class GroupMembershipIT extends AbstractIntegrationTestBase {
         assertThat(parentGroup.getMembers(), hasSize(2));
         assertThat(user.getGroups(), hasSize(1));
 
+    }
+
+    @Test
+    @Ignore("Fails because of a missing feature in resource-server")
+    public void type_of_a_group_membership_can_be_retrieved() {
+        MemberRef newMemberRef = new MemberRef.Builder()
+                .setValue("cef9452e-00a9-4cec-a086-d171374ffbef")
+                .setType(MemberRef.Type.USER)
+                .build();
+        Group group = new Group.Builder(OSIAM_CONNECTOR.getGroup(PARENT_GROUP_UUID, accessToken))
+                .setMembers(Collections.singleton(newMemberRef))
+                .build();
+
+        Group replacedGroup = OSIAM_CONNECTOR.replaceGroup(group.getId(), group, accessToken);
+
+        MemberRef memberRef = replacedGroup.getMembers().iterator().next();
+        assertThat(memberRef.getType(), is(equalTo(MemberRef.Type.USER)));
     }
 }
