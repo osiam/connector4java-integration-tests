@@ -2,7 +2,7 @@ machine:
   services:
     - docker
   environment:
-    DOCKER_HOST: http://localhost:2375
+    DOCKER_HOST: tcp://localhost:2375
   java:
     version: openjdk7
   pre:
