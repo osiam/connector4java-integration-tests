@@ -306,6 +306,21 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     @Test
+    @Ignore("Fails because of a bug in resource-server")
+    public void deleting_and_add_of_same_mail_address_works_independent_of_order() {
+        User user = createFullUser(IRRELEVANT);
+        Email email = user.getEmails().get(0);
+        UpdateUser updateUser = new UpdateUser.Builder()
+                .addEmail(email)
+                .deleteEmail(email)
+                .build();
+
+        User updatedUser = OSIAM_CONNECTOR.updateUser(user.getId(), updateUser, accessToken);
+
+        assertThat(updatedUser.getEmails(), is(equalTo(user.getEmails())));
+    }
+
+    @Test
     public void replace_user_which_not_existing_raises_exception() {
         retrieveAccessTokenForMarissa();
 
