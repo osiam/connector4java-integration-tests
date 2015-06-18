@@ -41,6 +41,7 @@
         <java.version>1.7</java.version>
 
         <docker.host>http://localhost:2375</docker.host>
+        <docker.removeIntermediateImages>true</docker.removeIntermediateImages>
 
         <version.spring>4.1.6.RELEASE</version.spring>
         <version.hibernate>4.3.10.Final</version.hibernate>
@@ -576,7 +577,7 @@
                             <version>1.16</version>
                             <host>${docker.host}</host>
                             <exclude>mysql</exclude>
-                            <removeIntermediateImages>true</removeIntermediateImages>
+                            <removeIntermediateImages>${docker.removeIntermediateImages}</removeIntermediateImages>
                             <cache>false</cache>
                             <permissionErrorTolerant>true</permissionErrorTolerant>
                         </configuration>
@@ -668,7 +669,7 @@
                             <version>1.16</version>
                             <host>${docker.host}</host>
                             <exclude>postgres</exclude>
-                            <removeIntermediateImages>true</removeIntermediateImages>
+                            <removeIntermediateImages>${docker.removeIntermediateImages}</removeIntermediateImages>
                             <cache>false</cache>
                             <permissionErrorTolerant>true</permissionErrorTolerant>
                         </configuration>
