@@ -41,12 +41,13 @@
         <java.version>1.7</java.version>
 
         <docker.host>http://localhost:2375</docker.host>
+        <docker.removeIntermediateImages>true</docker.removeIntermediateImages>
 
         <version.spring>4.1.6.RELEASE</version.spring>
         <version.hibernate>4.3.10.Final</version.hibernate>
         <version.groovy>2.4.3</version.groovy>
         <version.spock>1.0-groovy-2.4</version.spock>
-        <version.docker-maven-plugin>2.8.4</version.docker-maven-plugin>
+        <version.docker-maven-plugin>2.9.2</version.docker-maven-plugin>
 
         <!-- OSIAM -->
         <version.osiam.auth-server>2.1.2</version.osiam.auth-server>
@@ -576,9 +577,10 @@
                             <version>1.16</version>
                             <host>${docker.host}</host>
                             <exclude>mysql</exclude>
-                            <removeIntermediateImages>true</removeIntermediateImages>
+                            <removeIntermediateImages>${docker.removeIntermediateImages}</removeIntermediateImages>
                             <cache>false</cache>
                             <permissionErrorTolerant>true</permissionErrorTolerant>
+                            <quiet>true</quiet>
                         </configuration>
                         <executions>
                             <execution>
@@ -668,9 +670,10 @@
                             <version>1.16</version>
                             <host>${docker.host}</host>
                             <exclude>postgres</exclude>
-                            <removeIntermediateImages>true</removeIntermediateImages>
+                            <removeIntermediateImages>${docker.removeIntermediateImages}</removeIntermediateImages>
                             <cache>false</cache>
                             <permissionErrorTolerant>true</permissionErrorTolerant>
+                            <quiet>true</quiet>
                         </configuration>
                         <executions>
                             <execution>

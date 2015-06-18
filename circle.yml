@@ -2,17 +2,21 @@ machine:
   services:
     - docker
   environment:
-    DOCKER_HOST: http://localhost:2375
+    DOCKER_HOST: tcp://localhost:2375
   java:
     version: openjdk7
+  pre:
+    - sudo curl -L -o /usr/bin/docker 'http://s3-external-1.amazonaws.com/circle-downloads/docker-1.6.2-circleci'; sudo chmod 0755 /usr/bin/docker; true
+    - echo 'DOCKER_OPTS="${DOCKER_OPTS} -H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock"' | sudo tee -a /etc/default/docker
 
 dependencies:
   override:
-    - echo 'DOCKER_OPTS="${DOCKER_OPTS} -H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock"' | sudo tee -a /etc/default/docker
-    - sudo restart docker
     - mvn -U dependency:resolve generate-resources
 
 test:
   override:
     - /bin/bash circle.sh:
         parallel: true
+  post:
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - find . -type f -regex ".*/target/.*-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
