@@ -580,6 +580,7 @@
                             <removeIntermediateImages>${docker.removeIntermediateImages}</removeIntermediateImages>
                             <cache>false</cache>
                             <permissionErrorTolerant>true</permissionErrorTolerant>
+                            <quiet>true</quiet>
                         </configuration>
                         <executions>
                             <execution>
@@ -672,6 +673,7 @@
                             <removeIntermediateImages>${docker.removeIntermediateImages}</removeIntermediateImages>
                             <cache>false</cache>
                             <permissionErrorTolerant>true</permissionErrorTolerant>
+                            <quiet>true</quiet>
                         </configuration>
                         <executions>
                             <execution>
