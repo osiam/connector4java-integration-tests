@@ -23,6 +23,7 @@
 
 package org.osiam.client;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -44,6 +45,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
+import org.osiam.client.exception.NoResultException;
 import org.osiam.client.oauth.Scope;
 import org.osiam.resources.scim.Address;
 import org.osiam.resources.scim.Email;
@@ -74,10 +76,12 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class UpdateUserIT extends AbstractIntegrationTestBase {
 
-    private static String IRRELEVANT = "Irrelevant";
+    private static final String IRRELEVANT = "Irrelevant";
+    private static final String NOT_EXISTING_ID = "e15e8991-aab7-4835-a448-7b873e69b86c";
+
     private String idExistingUser = "7d33bcbe-a54c-43d8-867e-f6146164941e";
     private UpdateUser updateUser;
-    private User originalUser;
+    private User testUser;
     private User returnUser;
     private User databaseUser;
 
@@ -88,7 +92,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
     @Test
     public void delete_multi_value_attributes() {
-        getOriginalUser("dma");
+        createFullUser("dma");
         createUpdateUserWithMultiDeleteFields();
 
         updateUser();
@@ -112,7 +116,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     @Test
     @Ignore("write a private equals method to compare both users for value-equality")
     public void compare_returned_user_with_database_user() {
-        getOriginalUser("dma");
+        createFullUser("dma");
         createUpdateUserWithMultiDeleteFields();
 
         updateUser();
@@ -122,23 +126,23 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
     @Test
     public void REGT_015_delete_multi_value_attributes_twice() {
-        getOriginalUser("dma");
+        createFullUser("dma");
         createUpdateUserWithMultiDeleteFields();
 
         updateUser();
         updateUser();
 
-        assertTrue(isValuePartOfEntitlementList(originalUser.getEntitlements(), "right2"));
+        assertTrue(isValuePartOfEntitlementList(testUser.getEntitlements(), "right2"));
         assertFalse(isValuePartOfEntitlementList(returnUser.getEntitlements(), "right2"));
         assertFalse(isValuePartOfEntitlementList(databaseUser.getEntitlements(), "right2"));
-        assertTrue(isValuePartOfX509CertificateList(originalUser.getX509Certificates(), "certificate01"));
+        assertTrue(isValuePartOfX509CertificateList(testUser.getX509Certificates(), "certificate01"));
         assertFalse(isValuePartOfX509CertificateList(returnUser.getX509Certificates(), "certificate01"));
         assertFalse(isValuePartOfX509CertificateList(databaseUser.getX509Certificates(), "certificate01"));
     }
 
     @Test
     public void delete_all_multi_value_attributes() {
-        getOriginalUser("dama");
+        createFullUser("dama");
         createUpdateUserWithMultiAllDeleteFields();
 
         updateUser();
@@ -155,22 +159,22 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
     @Test
     public void add_multi_value_attributes() {
-        getOriginalUser("ama");
+        createFullUser("ama");
         createUpdateUserWithMultiAddFields();
 
         updateUser();
 
-        assertEquals(originalUser.getPhoneNumbers().size() + 1, returnUser.getPhoneNumbers().size());
+        assertEquals(testUser.getPhoneNumbers().size() + 1, returnUser.getPhoneNumbers().size());
         assertTrue(isValuePartOfPhoneNumberList(returnUser.getPhoneNumbers(), "99999999991"));
-        assertEquals(originalUser.getEmails().size() + 1, returnUser.getEmails().size());
+        assertEquals(testUser.getEmails().size() + 1, returnUser.getEmails().size());
         assertTrue(isValuePartOfEmailList(returnUser.getEmails(), "mac@muster.de"));
-        assertEquals(originalUser.getAddresses().size() + 1, returnUser.getAddresses().size());
+        assertEquals(testUser.getAddresses().size() + 1, returnUser.getAddresses().size());
         getAddress(returnUser.getAddresses(), "new Address");
-        assertEquals(originalUser.getEntitlements().size() + 1, returnUser.getEntitlements().size());
+        assertEquals(testUser.getEntitlements().size() + 1, returnUser.getEntitlements().size());
         assertTrue(isValuePartOfEntitlementList(returnUser.getEntitlements(), "right3"));
-        assertEquals(originalUser.getIms().size() + 1, returnUser.getIms().size());
+        assertEquals(testUser.getIms().size() + 1, returnUser.getIms().size());
         assertTrue(isValuePartOfImList(returnUser.getIms(), "ims03"));
-        assertEquals(originalUser.getPhotos().size() + 1, returnUser.getPhotos().size());
+        assertEquals(testUser.getPhotos().size() + 1, returnUser.getPhotos().size());
         URI uri = null;
         try {
             uri = new URI("photo03.jpg");
@@ -178,22 +182,22 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         }
 
         assertTrue(isValuePartOfPhotoList(returnUser.getPhotos(), uri));
-        assertEquals(originalUser.getRoles().size() + 1, returnUser.getRoles().size());
+        assertEquals(testUser.getRoles().size() + 1, returnUser.getRoles().size());
         assertTrue(isValuePartOfRoleList(returnUser.getRoles(), "role03"));
-        assertEquals(originalUser.getX509Certificates().size() + 1, returnUser.getX509Certificates().size());
+        assertEquals(testUser.getX509Certificates().size() + 1, returnUser.getX509Certificates().size());
         assertTrue(isValuePartOfX509CertificateList(returnUser.getX509Certificates(), "certificate03"));
     }
 
     @Test
     public void update_all_single_values() {
-        getOriginalUser("uasv");
+        createFullUser("uasv");
         createUpdateUserWithUpdateFields();
 
         updateUser();
 
         assertEquals("UserName", returnUser.getUserName());
         assertEquals("NickName", returnUser.getNickName());
-        assertNotEquals(originalUser.isActive(), returnUser.isActive());
+        assertNotEquals(testUser.isActive(), returnUser.isActive());
         assertEquals("DisplayName", returnUser.getDisplayName());
         assertEquals("ExternalId", returnUser.getExternalId());
         assertEquals("Locale", returnUser.getLocale());
@@ -208,7 +212,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
     @Test
     public void delete_all_single_values() {
-        getOriginalUser("desv");
+        createFullUser("desv");
         createUpdateUserWithDeleteFields();
 
         updateUser();
@@ -227,7 +231,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
     @Test
     public void update_password() {
-        getOriginalUser("uasv");
+        createFullUser("uasv");
         createUpdateUserWithUpdateFields();
 
         updateUser();
@@ -237,37 +241,37 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
     @Test
     public void change_one_field_and_other_attributes_are_the_same() {
-        getOriginalUser("cnaoaats");
+        createFullUser("cnaoaats");
         createUpdateUserWithJustOtherNickname();
 
         updateUser();
 
-        assertNotEquals(originalUser.getNickName(), returnUser.getNickName());
-        assertEquals(originalUser.isActive(), returnUser.isActive());
-        assertEquals(originalUser.getDisplayName(), returnUser.getDisplayName());
-        assertEquals(originalUser.getExternalId(), returnUser.getExternalId());
-        assertEquals(originalUser.getLocale(), returnUser.getLocale());
-        assertEquals(originalUser.getPreferredLanguage(), returnUser.getPreferredLanguage());
-        assertEquals(originalUser.getProfileUrl(), returnUser.getProfileUrl());
-        assertEquals(originalUser.getTimezone(), returnUser.getTimezone());
-        assertEquals(originalUser.getTitle(), returnUser.getTitle());
-        assertEquals(originalUser.getUserType(), returnUser.getUserType());
-        assertEquals(originalUser.getName().getFamilyName(), returnUser.getName().getFamilyName());
+        assertNotEquals(testUser.getNickName(), returnUser.getNickName());
+        assertEquals(testUser.isActive(), returnUser.isActive());
+        assertEquals(testUser.getDisplayName(), returnUser.getDisplayName());
+        assertEquals(testUser.getExternalId(), returnUser.getExternalId());
+        assertEquals(testUser.getLocale(), returnUser.getLocale());
+        assertEquals(testUser.getPreferredLanguage(), returnUser.getPreferredLanguage());
+        assertEquals(testUser.getProfileUrl(), returnUser.getProfileUrl());
+        assertEquals(testUser.getTimezone(), returnUser.getTimezone());
+        assertEquals(testUser.getTitle(), returnUser.getTitle());
+        assertEquals(testUser.getUserType(), returnUser.getUserType());
+        assertEquals(testUser.getName().getFamilyName(), returnUser.getName().getFamilyName());
     }
 
     @Test
     public void username_is_set_no_empty_string_is_thrown_probably() {
-        getOriginalUser("ietiuuitp");
+        createFullUser("ietiuuitp");
         createUpdateUserWithEmptyUserName();
 
         updateUser();
 
-        assertThat(returnUser.getUserName(), is(equalTo(originalUser.getUserName())));
+        assertThat(returnUser.getUserName(), is(equalTo(testUser.getUserName())));
     }
 
     @Test
     public void update_attributes_does_not_change_the_password() {
-        getOriginalUser("uadctp");
+        createFullUser("uadctp");
         createUpdateUserWithUpdateFieldsWithoutPassword();
 
         updateUser();
@@ -284,7 +288,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
     @Test
     public void adding_new_primary_email_address_sets_the_other_to_non_primary() {
-        getOriginalUser(IRRELEVANT);
+        createFullUser(IRRELEVANT);
         createUpdateUserWithNewPrimaryEmailAddress();
 
         updateUser();
@@ -294,11 +298,39 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
     @Test
     public void deleting_and_add_of_same_mail_address_works() {
-        getOriginalUser(IRRELEVANT);
+        createFullUser(IRRELEVANT);
         createUpdateUserWhereTheSameEmailIsSetToDeleteAndAdd();
         updateUser();
 
-        assertThat(originalUser.getEmails(), is(databaseUser.getEmails()));
+        assertThat(testUser.getEmails(), is(databaseUser.getEmails()));
+    }
+
+    @Test
+    @Ignore("Fails because of a bug in resource-server")
+    public void deleting_and_add_of_same_mail_address_works_independent_of_order() {
+        User user = createFullUser(IRRELEVANT);
+        Email email = user.getEmails().get(0);
+        UpdateUser updateUser = new UpdateUser.Builder()
+                .addEmail(email)
+                .deleteEmail(email)
+                .build();
+
+        User updatedUser = OSIAM_CONNECTOR.updateUser(user.getId(), updateUser, accessToken);
+
+        assertThat(updatedUser.getEmails(), is(equalTo(user.getEmails())));
+    }
+
+    @Test
+    public void replace_user_which_not_existing_raises_exception() {
+        retrieveAccessTokenForMarissa();
+
+        UpdateUser patchedUser = new UpdateUser.Builder().build();
+        try {
+            OSIAM_CONNECTOR.updateUser(NOT_EXISTING_ID, patchedUser, accessToken);
+            fail("Exception expected");
+        } catch (NoResultException e) {
+            assertThat(e.getMessage(), containsString("not found"));
+        }
     }
 
     private void assertThatOnlyNewEmailAddressIsPrimary() {
@@ -401,7 +433,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
         return false;
     }
 
-    private void getOriginalUser(String userName) {
+    private User createFullUser(String userName) {
         User.Builder userBuilder = new User.Builder(userName);
 
         Email email01 = new Email.Builder().setValue("hsimpson@atom-example.com")
@@ -493,8 +525,10 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
                 .setExternalId("irgendwas");
         User newUser = userBuilder.build();
 
-        originalUser = OSIAM_CONNECTOR.createUser(newUser, accessToken);
-        idExistingUser = originalUser.getId();
+        testUser = OSIAM_CONNECTOR.createUser(newUser, accessToken);
+        idExistingUser = testUser.getId();
+
+        return testUser;
     }
 
     private void createUpdateUserWithUpdateFields() {
@@ -652,7 +686,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     private void createUpdateUserWhereTheSameEmailIsSetToDeleteAndAdd() {
-        Email email = originalUser.getEmails().get(0);
+        Email email = testUser.getEmails().get(0);
         updateUser = new UpdateUser.Builder()
                 .deleteEmail(email)
                 .addEmail(email)
@@ -671,7 +705,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
     private void updateUser() {
         returnUser = OSIAM_CONNECTOR.updateUser(idExistingUser, updateUser, accessToken);
-        // also get user again from database to be able to compare with return object
+        // get user again from database to be able to compare with return object
         databaseUser = OSIAM_CONNECTOR.getUser(returnUser.getId(), accessToken);
     }
 
