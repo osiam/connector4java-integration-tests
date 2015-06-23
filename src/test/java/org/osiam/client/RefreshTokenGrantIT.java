@@ -23,9 +23,9 @@
 
 package org.osiam.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
+
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +45,7 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 @ContextConfiguration("/context.xml")
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class })
-@DatabaseSetup("/database_seed.xml")
+@DatabaseSetup("/database_seeds/RefreshTokenGrantIT/database_seed.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class RefreshTokenGrantIT extends AbstractIntegrationTestBase {
 
@@ -62,7 +62,34 @@ public class RefreshTokenGrantIT extends AbstractIntegrationTestBase {
         assertNotNull("The refresh token after refresh was null.", accessTokenRF.getRefreshToken());
 
         // Check the the refresh token is equal and the access token is a new one
-        assertEquals("The refresh tokens were not equal.", accessToken.getRefreshToken(), accessTokenRF.getRefreshToken());
+        assertEquals("The refresh tokens were not equal.",
+                accessToken.getRefreshToken(),
+                accessTokenRF.getRefreshToken());
         assertNotEquals("The access tokens were equal.", accessToken.getToken(), accessTokenRF.getToken());
+    }
+
+    @Test
+    public void refreshing_an_access_token_when_expired() throws InterruptedException {
+        OsiamConnector connector = new OsiamConnector.Builder()
+                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setClientId("short-living-client")
+                .setClientSecret(CLIENT_SECRET)
+                .setClientRedirectUri("http://localhost:5000/oauth2")
+                .build();
+        AccessToken shortLivingAccessToken = connector.retrieveAccessToken("marissa", "koala", Scope.ALL);
+        while (!shortLivingAccessToken.isExpired()) {
+            TimeUnit.MILLISECONDS.sleep(100);
+        }
+
+        // Refresh the previously token with the retrieved refresh token
+        AccessToken accessTokenRF = connector.refreshAccessToken(shortLivingAccessToken);
+
+        assertNotNull("The access token after refresh is null.", accessTokenRF.getToken());
+        assertNotNull("The refresh token after refresh is null.", accessTokenRF.getRefreshToken());
+        assertEquals("The refresh tokens are not equal.",
+                shortLivingAccessToken.getRefreshToken(),
+                accessTokenRF.getRefreshToken());
+        assertNotEquals("The access tokens are equal.", shortLivingAccessToken.getToken(), accessTokenRF.getToken());
     }
 }
