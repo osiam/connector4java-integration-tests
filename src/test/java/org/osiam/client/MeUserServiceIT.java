@@ -32,6 +32,7 @@ import java.util.Date;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
+import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.user.BasicUser;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
@@ -84,5 +85,13 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
         OSIAM_CONNECTOR.getCurrentUserBasic(OSIAM_CONNECTOR.retrieveAccessToken());
 
         fail("Exception expected");
+    }
+
+    @Test(expected = UnauthorizedException.class)
+    public void cannot_get_current_user_if_user_was_deleted() {
+        retrieveAccessTokenForMarissa();
+        OSIAM_CONNECTOR.deleteUser("cef9452e-00a9-4cec-a086-d171374ffbef", accessToken);
+
+        OSIAM_CONNECTOR.getCurrentUserBasic(accessToken);
     }
 }
