@@ -80,10 +80,8 @@ abstract class AbstractIT extends Specification {
 
         // Load Spring context configuration.
         ApplicationContext ac = new ClassPathXmlApplicationContext('context.xml')
-        // Get dataSource configuration.
-        DataSource dataSource = (DataSource) ac.getBean('dataSource')
         // Establish database connection.
-        IDatabaseConnection connection = new DatabaseDataSourceConnection(dataSource)
+        IDatabaseConnection connection = (IDatabaseConnection) ac.getBean('dbUnitDatabaseConnection')
         // Load the initialization data from file.
         IDataSet initData = new FlatXmlDataSetBuilder().build(ac.getResource(seedFileName).getFile())
 
