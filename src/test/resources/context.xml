@@ -37,6 +37,15 @@
         <property name="password" value="${org.osiam.integration-tests.db.password}"/>
     </bean>
 
+    <bean id="dbUnitDatabaseConfig" class="com.github.springtestdbunit.bean.DatabaseConfigBean">
+        <property name="escapePattern" value="${org.osiam.integration-tests.db.escapestring}" />
+    </bean>
+
+    <bean id="dbUnitDatabaseConnection" class="com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="databaseConfig" ref="dbUnitDatabaseConfig"/>
+    </bean>
+
     <bean id="entityManagerFactory"  class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan" value="org.osiam.client"/>
