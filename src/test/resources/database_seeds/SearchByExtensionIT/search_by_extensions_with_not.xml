@@ -44,43 +44,43 @@
     <osiam_client_scopes id="100004" scope="POST"/>
     <osiam_client_scopes id="100004" scope="PATCH"/>
 
-    <scim_meta id="100004" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User" />
-    <scim_meta id="100005" created="2013-10-30 23:18:06.408" lastmodified="2013-10-30 23:18:06.408"
-        resourcetype="User" />
-    <scim_meta id="100006" created="2013-10-30 23:18:06.408" lastmodified="2013-10-30 23:18:06.408"
-        resourcetype="User" />
-    <scim_meta id="100007" created="2013-10-30 23:18:06.408" lastmodified="2013-10-30 23:18:06.408"
-        resourcetype="User" />
+    <scim_meta id="100004" created="2011-10-10 00:00:00.0" last_modified="2011-10-10 00:00:00.0" resource_type="User" />
+    <scim_meta id="100005" created="2013-10-30 23:18:06.408" last_modified="2013-10-30 23:18:06.408"
+        resource_type="User" />
+    <scim_meta id="100006" created="2013-10-30 23:18:06.408" last_modified="2013-10-30 23:18:06.408"
+        resource_type="User" />
+    <scim_meta id="100007" created="2013-10-30 23:18:06.408" last_modified="2013-10-30 23:18:06.408"
+        resource_type="User" />
 
-    <scim_id internal_id="100001" id="cef9452e-00a9-4cec-a086-d171374ffbef" meta_id="100004" />
-    <scim_id internal_id="100002" id="df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d4" meta_id="100005" />
-    <scim_id internal_id="100003" id="df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d5" meta_id="100006" />
-    <scim_id internal_id="100004" id="df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d6" meta_id="100007" />
+    <scim_id internal_id="100001" id="cef9452e-00a9-4cec-a086-d171374ffbef" meta="100004" />
+    <scim_id internal_id="100002" id="df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d4" meta="100005" />
+    <scim_id internal_id="100003" id="df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d5" meta="100006" />
+    <scim_id internal_id="100004" id="df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d6" meta="100007" />
 
     <scim_user
         password="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
-        username="marissa" internal_id="100001" active="true" />
+        user_name="marissa" internal_id="100001" active="true" />
     <scim_user
         password="b5b9fbac6ae8e0911ff47d59c91a64d05e2a3ee6fa3aa22e85d21d4b05ba51ec750f56d73a76eed27344638f3b2cefebd70d0b735dd8f657770b038ca9825652"
-        username="existing1" internal_id="100002" active="true" />
+        user_name="existing1" internal_id="100002" active="true" />
     <scim_user
         password="b5b9fbac6ae8e0911ff47d59c91a64d05e2a3ee6fa3aa22e85d21d4b05ba51ec750f56d73a76eed27344638f3b2cefebd70d0b735dd8f657770b038ca9825652"
-        username="existing2" internal_id="100003" active="true" />
+        user_name="existing2" internal_id="100003" active="true" />
     <scim_user
         password="b5b9fbac6ae8e0911ff47d59c91a64d05e2a3ee6fa3aa22e85d21d4b05ba51ec750f56d73a76eed27344638f3b2cefebd70d0b735dd8f657770b038ca9825652"
-        username="existing3" internal_id="100004" active="true" />
+        user_name="existing3" internal_id="100004" active="true" />
 
     <scim_extension internal_id="100081" urn="extension" />
 
-    <scim_extension_field internal_id="100082" is_required="false" name="gender" type="STRING"
-        extension_internal_id="100081" />
-    <scim_extension_field internal_id="100086" is_required="false" name="birthday" type="DATE_TIME"
-        extension_internal_id="100081" />
+    <scim_extension_field internal_id="100082" required="false" name="gender" type="STRING"
+        extension="100081" />
+    <scim_extension_field internal_id="100086" required="false" name="birthday" type="DATE_TIME"
+        extension="100081" />
 
     <scim_extension_field_value internal_id="100001" value="male"
-        extension_field_internal_id="100082" user_internal_id="100002" />
+        extension_field="100082" user_internal_id="100002" />
     <scim_extension_field_value internal_id="100005" value="2008-01-23T04:56:22.000Z"
-        extension_field_internal_id="100086" user_internal_id="100003" />
+        extension_field="100086" user_internal_id="100003" />
     <scim_extension_field_value internal_id="100006" value="female"
-        extension_field_internal_id="100082" user_internal_id="100004" />
+        extension_field="100082" user_internal_id="100004" />
 </dataset>

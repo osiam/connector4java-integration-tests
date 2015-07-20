@@ -44,26 +44,26 @@
     <osiam_client_scopes id="100004" scope="POST" />
     <osiam_client_scopes id="100004" scope="PATCH" />
     
-    <scim_meta id="100053" created="2013-07-31 21:43:18.0" lastmodified="2013-08-08 19:59:56.681" resourcetype="Group"
+    <scim_meta id="100053" created="2013-07-31 21:43:18.0" last_modified="2013-08-08 19:59:56.681" resource_type="Group"
                location="http://example.com/Groups/69e1a5dc-89be-4343-976c-b5541af249f4"/>
-    <scim_meta id="100055" created="2013-08-08 19:59:54.612" lastmodified="2013-08-08 19:59:54.612" resourcetype="Group"
+    <scim_meta id="100055" created="2013-08-08 19:59:54.612" last_modified="2013-08-08 19:59:54.612" resource_type="Group"
                location="http://example.com/Groups/d30a77eb-d7cf-4cd1-9fb3-cc640ef09578"/>
-    <scim_meta id="100057" created="2013-08-08 19:59:56.681" lastmodified="2013-07-31 21:43:18.0" resourcetype="Group"
+    <scim_meta id="100057" created="2013-08-08 19:59:56.681" last_modified="2013-07-31 21:43:18.0" resource_type="Group"
                location="http://example.com/Groups/0cb908cf-81a9-4966-803f-a3eb92968bb4"/>
-    <scim_meta id="100004" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
+    <scim_meta id="100004" created="2011-10-10 00:00:00.0" last_modified="2011-10-10 00:00:00.0" resource_type="User"/>
 
-    <scim_id internal_id="100052" meta_id="100053" id="69e1a5dc-89be-4343-976c-b5541af249f4" external_id="c"/>
-    <scim_id internal_id="100054" meta_id="100055" id="d30a77eb-d7cf-4cd1-9fb3-cc640ef09578" external_id="b"/>
-    <scim_id internal_id="100056" meta_id="100057" id="0cb908cf-81a9-4966-803f-a3eb92968bb4" external_id="a"/>
+    <scim_id internal_id="100052" meta="100053" id="69e1a5dc-89be-4343-976c-b5541af249f4" external_id="c"/>
+    <scim_id internal_id="100054" meta="100055" id="d30a77eb-d7cf-4cd1-9fb3-cc640ef09578" external_id="b"/>
+    <scim_id internal_id="100056" meta="100057" id="0cb908cf-81a9-4966-803f-a3eb92968bb4" external_id="a"/>
 
-    <scim_id internal_id="100001" meta_id="100004" id="cef9452e-00a9-4cec-a086-d171374ffbef"/>
+    <scim_id internal_id="100001" meta="100004" id="cef9452e-00a9-4cec-a086-d171374ffbef"/>
 
     <scim_user
             password="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
-            username="marissa" internal_id="100001" active="true"/>
+            user_name="marissa" internal_id="100001" active="true"/>
 
-    <scim_group displayname="test_group01" internal_id="100052"/>
-    <scim_group displayname="test_group02" internal_id="100054"/>
-    <scim_group displayname="test_group03" internal_id="100056"/>
+    <scim_group display_name="test_group01" internal_id="100052"/>
+    <scim_group display_name="test_group02" internal_id="100054"/>
+    <scim_group display_name="test_group03" internal_id="100056"/>
 
 </dataset>
