@@ -30,6 +30,7 @@ import java.util.TimeZone;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 
+import org.glassfish.jersey.jackson.JacksonFeature;
 import org.joda.time.format.ISODateTimeFormat;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.Scope;
@@ -46,7 +47,7 @@ public abstract class AbstractIntegrationTestBase {
     protected static final String CLIENT_ID = "example-client";
     protected static final String CLIENT_SECRET = "secret";
     protected static final OsiamConnector OSIAM_CONNECTOR;
-    protected static final Client CLIENT = ClientBuilder.newClient();
+    protected static final Client CLIENT = ClientBuilder.newBuilder().register(JacksonFeature.class).build();
 
     static {
         OsiamConnector.setConnectTimeout(10000);

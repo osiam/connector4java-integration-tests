@@ -442,6 +442,19 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
     }
 
     @Test
+    public void cannot_retrieve_clients() {
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
+
+        Response response = CLIENT.target("http://localhost:8180/osiam-auth-server")
+                .path("Client")
+                .request(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + accessToken.getToken())
+                .get();
+
+        assertThat(response.getStatus(), is(equalTo(403)));
+    }
+
+    @Test
     public void cannot_create_a_client() {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
         String clientAsJsonString = "{\"id\":\"example-client-2\",\"accessTokenValiditySeconds\":2342,\"refreshTokenValiditySeconds\":2342,"
