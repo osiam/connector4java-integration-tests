@@ -25,12 +25,17 @@ package org.osiam.client;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -76,6 +81,29 @@ public class ClientManagementIT extends AbstractIntegrationTestBase {
                 .get(String.class);
 
         assertThat(output, containsString("example-client"));
+    }
+
+    @Test
+    public void get_clients() {
+        List<Map<String, Object>> clients = CLIENT.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
+                .request(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, BEARER + accessToken.getToken())
+                .get(new GenericType<List<Map<String, Object>>>() {
+                });
+
+        assertThat(clients, hasSize(3));
+        assertTrue(containsClient(clients, "example-client"));
+        assertTrue(containsClient(clients, "short-living-client"));
+        assertTrue(containsClient(clients, "auth-server"));
+    }
+
+    private boolean containsClient(List<Map<String, Object>> clients, String clientId) {
+        for (Map<String, Object> client : clients) {
+            if (client.get("id").equals(clientId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Test
