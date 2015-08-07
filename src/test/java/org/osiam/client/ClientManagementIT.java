@@ -40,6 +40,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.glassfish.jersey.client.ClientResponse;
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
@@ -120,6 +121,22 @@ public class ClientManagementIT extends AbstractIntegrationTestBase {
                 .post(Entity.entity(clientAsJsonString, MediaType.APPLICATION_JSON), String.class);
 
         assertThat(response, containsString("example-client-2"));
+    }
+
+    @Test
+    public void cant_create_client_with_already_existing_id() {
+        String clientAsJsonString = "{\"id\":\"example-client\",\"accessTokenValiditySeconds\":2342,\"refreshTokenValiditySeconds\":2342,"
+                + "\"redirectUri\":\"http://localhost:5055/oauth2\",\"client_secret\":\"secret-2\","
+                + "\"scope\":[\"POST\",\"PATCH\",\"GET\",\"DELETE\",\"PUT\"],"
+                + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\",\"password\"],"
+                + "\"implicit\":false,\"validityInSeconds\":1337}";
+
+        Response response = CLIENT.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
+                .request(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, BEARER + accessToken.getToken())
+                .post(Entity.entity(clientAsJsonString, MediaType.APPLICATION_JSON));
+
+        assertThat(response.getStatus(), is(409));
     }
 
     @Test
