@@ -49,7 +49,7 @@ public class UserActivationLoginIT extends AbstractIntegrationTestBase {
 
     @Test(expected = ConnectionInitializationException.class)
     public void log_in_as_an_deactivated_user_is_impossible() {
-        OSIAM_CONNECTOR.retrieveAccessToken("hsimpson", "koala", Scope.ALL);
+        OSIAM_CONNECTOR.retrieveAccessToken("hsimpson", "koala", Scope.ADMIN);
         fail("Exception expected");
     }
 }

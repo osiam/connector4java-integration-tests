@@ -64,10 +64,6 @@ public abstract class AbstractIntegrationTestBase {
 
     protected AccessToken accessToken;
 
-    protected void retrieveAccessTokenForMarissa() {
-        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ALL);
-    }
-
     protected void givenAnInvalidAccessToken() {
         accessToken = new AccessToken.Builder(AbstractIntegrationTestBase.INVALID_ID).build();
     }

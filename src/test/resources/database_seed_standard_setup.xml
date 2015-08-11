@@ -31,11 +31,7 @@
     <osiam_client_grants id="100003" grants="refresh_token"/>
     <osiam_client_grants id="100003" grants="password"/>
     <osiam_client_grants id="100003" grants="client_credentials"/>
-    <osiam_client_scopes id="100003" scope="GET"/>
-    <osiam_client_scopes id="100003" scope="POST"/>
-    <osiam_client_scopes id="100003" scope="PUT"/>
-    <osiam_client_scopes id="100003" scope="PATCH"/>
-    <osiam_client_scopes id="100003" scope="DELETE"/>
+    <osiam_client_scopes id="100003" scope="ADMIN"/>
 
     <osiam_client internal_id="100080" id="short-living-client" redirect_uri="http://localhost:5001/oauth2"
                   client_secret="other-secret"
@@ -45,20 +41,14 @@
     <osiam_client_grants id="100080" grants="refresh_token"/>
     <osiam_client_grants id="100080" grants="password"/>
     <osiam_client_grants id="100080" grants="client_credentials"/>
-    <osiam_client_scopes id="100080" scope="GET"/>
-    <osiam_client_scopes id="100080" scope="POST"/>
-    <osiam_client_scopes id="100080" scope="PUT"/>
-    <osiam_client_scopes id="100080" scope="PATCH"/>
-    <osiam_client_scopes id="100080" scope="DELETE"/>
-    
+    <osiam_client_scopes id="100080" scope="ADMIN"/>
+
     <osiam_client internal_id="100004" id="auth-server" redirect_uri="http://localhost:8180/osiam-auth-server"
         client_secret="auth-secret" access_token_validity_seconds="10" refresh_token_validity_seconds="10" validity_in_seconds="10"
         implicit_approval="true" />
     <osiam_client_grants id="100004" grants="client_credentials" />
-    <osiam_client_scopes id="100004" scope="GET" />
-    <osiam_client_scopes id="100004" scope="POST" />
-    <osiam_client_scopes id="100004" scope="PATCH" />
-    
+    <osiam_client_scopes id="100004" scope="ADMIN" />
+
     <scim_meta id="100004" created="2011-10-10 00:00:00.0" last_modified="2011-10-10 00:00:00.0" resource_type="User"/>
     <scim_meta id="100006" created="2013-08-08 19:45:20.816" last_modified="2013-08-08 19:45:20.816"
                resource_type="User"/>
@@ -79,7 +69,7 @@
                resource_type="User"/>
     <scim_meta id="100050" created="2013-08-08 19:53:43.221" last_modified="2013-08-08 19:53:43.221"
                resource_type="User"/>
-               
+
     <scim_meta id="100053" created="2013-07-31 21:43:18.0" last_modified="2013-07-31 21:43:18.0"
     		   resource_type="Group"/>
     <scim_meta id="100055" created="2013-08-08 19:59:54.612" last_modified="2013-08-08 19:59:54.612"
@@ -252,7 +242,7 @@
     <scim_extension internal_id="100081" urn="extension"/>
     <scim_extension internal_id="100082" urn="urn:org.osiam:scim:extensions:auth-server"/>
     <scim_extension internal_id="100083" urn="urn:org.osiam:scim:extensions:stress-tests"/>
-        
+
     <scim_extension_field internal_id="100082" required="true" name="gender" type="STRING"
                           extension="100081"/>
     <scim_extension_field internal_id="100083" required="false" name="size" type="STRING"
@@ -269,5 +259,5 @@
                           extension="100083"/>
     <scim_extension_field internal_id="100089" required="false" name="age" type="STRING"
                           extension="100083"/>
-                          
+
 </dataset>

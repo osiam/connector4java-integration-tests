@@ -28,6 +28,7 @@ import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
 import org.osiam.client.exception.UnauthorizedException
 import org.osiam.client.oauth.AccessToken
+import org.osiam.client.oauth.Scope
 import org.osiam.resources.scim.Email
 import org.osiam.resources.scim.UpdateUser
 import org.osiam.resources.scim.User
@@ -100,7 +101,7 @@ class ControllerIT extends AbstractIT {
     @Unroll
     def "REGT-002-#testCase: A search operation on the Users endpoint with search string #searchString should return HTTP status code #expectedResponseCode."() {
         given: "a valid access token"
-        AccessToken validAccessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken validAccessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
 
         when: "a request is sent"
         def http = new HTTPBuilder(RESOURCE_ENDPOINT)
@@ -166,7 +167,7 @@ class ControllerIT extends AbstractIT {
 
     def "REGT-005: A search filter String matching two users should return totalResults=2 and two unique Resource elements."() {
         given: "a valid access token"
-        AccessToken validAccessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken validAccessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
 
         when: "a filter request matching two users is sent"
         def http = new HTTPBuilder(RESOURCE_ENDPOINT)
@@ -203,7 +204,7 @@ class ControllerIT extends AbstractIT {
     def 'REGT-OSNG-141: E-Mail address should not be unique. So two different users should be able to add the same address and getting displayed only the own entry.'() {
 
         given: 'a valid access token and two users with the same E-Mail address'
-        AccessToken validAccessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken validAccessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
         def emailUserOne = new Email.Builder().setType(Email.Type.WORK).setValue('sameMail@osiam.de').build()
         def emailUserTwo = new Email.Builder().setType(Email.Type.HOME).setValue('sameMail@osiam.de').build()
         def user1 = new User.Builder('UserOne').addEmails([emailUserOne] as List).setExternalId('pew1').build()
@@ -223,7 +224,7 @@ class ControllerIT extends AbstractIT {
     def "REGT-OSNG-37: The token validation should not raise an exception in case of the OAuth2 client credentials grant because of missing user authentication"() {
 
         given: "a valid access token"
-        AccessToken validAccessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken validAccessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
         def responseStatusCode
         def responseContent
 
@@ -251,7 +252,7 @@ class ControllerIT extends AbstractIT {
     def 'OSNG-444: A request to revoke a valid token should invalidate the token'() {
 
         given: 'a valid access token'
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
 
         when: 'a token revocation is performed'
         AccessToken validationResult = OSIAM_CONNECTOR.validateAccessToken(accessToken)
@@ -278,7 +279,7 @@ class ControllerIT extends AbstractIT {
     def 'OSNG-444: Subsequent requests to revoke a valid token should not be authorized'() {
 
         given: 'a valid access token'
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
 
         when: 'multiple token revocations are performed'
         AccessToken validationResult = OSIAM_CONNECTOR.validateAccessToken(accessToken)
@@ -292,7 +293,7 @@ class ControllerIT extends AbstractIT {
     def 'OSNG-467: A request to revoke access tokens of a given user should invalidate his token'() {
         given: 'a valid access token'
         def userId = "cef9452e-00a9-4cec-a086-d171374ffbef"
-        AccessToken serviceAccessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken serviceAccessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
 
         when: 'a token revocation is performed'
         AccessToken validationResult = OSIAM_CONNECTOR.validateAccessToken(accessToken)
@@ -307,7 +308,7 @@ class ControllerIT extends AbstractIT {
     def 'OSNG-467: Repeating requests to revoke access tokens of a given user should not have negative effect'() {
         given: 'valid access tokens'
         def userId = "cef9452e-00a9-4cec-a086-d171374ffbef"
-        AccessToken serviceAccessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken serviceAccessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
 
         when: 'multiple token revocations are performed'
         OSIAM_CONNECTOR.revokeAllAccessTokens(userId, serviceAccessToken)
@@ -319,7 +320,7 @@ class ControllerIT extends AbstractIT {
     def 'OSNG-467: Deactivating a user should revoke his access token'() {
         given: 'active user with valid access token'
         def userId = "cef9452e-00a9-4cec-a086-d171374ffbef"
-        AccessToken serviceAccessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken serviceAccessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
         UpdateUser updateUser = new UpdateUser.Builder().updateActive(false).build()
 
         when: 'the user is deactivated'
@@ -335,7 +336,7 @@ class ControllerIT extends AbstractIT {
     def 'OSNG-467: Updating a user without deactivating him should not revoke his access token'() {
         given: 'active user with valid access token'
         def userId = "cef9452e-00a9-4cec-a086-d171374ffbef"
-        AccessToken serviceAccessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken serviceAccessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
         UpdateUser updateUser = new UpdateUser.Builder().updateDisplayName('Marissa').build()
 
         when: 'the user is updated'
@@ -350,7 +351,7 @@ class ControllerIT extends AbstractIT {
     def 'OSNG-467: Replacing a user with deactivating him should revoke his access token'() {
         given: 'active user with valid access token'
         def userId = "cef9452e-00a9-4cec-a086-d171374ffbef"
-        AccessToken serviceAccessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken serviceAccessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
         User user = OSIAM_CONNECTOR.getUser(userId, serviceAccessToken)
         User newUser = new User.Builder(user).setActive(false).build()
 
@@ -367,7 +368,7 @@ class ControllerIT extends AbstractIT {
     def 'OSNG-467: Replacing a user without deactivating him should not revoke his access token'() {
         given: 'active user with valid access token'
         def userId = "cef9452e-00a9-4cec-a086-d171374ffbef"
-        AccessToken serviceAccessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken serviceAccessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
         User user = OSIAM_CONNECTOR.getUser(userId, serviceAccessToken)
         User newUser = new User.Builder(user).setDisplayName('Marissa').build()
 
@@ -383,7 +384,7 @@ class ControllerIT extends AbstractIT {
     def 'OSNG-479: Deleting a user should revoke his access token'() {
         given: 'active user with valid access token'
         def userId = "cef9452e-00a9-4cec-a086-d171374ffbef"
-        AccessToken serviceAccessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken serviceAccessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
 
         when: 'the user is deleted'
         AccessToken validationResult = OSIAM_CONNECTOR.validateAccessToken(accessToken) // should be valid

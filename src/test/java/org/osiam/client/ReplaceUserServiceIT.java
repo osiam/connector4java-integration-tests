@@ -32,6 +32,7 @@ import java.util.UUID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.NoResultException;
+import org.osiam.client.oauth.Scope;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -57,7 +58,7 @@ public class ReplaceUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void replace_user_which_not_existing_raises_exception() {
-        retrieveAccessTokenForMarissa();
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
 
         User patchedUser = new User.Builder(USER_NAME_EXISTING_USER).build();
         try {

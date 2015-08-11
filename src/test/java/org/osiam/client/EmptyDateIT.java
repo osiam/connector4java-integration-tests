@@ -29,6 +29,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.osiam.client.oauth.Scope;
 import org.osiam.resources.scim.Extension;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
@@ -51,7 +52,7 @@ public class EmptyDateIT extends AbstractIntegrationTestBase {
 
     @Test
     public void replace_user_with_empty_date_extension_fail() {
-        retrieveAccessTokenForMarissa();
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
 
         User user = OSIAM_CONNECTOR.getUser("df7d06b2-b6ee-42b1-8c1b-4bd1176cc8d4", accessToken);
         Extension emptyExtension = new Extension.Builder(user.getExtension("extension")).setField("birthday", "")

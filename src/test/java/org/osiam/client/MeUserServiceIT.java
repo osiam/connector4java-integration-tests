@@ -33,6 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.UnauthorizedException;
+import org.osiam.client.oauth.Scope;
 import org.osiam.client.user.BasicUser;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
@@ -55,7 +56,7 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void get_current_user_basic_returns_correct_user() throws Exception {
-        retrieveAccessTokenForMarissa();
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
 
         BasicUser basicUser = OSIAM_CONNECTOR.getCurrentUserBasic(accessToken);
 
@@ -72,7 +73,7 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void get_current_user_returns_correct_user() throws Exception {
-        retrieveAccessTokenForMarissa();
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
 
         User user = OSIAM_CONNECTOR.getCurrentUser(accessToken);
 
@@ -82,14 +83,14 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test(expected = ConflictException.class)
     public void get_current_user_while_logged_in_with_client_credential_raises_exception() throws Exception {
-        OSIAM_CONNECTOR.getCurrentUserBasic(OSIAM_CONNECTOR.retrieveAccessToken());
+        OSIAM_CONNECTOR.getCurrentUserBasic(OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN));
 
         fail("Exception expected");
     }
 
     @Test(expected = UnauthorizedException.class)
     public void cannot_get_current_user_if_user_was_deleted() {
-        retrieveAccessTokenForMarissa();
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
         OSIAM_CONNECTOR.deleteUser("cef9452e-00a9-4cec-a086-d171374ffbef", accessToken);
 
         OSIAM_CONNECTOR.getCurrentUserBasic(accessToken);

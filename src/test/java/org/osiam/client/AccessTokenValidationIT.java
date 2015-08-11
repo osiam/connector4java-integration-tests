@@ -53,7 +53,7 @@ public class AccessTokenValidationIT extends AbstractIntegrationTestBase {
 
     @Test
     public void valid_access_token_can_be_confirmed() {
-        retrieveAccessTokenForMarissa();
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
         AccessToken validatedAccessToken = OSIAM_CONNECTOR.validateAccessToken(accessToken);
         assertTrue(validatedAccessToken != null);
     }
@@ -67,7 +67,7 @@ public class AccessTokenValidationIT extends AbstractIntegrationTestBase {
 
     @Test
     public void accessToken_contains_user_data() {
-        retrieveAccessTokenForMarissa();
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
         assertThat(accessToken.getUserName(), is("marissa"));
     }
 
@@ -76,11 +76,11 @@ public class AccessTokenValidationIT extends AbstractIntegrationTestBase {
         String userName = "marissa";
         String password = "koala";
 
-        accessToken = OSIAM_CONNECTOR.retrieveAccessToken(userName, password, Scope.ALL);
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken(userName, password, Scope.ADMIN);
 
         Thread.sleep(2000);
 
-        accessToken = OSIAM_CONNECTOR.retrieveAccessToken(userName, password, Scope.ALL);
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken(userName, password, Scope.ADMIN);
 
         assertTrue(accessToken != null);
     }

@@ -81,7 +81,7 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class LoginOAuth2IT extends AbstractIntegrationTestBase {
 
-    private URI loginUri = OSIAM_CONNECTOR.getAuthorizationUri(Scope.ALL);
+    private URI loginUri = OSIAM_CONNECTOR.getAuthorizationUri(Scope.ADMIN);
     private CloseableHttpClient httpClient = HttpClientBuilder.create().build();
     private String authCode;
     private AccessToken accessToken;
@@ -89,7 +89,7 @@ public class LoginOAuth2IT extends AbstractIntegrationTestBase {
 
     @Before
     public void before() {
-        loginUri = OSIAM_CONNECTOR.getAuthorizationUri(Scope.ALL);
+        loginUri = OSIAM_CONNECTOR.getAuthorizationUri(Scope.ADMIN);
     }
 
     @Test
@@ -248,7 +248,7 @@ public class LoginOAuth2IT extends AbstractIntegrationTestBase {
                 .setClientRedirectUri("http://localhost:5001/oauth2")
                 .build();
 
-        accessToken = connector.retrieveAccessToken();
+        accessToken = connector.retrieveAccessToken(Scope.ADMIN);
 
         loginUri = connector.getAuthorizationUri();
 

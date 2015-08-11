@@ -51,7 +51,7 @@ public class UserLoginWithEmailAddressAsUserNameIT extends AbstractIntegrationTe
 
     @Test
     public void log_in_with_an_email_address_as_user_name_is_possible() {
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("chunkylover53@aol.com", "koala", Scope.ALL);
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("chunkylover53@aol.com", "koala", Scope.ADMIN);
         assertThat(accessToken, is(notNullValue()));
     }
 }

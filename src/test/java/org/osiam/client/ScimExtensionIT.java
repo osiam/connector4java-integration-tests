@@ -42,6 +42,7 @@ import javax.sql.DataSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
 import org.osiam.resources.scim.Extension;
@@ -97,7 +98,7 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
         extensionDataToPatch.put("photo", new Extension.Field(ExtensionFieldType.BINARY, "Y2hhbmdlZA=="));
         extensionDataToPatch.put("mother", new Extension.Field(ExtensionFieldType.REFERENCE,
                 "https://www.example.com/Users/99"));
-        retrieveAccessTokenForMarissa();
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
     }
 
     @Test

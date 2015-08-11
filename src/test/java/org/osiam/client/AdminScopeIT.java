@@ -471,7 +471,7 @@ public class AdminScopeIT extends AbstractIntegrationTestBase {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
         String clientAsJsonString = "{\"id\":\"example-client-2\",\"accessTokenValiditySeconds\":2342,\"refreshTokenValiditySeconds\":2342,"
                 + "\"redirectUri\":\"http://localhost:5055/oauth2\",\"client_secret\":\"secret-2\","
-                + "\"scope\":[\"POST\",\"PATCH\",\"GET\",\"DELETE\",\"PUT\"],"
+                + "\"scope\":[\"ADMIN\"],"
                 + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\",\"password\"],"
                 + "\"implicit\":false,\"validityInSeconds\":1337}";
 
@@ -502,7 +502,7 @@ public class AdminScopeIT extends AbstractIntegrationTestBase {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
         String clientAsJsonString = "{\"id\":\"example-client\",\"accessTokenValiditySeconds\":1,\"refreshTokenValiditySeconds\":1,"
                 + "\"redirectUri\":\"http://newhost:5000/oauth2\",\"client_secret\":\"secret\","
-                + "\"scope\":[\"POST\",\"PATCH\",\"GET\",\"DELETE\"],"
+                + "\"scope\":[\"ADMIN\"],"
                 + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\"],"
                 + "\"implicit\":true,\"validityInSeconds\":1}";
 

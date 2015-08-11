@@ -40,11 +40,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.glassfish.jersey.client.ClientResponse;
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.osiam.client.oauth.Scope;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -70,7 +70,7 @@ public class ClientManagementIT extends AbstractIntegrationTestBase {
 
     @Before
     public void setup() {
-        retrieveAccessTokenForMarissa();
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
     }
 
     @Test
@@ -111,7 +111,7 @@ public class ClientManagementIT extends AbstractIntegrationTestBase {
     public void create_client() {
         String clientAsJsonString = "{\"id\":\"example-client-2\",\"accessTokenValiditySeconds\":2342,\"refreshTokenValiditySeconds\":2342,"
                 + "\"redirectUri\":\"http://localhost:5055/oauth2\",\"client_secret\":\"secret-2\","
-                + "\"scope\":[\"POST\",\"PATCH\",\"GET\",\"DELETE\",\"PUT\"],"
+                + "\"scope\":[\"ADMIN\"],"
                 + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\",\"password\"],"
                 + "\"implicit\":false,\"validityInSeconds\":1337}";
 
@@ -127,7 +127,7 @@ public class ClientManagementIT extends AbstractIntegrationTestBase {
     public void cant_create_client_with_already_existing_id() {
         String clientAsJsonString = "{\"id\":\"example-client\",\"accessTokenValiditySeconds\":2342,\"refreshTokenValiditySeconds\":2342,"
                 + "\"redirectUri\":\"http://localhost:5055/oauth2\",\"client_secret\":\"secret-2\","
-                + "\"scope\":[\"POST\",\"PATCH\",\"GET\",\"DELETE\",\"PUT\"],"
+                + "\"scope\":[\"ADMIN\"],"
                 + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\",\"password\"],"
                 + "\"implicit\":false,\"validityInSeconds\":1337}";
 
@@ -162,7 +162,7 @@ public class ClientManagementIT extends AbstractIntegrationTestBase {
     public void update_client() throws JSONException {
         String clientAsJsonString = "{\"id\":\"example-client\",\"accessTokenValiditySeconds\":1,\"refreshTokenValiditySeconds\":1,"
                 + "\"redirectUri\":\"http://newhost:5000/oauth2\",\"client_secret\":\"secret\","
-                + "\"scope\":[\"POST\",\"PATCH\",\"GET\",\"DELETE\"],"
+                + "\"scope\":[\"ADMIN\"],"
                 + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\"],"
                 + "\"implicit\":true,\"validityInSeconds\":1}";
 
@@ -174,7 +174,7 @@ public class ClientManagementIT extends AbstractIntegrationTestBase {
 
         String expected = "{\"id\":\"example-client\",\"accessTokenValiditySeconds\":1,\"refreshTokenValiditySeconds\":1,"
                 + "\"redirectUri\":\"http://newhost:5000/oauth2\",\"client_secret\":\"secret\","
-                + "\"scope\":[\"POST\",\"PATCH\",\"GET\",\"DELETE\"],"
+                + "\"scope\":[\"ADMIN\"],"
                 + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\"],"
                 + "\"implicit\":true,\"validityInSeconds\":1}";
 
