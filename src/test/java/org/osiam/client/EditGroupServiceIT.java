@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.NoResultException;
+import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
 import org.osiam.resources.scim.Group;
@@ -66,7 +67,7 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
     public void setUp() {
         group = null;
         newId = UUID.randomUUID().toString();
-        retrieveAccessTokenForMarissa();
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
     }
 
     @Test(expected = ConflictException.class)

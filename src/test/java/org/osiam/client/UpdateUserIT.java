@@ -87,7 +87,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
     @Before
     public void setUp() {
-        retrieveAccessTokenForMarissa();
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
     }
 
     @Test
@@ -236,7 +236,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
         updateUser();
 
-        OSIAM_CONNECTOR.retrieveAccessToken("UserName", "Password", Scope.ALL);
+        OSIAM_CONNECTOR.retrieveAccessToken("UserName", "Password", Scope.ADMIN);
     }
 
     @Test
@@ -276,7 +276,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
         updateUser();
 
-        assertThat(OSIAM_CONNECTOR.retrieveAccessToken(IRRELEVANT, "geheim", Scope.ALL), is(notNullValue()));
+        assertThat(OSIAM_CONNECTOR.retrieveAccessToken(IRRELEVANT, "geheim", Scope.ADMIN), is(notNullValue()));
     }
 
     @Test(expected = ConflictException.class)
@@ -322,7 +322,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
     @Test
     public void replace_user_which_not_existing_raises_exception() {
-        retrieveAccessTokenForMarissa();
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
 
         UpdateUser patchedUser = new UpdateUser.Builder().build();
         try {

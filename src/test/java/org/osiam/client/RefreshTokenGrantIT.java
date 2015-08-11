@@ -51,7 +51,7 @@ public class RefreshTokenGrantIT extends AbstractIntegrationTestBase {
 
     @Test
     public void refreshing_an_access_token_should_provide_a_new_access_token() {
-        retrieveAccessTokenForMarissa();
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
         assertNotNull("The access token was null.", accessToken.getToken());
         assertNotNull("The refresh token was null.", accessToken.getRefreshToken());
 
@@ -77,7 +77,7 @@ public class RefreshTokenGrantIT extends AbstractIntegrationTestBase {
                 .setClientSecret(CLIENT_SECRET)
                 .setClientRedirectUri("http://localhost:5000/oauth2")
                 .build();
-        AccessToken shortLivingAccessToken = connector.retrieveAccessToken("marissa", "koala", Scope.ALL);
+        AccessToken shortLivingAccessToken = connector.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
         while (!shortLivingAccessToken.isExpired()) {
             TimeUnit.MILLISECONDS.sleep(100);
         }

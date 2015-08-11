@@ -49,7 +49,7 @@ class LostPasswordIT extends AbstractIT {
     def 'Initiate the lost password activation flow'() {
         given:
         def userId = '69e1a5dc-89be-4343-976c-b5541af249f5'
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ALL)
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN)
         def statusCode
 
         when:

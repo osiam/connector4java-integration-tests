@@ -88,7 +88,7 @@ class ScimExtensionTypesIT extends AbstractExtensionBaseIT {
 
     def 'URI: /osiam/extension-definition will return all persisted extension definitions'() {
         given:
-        def accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ALL)
+        def accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN)
         def statusCode
         def jsonContent
 

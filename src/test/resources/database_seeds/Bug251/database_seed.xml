@@ -31,20 +31,14 @@
     <osiam_client_grants id="100003" grants="refresh_token"/>
     <osiam_client_grants id="100003" grants="password"/>
     <osiam_client_grants id="100003" grants="client_credentials"/>
-    <osiam_client_scopes id="100003" scope="GET"/>
-    <osiam_client_scopes id="100003" scope="POST"/>
-    <osiam_client_scopes id="100003" scope="PUT"/>
-    <osiam_client_scopes id="100003" scope="PATCH"/>
-    <osiam_client_scopes id="100003" scope="DELETE"/>
+    <osiam_client_scopes id="100003" scope="ADMIN"/>
 
     <osiam_client internal_id="100004" id="auth-server" redirect_uri="http://localhost:8180/osiam-auth-server"
                   client_secret="auth-secret" access_token_validity_seconds="10" refresh_token_validity_seconds="10"
                   validity_in_seconds="10"
                   implicit_approval="true"/>
     <osiam_client_grants id="100004" grants="client_credentials"/>
-    <osiam_client_scopes id="100004" scope="GET"/>
-    <osiam_client_scopes id="100004" scope="POST"/>
-    <osiam_client_scopes id="100004" scope="PATCH"/>
+    <osiam_client_scopes id="100004" scope="ADMIN"/>
 
     <scim_meta id="100004" created="2011-10-10 00:00:00.0" last_modified="2011-10-10 00:00:00.0" resource_type="User"/>
     <scim_meta id="100006" created="2013-08-08 19:45:20.816" last_modified="2013-08-08 19:45:20.816"
@@ -54,7 +48,7 @@
     <scim_id internal_id="100001" meta="100004" id="cef9452e-00a9-4cec-a086-d171374ffbef"/>
 
     <scim_name id="100007" family_name="family_name" formatted="formatted" given_name="given_name"
-               middleName="middleName" honorificPrefix="honorificPrefix" honorificSuffix="honorificSuffix"/>
+               middle_name="middleName" honorific_prefix="honorificPrefix" honorific_suffix="honorificSuffix"/>
 
     <scim_user display_name="BeccyT." locale="de" nick_name="Beccy"
                password="908661cbdcd4795f95926b57e9979a80969f7ef55cec4c3dcfccabcae55d32f2a1eae227a91fd41df1462c2bb7b60c136beb75666d7bb60ff859ff886788a349"

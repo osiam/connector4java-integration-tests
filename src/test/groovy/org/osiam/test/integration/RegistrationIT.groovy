@@ -31,6 +31,7 @@ import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
 import org.osiam.client.oauth.AccessToken
+import org.osiam.client.oauth.Scope
 import org.osiam.client.query.Query
 import org.osiam.client.query.QueryBuilder
 import org.osiam.resources.helper.UserDeserializer
@@ -177,7 +178,7 @@ class RegistrationIT extends AbstractIT {
         def createdUserId = 'cef9452e-00a9-4cec-a086-d171374febef'
         def activationToken = 'cef9452e-00a9-4cec-a086-a171374febef'
 
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
 
         def responseStatus
 
@@ -204,7 +205,7 @@ class RegistrationIT extends AbstractIT {
         def createdUserId = '69e1a5dc-89be-4343-976c-b8841af249f4'
         def activationToken = 'cef9452e-11a9-4cec-a086-a171374febef'
 
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
 
         def responseStatus
 
@@ -230,7 +231,7 @@ class RegistrationIT extends AbstractIT {
         def createdUserId = '69e1a5dc-89be-4343-976c-b8841af249f5'
         def activationToken = 'cef9452e-10a9-4cec-a086-a171374febee'
 
-        def accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        def accessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
 
         def responseStatus
 
@@ -257,7 +258,7 @@ class RegistrationIT extends AbstractIT {
         def createdUserId = 'cef9452e-00a9-4cec-a086-d171374febef'
         def activationToken = 'cef9452e-00a9-4cec-a086-a171374febef'
 
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
 
         def firstResponseStatus
         def secondResponseStatus
@@ -292,7 +293,7 @@ class RegistrationIT extends AbstractIT {
 
     def 'A registration of an user with client defined extensions'() {
         given:
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
 
         def userToRegister = [email: 'email@example.org', password: 'password',
                               'extensions[\'urn:client:extension\'].fields[\'age\']': 12]
@@ -337,7 +338,7 @@ class RegistrationIT extends AbstractIT {
 
     def 'A registration of an user with not allowed field nickName and existing extension but not the field'() {
         given:
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
 
         // email, password are always allowed, displayName is allowed and nickName is disallowed by config
         // extension 'urn:client:extension' is only allowed with field 'age' and not 'gender'

@@ -24,6 +24,7 @@
 package org.osiam.test.integration
 
 import org.osiam.client.oauth.AccessToken
+import org.osiam.client.oauth.Scope
 import org.osiam.resources.scim.Group
 import org.osiam.resources.scim.MemberRef
 import org.osiam.resources.scim.UpdateGroup
@@ -42,23 +43,23 @@ class UserGroupMembershipIT extends AbstractIT {
         given:
         def user = new User.Builder("testUser").setPassword("test").build()
         def group = new Group.Builder("testGroup").build()
-        def createdUser = OSIAM_CONNECTOR.createUser(user, OSIAM_CONNECTOR.retrieveAccessToken())
-        def createdGroup = OSIAM_CONNECTOR.createGroup(group, OSIAM_CONNECTOR.retrieveAccessToken())
+        def createdUser = OSIAM_CONNECTOR.createUser(user, OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN))
+        def createdGroup = OSIAM_CONNECTOR.createGroup(group, OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN))
 
         def updateGroup = new UpdateGroup.Builder()
                 .addMember(createdUser.getId())
                 .build()
 
         when:
-        def updatedGroup = OSIAM_CONNECTOR.updateGroup(createdGroup.getId(), updateGroup, OSIAM_CONNECTOR.retrieveAccessToken())
+        def updatedGroup = OSIAM_CONNECTOR.updateGroup(createdGroup.getId(), updateGroup, OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN))
 
         then:
         updatedGroup.getMembers().size() == 1
 
-        def theUserWithGroup = OSIAM_CONNECTOR.getUser(createdUser.getId(), OSIAM_CONNECTOR.retrieveAccessToken())
+        def theUserWithGroup = OSIAM_CONNECTOR.getUser(createdUser.getId(), OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN))
         theUserWithGroup.getGroups().size() == 1
 
-        def theGroupWithMembers = OSIAM_CONNECTOR.getGroup(createdGroup.getId(), OSIAM_CONNECTOR.retrieveAccessToken())
+        def theGroupWithMembers = OSIAM_CONNECTOR.getGroup(createdGroup.getId(), OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN))
         theGroupWithMembers.getMembers().size() == 1
     }
 
@@ -66,29 +67,29 @@ class UserGroupMembershipIT extends AbstractIT {
         given:
         def parentGroup = new Group.Builder("parentGroup").build()
         def memberGroup = new Group.Builder("memberGroup").build()
-        def createdParentGroup = OSIAM_CONNECTOR.createGroup(parentGroup, OSIAM_CONNECTOR.retrieveAccessToken())
-        def createdMemberGroup = OSIAM_CONNECTOR.createGroup(memberGroup, OSIAM_CONNECTOR.retrieveAccessToken())
+        def createdParentGroup = OSIAM_CONNECTOR.createGroup(parentGroup, OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN))
+        def createdMemberGroup = OSIAM_CONNECTOR.createGroup(memberGroup, OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN))
 
         def updateGroup = new UpdateGroup.Builder()
                 .addMember(createdMemberGroup.getId())
                 .build()
 
         when:
-        def updatedGroup = OSIAM_CONNECTOR.updateGroup(createdParentGroup.getId(), updateGroup, OSIAM_CONNECTOR.retrieveAccessToken())
+        def updatedGroup = OSIAM_CONNECTOR.updateGroup(createdParentGroup.getId(), updateGroup, OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN))
 
         then:
         updatedGroup.getMembers().size() == 1
 
-        def parentGroupWithMembers = OSIAM_CONNECTOR.getGroup(createdParentGroup.getId(), OSIAM_CONNECTOR.retrieveAccessToken())
+        def parentGroupWithMembers = OSIAM_CONNECTOR.getGroup(createdParentGroup.getId(), OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN))
         parentGroupWithMembers.getMembers().size() == 1
 
-        def memberGroupWithparent = OSIAM_CONNECTOR.getGroup(createdMemberGroup.getId(), OSIAM_CONNECTOR.retrieveAccessToken())
+        def memberGroupWithparent = OSIAM_CONNECTOR.getGroup(createdMemberGroup.getId(), OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN))
         memberGroupWithparent.getMembers().size() == 0
     }
 
     def 'remove member from group'() {
         given:
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
         def memberGroup1 = OSIAM_CONNECTOR.createGroup(new Group.Builder('memberGroup1').build(), accessToken)
         def memberGroup2 = OSIAM_CONNECTOR.createGroup(new Group.Builder('memberGroup2').build(), accessToken)
         def memberUser = OSIAM_CONNECTOR.createUser(new User.Builder('userMember').setPassword('test').build(), accessToken)
@@ -120,7 +121,7 @@ class UserGroupMembershipIT extends AbstractIT {
     def 'remove all members from group'() {
         given:
 
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
 
         def memberGroup1 = OSIAM_CONNECTOR.createGroup(new Group.Builder('memberGroup10').build(), accessToken)
         def memberGroup2 = OSIAM_CONNECTOR.createGroup(new Group.Builder('memberGroup20').build(), accessToken)

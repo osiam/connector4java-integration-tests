@@ -28,13 +28,13 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.util.Collections;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.NoResultException;
+import org.osiam.client.oauth.Scope;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.MemberRef;
 import org.osiam.resources.scim.User;
@@ -61,7 +61,7 @@ public class GroupMembershipIT extends AbstractIntegrationTestBase {
 
     @Before
     public void setup() {
-        retrieveAccessTokenForMarissa();
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
     }
 
     @Test(expected = NoResultException.class)

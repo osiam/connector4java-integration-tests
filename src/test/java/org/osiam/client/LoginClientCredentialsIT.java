@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.AccessToken;
+import org.osiam.client.oauth.Scope;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -52,7 +53,7 @@ public class LoginClientCredentialsIT extends AbstractIntegrationTestBase {
 
     @Test
     public void login_with_client_credentials() {
-        AccessToken at = OSIAM_CONNECTOR.retrieveAccessToken();
+        AccessToken at = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN);
 
         assertThat(at, is(notNullValue()));
     }
