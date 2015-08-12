@@ -31,6 +31,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
 import org.osiam.resources.scim.SCIMSearchResult;
@@ -58,7 +59,7 @@ public class BT_29 extends AbstractIntegrationTestBase {
 
     @Before
     public void setup() {
-        retrieveAccessTokenForMarissa();
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
     }
 
     @Test

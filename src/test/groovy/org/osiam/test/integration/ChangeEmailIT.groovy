@@ -28,6 +28,7 @@ import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
 import org.osiam.client.oauth.AccessToken
+import org.osiam.client.oauth.Scope
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.ExtensionFieldType
 import org.osiam.resources.scim.User
@@ -119,7 +120,7 @@ class ChangeEmailIT extends AbstractIT {
 
     def 'The confirmation of the new email removes the old one and set the new one as primary'() {
         given:
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
         def userId = 'cef9452e-00a9-4cec-a086-d171374febef'
         def confirmToken = 'cef9452e-00a9-4cec-a086-a171374febef'
         def newEmailValue = 'newEmailForGeorge@osiam.org'
@@ -160,7 +161,7 @@ class ChangeEmailIT extends AbstractIT {
 
     def 'The confirmation with a non expired token of the new email removes the old one and set the new one as primary'() {
         given:
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
         def userId = '69e1a5dc-89be-4343-976c-b6641af249f7'
         def confirmToken = '69e1a5dc-89be-4343-976c-b6641af249f7'
         def newEmailValue = 'newEmailForElisabeth@osiam.org'
@@ -209,7 +210,7 @@ class ChangeEmailIT extends AbstractIT {
 
     def 'The confirmation of the new email fails when token is not valid'() {
         given:
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
         def userId = 'cef9452e-00a9-4cec-a086-d171374febef'
         def confirmToken = 'invalid_token'
 
@@ -235,7 +236,7 @@ class ChangeEmailIT extends AbstractIT {
 
     def 'The confirmation of the new email fails when token is expired'() {
         given:
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken()
+        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
         def userId = '69e1a5dc-89be-4343-976c-b5541af249f5'
         def confirmToken = '69e1a5dc-89be-4343-976c-b5541af249f5'
 

@@ -65,7 +65,7 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
 
     @Before
     public void setUp() {
-        retrieveAccessTokenForMarissa();
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
     }
 
     @Test
@@ -156,7 +156,7 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
                 .setClientId("short-living-client")
                 .setClientSecret("other-secret")
                 .build();
-        accessToken = osiamConnector.retrieveAccessToken("marissa", "koala", Scope.ALL);
+        accessToken = osiamConnector.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
         osiamConnector.getUser(VALID_USER_ID, accessToken);
     }
 

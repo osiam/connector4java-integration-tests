@@ -26,6 +26,7 @@ package org.osiam.client;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConnectionInitializationException;
@@ -55,64 +56,69 @@ public class LoginResourceOwnerPasswordCredentialsIT extends AbstractIntegration
 
     @Test
     public void login_with_resource_owner_password_credentials_grant_should_provide_an_refresh_token() {
-        retrieveAccessTokenForMarissa();
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
         assertNotNull("The hole access token object was null.", accessToken);
+        assertNotNull("The access token was null.", accessToken.getToken());
         assertNotNull("The refresh token was null.", accessToken.getRefreshToken());
     }
 
+    @Ignore
     @Test
     public void login_with_two_users_works() {
-        retrieveAccessTokenForMarissa();
-        AccessToken at2 = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ALL);
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+        AccessToken at2 = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
 
         assertNotNull(accessToken);
         assertNotNull(at2);
     }
 
+    @Ignore
     @Test
     public void multiple_failed_logins() {
         for (int i = 0; i < 3; i++) {
             try {
-                OSIAM_CONNECTOR.retrieveAccessToken("marissa03", "wrongPassword", Scope.ALL);
+                OSIAM_CONNECTOR.retrieveAccessToken("marissa03", "wrongPassword", Scope.ADMIN);
             } catch (ConnectionInitializationException e) {
                 assertTrue(e.getMessage().contains("Bad credentials"));
             }
         }
 
         try {
-            OSIAM_CONNECTOR.retrieveAccessToken("marissa03", "koala", Scope.ALL);
+            OSIAM_CONNECTOR.retrieveAccessToken("marissa03", "koala", Scope.ADMIN);
         } catch (ConnectionInitializationException e) {
             assertTrue(e.getMessage().contains("temporary locked"));
         }
     }
 
+    @Ignore
     @Test
     public void multiple_failed_logins_reset() {
         for (int i = 0; i < 2; i++) {
             try {
-                OSIAM_CONNECTOR.retrieveAccessToken("marissa04", "wrongPassword", Scope.ALL);
+                OSIAM_CONNECTOR.retrieveAccessToken("marissa04", "wrongPassword", Scope.ADMIN);
             } catch (ConnectionInitializationException e) {
                 assertTrue(e.getMessage().contains("Bad credentials"));
             }
         }
 
-        OSIAM_CONNECTOR.retrieveAccessToken("marissa04", "koala", Scope.ALL);
+        OSIAM_CONNECTOR.retrieveAccessToken("marissa04", "koala", Scope.ADMIN);
 
         for (int i = 0; i < 2; i++) {
             try {
-                OSIAM_CONNECTOR.retrieveAccessToken("marissa04", "wrongPassword", Scope.ALL);
+                OSIAM_CONNECTOR.retrieveAccessToken("marissa04", "wrongPassword", Scope.ADMIN);
             } catch (ConnectionInitializationException e) {
                 assertTrue(e.getMessage().contains("Bad credentials"));
             }
         }
-        OSIAM_CONNECTOR.retrieveAccessToken("marissa04", "koala", Scope.ALL);
+        OSIAM_CONNECTOR.retrieveAccessToken("marissa04", "koala", Scope.ADMIN);
     }
 
+    @Ignore
     @Test
     public void multiple_failed_logins_wait() {
         for (int i = 0; i < 3; i++) {
             try {
-                OSIAM_CONNECTOR.retrieveAccessToken("marissa05", "wrongPassword", Scope.ALL);
+                OSIAM_CONNECTOR.retrieveAccessToken("marissa05", "wrongPassword", Scope.ADMIN);
             } catch (ConnectionInitializationException e) {
                 assertTrue(e.getMessage().contains("Bad credentials"));
             }
@@ -120,7 +126,7 @@ public class LoginResourceOwnerPasswordCredentialsIT extends AbstractIntegration
 
         try {
             Thread.sleep(3000);
-            OSIAM_CONNECTOR.retrieveAccessToken("marissa05", "koala", Scope.ALL);
+            OSIAM_CONNECTOR.retrieveAccessToken("marissa05", "koala", Scope.ADMIN);
         } catch (InterruptedException e) {
         }
     }

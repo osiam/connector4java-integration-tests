@@ -37,6 +37,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.NoResultException;
+import org.osiam.client.oauth.Scope;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.MemberRef;
 import org.springframework.test.context.ContextConfiguration;
@@ -65,7 +66,7 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
     @Before
     public void setUp() throws Exception {
         created = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(EXPECTED_CREATED_DATE);
-        retrieveAccessTokenForMarissa();
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
     }
 
     @Test

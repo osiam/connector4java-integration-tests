@@ -93,7 +93,7 @@ abstract class AbstractIT extends Specification {
             connection.close()
         }
 
-        accessToken = OSIAM_CONNECTOR.retrieveAccessToken('marissa', 'koala', Scope.ALL)
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken('marissa', 'koala', Scope.ADMIN)
     }
 
     def createAccessToken(String userName, String password) {
@@ -103,7 +103,7 @@ abstract class AbstractIT extends Specification {
                 .setClientId(CLIENT_ID)
                 .setClientSecret(CLIENT_SECRET)
                 .build()
-        osiamConnector.retrieveAccessToken(userName, password, Scope.ALL)
+        osiamConnector.retrieveAccessToken(userName, password, Scope.ADMIN)
     }
 
     def fetchEmail(String userNameAndPassword) {

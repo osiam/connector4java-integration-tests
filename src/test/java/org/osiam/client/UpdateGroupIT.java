@@ -41,6 +41,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.NoResultException;
+import org.osiam.client.oauth.Scope;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.MemberRef;
 import org.osiam.resources.scim.UpdateGroup;
@@ -75,7 +76,7 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
 
     @Before
     public void setUp() {
-        retrieveAccessTokenForMarissa();
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
     }
 
     @Test
