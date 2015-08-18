@@ -87,7 +87,6 @@ class ControllerIT extends AbstractIT {
         "e"      | "/Users"                       | ContentType.ANY    | 200                  | "application/json;charset=UTF-8"
         "f"      | "/Users"                       | ContentType.TEXT   | 406                  | null
         "g"      | "/Users"                       | ContentType.BINARY | 406                  | null
-        "h"      | "/Users"                       | ContentType.HTML   | 406                  | null
         "i"      | "/Users"                       | ContentType.URLENC | 406                  | null
         "j"      | "/Users"                       | ContentType.XML    | 406                  | null
         "k"      | "/Users"                       | "invalid"          | 406                  | null
