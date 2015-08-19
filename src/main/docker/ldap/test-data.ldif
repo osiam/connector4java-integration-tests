@@ -1,0 +1,33 @@
+dn: ou=people,dc=osiam,dc=org
+changetype: add
+objectclass: top
+objectclass: organizationalUnit
+ou: people
+
+dn: uid=marissa,ou=people,dc=osiam,dc=org
+changetype: add
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Marissa Osiam
+sn: Osiam
+uid: marissa
+userPassword: {SSHA}Ew84KCwWMW8uwnFK9dZG/zTnQ6tWsPhN
+mail: marissa@orisam.org
+givenName: Marissa
+displayName: Marysiam
+
+dn: uid=ben,ou=people,dc=osiam,dc=org
+changetype: add
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Ben Alex
+sn: Alex
+uid: ben
+userPassword: {SSHA}BbYWYZr/bkMJGE+lRsEiAObWis3T7SKt
+givenName: Ben
+displayName: Benny
+mail: ben@ben.de
