@@ -190,7 +190,6 @@ public class LoginOAuth2IT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    @Ignore("Fails mostly on Jenkins")
     @DatabaseSetup("/database_seed.xml")
     public void if_ldap_user_login_but_internal_user_already_exists_error_will_be_shown() throws IOException {
         String currentRedirectUri;
