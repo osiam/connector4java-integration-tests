@@ -6,7 +6,8 @@ packaging:
     - target/dependency/addon-self-administration-plugin-example.jar
 
 links:
-  - ${database.container}:${database.container}
+  - ${database.container}
+  - ldap
 
 ports:
   - 8180
