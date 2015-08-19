@@ -1,0 +1,5 @@
+dn: olcDatabase={1}hdb,cn=config
+changetype: modify
+add: olcAccess
+olcAccess: {0}to *
+  by * manage

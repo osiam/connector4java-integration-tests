@@ -458,30 +458,10 @@
                                 <resource>
                                     <directory>src/test/resources/auth-server-configuration</directory>
                                     <include>auth-server/</include>
-                                    <include>test-ldap-server.ldif</include>
                                 </resource>
                                 <resource>
                                     <directory>src/test/resources</directory>
                                     <include>log4j.properties</include>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-osiam-auth-web-config</id>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>
-                                ${project.build.directory}/osiam-auth-server/WEB-INF
-                            </outputDirectory>
-                            <overwrite>true</overwrite>
-                            <resources>
-                                <resource>
-                                    <directory>src/test/resources/auth-server-configuration</directory>
-                                    <include>user-authentication.xml</include>
                                 </resource>
                             </resources>
                         </configuration>
