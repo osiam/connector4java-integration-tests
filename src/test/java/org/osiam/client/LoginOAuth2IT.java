@@ -24,12 +24,7 @@
 package org.osiam.client;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,7 +46,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
@@ -131,16 +125,14 @@ public class LoginOAuth2IT extends AbstractIntegrationTestBase {
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
 
-        {
-            HttpGet httpGet = new HttpGet(loginUri);
-            httpGet.getParams().setParameter(ClientPNames.COOKIE_POLICY,
-                    CookiePolicy.NETSCAPE);
-            httpGet.getParams().setBooleanParameter("http.protocol.handle-redirects", false);
-            authCodeResponse = httpClient.execute(httpGet);
-            httpGet.releaseConnection();
-        }
-
+        HttpGet httpGet = new HttpGet(loginUri);
+        httpGet.getParams().setParameter(ClientPNames.COOKIE_POLICY,
+                CookiePolicy.NETSCAPE);
+        httpGet.getParams().setBooleanParameter("http.protocol.handle-redirects", false);
+        authCodeResponse = httpClient.execute(httpGet);
         String response = IOUtils.toString(authCodeResponse.getEntity().getContent());
+        httpGet.releaseConnection();
+
         assertThat(response, containsString("<title>Access confirmation</title>"));
     }
 
