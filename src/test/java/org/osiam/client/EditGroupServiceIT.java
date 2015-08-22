@@ -23,14 +23,10 @@
 
 package org.osiam.client;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-
-import java.util.UUID;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,15 +42,15 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import java.util.UUID;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class })
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class})
 @DatabaseSetup(value = "/database_seeds/EditGroupServiceIT/groups.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class EditGroupServiceIT extends AbstractIntegrationTestBase {
@@ -74,14 +70,12 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
     public void create_group_without_displayName_raises_exception() {
         group = new Group.Builder().build();
         OSIAM_CONNECTOR.createGroup(group, accessToken);
-        fail("Exception expected");
     }
 
     @Test(expected = ConflictException.class)
     public void create_group_with_empty_displayName_raises_exception() {
         group = new Group.Builder("").build();
         OSIAM_CONNECTOR.createGroup(group, accessToken);
-        fail("Exception expected");
     }
 
     @Test(expected = ConflictException.class)
@@ -89,7 +83,6 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
         String existingGroupName = "parent_group";
         group = new Group.Builder(existingGroupName).build();
         OSIAM_CONNECTOR.createGroup(group, accessToken);
-        fail("Exception expected");
     }
 
     @Test
@@ -115,7 +108,6 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
         Group createdGroup = OSIAM_CONNECTOR.createGroup(group, accessToken);
         assertThat(createdGroup.getId(), not(equalTo(INVALID_ID))); // This might fail once every 8 billion years
         OSIAM_CONNECTOR.getGroup(newId, accessToken);
-        fail("Exception expected");
     }
 
     @Test
@@ -135,13 +127,11 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
 
         OSIAM_CONNECTOR.getGroup(newId, accessToken);
 
-        fail("Exception expected");
     }
 
     @Test(expected = NoResultException.class)
     public void delete_non_existing_group_raises_exception() throws Exception {
         OSIAM_CONNECTOR.deleteGroup(INVALID_ID, accessToken);
-        fail("Exception ");
     }
 
     private Group findSingleGroupByQuery(Query query) {

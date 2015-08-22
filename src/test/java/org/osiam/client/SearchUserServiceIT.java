@@ -23,27 +23,15 @@
 
 package org.osiam.client;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.oauth.Scope;
@@ -56,17 +44,27 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
+
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class })
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class})
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class SearchUserServiceIT extends AbstractIntegrationTestBase {
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     private static final int ITEMS_PER_PAGE = 3;
     private static final int START_INDEX_SECOND_PAGE = 4;
@@ -143,15 +141,13 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     @Test
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_email.xml")
     public void search_with_double_quotes_less_value_returns_correct_exception_message() {
+
+        thrown.expect(ConflictException.class);
+        thrown.expectMessage(containsString("Please make sure that all values are surrounded by double quotes"));
+
         String email = "bjensen@example.com";
         Query query = new QueryBuilder().filter("emails.value eq " + email + "").build();
-
-        try {
-            OSIAM_CONNECTOR.searchUsers(query, accessToken);
-            fail("expected exception");
-        } catch (ConflictException e) {
-            assertTrue(e.getMessage().contains("Please make sure that all values are surrounded by double quotes"));
-        }
+        OSIAM_CONNECTOR.searchUsers(query, accessToken);
     }
 
     @Test
@@ -318,7 +314,6 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     public void search_for_user_by_non_exisitng_field_with_query_string_fails() {
         Query query = new QueryBuilder().filter(INVALID_STRING + " eq \"" + INVALID_STRING + "\"").build();
         OSIAM_CONNECTOR.searchUsers(query, accessToken);
-        fail("Exception should be thrown");
     }
 
     @Test

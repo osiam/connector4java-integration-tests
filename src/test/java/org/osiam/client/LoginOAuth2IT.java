@@ -299,7 +299,6 @@ public class LoginOAuth2IT extends AbstractIntegrationTestBase {
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
         givenAccessTokenUsingAuthCode();
-        fail("exception expected");
     }
 
     @Test

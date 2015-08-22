@@ -23,18 +23,10 @@
 
 package org.osiam.client;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.util.Collections;
-
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.json.JSONException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,26 +37,26 @@ import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
 import org.osiam.client.user.BasicUser;
-import org.osiam.resources.scim.Email;
-import org.osiam.resources.scim.Group;
-import org.osiam.resources.scim.MemberRef;
-import org.osiam.resources.scim.UpdateGroup;
-import org.osiam.resources.scim.UpdateUser;
-import org.osiam.resources.scim.User;
+import org.osiam.resources.scim.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.util.Collections;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class })
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed_me_scope.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class MeScopeIT extends AbstractIntegrationTestBase {
@@ -166,8 +158,6 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
         OSIAM_CONNECTOR.getAllUsers(accessToken);
-
-        fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
@@ -176,8 +166,6 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
         Query query = new QueryBuilder().filter("userName eq \"marissa\"").build();
 
         OSIAM_CONNECTOR.searchUsers(query, accessToken);
-
-        fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
@@ -188,8 +176,6 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
                 .build();
 
         OSIAM_CONNECTOR.searchUsers(query, accessToken);
-
-        fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
@@ -198,8 +184,6 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
         User user = new User.Builder("newUser").build();
 
         OSIAM_CONNECTOR.createUser(user, accessToken);
-
-        fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
@@ -207,8 +191,6 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
         OSIAM_CONNECTOR.getUser(OTHER_USER_ID, accessToken);
-
-        fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
@@ -224,8 +206,6 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
                 .build();
 
         OSIAM_CONNECTOR.updateUser(OTHER_USER_ID, updateUser, accessToken);
-
-        fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
@@ -242,8 +222,6 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
                 .build();
 
         OSIAM_CONNECTOR.replaceUser(OTHER_USER_ID, replaceUser, accessToken);
-
-        fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
@@ -251,8 +229,6 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
         OSIAM_CONNECTOR.deleteUser(OTHER_USER_ID, accessToken);
-
-        fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
@@ -260,8 +236,6 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
         OSIAM_CONNECTOR.getGroup(GROUP_ID, accessToken);
-
-        fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
@@ -276,8 +250,6 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
                 .build();
 
         OSIAM_CONNECTOR.createGroup(group, accessToken);
-
-        fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
@@ -289,8 +261,6 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
                 .build();
 
         OSIAM_CONNECTOR.updateGroup(GROUP_ID, updateGroup, accessToken);
-
-        fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
@@ -305,8 +275,6 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
                 .build();
 
         OSIAM_CONNECTOR.replaceGroup(GROUP_ID, group, accessToken);
-
-        fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
@@ -314,8 +282,6 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
         OSIAM_CONNECTOR.deleteGroup(GROUP_ID, accessToken);
-
-        fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
@@ -323,8 +289,6 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
         OSIAM_CONNECTOR.getAllGroups(accessToken);
-
-        fail("Exception expected");
     }
 
     @Test(expected = ForbiddenException.class)
@@ -333,8 +297,6 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
         Query query = new QueryBuilder().filter("displayName eq \"test_group01\"").build();
 
         OSIAM_CONNECTOR.searchGroups(query, accessToken);
-
-        fail("Exception expected");
     }
 
     @Test
@@ -396,7 +358,6 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
         OSIAM_CONNECTOR.revokeAccessToken(accessToken);
 
         OSIAM_CONNECTOR.validateAccessToken(accessToken);
-        fail("Exception expected");
     }
 
     @Test(expected = UnauthorizedException.class)
@@ -406,7 +367,6 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
         OSIAM_CONNECTOR.revokeAllAccessTokens(OWN_USER_ID, accessToken);
 
         OSIAM_CONNECTOR.validateAccessToken(accessToken);
-        fail("Exception expected");
     }
 
     @Test
@@ -425,7 +385,6 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
 
         OSIAM_CONNECTOR.revokeAllAccessTokens(OTHER_USER_ID, accessToken);
 
-        fail("Exception expected");
     }
 
     @Test

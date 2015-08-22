@@ -23,58 +23,43 @@
 
 package org.osiam.client;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.oauth.Scope;
-import org.osiam.resources.scim.Address;
-import org.osiam.resources.scim.Email;
-import org.osiam.resources.scim.Entitlement;
-import org.osiam.resources.scim.Im;
-import org.osiam.resources.scim.Name;
-import org.osiam.resources.scim.PhoneNumber;
-import org.osiam.resources.scim.Photo;
-import org.osiam.resources.scim.Role;
-import org.osiam.resources.scim.UpdateUser;
-import org.osiam.resources.scim.User;
-import org.osiam.resources.scim.X509Certificate;
+import org.osiam.resources.scim.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class })
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class UpdateUserIT extends AbstractIntegrationTestBase {
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     private static final String IRRELEVANT = "Irrelevant";
     private static final String NOT_EXISTING_ID = "e15e8991-aab7-4835-a448-7b873e69b86c";
@@ -322,15 +307,13 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
 
     @Test
     public void replace_user_which_not_existing_raises_exception() {
-        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
 
+        thrown.expect(NoResultException.class);
+        thrown.expectMessage(Matchers.containsString("not found"));
+
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
         UpdateUser patchedUser = new UpdateUser.Builder().build();
-        try {
-            OSIAM_CONNECTOR.updateUser(NOT_EXISTING_ID, patchedUser, accessToken);
-            fail("Exception expected");
-        } catch (NoResultException e) {
-            assertThat(e.getMessage(), containsString("not found"));
-        }
+        OSIAM_CONNECTOR.updateUser(NOT_EXISTING_ID, patchedUser, accessToken);
     }
 
     private void assertThatOnlyNewEmailAddressIsPrimary() {
@@ -389,7 +372,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     private boolean isValuePartOfEntitlementList(List<Entitlement> list,
-            String value) {
+                                                 String value) {
         if (list != null) {
             for (Entitlement actAttribute : list) {
                 if (actAttribute.getValue().equals(value)) {
