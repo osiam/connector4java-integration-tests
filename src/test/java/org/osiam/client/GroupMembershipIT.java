@@ -69,8 +69,6 @@ public class GroupMembershipIT extends AbstractIntegrationTestBase {
         OSIAM_CONNECTOR.deleteUser(USER_UUID, accessToken);
 
         OSIAM_CONNECTOR.getUser(USER_UUID, accessToken);
-
-        fail("Exception expected");
     }
 
     @Test
@@ -86,8 +84,6 @@ public class GroupMembershipIT extends AbstractIntegrationTestBase {
         OSIAM_CONNECTOR.deleteGroup(MEMBER_GROUP_UUID, accessToken);
 
         OSIAM_CONNECTOR.getGroup(MEMBER_GROUP_UUID, accessToken);
-
-        fail("Exception expected");
     }
 
     @Test

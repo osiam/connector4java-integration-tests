@@ -23,20 +23,10 @@
 
 package org.osiam.client;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.json.JSONException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,27 +36,26 @@ import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
 import org.osiam.client.user.BasicUser;
-import org.osiam.resources.scim.Email;
-import org.osiam.resources.scim.Group;
-import org.osiam.resources.scim.MemberRef;
-import org.osiam.resources.scim.SCIMSearchResult;
-import org.osiam.resources.scim.UpdateGroup;
-import org.osiam.resources.scim.UpdateUser;
-import org.osiam.resources.scim.User;
+import org.osiam.resources.scim.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class })
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed_admin_scope.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class AdminScopeIT extends AbstractIntegrationTestBase {
@@ -406,7 +395,6 @@ public class AdminScopeIT extends AbstractIntegrationTestBase {
         OSIAM_CONNECTOR.revokeAccessToken(accessToken);
 
         OSIAM_CONNECTOR.validateAccessToken(accessToken);
-        fail("Exception expected");
     }
 
     @Test(expected = UnauthorizedException.class)
@@ -416,7 +404,6 @@ public class AdminScopeIT extends AbstractIntegrationTestBase {
         OSIAM_CONNECTOR.revokeAllAccessTokens(OWN_USER_ID, accessToken);
 
         OSIAM_CONNECTOR.validateAccessToken(accessToken);
-        fail("Exception expected");
     }
 
     @Test
@@ -437,7 +424,6 @@ public class AdminScopeIT extends AbstractIntegrationTestBase {
         OSIAM_CONNECTOR.revokeAllAccessTokens(OTHER_USER_ID, accessToken);
 
         OSIAM_CONNECTOR.validateAccessToken(accessTokenOfOtherUser);
-        fail("Exception expected");
     }
 
     @Test

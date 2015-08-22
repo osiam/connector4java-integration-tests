@@ -23,13 +23,14 @@
 
 package org.osiam.client;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.UUID;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.NoResultException;
@@ -44,18 +45,21 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import java.util.UUID;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.startsWith;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class })
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class})
 @DatabaseSetup(value = "/database_seed.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class ErrorMessagesIT extends AbstractIntegrationTestBase {
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void setup() {
@@ -67,14 +71,11 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
      */
     @Test
     public void retrieving_non_existing_User_returns_correct_error_message() {
-        try {
-            OSIAM_CONNECTOR.getUser(UUID.randomUUID().toString(), accessToken);
-            fail("expected exception");
-        } catch (NoResultException e) {
-            String errorMessage = e.getMessage();
-            assertTrue(errorMessage.contains("User"));
-            assertTrue(errorMessage.contains("not found"));
-        }
+        thrown.expect(NoResultException.class);
+        thrown.expectMessage(startsWith("User"));
+        thrown.expectMessage(containsString("not found"));
+
+        OSIAM_CONNECTOR.getUser(UUID.randomUUID().toString(), accessToken);
     }
 
     /**
@@ -82,14 +83,11 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
      */
     @Test
     public void retrieving_non_existing_Group_returns_correct_error_message() {
-        try {
-            OSIAM_CONNECTOR.getGroup(UUID.randomUUID().toString(), accessToken);
-            fail("expected exception");
-        } catch (NoResultException e) {
-            String errorMessage = e.getMessage();
-            assertTrue(errorMessage.contains("Group"));
-            assertTrue(errorMessage.contains("not found"));
-        }
+        thrown.expect(NoResultException.class);
+        thrown.expectMessage(startsWith("Group"));
+        thrown.expectMessage(containsString("not found"));
+
+        OSIAM_CONNECTOR.getGroup(UUID.randomUUID().toString(), accessToken);
     }
 
     /**
@@ -97,14 +95,11 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
      */
     @Test
     public void retrieving_User_with_Group_id_returns_correct_error_message() {
-        try {
-            OSIAM_CONNECTOR.getUser("7c198d82-f03b-4fa8-806c-16b26172bba5", accessToken);
-            fail("expected exception");
-        } catch (NoResultException e) {
-            String errorMessage = e.getMessage();
-            assertTrue(errorMessage.contains("User"));
-            assertTrue(errorMessage.contains("not found"));
-        }
+        thrown.expect(NoResultException.class);
+        thrown.expectMessage(startsWith("User"));
+        thrown.expectMessage(containsString("not found"));
+
+        OSIAM_CONNECTOR.getUser("7c198d82-f03b-4fa8-806c-16b26172bba5", accessToken);
     }
 
     /**
@@ -112,15 +107,12 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
      */
     @Test
     public void create_user_without_userName_returns_correct_error_message() {
+        thrown.expect(ConflictException.class);
+        thrown.expectMessage(containsString("userName"));
+        thrown.expectMessage(containsString("mandatory"));
+
         User user = new User.Builder().build();
-        try {
-            OSIAM_CONNECTOR.createUser(user, accessToken);
-            fail("expected exception");
-        } catch (ConflictException e) {
-            String errorMessage = e.getMessage();
-            assertTrue(errorMessage.contains("userName"));
-            assertTrue(errorMessage.contains("mandatory"));
-        }
+        OSIAM_CONNECTOR.createUser(user, accessToken);
     }
 
     /**
@@ -128,15 +120,12 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
      */
     @Test
     public void create_group_without_displayName_returns_correct_error_message() {
+        thrown.expect(ConflictException.class);
+        thrown.expectMessage(containsString("displayName"));
+        thrown.expectMessage(containsString("mandatory"));
+
         Group group = new Group.Builder().build();
-        try {
-            OSIAM_CONNECTOR.createGroup(group, accessToken);
-            fail("expected exception");
-        } catch (ConflictException e) {
-            String errorMessage = e.getMessage();
-            assertTrue(errorMessage.contains("displayName"));
-            assertTrue(errorMessage.contains("mandatory"));
-        }
+        OSIAM_CONNECTOR.createGroup(group, accessToken);
     }
 
     /**
@@ -144,16 +133,13 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
      */
     @Test
     public void create_user_with_existing_userName_returns_correct_error_message() {
+        thrown.expect(ConflictException.class);
+        thrown.expectMessage(containsString("user"));
+        thrown.expectMessage(containsString("already taken"));
+
         String existingUserName = "jcambell";
         User user = new User.Builder(existingUserName).build();
-        try {
-            OSIAM_CONNECTOR.createUser(user, accessToken);
-            fail("expected exception");
-        } catch (ConflictException e) {
-            String errorMessage = e.getMessage();
-            assertTrue(errorMessage.contains("user"));
-            assertTrue(errorMessage.contains("already taken"));
-        }
+        OSIAM_CONNECTOR.createUser(user, accessToken);
     }
 
     /**
@@ -161,15 +147,13 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
      */
     @Test
     public void create_user_with_existing_external_id_returns_correct_error_message() {
+        thrown.expect(ConflictException.class);
+        thrown.expectMessage(containsString("user"));
+        thrown.expectMessage(containsString("already taken"));
+
         String existingExternalId = "cmiller";
         User user = new User.Builder("newUser").setExternalId(existingExternalId).build();
-        try {
-            OSIAM_CONNECTOR.createUser(user, accessToken);
-            fail("expected exception");
-        } catch (ConflictException e) {
-            String errorMessage = e.getMessage();
-            assertTrue(errorMessage.contains("user") && errorMessage.contains("already taken"));
-        }
+        OSIAM_CONNECTOR.createUser(user, accessToken);
     }
 
     /**
@@ -178,15 +162,13 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
      */
     @Test
     public void update_user_with_existing_userName_returns_correct_error_message() {
+        thrown.expect(ConflictException.class);
+        thrown.expectMessage(containsString("user"));
+        thrown.expectMessage(containsString("already taken"));
+
         String existingUserName = "jcambell";
         UpdateUser updateUser = new UpdateUser.Builder().updateUserName(existingUserName).build();
-        try {
-            OSIAM_CONNECTOR.updateUser("aba67300-74f1-4e51-a68a-0a6c5c45b79c", updateUser, accessToken);
-            fail("expected exception");
-        } catch (ConflictException e) {
-            String errorMessage = e.getMessage();
-            assertTrue(errorMessage.contains("user") && errorMessage.contains("already taken"));
-        }
+        OSIAM_CONNECTOR.updateUser("aba67300-74f1-4e51-a68a-0a6c5c45b79c", updateUser, accessToken);
     }
 
     /**
@@ -195,15 +177,13 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
      */
     @Test
     public void update_group_with_existing_displayName_returns_correct_error_message() {
+        thrown.expect(ConflictException.class);
+        thrown.expectMessage(containsString("group"));
+        thrown.expectMessage(containsString("already taken"));
+
         String existingUserName = "test_group10";
         UpdateGroup updateUser = new UpdateGroup.Builder().updateDisplayName(existingUserName).build();
-        try {
-            OSIAM_CONNECTOR.updateGroup("0cb908cf-81a9-4966-803f-a3eb92968bb4", updateUser, accessToken);
-            fail("expected exception");
-        } catch (ConflictException e) {
-            String errorMessage = e.getMessage();
-            assertTrue(errorMessage.contains("group") && errorMessage.contains("already taken"));
-        }
+        OSIAM_CONNECTOR.updateGroup("0cb908cf-81a9-4966-803f-a3eb92968bb4", updateUser, accessToken);
     }
 
     /**
@@ -212,15 +192,13 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
      */
     @Test
     public void update_user_with_existing_external_id_returns_correct_error_message() {
+        thrown.expect(ConflictException.class);
+        thrown.expectMessage(containsString("user"));
+        thrown.expectMessage(containsString("already taken"));
+
         String existingExternalId = "cmiller";
         UpdateUser updateUser = new UpdateUser.Builder().updateExternalId(existingExternalId).build();
-        try {
-            OSIAM_CONNECTOR.updateUser("aba67300-74f1-4e51-a68a-0a6c5c45b79c", updateUser, accessToken);
-            fail("expected exception");
-        } catch (ConflictException e) {
-            String errorMessage = e.getMessage();
-            assertTrue(errorMessage.contains("user") && errorMessage.contains("already taken"));
-        }
+        OSIAM_CONNECTOR.updateUser("aba67300-74f1-4e51-a68a-0a6c5c45b79c", updateUser, accessToken);
     }
 
     /**
@@ -229,15 +207,13 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
      */
     @Test
     public void update_group_with_existing_external_id_returns_correct_error_message() {
+        thrown.expect(ConflictException.class);
+        thrown.expectMessage(containsString("group"));
+        thrown.expectMessage(containsString("already taken"));
+
         String existingExternalId = "cmiller";
         UpdateGroup updateUser = new UpdateGroup.Builder().updateExternalId(existingExternalId).build();
-        try {
-            OSIAM_CONNECTOR.updateGroup("69e1a5dc-89be-4343-976c-b5541af249f4", updateUser, accessToken);
-            fail("expected exception");
-        } catch (ConflictException e) {
-            String errorMessage = e.getMessage();
-            assertTrue(errorMessage.contains("group") && errorMessage.contains("already taken"));
-        }
+        OSIAM_CONNECTOR.updateGroup("69e1a5dc-89be-4343-976c-b5541af249f4", updateUser, accessToken);
     }
 
     /**
@@ -246,16 +222,13 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
      */
     @Test
     public void replace_user_with_existing_username_returns_correct_error_message() {
+        thrown.expect(ConflictException.class);
+        thrown.expectMessage(containsString("user"));
+        thrown.expectMessage(containsString("already taken"));
+
         String existingUsername = "cmiller";
-        User user = new User.Builder(existingUsername)
-                .build();
-        try {
-            OSIAM_CONNECTOR.replaceUser("aba67300-74f1-4e51-a68a-0a6c5c45b79c", user, accessToken);
-            fail("expected exception");
-        } catch (ConflictException e) {
-            String errorMessage = e.getMessage();
-            assertTrue(errorMessage.contains("user") && errorMessage.contains("already taken"));
-        }
+        User user = new User.Builder(existingUsername).build();
+        OSIAM_CONNECTOR.replaceUser("aba67300-74f1-4e51-a68a-0a6c5c45b79c", user, accessToken);
     }
 
     /**
@@ -264,16 +237,13 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
      */
     @Test
     public void replace_user_with_existing_external_id_returns_correct_error_message() {
+        thrown.expect(ConflictException.class);
+        thrown.expectMessage(containsString("user"));
+        thrown.expectMessage(containsString("already taken"));
+
         String existingExternalId = "cmiller";
-        User user = new User.Builder("newUser").setExternalId(existingExternalId)
-                .build();
-        try {
-            OSIAM_CONNECTOR.replaceUser("aba67300-74f1-4e51-a68a-0a6c5c45b79c", user, accessToken);
-            fail("expected exception");
-        } catch (ConflictException e) {
-            String errorMessage = e.getMessage();
-            assertTrue(errorMessage.contains("user") && errorMessage.contains("already taken"));
-        }
+        User user = new User.Builder("newUser").setExternalId(existingExternalId).build();
+        OSIAM_CONNECTOR.replaceUser("aba67300-74f1-4e51-a68a-0a6c5c45b79c", user, accessToken);
     }
 
     /**
@@ -282,16 +252,13 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
      */
     @Test
     public void replace_group_with_existing_displayname_returns_correct_error_message() {
+        thrown.expect(ConflictException.class);
+        thrown.expectMessage(containsString("group"));
+        thrown.expectMessage(containsString("already taken"));
+
         String existingDisplayName = "test_group02";
-        Group group = new Group.Builder(existingDisplayName)
-                .setId("69e1a5dc-89be-4343-976c-b5541af249f4").build();
-        try {
-            OSIAM_CONNECTOR.replaceGroup("69e1a5dc-89be-4343-976c-b5541af249f4", group, accessToken);
-            fail("expected exception");
-        } catch (ConflictException e) {
-            String errorMessage = e.getMessage();
-            assertTrue(errorMessage.contains("group") && errorMessage.contains("already taken"));
-        }
+        Group group = new Group.Builder(existingDisplayName).setId("69e1a5dc-89be-4343-976c-b5541af249f4").build();
+        OSIAM_CONNECTOR.replaceGroup("69e1a5dc-89be-4343-976c-b5541af249f4", group, accessToken);
     }
 
     /**
@@ -300,16 +267,14 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
      */
     @Test
     public void replace_group_with_existing_external_id_returns_correct_error_message() {
+        thrown.expect(ConflictException.class);
+        thrown.expectMessage(containsString("group"));
+        thrown.expectMessage(containsString("already taken"));
+
         String existingExternalId = "cmiller";
-        Group group = new Group.Builder("newGroupr").setExternalId(existingExternalId)
+        Group group = new Group.Builder("newGroup").setExternalId(existingExternalId)
                 .setId("69e1a5dc-89be-4343-976c-b5541af249f4").build();
-        try {
-            OSIAM_CONNECTOR.replaceGroup("69e1a5dc-89be-4343-976c-b5541af249f4", group, accessToken);
-            fail("expected exception");
-        } catch (ConflictException e) {
-            String errorMessage = e.getMessage();
-            assertTrue(errorMessage.contains("group") && errorMessage.contains("already taken"));
-        }
+        OSIAM_CONNECTOR.replaceGroup("69e1a5dc-89be-4343-976c-b5541af249f4", group, accessToken);
     }
 
     /**
@@ -317,16 +282,14 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
      */
     @Test
     public void create_group_with_existing_displayName_returns_correct_error_message() {
+        thrown.expect(ConflictException.class);
+        thrown.expectMessage(containsString("group"));
+        thrown.expectMessage(containsString("displayname"));
+        thrown.expectMessage(containsString("already taken"));
+
         String existingGroupName = "test_group02";
         Group group = new Group.Builder(existingGroupName).build();
-        try {
-            OSIAM_CONNECTOR.createGroup(group, accessToken);
-            fail("expected exception");
-        } catch (ConflictException e) {
-            String errorMessage = e.getMessage();
-            assertTrue(errorMessage.contains("group") && errorMessage.contains("displayname")
-                    && errorMessage.contains("already taken"));
-        }
+        OSIAM_CONNECTOR.createGroup(group, accessToken);
     }
 
     /**
@@ -334,17 +297,14 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
      */
     @Test
     public void create_group_with_existing_external_id_returns_correct_error_message() {
+        thrown.expect(ConflictException.class);
+        thrown.expectMessage(containsString("group"));
+        thrown.expectMessage(containsString("externalId"));
+        thrown.expectMessage(containsString("already taken"));
+
         String existingGroupName = "newGroup";
         Group group = new Group.Builder(existingGroupName).setExternalId("cmiller").build();
-        try {
-            OSIAM_CONNECTOR.createGroup(group, accessToken);
-            fail("expected exception");
-        } catch (ConflictException e) {
-            String errorMessage = e.getMessage();
-            assertTrue(errorMessage.contains("group"));
-            assertTrue(errorMessage.contains("externalId"));
-            assertTrue(errorMessage.contains("already taken"));
-        }
+        OSIAM_CONNECTOR.createGroup(group, accessToken);
     }
 
     /**
@@ -352,17 +312,15 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
      */
     @Test
     public void login_with_wrong_client_credentials() {
+        thrown.expect(UnauthorizedException.class);
+        thrown.expectMessage(containsString("Bad credentials"));
+
         final OsiamConnector connectorWithWrongSecret = new OsiamConnector.Builder().
                 setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
                 setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
                 setClientId("example-client").
                 setClientSecret("wrongsecret")
                 .build();
-        try {
-            connectorWithWrongSecret.retrieveAccessToken();
-        } catch (UnauthorizedException e) {
-            String errorMessage = e.getMessage();
-            assertTrue(errorMessage.contains("Bad credentials"));
-        }
+        connectorWithWrongSecret.retrieveAccessToken();
     }
 }

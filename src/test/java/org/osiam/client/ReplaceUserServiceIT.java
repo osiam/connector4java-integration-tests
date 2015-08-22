@@ -23,13 +23,13 @@
 
 package org.osiam.client;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-
-import java.util.UUID;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.oauth.Scope;
@@ -39,18 +39,20 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import java.util.UUID;
+
+import static org.hamcrest.CoreMatchers.containsString;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class })
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class})
 @DatabaseSetup(value = "/database_seed.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class ReplaceUserServiceIT extends AbstractIntegrationTestBase {
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     private static final String USER_NAME_EXISTING_USER = "hsimpson";
 
@@ -58,15 +60,14 @@ public class ReplaceUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
     public void replace_user_which_not_existing_raises_exception() {
+
+        thrown.expect(NoResultException.class);
+        thrown.expectMessage(containsString("not found"));
+
         accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
 
         User patchedUser = new User.Builder(USER_NAME_EXISTING_USER).build();
-        try {
-            OSIAM_CONNECTOR.replaceUser(NOT_EXISTING_ID, patchedUser, accessToken);
-            fail("Exception expected");
-        } catch (NoResultException e) {
-            assertThat(e.getMessage(), containsString("not found"));
-        }
+        OSIAM_CONNECTOR.replaceUser(NOT_EXISTING_ID, patchedUser, accessToken);
     }
 
 }

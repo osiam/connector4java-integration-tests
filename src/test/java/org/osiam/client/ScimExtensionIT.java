@@ -227,7 +227,6 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
         User updatedUser = OSIAM_CONNECTOR.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
 
         updatedUser.getExtension(URN);
-        fail("expected exception");
     }
 
     @Test

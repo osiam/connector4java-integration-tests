@@ -62,7 +62,6 @@ public class AccessTokenValidationIT extends AbstractIntegrationTestBase {
     public void invalid_access_token_can_be_recognized() {
         AccessToken invalidAccessToken = new AccessToken.Builder("invalid").build();
         OSIAM_CONNECTOR.validateAccessToken(invalidAccessToken);
-        fail("Exception expected");
     }
 
     @Test

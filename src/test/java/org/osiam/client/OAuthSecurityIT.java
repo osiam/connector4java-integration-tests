@@ -23,17 +23,14 @@
 
 package org.osiam.client;
 
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.core.MediaType;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -45,8 +42,6 @@ public class OAuthSecurityIT extends AbstractIntegrationTestBase {
                 .path("example-client")
                 .request(MediaType.APPLICATION_JSON)
                 .get(String.class);
-
-        fail("Exception expected");
     }
 
     @Test(expected = NotAuthorizedException.class)
@@ -54,8 +49,6 @@ public class OAuthSecurityIT extends AbstractIntegrationTestBase {
         CLIENT.target(RESOURCE_ENDPOINT_ADDRESS + "/Users")
                 .request(MediaType.APPLICATION_JSON)
                 .get(String.class);
-
-        fail("Exception expected");
     }
 
     @Test(expected = NotAuthorizedException.class)
@@ -63,8 +56,6 @@ public class OAuthSecurityIT extends AbstractIntegrationTestBase {
         CLIENT.target(RESOURCE_ENDPOINT_ADDRESS + "/Groups")
                 .request(MediaType.APPLICATION_JSON)
                 .get(String.class);
-
-        fail("Exception expected");
     }
 
     @Test(expected = NotAuthorizedException.class)
@@ -72,7 +63,5 @@ public class OAuthSecurityIT extends AbstractIntegrationTestBase {
         CLIENT.target(RESOURCE_ENDPOINT_ADDRESS + "/Metrics")
                 .request(MediaType.APPLICATION_JSON)
                 .get(String.class);
-
-        fail("Exception expected");
     }
 }

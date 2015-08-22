@@ -23,18 +23,10 @@
 
 package org.osiam.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,25 +36,23 @@ import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
-import org.osiam.resources.scim.Address;
-import org.osiam.resources.scim.Email;
-import org.osiam.resources.scim.Name;
-import org.osiam.resources.scim.SCIMSearchResult;
-import org.osiam.resources.scim.User;
+import org.osiam.resources.scim.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class })
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class})
 @DatabaseSetup(value = "/database_seed.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class EditUserServiceIT extends AbstractIntegrationTestBase {
@@ -87,14 +77,12 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
     public void create_user_with_no_username_raises_exception() {
         initializeUserWithNoUserName();
         createUser();
-        fail("Exception expected");
     }
 
     @Test(expected = ConflictException.class)
     public void create_user_with_existing_username_raises_exception() {
         initializeUserWithExistingUserName();
         createUser();
-        fail("Exception expected");
     }
 
     @Test
@@ -174,7 +162,6 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
         whenUserIsDeleted();
         assertThatUserIsRemoveFromServer();
         whenUserIsDeleted();
-        fail();
     }
 
     @Test(expected = UnauthorizedException.class)
@@ -183,7 +170,6 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
         givenAValidUserIDForDeletion();
         givenAnInvalidAccessToken();
         whenUserIsDeleted();
-        fail();
     }
 
     private void initializeUserWithNoUserName() {
@@ -275,7 +261,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
         if ((expectedMultiValuedAttributes == null || expectedMultiValuedAttributes
                 .size() == 0)
                 && (actualMultiValuedAttributes == null || actualMultiValuedAttributes
-                        .size() == 0)) {
+                .size() == 0)) {
             return;
         }
         assertEquals(expectedMultiValuedAttributes.size(),
@@ -298,7 +284,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     private Email getMultiAttributeWithValue(List<Email> multiValuedAttributes,
-            String expectedValue) {
+                                             String expectedValue) {
         Email email = null;
         for (Email actAttribute : multiValuedAttributes) {
             if (actAttribute.getValue().equals(expectedValue)) {
@@ -321,7 +307,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
     }
 
     private void assertEqualsAddresses(List<Address> expectedAddresses,
-            List<Address> actualAddresses) {
+                                       List<Address> actualAddresses) {
         assertEquals(expectedAddresses.size(), actualAddresses.size());
         for (int count = 0; count < expectedAddresses.size(); count++) {
             Address expectedAddress = expectedAddresses.get(count);
