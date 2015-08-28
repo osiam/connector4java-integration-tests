@@ -23,12 +23,10 @@
 
 package org.osiam.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConflictException;
@@ -41,15 +39,15 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class })
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class})
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 @DatabaseSetup("/database_seed_me_user.xml")
 public class MeUserServiceIT extends AbstractIntegrationTestBase {
@@ -84,8 +82,6 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     @Test(expected = ConflictException.class)
     public void get_current_user_while_logged_in_with_client_credential_raises_exception() throws Exception {
         OSIAM_CONNECTOR.getCurrentUserBasic(OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN));
-
-        fail("Exception expected");
     }
 
     @Test(expected = UnauthorizedException.class)

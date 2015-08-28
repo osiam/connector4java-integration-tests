@@ -101,6 +101,5 @@ public class GroupServiceIT extends AbstractIntegrationTestBase {
     @Test(expected = NoResultException.class)
     public void get_an_invalid_group_raises_exception() throws Exception {
         OSIAM_CONNECTOR.getGroup(INVALID_ID, accessToken);
-        fail("Exception expected");
     }
 }

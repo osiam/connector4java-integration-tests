@@ -23,8 +23,10 @@
 
 package org.osiam.client;
 
-import static org.junit.Assert.fail;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConnectionInitializationException;
@@ -34,15 +36,10 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class })
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class})
 @DatabaseSetup(value = "/database_seed_activation.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class UserActivationLoginIT extends AbstractIntegrationTestBase {
@@ -50,6 +47,5 @@ public class UserActivationLoginIT extends AbstractIntegrationTestBase {
     @Test(expected = ConnectionInitializationException.class)
     public void log_in_as_an_deactivated_user_is_impossible() {
         OSIAM_CONNECTOR.retrieveAccessToken("hsimpson", "koala", Scope.ADMIN);
-        fail("Exception expected");
     }
 }

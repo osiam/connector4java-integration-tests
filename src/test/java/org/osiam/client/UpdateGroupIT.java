@@ -23,19 +23,10 @@
 
 package org.osiam.client;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,15 +41,18 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class })
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class UpdateGroupIT extends AbstractIntegrationTestBase {
@@ -111,7 +105,6 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
         createUpdateUserWithUpdateFields();
         idExistingGroup = UUID.randomUUID().toString();
         updateGroup();
-        fail("Exception expected");
     }
 
     @Test(expected = NoResultException.class)
@@ -120,7 +113,6 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
         createUpdateUserWithUpdateFields();
         idExistingGroup = ID_USER_HSIMPSON;
         updateGroup();
-        fail("Exception expected");
     }
 
     @Test
@@ -150,7 +142,6 @@ public class UpdateGroupIT extends AbstractIntegrationTestBase {
         getOriginalGroup();
         createUpdateGroupWithAddingInvalidMembers();
         updateGroup();
-        fail("Exception expected");
     }
 
     @Test

@@ -68,7 +68,6 @@ public class LoginClientCredentialsIT extends AbstractIntegrationTestBase {
                 .build();
         connectorWithWrongSecret.retrieveAccessToken();
 
-        fail("Exception expected");
     }
 
 }
