@@ -5,7 +5,7 @@ The integration-tests for OSIAM.
 ## Install
 
 You can run the integration-tests on your machine, you only need to install
-java, maven and docker.
+java, maven and docker, and configure docker.
 
 The tests will fetch the snapshot dependencies from evolvis or you clone the
 following repos and install them with ```mvn clean install```
@@ -20,6 +20,21 @@ https://github.com/osiam/addon-self-administration-plugin-api
 https://github.com/osiam/examples/tree/master/addon-self-administration-plugin
 https://github.com/osiam/addon-administration
 ```
+
+### Configure Docker
+
+The integration-tests use the [docker-maven-plugin](https://github.com/alexec/docker-maven-plugin),
+which utilizes [docker-java](https://github.com/docker-java/docker-java).
+In order to run the integration-tests, you need to ensure that your docker daemon
+listens on the TCP port `2375`.
+
+How exactly this works depends on your operating system, but
+
+    echo 'DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock' >> /etc/default/docker
+
+is a good starting point. For further information, please refer to  the
+[docker-java README](https://github.com/docker-java/docker-java#build-with-maven)
+and the official Docker documentation.
 
 ## Run
 
