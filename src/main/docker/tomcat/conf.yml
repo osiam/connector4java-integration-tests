@@ -12,6 +12,7 @@ links:
 ports:
   - 8180
   - 11110
+  - 8000
 
 healthChecks:
   pings:

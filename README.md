@@ -48,3 +48,24 @@ If you are on mac or want to run them in a VM, just checkout the
 [OSIAM vagrant VM](https://github.com/osiam/vagrant). It's pretty easy to setup.
 Just run the above mentioned command in the OSIAM vagrant VM and run the
 integration-tests against the VM.
+
+## Cross Project Debugging
+
+If you want to use the integration tests to debug code in other OSIAM projects,
+you need to enable the `debug` profile. Please remember that this overrides
+the active-by-default setting for the `postgres` profile, so if you want to use
+it, run it like
+
+    $ mvn clean pre-integration-test -P postgres,debug
+
+This changes nothing for the `mysql` profile, so running
+
+    $ mvn clean pre-integration-test -P mysql,debug
+
+is equivalent.
+
+In your IDE containing the project you want to debug, you can now attach the debugger.
+Just use the normal remote debugging setup for your IDE and connect to `localhost:8000`.
+Set your breakpoints as usual and run the test in the ITs project.
+Your IDE should pop up as soon as the service reaches the breakpoint.
+

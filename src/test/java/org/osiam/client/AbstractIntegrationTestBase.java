@@ -49,8 +49,8 @@ public abstract class AbstractIntegrationTestBase {
     protected static final Client CLIENT = ClientBuilder.newClient();
 
     static {
-        OsiamConnector.setConnectTimeout(10000);
-        OsiamConnector.setReadTimeout(30000);
+        OsiamConnector.setConnectTimeout(Integer.parseInt(System.getProperty("connector.timeout", "-1")));
+        OsiamConnector.setReadTimeout(Integer.parseInt(System.getProperty("connector.timeout", "-1")));
 
         OSIAM_CONNECTOR = new OsiamConnector.Builder()
                 .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
