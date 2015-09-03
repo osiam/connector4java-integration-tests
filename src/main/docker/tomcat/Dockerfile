@@ -13,4 +13,6 @@ RUN sed -i 's/8080/8180/g' $CATALINA_HOME/conf/server.xml
 RUN cp -p /usr/share/zoneinfo/${user.timezone} /etc/localtime
 RUN echo "${user.timezone}" > /etc/timezone
 
-EXPOSE 8180 11110
+EXPOSE 8180 11110 8000
+
+CMD [ "catalina.sh", ${debug.pre.command.tomcat} "run"]
