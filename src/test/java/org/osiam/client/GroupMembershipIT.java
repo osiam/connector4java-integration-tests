@@ -24,29 +24,21 @@
 package org.osiam.client;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
-import java.util.Collections;
+import java.util.*;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.osiam.client.exception.NoResultException;
-import org.osiam.client.oauth.Scope;
-import org.osiam.resources.scim.Group;
-import org.osiam.resources.scim.MemberRef;
-import org.osiam.resources.scim.User;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.junit.*;
+import org.junit.runner.*;
+import org.osiam.client.exception.*;
+import org.osiam.client.oauth.*;
+import org.osiam.resources.scim.*;
+import org.springframework.test.context.*;
+import org.springframework.test.context.junit4.*;
+import org.springframework.test.context.support.*;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import com.github.springtestdbunit.*;
+import com.github.springtestdbunit.annotation.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -120,7 +112,6 @@ public class GroupMembershipIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    @Ignore("Fails because of a missing feature in resource-server")
     public void type_of_a_group_membership_can_be_retrieved() {
         MemberRef newMemberRef = new MemberRef.Builder()
                 .setValue("cef9452e-00a9-4cec-a086-d171374ffbef")
