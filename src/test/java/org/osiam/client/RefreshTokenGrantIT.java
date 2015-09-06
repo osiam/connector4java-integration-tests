@@ -78,9 +78,7 @@ public class RefreshTokenGrantIT extends AbstractIntegrationTestBase {
                 .setClientRedirectUri("http://localhost:5000/oauth2")
                 .build();
         AccessToken shortLivingAccessToken = connector.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
-        while (!shortLivingAccessToken.isExpired()) {
-            TimeUnit.MILLISECONDS.sleep(100);
-        }
+        waitForAccessTokenToExpire(shortLivingAccessToken);
 
         // Refresh the previously token with the retrieved refresh token
         AccessToken accessTokenRF = connector.refreshAccessToken(shortLivingAccessToken);
@@ -91,5 +89,13 @@ public class RefreshTokenGrantIT extends AbstractIntegrationTestBase {
                 shortLivingAccessToken.getRefreshToken(),
                 accessTokenRF.getRefreshToken());
         assertNotEquals("The access tokens are equal.", shortLivingAccessToken.getToken(), accessTokenRF.getToken());
+    }
+
+    private void waitForAccessTokenToExpire(final AccessToken shortLivingAccessToken) throws InterruptedException {
+        int tries = 0;
+        while (tries <= 100 && !shortLivingAccessToken.isExpired()) {
+            tries++;
+            TimeUnit.MILLISECONDS.sleep(100);
+        }
     }
 }
