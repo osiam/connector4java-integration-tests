@@ -122,7 +122,7 @@ class ControllerIT extends AbstractIT {
 
             // handler for any failure status code:
             response.failure = { resp, json ->
-                responseErrorCode = json.error_code
+                responseErrorCode = json.status
                 responseStatusCode = resp.statusLine.statusCode
                 contentType = resp.headers."Content-Type"
             }
@@ -144,24 +144,24 @@ class ControllerIT extends AbstractIT {
         'g'      | 'userName lt "n"'                           | 200                  | null                      // String
         'h'      | 'userName le "m"'                           | 200                  | null                      // String
         'i'      | 'emails.type eq "work"'                     | 200                  | null                      // Enum (EmailEntity)
-        'j'      | 'emails.type co "work"'                     | 400                  | 'BAD_REQUEST'             // Enum (EmailEntity)
-        'k'      | 'emails.type sw "work"'                     | 400                  | 'BAD_REQUEST'             // Enum (EmailEntity)
+        'j'      | 'emails.type co "work"'                     | 400                  | '400'                     // Enum (EmailEntity)
+        'k'      | 'emails.type sw "work"'                     | 400                  | '400'                     // Enum (EmailEntity)
         'l'      | 'emails.type pr'                            | 200                  | null                      // Enum (EmailEntity)
-        'm'      | 'emails.type gt "work"'                     | 400                  | 'BAD_REQUEST'             // Enum (EmailEntity)
-        'n'      | 'emails.type ge "work"'                     | 400                  | 'BAD_REQUEST'             // Enum (EmailEntity)
-        'o'      | 'emails.type lt "work"'                     | 400                  | 'BAD_REQUEST'             // Enum (EmailEntity)
-        'p'      | 'emails.type le "work"'                     | 400                  | 'BAD_REQUEST'             // Enum (EmailEntity)
+        'm'      | 'emails.type gt "work"'                     | 400                  | '400'                     // Enum (EmailEntity)
+        'n'      | 'emails.type ge "work"'                     | 400                  | '400'                     // Enum (EmailEntity)
+        'o'      | 'emails.type lt "work"'                     | 400                  | '400'                     // Enum (EmailEntity)
+        'p'      | 'emails.type le "work"'                     | 400                  | '400'                     // Enum (EmailEntity)
         'q'      | 'active eq "true"'                          | 200                  | null                      // boolean
-        'r'      | 'active co "true"'                          | 400                  | 'BAD_REQUEST'             // boolean
-        's'      | 'active sw "true"'                          | 400                  | 'BAD_REQUEST'             // boolean
+        'r'      | 'active co "true"'                          | 400                  | '400'                     // boolean
+        's'      | 'active sw "true"'                          | 400                  | '400'                     // boolean
         't'      | 'active pr'                                 | 200                  | null                      // boolean
-        'u'      | 'active gt "true"'                          | 400                  | 'BAD_REQUEST'             // boolean
-        'v'      | 'active ge "true"'                          | 400                  | 'BAD_REQUEST'             // boolean
-        'w'      | 'active lt "true"'                          | 400                  | 'BAD_REQUEST'             // boolean
-        'x'      | 'active le "true"'                          | 400                  | 'BAD_REQUEST'             // boolean
-        'y'      | 'meta.created co "2013-08-08T19:46:20.638"' | 400                  | 'BAD_REQUEST'             // Date
-        'z'      | 'meta.created sw "2013-08-08T1"'            | 400                  | 'BAD_REQUEST'             // Date
-        'za'     | 'active pr "true"'                          | 400                  | 'BAD_REQUEST'             // pr with value
+        'u'      | 'active gt "true"'                          | 400                  | '400'                     // boolean
+        'v'      | 'active ge "true"'                          | 400                  | '400'                     // boolean
+        'w'      | 'active lt "true"'                          | 400                  | '400'                     // boolean
+        'x'      | 'active le "true"'                          | 400                  | '400'                     // boolean
+        'y'      | 'meta.created co "2013-08-08T19:46:20.638"' | 400                  | '400'                     // Date
+        'z'      | 'meta.created sw "2013-08-08T1"'            | 400                  | '400'                     // Date
+        'za'     | 'active pr "true"'                          | 400                  | '400'                     // pr with value
     }
 
     def "REGT-005: A search filter String matching two users should return totalResults=2 and two unique Resource elements."() {
