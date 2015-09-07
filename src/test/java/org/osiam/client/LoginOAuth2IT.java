@@ -365,10 +365,8 @@ public class LoginOAuth2IT extends AbstractIntegrationTestBase {
                     AUTH_ENDPOINT_ADDRESS + "/oauth/authorize");
 
             List<NameValuePair> loginCredentials = new ArrayList<>();
-            loginCredentials.add(new BasicNameValuePair("user_oauth_approval",
-                    "true"));
-            UrlEncodedFormEntity loginCredentialsEntity = new UrlEncodedFormEntity(
-                    loginCredentials, "UTF-8");
+            loginCredentials.add(new BasicNameValuePair("user_oauth_approval", "true"));
+            UrlEncodedFormEntity loginCredentialsEntity = new UrlEncodedFormEntity(loginCredentials, "UTF-8");
 
             httpPost.setEntity(loginCredentialsEntity);
             authCodeResponse = httpClient.execute(httpPost);
@@ -390,11 +388,11 @@ public class LoginOAuth2IT extends AbstractIntegrationTestBase {
                 break;
             }
             if (actHeaderElement.getName().contains("error")) {
-                throw new Error("The user had denied the acces to his data.");
+                fail("The user had denied the access to his data.");
             }
         }
         if (authCode == null) {
-            throw new Error("Could not find any auth code or error message in the given Response");
+            fail("Could not find any auth code or error message in the given Response");
         }
     }
 }
