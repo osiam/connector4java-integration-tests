@@ -45,6 +45,41 @@ public class OAuthSecurityIT extends AbstractIntegrationTestBase {
     }
 
     @Test(expected = NotAuthorizedException.class)
+    public void oauth_token_is_secured() throws IOException {
+        CLIENT.target(AUTH_ENDPOINT_ADDRESS + "/oauth/token")
+                .request(MediaType.APPLICATION_JSON)
+                .get(String.class);
+    }
+
+    @Test(expected = NotAuthorizedException.class)
+    public void fb_oauth_token_is_secured() throws IOException {
+        CLIENT.target(AUTH_ENDPOINT_ADDRESS + "/fb/oauth/access_token")
+                .request(MediaType.APPLICATION_JSON)
+                .get(String.class);
+    }
+
+    @Test(expected = NotAuthorizedException.class)
+    public void token_validation_is_secured() throws IOException {
+        CLIENT.target(AUTH_ENDPOINT_ADDRESS + "/token/validation")
+                .request(MediaType.APPLICATION_JSON)
+                .get(String.class);
+    }
+
+    @Test(expected = NotAuthorizedException.class)
+    public void token_revocation_is_secured() throws IOException {
+        CLIENT.target(AUTH_ENDPOINT_ADDRESS + "/token/revocation")
+                .request(MediaType.APPLICATION_JSON)
+                .get(String.class);
+    }
+
+    @Test(expected = NotAuthorizedException.class)
+    public void token_revocation_for_user_id_is_secured() throws IOException {
+        CLIENT.target(AUTH_ENDPOINT_ADDRESS + "/token/revocation/exampleUserId")
+                .request(MediaType.APPLICATION_JSON)
+                .get(String.class);
+    }
+
+    @Test(expected = NotAuthorizedException.class)
     public void users_is_secured() throws IOException {
         CLIENT.target(RESOURCE_ENDPOINT_ADDRESS + "/Users")
                 .request(MediaType.APPLICATION_JSON)
