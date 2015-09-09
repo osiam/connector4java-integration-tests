@@ -64,7 +64,7 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class ClientManagementIT extends AbstractIntegrationTestBase {
 
-    private static final String AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS = "http://localhost:8180/osiam-auth-server/Client";
+    private static final String AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS = AUTH_ENDPOINT_ADDRESS + "/Client";
     private static final String AUTHORIZATION = "Authorization";
     private static final String BEARER = "Bearer ";
 

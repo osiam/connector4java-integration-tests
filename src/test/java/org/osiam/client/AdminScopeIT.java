@@ -68,7 +68,7 @@ public class AdminScopeIT extends AbstractIntegrationTestBase {
     public void can_access_ServiceProviderConfigs_endpoint() {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
 
-        Response response = CLIENT.target("http://localhost:8180/osiam-resource-server")
+        Response response = CLIENT.target(RESOURCE_ENDPOINT_ADDRESS)
                 .path("ServiceProviderConfigs")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())
@@ -81,7 +81,7 @@ public class AdminScopeIT extends AbstractIntegrationTestBase {
     public void can_access_root() {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
 
-        Response response = CLIENT.target("http://localhost:8180/osiam-resource-server")
+        Response response = CLIENT.target(RESOURCE_ENDPOINT_ADDRESS)
                 .path("/")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())
@@ -94,7 +94,7 @@ public class AdminScopeIT extends AbstractIntegrationTestBase {
     public void can_access_root_with_post() {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
 
-        Response response = CLIENT.target("http://localhost:8180/osiam-resource-server")
+        Response response = CLIENT.target(RESOURCE_ENDPOINT_ADDRESS)
                 .path(".search")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())
@@ -107,7 +107,7 @@ public class AdminScopeIT extends AbstractIntegrationTestBase {
     public void can_access_metrics_endpoint() {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
 
-        Response response = CLIENT.target("http://localhost:8180/osiam-resource-server")
+        Response response = CLIENT.target(RESOURCE_ENDPOINT_ADDRESS)
                 .path("Metrics")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())
@@ -120,7 +120,7 @@ public class AdminScopeIT extends AbstractIntegrationTestBase {
     public void can_access_extensions_endpoint() {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
 
-        Response response = CLIENT.target("http://localhost:8180/osiam-resource-server")
+        Response response = CLIENT.target(RESOURCE_ENDPOINT_ADDRESS)
                 .path("osiam").path("extension-definition")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())
@@ -430,7 +430,7 @@ public class AdminScopeIT extends AbstractIntegrationTestBase {
     public void can_retrieve_a_client() {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
 
-        Response response = CLIENT.target("http://localhost:8180/osiam-auth-server")
+        Response response = CLIENT.target(AUTH_ENDPOINT_ADDRESS)
                 .path("Client").path("example-client")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())
@@ -443,7 +443,7 @@ public class AdminScopeIT extends AbstractIntegrationTestBase {
     public void can_retrieve_clients() {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
 
-        Response response = CLIENT.target("http://localhost:8180/osiam-auth-server")
+        Response response = CLIENT.target(AUTH_ENDPOINT_ADDRESS)
                 .path("Client")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())
@@ -461,7 +461,7 @@ public class AdminScopeIT extends AbstractIntegrationTestBase {
                 + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\",\"password\"],"
                 + "\"implicit\":false,\"validityInSeconds\":1337}";
 
-        Response response = CLIENT.target("http://localhost:8180/osiam-auth-server")
+        Response response = CLIENT.target(AUTH_ENDPOINT_ADDRESS)
                 .path("Client")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())
@@ -474,7 +474,7 @@ public class AdminScopeIT extends AbstractIntegrationTestBase {
     public void can_delete_a_client() throws IOException {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
 
-        Response response = CLIENT.target("http://localhost:8180/osiam-auth-server")
+        Response response = CLIENT.target(AUTH_ENDPOINT_ADDRESS)
                 .path("Client").path("example-client")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())
@@ -492,7 +492,7 @@ public class AdminScopeIT extends AbstractIntegrationTestBase {
                 + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\"],"
                 + "\"implicit\":true,\"validityInSeconds\":1}";
 
-        Response response = CLIENT.target("http://localhost:8180/osiam-auth-server")
+        Response response = CLIENT.target(AUTH_ENDPOINT_ADDRESS)
                 .path("Client").path("example-client")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())

@@ -43,6 +43,19 @@
         <docker.host>http://localhost:2375</docker.host>
         <docker.removeIntermediateImages>true</docker.removeIntermediateImages>
 
+        <osiam.host.protocol>http</osiam.host.protocol>
+        <osiam.host>localhost</osiam.host>
+        <osiam.port>8180</osiam.port>
+        <osiam.test.host>${osiam.host.protocol}://${osiam.host}:${osiam.port}</osiam.test.host>
+
+        <osiam.database.host>${osiam.host}</osiam.database.host>
+
+        <osiam.mail.host>${osiam.host}</osiam.mail.host>
+        <osiam.mail.port>11110</osiam.mail.port>
+
+        <connector.timeout>10000</connector.timeout>
+        <debug.pre.command.tomcat></debug.pre.command.tomcat>
+
         <version.spring>4.2.1.RELEASE</version.spring>
         <version.hibernate>5.0.0.Final</version.hibernate>
         <version.groovy>2.4.4</version.groovy>
@@ -57,9 +70,6 @@
             1.4-SNAPSHOT
         </version.osiam.addon-self-administration-plugin-example>
         <version.osiam.connector4java>1.7-SNAPSHOT</version.osiam.connector4java>
-
-        <connector.timeout>10000</connector.timeout>
-        <debug.pre.command.tomcat></debug.pre.command.tomcat>
     </properties>
 
     <repositories>
@@ -322,6 +332,13 @@
                 <version>2.18.1</version>
                 <configuration>
                     <trimStackTrace>false</trimStackTrace>
+                    <systemPropertyVariables>
+                        <osiam.host>${osiam.host}</osiam.host>
+                        <osiam.test.host>${osiam.test.host}</osiam.test.host>
+
+                        <osiam.mail.host>${osiam.mail.host}</osiam.mail.host>
+                        <osiam.mail.port>${osiam.mail.port}</osiam.mail.port>
+                    </systemPropertyVariables>
                 </configuration>
                 <executions>
                     <execution>
@@ -697,7 +714,6 @@
             <properties>
                 <debug.pre.command.tomcat>"jpda",</debug.pre.command.tomcat>
             </properties>
-
         </profile>
     </profiles>
 </project>

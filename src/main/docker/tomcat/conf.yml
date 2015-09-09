@@ -16,7 +16,7 @@ ports:
 
 healthChecks:
   pings:
-    - url: http://localhost:8180/manager/text/list
+    - url: ${osiam.test.host}/manager/text/list
       timeout: 250000
       pattern: osiam-resource-server:running
 

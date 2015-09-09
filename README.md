@@ -62,7 +62,7 @@ mysql
 
 If you are on mac or want to run them in a VM, just checkout the
 [OSIAM vagrant VM](https://github.com/osiam/vagrant). It's pretty easy to setup.
-Just run the above mentioned command in the OSIAM vagrant VM and run the
+Just run the above mentioned command in the OSIAM vagrant VM and then the
 integration-tests against the VM.
 
 ## Cross Project Debugging
@@ -85,3 +85,32 @@ Just use the normal remote debugging setup for your IDE and connect to `localhos
 Set your breakpoints as usual and run the test in the ITs project.
 Your IDE should pop up as soon as the service reaches the breakpoint.
 
+## Run against remote docker host
+
+If you like to run the tests against a remote docker host, you nedd to set the
+following system properties:
+
+Docker:
+- `docker.host`
+  The URL of the docker daemon. Default: `http://localhost:2375`
+
+OSIAM:
+- `osiam.host.protocol`
+  The protocol of the OSIAM host. Default: `http`
+- `osiam.host`
+  The host where OSIAM is running. Default: `localhost`
+- `osiam.port`
+  The port where OSIAM is running. Default: `8180`
+- `osiam.database.host`
+  The host where the database for OSIAM is running. Default: `localhost`
+- `osiam.database.port`
+  The port where the database for OSIAM is running. Defaults: Postgres:
+  `15432`, MySQL: `13306`
+- `osiam.mail.host`
+  The mail host where OSIAM is connecting to. Default: `localhost`
+- `osiam.mail.port`
+  The mail port where OSIAM is connecting to. Default: `11110`
+
+Here is an example when docker running in a boot2docker vm:
+
+    $ mvn verify -Ddocker.host=https://192.168.99.100:2376 -Dosiam.host=192.168.99.100
