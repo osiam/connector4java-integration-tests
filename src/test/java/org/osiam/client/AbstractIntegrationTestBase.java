@@ -38,6 +38,7 @@ public abstract class AbstractIntegrationTestBase {
     protected static final String INVALID_STRING = "invalid";
     protected static final String DELETE_USER_ID = "618b398c-0110-43f2-95df-d1bc4e7d2b4a";
     protected static final String VALID_GROUP_ID = "69e1a5dc-89be-4343-976c-b5541af249f4";
+    protected static final String OSIAM_HOST;
     protected static final String AUTH_ENDPOINT_ADDRESS;
     protected static final String RESOURCE_ENDPOINT_ADDRESS;
     protected static final String CLIENT_ID = "example-client";
@@ -49,9 +50,9 @@ public abstract class AbstractIntegrationTestBase {
         OsiamConnector.setConnectTimeout(Integer.parseInt(System.getProperty("connector.timeout", "-1")));
         OsiamConnector.setReadTimeout(Integer.parseInt(System.getProperty("connector.timeout", "-1")));
 
-        final String osiamHost = System.getProperty("osiam.test.host", "http://localhost:8180");
-        AUTH_ENDPOINT_ADDRESS = osiamHost + "/osiam-auth-server";
-        RESOURCE_ENDPOINT_ADDRESS = osiamHost + "/osiam-resource-server";
+        OSIAM_HOST = System.getProperty("osiam.test.host", "http://localhost:8180");
+        AUTH_ENDPOINT_ADDRESS = OSIAM_HOST + "/osiam-auth-server";
+        RESOURCE_ENDPOINT_ADDRESS = OSIAM_HOST + "/osiam-resource-server";
 
         OSIAM_CONNECTOR = new OsiamConnector.Builder()
                 .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
