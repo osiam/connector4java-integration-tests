@@ -57,4 +57,26 @@ public class OsiamConnectorIT extends AbstractIntegrationTestBase {
         assertNotNull(osiamConnector.getUser(VALID_USER_ID, accessToken));
         assertNotNull(osiamConnector.getGroup(VALID_GROUP_ID, accessToken));
     }
+
+    @Test
+    public void retrieve_access_token_when_only_the_auth_server_endpoint_is_set() {
+        final OsiamConnector osiamConnector = new OsiamConnector.Builder()
+                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
+                .setClientId("example-client")
+                .setClientSecret("secret")
+                .build();
+        assertNotNull(osiamConnector.retrieveAccessToken("marissa", "koala", Scope.ADMIN));
+    }
+
+    @Test
+    public void get_user_and_group_when_only_the_resource_server_endpoint_is_set() {
+        final OsiamConnector osiamConnector = new OsiamConnector.Builder()
+                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setClientId("example-client")
+                .setClientSecret("secret")
+                .build();
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+        assertNotNull(osiamConnector.getUser(VALID_USER_ID, accessToken));
+        assertNotNull(osiamConnector.getGroup(VALID_GROUP_ID, accessToken));
+    }
 }
