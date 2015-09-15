@@ -54,13 +54,10 @@
         <osiam.mail.port>11110</osiam.mail.port>
 
         <connector.timeout>10000</connector.timeout>
-        <debug.pre.command.tomcat></debug.pre.command.tomcat>
+        <debug.pre.command.tomcat/>
 
         <version.spring>4.2.1.RELEASE</version.spring>
-        <version.hibernate>5.0.0.Final</version.hibernate>
-        <version.groovy>2.4.4</version.groovy>
-        <version.spock>1.0-groovy-2.4</version.spock>
-        <version.docker-maven-plugin>2.10.3</version.docker-maven-plugin>
+        <version.docker-maven-plugin>2.10.4</version.docker-maven-plugin>
 
         <!-- OSIAM -->
         <version.osiam.auth-server>2.3-SNAPSHOT</version.osiam.auth-server>
@@ -72,40 +69,26 @@
         <version.osiam.connector4java>1.8-SNAPSHOT</version.osiam.connector4java>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>osiam releases repo</id>
-            <url>https://maven-repo.evolvis.org/releases</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>osiam snapshots repo</id>
-            <url>https://maven-repo.evolvis.org/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>org.osiam</groupId>
             <artifactId>connector4java</artifactId>
             <version>${version.osiam.connector4java}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.4</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -133,55 +116,14 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
             <version>${version.spring}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>${version.spring}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>${version.spring}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>9.4-1202-jdbc41</version>
-        </dependency>
-
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.36</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.1-api</artifactId>
-            <version>1.0.0.Final</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.12</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${version.hibernate}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>${version.spring}</version>
         </dependency>
 
         <dependency>
@@ -192,18 +134,53 @@
         </dependency>
 
         <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.4-1202-jdbc41</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.36</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
+            <version>1.0.0.Final</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>5.0.1.Final</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.12</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.dbunit</groupId>
             <artifactId>dbunit</artifactId>
             <version>2.4.9</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>2.8.2</version>
+            <scope>test</scope>
         </dependency>
-
-        <!-- TESTING -->
 
         <dependency>
             <groupId>com.icegreen</groupId>
@@ -212,24 +189,25 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Groovy and Spock framework: needed for testing -->
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
-            <version>${version.groovy}</version>
+            <version>2.4.4</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>
-            <version>${version.spock}</version>
+            <version>1.0-groovy-2.4</version>
+            <scope>test</scope>
         </dependency>
 
-        <!-- Groovy HTTP Builder: needed for API testing -->
         <dependency>
             <groupId>org.codehaus.groovy.modules.http-builder</groupId>
             <artifactId>http-builder</artifactId>
             <version>0.7.1</version>
+            <scope>test</scope>
             <exclusions>
                 <exclusion>
                     <artifactId>groovy</artifactId>
@@ -246,12 +224,14 @@
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
             <version>2.21</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-jackson</artifactId>
             <version>2.21</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -261,6 +241,23 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>osiam releases repo</id>
+            <url>https://maven-repo.evolvis.org/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>osiam snapshots repo</id>
+            <url>https://maven-repo.evolvis.org/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
 
     <pluginRepositories>
         <pluginRepository>
@@ -279,11 +276,98 @@
                 <filtering>true</filtering>
             </testResource>
         </testResources>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.coderplus.maven.plugins</groupId>
+                    <artifactId>copy-rename-maven-plugin</artifactId>
+                    <version>1.0.1</version>
+                    <executions>
+                        <execution>
+                            <id>copy-properties</id>
+                            <goals>
+                                <goal>copy</goal>
+                            </goals>
+                            <configuration>
+                                <fileSets>
+                                    <!-- resource-server -->
+                                    <fileSet>
+                                        <sourceFile>
+                                            src/test/resources/resource-server-configuration/resource-server_${database.container}.properties
+                                        </sourceFile>
+                                        <destinationFile>
+                                            ${project.build.directory}/osiam-resource-server/WEB-INF/classes/resource-server.properties
+                                        </destinationFile>
+                                    </fileSet>
+                                    <!-- auth-server -->
+                                    <fileSet>
+                                        <sourceFile>
+                                            src/test/resources/auth-server-configuration/auth-server_${database.container}.properties
+                                        </sourceFile>
+                                        <destinationFile>
+                                            ${project.build.directory}/osiam-auth-server/WEB-INF/classes/auth-server.properties
+                                        </destinationFile>
+                                    </fileSet>
+                                    <!-- integration-test -->
+                                    <fileSet>
+                                        <sourceFile>
+                                            src/test/resources/integration-tests_${database.container}.properties
+                                        </sourceFile>
+                                        <destinationFile>
+                                            src/test/resources/integration-tests.properties
+                                        </destinationFile>
+                                    </fileSet>
+                                </fileSets>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>com.alexecollins.docker</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>${version.docker-maven-plugin}</version>
+                    <configuration>
+                        <version>1.16</version>
+                        <host>${docker.host}</host>
+                        <exclude>${excluded.container}</exclude>
+                        <removeIntermediateImages>${docker.removeIntermediateImages}</removeIntermediateImages>
+                        <cache>false</cache>
+                        <permissionErrorTolerant>true</permissionErrorTolerant>
+                        <quiet>true</quiet>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>clean-docker-images</id>
+                            <phase>clean</phase>
+                            <goals>
+                                <goal>clean</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>start-docker-container</id>
+                            <phase>pre-integration-test</phase>
+                            <goals>
+                                <goal>start</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>stop-docker-container</id>
+                            <phase>post-integration-test</phase>
+                            <goals>
+                                <goal>stop</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>1.4</version>
+                <version>1.4.1</version>
                 <executions>
                     <execution>
                         <id>enforce-versions</id>
@@ -303,7 +387,6 @@
 
             <!-- Configure the compiler plugin for Groovy -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.3</version>
                 <extensions>true</extensions>
@@ -327,6 +410,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
+
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.18.1</version>
@@ -349,8 +433,8 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
@@ -436,33 +520,14 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
                     <includeEmptyDirs>true</includeEmptyDirs>
                 </configuration>
                 <executions>
-                    <execution>
-                        <id>copy-osiam-resource-resources</id>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>
-                                ${project.build.directory}/osiam-resource-server/WEB-INF/classes
-                            </outputDirectory>
-                            <overwrite>true</overwrite>
-                            <resources>
-                                <resource>
-                                    <directory>src/test/resources</directory>
-                                    <include>log4j.properties</include>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
                     <execution>
                         <id>copy-osiam-auth-resources</id>
                         <phase>generate-test-resources</phase>
@@ -478,10 +543,6 @@
                                 <resource>
                                     <directory>src/test/resources/auth-server-configuration</directory>
                                     <include>auth-server/</include>
-                                </resource>
-                                <resource>
-                                    <directory>src/test/resources</directory>
-                                    <include>log4j.properties</include>
                                 </resource>
                             </resources>
                         </configuration>
@@ -507,10 +568,6 @@
                                     <include>addon-self-administration.properties</include>
                                     <filtering>true</filtering>
                                 </resource>
-                                <resource>
-                                    <directory>src/test/resources</directory>
-                                    <include>log4j.properties</include>
-                                </resource>
                             </resources>
                         </configuration>
                     </execution>
@@ -527,50 +584,20 @@
             </activation>
             <properties>
                 <database.container>postgres</database.container>
+                <excluded.container>mysql</excluded.container>
             </properties>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>com.coderplus.maven.plugins</groupId>
                         <artifactId>copy-rename-maven-plugin</artifactId>
-                        <version>1.0.1</version>
                         <executions>
                             <execution>
-                                <id>copy-file</id>
+                                <id>copy-properties</id>
                                 <phase>generate-sources</phase>
                                 <goals>
                                     <goal>copy</goal>
                                 </goals>
-                                <configuration>
-                                    <fileSets>
-                                        <!-- resource-server -->
-                                        <fileSet>
-                                            <sourceFile>
-                                                src/test/resources/resource-server-configuration/resource-server_pg.properties
-                                            </sourceFile>
-                                            <destinationFile>
-                                                ${project.build.directory}/osiam-resource-server/WEB-INF/classes/resource-server.properties
-                                            </destinationFile>
-                                        </fileSet>
-                                        <!-- auth-server -->
-                                        <fileSet>
-                                            <sourceFile>
-                                                src/test/resources/auth-server-configuration/auth-server_pg.properties
-                                            </sourceFile>
-                                            <destinationFile>
-                                                ${project.build.directory}/osiam-auth-server/WEB-INF/classes/auth-server.properties
-                                            </destinationFile>
-                                        </fileSet>
-                                        <fileSet>
-                                            <sourceFile>
-                                                src/test/resources/integration-tests_pg.properties
-                                            </sourceFile>
-                                            <destinationFile>
-                                                src/test/resources/integration-tests.properties
-                                            </destinationFile>
-                                        </fileSet>
-                                    </fileSets>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -578,39 +605,6 @@
                     <plugin>
                         <groupId>com.alexecollins.docker</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>${version.docker-maven-plugin}</version>
-                        <configuration>
-                            <version>1.16</version>
-                            <host>${docker.host}</host>
-                            <exclude>mysql</exclude>
-                            <removeIntermediateImages>${docker.removeIntermediateImages}</removeIntermediateImages>
-                            <cache>false</cache>
-                            <permissionErrorTolerant>true</permissionErrorTolerant>
-                            <quiet>true</quiet>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>clean-docker-images</id>
-                                <phase>clean</phase>
-                                <goals>
-                                    <goal>clean</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>start-docker-container</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>start</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>stop-docker-container</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>stop</goal>
-                                </goals>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>
@@ -620,50 +614,20 @@
             <id>mysql</id>
             <properties>
                 <database.container>mysql</database.container>
+                <excluded.container>postgres</excluded.container>
             </properties>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>com.coderplus.maven.plugins</groupId>
                         <artifactId>copy-rename-maven-plugin</artifactId>
-                        <version>1.0.1</version>
                         <executions>
                             <execution>
-                                <id>copy-file</id>
+                                <id>copy-properties</id>
                                 <phase>generate-sources</phase>
                                 <goals>
                                     <goal>copy</goal>
                                 </goals>
-                                <configuration>
-                                    <fileSets>
-                                        <!-- resource-server -->
-                                        <fileSet>
-                                            <sourceFile>
-                                                src/test/resources/resource-server-configuration/resource-server_mysql.properties
-                                            </sourceFile>
-                                            <destinationFile>
-                                                ${project.build.directory}/osiam-resource-server/WEB-INF/classes/resource-server.properties
-                                            </destinationFile>
-                                        </fileSet>
-                                        <!-- auth-server -->
-                                        <fileSet>
-                                            <sourceFile>
-                                                src/test/resources/auth-server-configuration/auth-server_mysql.properties
-                                            </sourceFile>
-                                            <destinationFile>
-                                                ${project.build.directory}/osiam-auth-server/WEB-INF/classes/auth-server.properties
-                                            </destinationFile>
-                                        </fileSet>
-                                        <fileSet>
-                                            <sourceFile>
-                                                src/test/resources/integration-tests_mysql.properties
-                                            </sourceFile>
-                                            <destinationFile>
-                                                src/test/resources/integration-tests.properties
-                                            </destinationFile>
-                                        </fileSet>
-                                    </fileSets>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -671,39 +635,6 @@
                     <plugin>
                         <groupId>com.alexecollins.docker</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>${version.docker-maven-plugin}</version>
-                        <configuration>
-                            <version>1.16</version>
-                            <host>${docker.host}</host>
-                            <exclude>postgres</exclude>
-                            <removeIntermediateImages>${docker.removeIntermediateImages}</removeIntermediateImages>
-                            <cache>false</cache>
-                            <permissionErrorTolerant>true</permissionErrorTolerant>
-                            <quiet>true</quiet>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>clean-docker-images</id>
-                                <phase>clean</phase>
-                                <goals>
-                                    <goal>clean</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>start-docker-container</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>start</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>stop-docker-container</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>stop</goal>
-                                </goals>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>
