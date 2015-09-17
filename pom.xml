@@ -277,93 +277,6 @@
             </testResource>
         </testResources>
 
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>com.coderplus.maven.plugins</groupId>
-                    <artifactId>copy-rename-maven-plugin</artifactId>
-                    <version>1.0.1</version>
-                    <executions>
-                        <execution>
-                            <id>copy-properties</id>
-                            <goals>
-                                <goal>copy</goal>
-                            </goals>
-                            <configuration>
-                                <fileSets>
-                                    <!-- resource-server -->
-                                    <fileSet>
-                                        <sourceFile>
-                                            src/test/resources/resource-server-configuration/resource-server_${database.container}.properties
-                                        </sourceFile>
-                                        <destinationFile>
-                                            ${project.build.directory}/osiam-resource-server/WEB-INF/classes/resource-server.properties
-                                        </destinationFile>
-                                    </fileSet>
-                                    <!-- auth-server -->
-                                    <fileSet>
-                                        <sourceFile>
-                                            src/test/resources/auth-server-configuration/auth-server_${database.container}.properties
-                                        </sourceFile>
-                                        <destinationFile>
-                                            ${project.build.directory}/osiam-auth-server/WEB-INF/classes/auth-server.properties
-                                        </destinationFile>
-                                    </fileSet>
-                                    <!-- integration-test -->
-                                    <fileSet>
-                                        <sourceFile>
-                                            src/test/resources/integration-tests_${database.container}.properties
-                                        </sourceFile>
-                                        <destinationFile>
-                                            src/test/resources/integration-tests.properties
-                                        </destinationFile>
-                                    </fileSet>
-                                </fileSets>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-
-                <plugin>
-                    <groupId>com.alexecollins.docker</groupId>
-                    <artifactId>docker-maven-plugin</artifactId>
-                    <version>${version.docker-maven-plugin}</version>
-                    <configuration>
-                        <version>1.16</version>
-                        <host>${docker.host}</host>
-                        <exclude>${excluded.container}</exclude>
-                        <removeIntermediateImages>${docker.removeIntermediateImages}</removeIntermediateImages>
-                        <cache>false</cache>
-                        <permissionErrorTolerant>true</permissionErrorTolerant>
-                        <quiet>true</quiet>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>clean-docker-images</id>
-                            <phase>clean</phase>
-                            <goals>
-                                <goal>clean</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>start-docker-container</id>
-                            <phase>pre-integration-test</phase>
-                            <goals>
-                                <goal>start</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>stop-docker-container</id>
-                            <phase>post-integration-test</phase>
-                            <goals>
-                                <goal>stop</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-
         <plugins>
             <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -573,6 +486,90 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>com.coderplus.maven.plugins</groupId>
+                <artifactId>copy-rename-maven-plugin</artifactId>
+                <version>1.0.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-properties</id>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <fileSets>
+                                <!-- resource-server -->
+                                <fileSet>
+                                    <sourceFile>
+                                        src/test/resources/resource-server-configuration/resource-server_${database.container}.properties
+                                    </sourceFile>
+                                    <destinationFile>
+                                        ${project.build.directory}/osiam-resource-server/WEB-INF/classes/resource-server.properties
+                                    </destinationFile>
+                                </fileSet>
+                                <!-- auth-server -->
+                                <fileSet>
+                                    <sourceFile>
+                                        src/test/resources/auth-server-configuration/auth-server_${database.container}.properties
+                                    </sourceFile>
+                                    <destinationFile>
+                                        ${project.build.directory}/osiam-auth-server/WEB-INF/classes/auth-server.properties
+                                    </destinationFile>
+                                </fileSet>
+                                <!-- integration-test -->
+                                <fileSet>
+                                    <sourceFile>
+                                        src/test/resources/integration-tests_${database.container}.properties
+                                    </sourceFile>
+                                    <destinationFile>
+                                        src/test/resources/integration-tests.properties
+                                    </destinationFile>
+                                </fileSet>
+                            </fileSets>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.alexecollins.docker</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>${version.docker-maven-plugin}</version>
+                <configuration>
+                    <version>1.16</version>
+                    <host>${docker.host}</host>
+                    <exclude>${excluded.container}</exclude>
+                    <removeIntermediateImages>${docker.removeIntermediateImages}</removeIntermediateImages>
+                    <cache>false</cache>
+                    <permissionErrorTolerant>true</permissionErrorTolerant>
+                    <quiet>true</quiet>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>clean-docker-images</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>start-docker-container</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop-docker-container</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -586,28 +583,6 @@
                 <database.container>postgres</database.container>
                 <excluded.container>mysql</excluded.container>
             </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.coderplus.maven.plugins</groupId>
-                        <artifactId>copy-rename-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>copy-properties</id>
-                                <phase>generate-sources</phase>
-                                <goals>
-                                    <goal>copy</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>com.alexecollins.docker</groupId>
-                        <artifactId>docker-maven-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
 
         <profile>
@@ -616,28 +591,6 @@
                 <database.container>mysql</database.container>
                 <excluded.container>postgres</excluded.container>
             </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.coderplus.maven.plugins</groupId>
-                        <artifactId>copy-rename-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>copy-properties</id>
-                                <phase>generate-sources</phase>
-                                <goals>
-                                    <goal>copy</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>com.alexecollins.docker</groupId>
-                        <artifactId>docker-maven-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
 
         <profile>
