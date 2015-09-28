@@ -25,9 +25,14 @@ package org.osiam.client;
 
 import static org.junit.Assert.assertNotNull;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.oauth.Scope;
+import org.osiam.client.query.QueryBuilder;
+import org.osiam.resources.scim.UpdateUser;
+import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -45,6 +50,19 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 @DatabaseSetup("/database_seed_groups.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class OsiamConnectorIT extends AbstractIntegrationTestBase {
+
+    private static OsiamConnector lowTimeoutConnector;
+
+    @BeforeClass
+    public static void before() {
+        lowTimeoutConnector = new OsiamConnector.Builder()
+                .setEndpoint(OSIAM_HOST)
+                .setClientId("example-client")
+                .setClientSecret("secret")
+                .withConnectTimeout(1)
+                .withReadTimeout(1)
+                .build();
+    }
 
     @Test
     public void when_combined_endpoint_is_set_both_endpoints_are_valid() {
@@ -78,5 +96,81 @@ public class OsiamConnectorIT extends AbstractIntegrationTestBase {
         accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
         assertNotNull(osiamConnector.getUser(VALID_USER_ID, accessToken));
         assertNotNull(osiamConnector.getGroup(VALID_GROUP_ID, accessToken));
+    }
+
+    @Test(expected = ConnectionInitializationException.class)
+    public void setting_timeout_to_minimum_and_retrieving_user_access_token_triggers_exception() {
+        lowTimeoutConnector.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+    }
+
+    @Test(expected = ConnectionInitializationException.class)
+    public void setting_timeout_to_minimum_and_refresh_access_token_triggers_exception() {
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+        lowTimeoutConnector.refreshAccessToken(accessToken, Scope.ADMIN);
+    }
+
+    @Test(expected = ConnectionInitializationException.class)
+    public void setting_timeout_to_minimum_and_retrieving_client_access_token_triggers_exception() {
+        lowTimeoutConnector.retrieveAccessToken(Scope.ADMIN);
+    }
+
+    @Test(expected = ConnectionInitializationException.class)
+    public void setting_timeout_to_minimum_and_validating_access_token_triggers_exception() {
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+        lowTimeoutConnector.validateAccessToken(accessToken);
+    }
+
+    @Test(expected = ConnectionInitializationException.class)
+    public void setting_timeout_to_minimum_and_revoking_access_token_triggers_exception() {
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+        lowTimeoutConnector.revokeAccessToken(accessToken);
+    }
+
+    @Test(expected = ConnectionInitializationException.class)
+    public void setting_timeout_to_minimum_and_revoking_all_access_tokens_triggers_exception() {
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+        lowTimeoutConnector.revokeAllAccessTokens(VALID_USER_ID, accessToken);
+    }
+
+    @Test(expected = ConnectionInitializationException.class)
+    public void setting_timeout_to_minimum_and_retrieving_user_triggers_exception() {
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+        lowTimeoutConnector.getUser(VALID_USER_ID, accessToken);
+    }
+
+    @Test(expected = ConnectionInitializationException.class)
+    public void setting_timeout_to_minimum_and_retrieving_current_user_triggers_exception() {
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+        lowTimeoutConnector.getCurrentUserBasic(accessToken);
+    }
+
+    @Test(expected = ConnectionInitializationException.class)
+    public void setting_timeout_to_minimum_and_search_triggers_exception() {
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+        lowTimeoutConnector.searchUsers(new QueryBuilder().build(), accessToken);
+    }
+
+    @Test(expected = ConnectionInitializationException.class)
+    public void setting_timeout_to_minimum_and_create_user_triggers_exception() {
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+        lowTimeoutConnector.searchUsers(new QueryBuilder().build(), accessToken);
+    }
+
+    @Test(expected = ConnectionInitializationException.class)
+    public void setting_timeout_to_minimum_and_update_user_triggers_exception() {
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+        lowTimeoutConnector.updateUser(VALID_USER_ID, new UpdateUser.Builder().build(), accessToken);
+    }
+
+    @Test(expected = ConnectionInitializationException.class)
+    public void setting_timeout_to_minimum_and_replace_user_triggers_exception() {
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+        lowTimeoutConnector.replaceUser(VALID_USER_ID, new User.Builder().build(), accessToken);
+    }
+
+    @Test(expected = ConnectionInitializationException.class)
+    public void setting_timeout_to_minimum_and_delete_user_triggers_exception() {
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
+        lowTimeoutConnector.deleteUser(VALID_USER_ID, accessToken);
     }
 }
