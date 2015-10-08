@@ -36,6 +36,7 @@
     <osiam_client_scopes id="100003" scope="PUT"/>
     <osiam_client_scopes id="100003" scope="PATCH"/>
     <osiam_client_scopes id="100003" scope="DELETE"/>
+    <osiam_client_scopes id="100003" scope="ADMIN"/>
 
     <osiam_client internal_id="100004" id="auth-server" redirect_uri="http://localhost:8180/osiam-auth-server"
                   client_secret="auth-secret" accesstokenvalidityseconds="10" refreshtokenvalidityseconds="10"
@@ -45,6 +46,7 @@
     <osiam_client_scopes id="100004" scope="GET"/>
     <osiam_client_scopes id="100004" scope="POST"/>
     <osiam_client_scopes id="100004" scope="PATCH"/>
+    <osiam_client_scopes id="100004" scope="ADMIN"/>
 
     <osiam_client internal_id="100005" id="addon-self-administration-client"
                   redirect_uri="http://localhost:8180/addon-self-administration" client_secret="super-secret"
@@ -55,6 +57,7 @@
     <osiam_client_scopes id="100005" scope="PUT"/>
     <osiam_client_scopes id="100005" scope="PATCH"/>
     <osiam_client_scopes id="100005" scope="DELETE"/>
+    <osiam_client_scopes id="100005" scope="ADMIN"/>
     <osiam_client_grants id="100005" grants="client_credentials"/>
 
     <scim_meta id="100004" created="2011-10-10 00:00:00.0" lastmodified="2011-10-10 00:00:00.0" resourcetype="User"/>
