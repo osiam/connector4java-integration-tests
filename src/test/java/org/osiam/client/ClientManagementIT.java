@@ -23,50 +23,39 @@
 
 package org.osiam.client;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.json.JSONException;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.osiam.client.exception.ClientAlreadyExistsException;
+import org.osiam.client.exception.ClientNotFoundException;
+import org.osiam.client.oauth.Client;
+import org.osiam.client.oauth.GrantType;
 import org.osiam.client.oauth.Scope;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import java.util.List;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class })
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class ClientManagementIT extends AbstractIntegrationTestBase {
-
-    private static final String AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS = AUTH_ENDPOINT_ADDRESS + "/Client";
-    private static final String AUTHORIZATION = "Authorization";
-    private static final String BEARER = "Bearer ";
 
     @Before
     public void setup() {
@@ -75,22 +64,14 @@ public class ClientManagementIT extends AbstractIntegrationTestBase {
 
     @Test
     public void get_client_by_id() {
-        String output = CLIENT.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
-                .path("example-client")
-                .request(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, BEARER + accessToken.getToken())
-                .get(String.class);
+        final Client client = OSIAM_CONNECTOR.getClient("example-client", accessToken);
 
-        assertThat(output, containsString("example-client"));
+        assertThat(client.getId(), is("example-client"));
     }
 
     @Test
     public void get_clients() {
-        List<Map<String, Object>> clients = CLIENT.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
-                .request(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, BEARER + accessToken.getToken())
-                .get(new GenericType<List<Map<String, Object>>>() {
-                });
+        final List<Client> clients = OSIAM_CONNECTOR.getClients(accessToken);
 
         assertThat(clients, hasSize(3));
         assertTrue(containsClient(clients, "example-client"));
@@ -98,9 +79,9 @@ public class ClientManagementIT extends AbstractIntegrationTestBase {
         assertTrue(containsClient(clients, "auth-server"));
     }
 
-    private boolean containsClient(List<Map<String, Object>> clients, String clientId) {
-        for (Map<String, Object> client : clients) {
-            if (client.get("id").equals(clientId)) {
+    private boolean containsClient(List<Client> clients, String clientId) {
+        for (Client client : clients) {
+            if (client.getId().equals(clientId)) {
                 return true;
             }
         }
@@ -109,75 +90,51 @@ public class ClientManagementIT extends AbstractIntegrationTestBase {
 
     @Test
     public void create_client() {
-        String clientAsJsonString = "{\"id\":\"example-client-2\",\"accessTokenValiditySeconds\":2342,\"refreshTokenValiditySeconds\":2342,"
-                + "\"redirectUri\":\"http://localhost:5055/oauth2\",\"client_secret\":\"secret-2\","
-                + "\"scope\":[\"ADMIN\"],"
-                + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\",\"password\"],"
-                + "\"implicit\":false,\"validityInSeconds\":1337}";
+        Client osiamClient = new Client.Builder("example-client-2", "secret-2")
+                .accessTokenValiditySeconds(2342).refreshTokenValiditySeconds(2342)
+                .redirectUri("http://localhost:5055/oauth2").scopes(Sets.newHashSet(Scope.ADMIN.getValue()))
+                .grants(Sets.newHashSet(GrantType.REFRESH_TOKEN.name(), GrantType.CLIENT_CREDENTIALS.name(),
+                        GrantType.AUTHORIZATION_CODE.name(), GrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS.name()))
+                .implicit(false)
+                .validityInSeconds(1337)
+                .build();
 
-        String response = CLIENT.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
-                .request(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, BEARER + accessToken.getToken())
-                .post(Entity.entity(clientAsJsonString, MediaType.APPLICATION_JSON), String.class);
+        final Client createdClient = OSIAM_CONNECTOR.createClient(osiamClient, accessToken);
 
-        assertThat(response, containsString("example-client-2"));
+        assertThat(createdClient.getId(), is("example-client-2"));
+        assertThat(createdClient.getRedirectUri(), is("http://localhost:5055/oauth2"));
     }
 
-    @Test
+    @Test(expected = ClientAlreadyExistsException.class)
     public void cant_create_client_with_already_existing_id() {
-        String clientAsJsonString = "{\"id\":\"example-client\",\"accessTokenValiditySeconds\":2342,\"refreshTokenValiditySeconds\":2342,"
-                + "\"redirectUri\":\"http://localhost:5055/oauth2\",\"client_secret\":\"secret-2\","
-                + "\"scope\":[\"ADMIN\"],"
-                + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\",\"password\"],"
-                + "\"implicit\":false,\"validityInSeconds\":1337}";
+        OSIAM_CONNECTOR.createClient(new Client.Builder("example-client", "secret").build(), accessToken);
+    }
 
-        Response response = CLIENT.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
-                .request(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, BEARER + accessToken.getToken())
-                .post(Entity.entity(clientAsJsonString, MediaType.APPLICATION_JSON));
+    @Test(expected = ClientNotFoundException.class)
+    public void delete_client() {
+        OSIAM_CONNECTOR.deleteClient("short-living-client", accessToken);
 
-        assertThat(response.getStatus(), is(409));
+        OSIAM_CONNECTOR.getClient("short-living-client", accessToken);
     }
 
     @Test
-    public void delete_client() throws IOException {
-        Response deleteResponse = CLIENT.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
-                .path("short-living-client")
-                .request(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, BEARER + accessToken.getToken())
-                .delete();
-
-        assertThat(deleteResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
-        deleteResponse.close();
-
-        Response getResponse = CLIENT.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
-                .path("short-living-client")
-                .request(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, BEARER + accessToken.getToken())
-                .get();
-        assertThat(getResponse.readEntity(String.class), containsString("NOT_FOUND"));
+    public void delete_not_existing_client_raises_no_exception() {
+        OSIAM_CONNECTOR.deleteClient("not-existing-client", accessToken);
     }
 
     @Test
-    public void update_client() throws JSONException {
-        String clientAsJsonString = "{\"id\":\"example-client\",\"accessTokenValiditySeconds\":1,\"refreshTokenValiditySeconds\":1,"
-                + "\"redirectUri\":\"http://newhost:5000/oauth2\",\"client_secret\":\"secret\","
-                + "\"scope\":[\"ADMIN\"],"
-                + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\"],"
-                + "\"implicit\":true,\"validityInSeconds\":1}";
+    public void update_client() {
+        Client client = new Client.Builder("example-client", "secret-2")
+                .accessTokenValiditySeconds(1).refreshTokenValiditySeconds(1)
+                .redirectUri("http://localhost:5055/oauth2").scopes(Sets.newHashSet(Scope.ME.getValue()))
+                .grants(Sets.newHashSet(GrantType.REFRESH_TOKEN.name(), GrantType.CLIENT_CREDENTIALS.name(),
+                        GrantType.AUTHORIZATION_CODE.name()))
+                .implicit(true)
+                .validityInSeconds(1)
+                .build();
 
-        String updated = CLIENT.target(AUTH_SERVER_CLIENT_ENDPOINT_ADDRESS)
-                .path("example-client")
-                .request(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, BEARER + accessToken.getToken())
-                .put(Entity.entity(clientAsJsonString, MediaType.APPLICATION_JSON), String.class);
+        Client updatedClient = OSIAM_CONNECTOR.updateClient("example-client", client, accessToken);
 
-        String expected = "{\"id\":\"example-client\",\"accessTokenValiditySeconds\":1,\"refreshTokenValiditySeconds\":1,"
-                + "\"redirectUri\":\"http://newhost:5000/oauth2\",\"client_secret\":\"secret\","
-                + "\"scope\":[\"ADMIN\"],"
-                + "\"grants\":[\"refresh_token\",\"client_credentials\",\"authorization_code\"],"
-                + "\"implicit\":true,\"validityInSeconds\":1}";
-
-        JSONAssert.assertEquals(expected, updated, false);
+        assertEquals(client, updatedClient);
     }
 }
