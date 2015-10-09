@@ -28,7 +28,7 @@
 
     <groupId>org.osiam.client</groupId>
     <artifactId>integration-tests</artifactId>
-    <version>1.4-SNAPSHOT</version>
+    <version>2.4</version>
 
     <prerequisites>
         <maven>3.0.4</maven>
@@ -50,9 +50,9 @@
         <version.docker-maven-plugin>2.9.2</version.docker-maven-plugin>
 
         <!-- OSIAM -->
-        <version.osiam.auth-server>2.3-SNAPSHOT</version.osiam.auth-server>
-        <version.osiam.resource-server>2.3-SNAPSHOT</version.osiam.resource-server>
-        <version.osiam.addon-self-administration>1.7-SNAPSHOT</version.osiam.addon-self-administration>
+        <version.osiam.auth-server>2.3</version.osiam.auth-server>
+        <version.osiam.resource-server>2.3</version.osiam.resource-server>
+        <version.osiam.addon-self-administration>1.7</version.osiam.addon-self-administration>
         <version.osiam.addon-self-administration-plugin-example>
             1.4-SNAPSHOT
         </version.osiam.addon-self-administration-plugin-example>
