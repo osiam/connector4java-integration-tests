@@ -23,13 +23,15 @@
 
 package org.osiam.client;
 
-import java.util.*;
+import org.glassfish.jersey.jackson.JacksonFeature;
+import org.joda.time.format.ISODateTimeFormat;
+import org.osiam.client.oauth.AccessToken;
 
-import javax.ws.rs.client.*;
-
-import org.glassfish.jersey.jackson.*;
-import org.joda.time.format.*;
-import org.osiam.client.oauth.*;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 public abstract class AbstractIntegrationTestBase {
 
@@ -81,5 +83,4 @@ public abstract class AbstractIntegrationTestBase {
         calendar.set(year, month, date, hourOfDay, minute, second);
         return calendar.getTime();
     }
-
 }
