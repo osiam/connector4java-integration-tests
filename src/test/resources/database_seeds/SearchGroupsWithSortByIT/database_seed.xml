@@ -32,12 +32,6 @@
     <osiam_client_grants id="100003" grants="client_credentials"/>
     <osiam_client_scopes id="100003" scope="ADMIN"/>
 
-    <osiam_client internal_id="100004" id="auth-server" redirect_uri="http://localhost:8180/osiam-auth-server"
-        client_secret="auth-secret" access_token_validity_seconds="10" refresh_token_validity_seconds="10" validity_in_seconds="10"
-        implicit_approval="true" />
-    <osiam_client_grants id="100004" grants="client_credentials" />
-    <osiam_client_scopes id="100004" scope="ADMIN" />
-
     <scim_meta id="100053" created="2013-07-31 21:43:18.0" last_modified="2013-08-08 19:59:56.681" resource_type="Group"
                location="http://example.com/Groups/69e1a5dc-89be-4343-976c-b5541af249f4"/>
     <scim_meta id="100055" created="2013-08-08 19:59:54.612" last_modified="2013-08-08 19:59:54.612" resource_type="Group"

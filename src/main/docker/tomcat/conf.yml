@@ -1,7 +1,6 @@
 packaging:
   add:
-    - target/osiam-auth-server
-    - target/osiam-resource-server
+    - target/osiam
     - target/addon-self-administration
     - target/dependency/addon-self-administration-plugin-example.jar
 
@@ -18,6 +17,6 @@ healthChecks:
   pings:
     - url: ${osiam.test.host}/manager/text/list
       timeout: 250000
-      pattern: osiam-resource-server:running
+      pattern: osiam:running
 
 tag: ${project.artifactId}_tomcat-${database.container}

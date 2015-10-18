@@ -145,8 +145,7 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
 
     protected void givenAnAccessTokenForOneSecond() {
         final OsiamConnector osiamConnector = new OsiamConnector.Builder()
-                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
-                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setEndpoint(OSIAM_ENDPOINT)
                 .setClientId("short-living-client")
                 .setClientSecret("other-secret")
                 .build();

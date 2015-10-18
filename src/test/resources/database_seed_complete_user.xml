@@ -34,12 +34,6 @@
 	<osiam_client_grants id="100003" grants="client_credentials" />
 	<osiam_client_scopes id="100003" scope="ADMIN" />
 
-    <osiam_client internal_id="100004" access_token_validity_seconds="10" client_secret="auth-secret"
-                  id="auth-server" implicit_approval="true" redirect_uri="http://localhost:8180/osiam-auth-server"
-                  refresh_token_validity_seconds="10" validity_in_seconds="10"/>
-    <osiam_client_grants id="100004" grants="client_credentials"/>
-    <osiam_client_scopes id="100004" scope="ADMIN"/>
-
 	<scim_name id="100001" family_name="" formatted="" given_name="" honorific_prefix="" honorific_suffix="" middle_name="" />
 	<scim_name id="100002" family_name="familyName" formatted="formatted" given_name="name" honorific_prefix="Dr." honorific_suffix="Mr." middle_name="middleName" />
 

@@ -73,10 +73,9 @@ public class ClientManagementIT extends AbstractIntegrationTestBase {
     public void get_clients() {
         final List<Client> clients = OSIAM_CONNECTOR.getClients(accessToken);
 
-        assertThat(clients, hasSize(3));
+        assertThat(clients, hasSize(2));
         assertTrue(containsClient(clients, "example-client"));
         assertTrue(containsClient(clients, "short-living-client"));
-        assertTrue(containsClient(clients, "auth-server"));
     }
 
     private boolean containsClient(List<Client> clients, String clientId) {

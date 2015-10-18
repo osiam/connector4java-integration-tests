@@ -49,13 +49,13 @@ class ControllerIT extends AbstractIT {
         given: "a valid access token"
 
         when: "a request is sent"
-        def http = new HTTPBuilder(RESOURCE_ENDPOINT)
+        def http = new HTTPBuilder(OSIAM_ENDPOINT)
 
         def responseStatusCode
         def responseContentType
 
         http.request(Method.GET, contentType) { req ->
-            uri.path = RESOURCE_ENDPOINT + requestPath
+            uri.path = OSIAM_ENDPOINT + requestPath
             headers."Authorization" = "Bearer " + accessToken.getToken()
 
             // response handler for a success response code:
@@ -103,14 +103,14 @@ class ControllerIT extends AbstractIT {
         AccessToken validAccessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
 
         when: "a request is sent"
-        def http = new HTTPBuilder(RESOURCE_ENDPOINT)
+        def http = new HTTPBuilder(OSIAM_ENDPOINT)
 
         def responseStatusCode
         def responseContentType
         def responseErrorCode
 
         http.request(Method.GET, ContentType.JSON) { req ->
-            uri.path = RESOURCE_ENDPOINT + "/Users"
+            uri.path = OSIAM_ENDPOINT + "/Users"
             uri.query = [filter: searchString]
             headers."Authorization" = "Bearer " + validAccessToken.getToken()
 
@@ -169,13 +169,13 @@ class ControllerIT extends AbstractIT {
         AccessToken validAccessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
 
         when: "a filter request matching two users is sent"
-        def http = new HTTPBuilder(RESOURCE_ENDPOINT)
+        def http = new HTTPBuilder(OSIAM_ENDPOINT)
 
         def responseStatusCode
         def responseContent
 
         http.request(Method.GET, ContentType.JSON) { req ->
-            uri.path = RESOURCE_ENDPOINT + "/Users"
+            uri.path = OSIAM_ENDPOINT + "/Users"
             uri.query = [filter: '(userName eq "cmiller" or userName eq "hsimpson") and meta.created gt "2003-05-23T13:12:45.672"']
             headers."Authorization" = "Bearer " + validAccessToken.getToken()
 
@@ -228,8 +228,8 @@ class ControllerIT extends AbstractIT {
         def responseContent
 
         when: "retrieving a user"
-        new HTTPBuilder(RESOURCE_ENDPOINT).request(Method.GET, ContentType.JSON) { req ->
-            uri.path = RESOURCE_ENDPOINT + "/Users"
+        new HTTPBuilder(OSIAM_ENDPOINT).request(Method.GET, ContentType.JSON) { req ->
+            uri.path = OSIAM_ENDPOINT + "/Users"
             uri.query = [filter: 'userName eq "marissa"']
             headers."Authorization" = "Bearer " + validAccessToken.getToken()
 

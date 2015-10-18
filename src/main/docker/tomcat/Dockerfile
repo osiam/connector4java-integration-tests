@@ -1,7 +1,6 @@
 FROM tomcat:7-jre7
 
-COPY osiam-resource-server $CATALINA_HOME/webapps/osiam-resource-server
-COPY osiam-auth-server $CATALINA_HOME/webapps/osiam-auth-server
+COPY osiam $CATALINA_HOME/webapps/osiam
 COPY addon-self-administration $CATALINA_HOME/webapps/addon-self-administration
 COPY addon-self-administration-plugin-example.jar /install/plugin-example.jar
 COPY selfadminexample.properties /install/

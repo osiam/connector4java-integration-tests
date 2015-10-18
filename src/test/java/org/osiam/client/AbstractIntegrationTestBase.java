@@ -23,6 +23,9 @@
 
 package org.osiam.client;
 
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientProperties;
+import org.glassfish.jersey.client.RequestEntityProcessing;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.joda.time.format.ISODateTimeFormat;
 import org.osiam.client.oauth.AccessToken;
@@ -40,29 +43,27 @@ public abstract class AbstractIntegrationTestBase {
     protected static final String INVALID_STRING = "invalid";
     protected static final String DELETE_USER_ID = "618b398c-0110-43f2-95df-d1bc4e7d2b4a";
     protected static final String VALID_GROUP_ID = "69e1a5dc-89be-4343-976c-b5541af249f4";
-    protected static final String OSIAM_HOST;
-    protected static final String AUTH_ENDPOINT_ADDRESS;
-    protected static final String RESOURCE_ENDPOINT_ADDRESS;
+    protected static final String OSIAM_ENDPOINT =
+            System.getProperty("osiam.test.host", "http://localhost:8180") + "/osiam";
     protected static final String CLIENT_ID = "example-client";
     protected static final String CLIENT_SECRET = "secret";
-    protected static final OsiamConnector OSIAM_CONNECTOR;
-    protected static final Client CLIENT = ClientBuilder.newBuilder().register(JacksonFeature.class).build();
+
+    protected static final OsiamConnector OSIAM_CONNECTOR = new OsiamConnector.Builder()
+            .setEndpoint(OSIAM_ENDPOINT)
+            .setClientId(CLIENT_ID)
+            .setClientSecret(CLIENT_SECRET)
+            .setClientRedirectUri("http://localhost:5000/oauth2")
+            .build();
+
+    protected static final Client CLIENT = ClientBuilder.newClient(new ClientConfig()
+            .register(JacksonFeature.class)
+            .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED)
+            .property(ClientProperties.CONNECT_TIMEOUT, 5000)
+            .property(ClientProperties.READ_TIMEOUT, 10000));
 
     static {
         OsiamConnector.setConnectTimeout(Integer.parseInt(System.getProperty("connector.timeout", "-1")));
         OsiamConnector.setReadTimeout(Integer.parseInt(System.getProperty("connector.timeout", "-1")));
-
-        OSIAM_HOST = System.getProperty("osiam.test.host", "http://localhost:8180");
-        AUTH_ENDPOINT_ADDRESS = OSIAM_HOST + "/osiam-auth-server";
-        RESOURCE_ENDPOINT_ADDRESS = OSIAM_HOST + "/osiam-resource-server";
-
-        OSIAM_CONNECTOR = new OsiamConnector.Builder()
-                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
-                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
-                .setClientId(CLIENT_ID)
-                .setClientSecret(CLIENT_SECRET)
-                .setClientRedirectUri("http://localhost:5000/oauth2")
-                .build();
     }
 
     protected AccessToken accessToken;

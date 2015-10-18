@@ -291,7 +291,7 @@ class RegistrationIT extends AbstractIT {
         OSIAM_CONNECTOR.getUser(createdUserId, accessToken).active
     }
 
-    def 'A registration of an user with client defined extensions'() {
+    def 'A registration of a user with client defined extensions'() {
         given:
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
 
