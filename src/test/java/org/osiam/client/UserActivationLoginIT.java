@@ -29,7 +29,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osiam.client.exception.ConnectionInitializationException;
+import org.osiam.client.exception.BadRequestException;
 import org.osiam.client.oauth.Scope;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -44,7 +44,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class UserActivationLoginIT extends AbstractIntegrationTestBase {
 
-    @Test(expected = ConnectionInitializationException.class)
+    @Test(expected = BadRequestException.class)
     public void log_in_as_an_deactivated_user_is_impossible() {
         OSIAM_CONNECTOR.retrieveAccessToken("hsimpson", "koala", Scope.ADMIN);
     }

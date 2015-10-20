@@ -23,12 +23,14 @@
 
 package org.osiam.client;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.osiam.client.exception.BadCredentialsException;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.Scope;
@@ -37,19 +39,16 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test for resource owner password credentials grant.
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class })
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class})
 @DatabaseSetup("/database_seed_login_password_credentials.xml")
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class LoginResourceOwnerPasswordCredentialsIT extends AbstractIntegrationTestBase {
@@ -60,6 +59,11 @@ public class LoginResourceOwnerPasswordCredentialsIT extends AbstractIntegration
         assertNotNull("The hole access token object was null.", accessToken);
         assertNotNull("The access token was null.", accessToken.getToken());
         assertNotNull("The refresh token was null.", accessToken.getRefreshToken());
+    }
+
+    @Test(expected = BadCredentialsException.class)
+    public void retrieve_access_token_with_wrong_credentials_throws_bad_credentials() {
+        OSIAM_CONNECTOR.retrieveAccessToken("marissa", "wrong", Scope.ADMIN);
     }
 
     @Ignore
