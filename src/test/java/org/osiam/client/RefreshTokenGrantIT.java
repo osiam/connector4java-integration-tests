@@ -23,10 +23,10 @@
 
 package org.osiam.client;
 
-import static org.junit.Assert.*;
-
-import java.util.concurrent.TimeUnit;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.oauth.AccessToken;
@@ -36,10 +36,9 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -71,8 +70,7 @@ public class RefreshTokenGrantIT extends AbstractIntegrationTestBase {
     @Test
     public void refreshing_an_access_token_when_expired() throws InterruptedException {
         OsiamConnector connector = new OsiamConnector.Builder()
-                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
-                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setEndpoint(OSIAM_ENDPOINT)
                 .setClientId("short-living-client")
                 .setClientSecret(CLIENT_SECRET)
                 .setClientRedirectUri("http://localhost:5000/oauth2")

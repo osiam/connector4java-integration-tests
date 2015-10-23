@@ -23,11 +23,10 @@
 
 package org.osiam.client;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.UnauthorizedException;
@@ -38,10 +37,9 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -70,17 +68,4 @@ public class AccessTokenValidationIT extends AbstractIntegrationTestBase {
         assertThat(accessToken.getUserName(), is("marissa"));
     }
 
-    @Test
-    public void login_works_also_when_auth_server_client_access_token_expired() throws InterruptedException {
-        String userName = "marissa";
-        String password = "koala";
-
-        accessToken = OSIAM_CONNECTOR.retrieveAccessToken(userName, password, Scope.ADMIN);
-
-        Thread.sleep(2000);
-
-        accessToken = OSIAM_CONNECTOR.retrieveAccessToken(userName, password, Scope.ADMIN);
-
-        assertTrue(accessToken != null);
-    }
 }

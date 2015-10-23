@@ -23,8 +23,10 @@
 
 package org.osiam.client;
 
-import static org.junit.Assert.assertNotNull;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,10 +40,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -56,7 +55,7 @@ public class OsiamConnectorIT extends AbstractIntegrationTestBase {
     @BeforeClass
     public static void before() {
         lowTimeoutConnector = new OsiamConnector.Builder()
-                .setEndpoint(OSIAM_HOST)
+                .setEndpoint(OSIAM_ENDPOINT)
                 .setClientId("example-client")
                 .setClientSecret("secret")
                 .withConnectTimeout(1)
@@ -67,33 +66,11 @@ public class OsiamConnectorIT extends AbstractIntegrationTestBase {
     @Test
     public void when_combined_endpoint_is_set_both_endpoints_are_valid() {
         final OsiamConnector osiamConnector = new OsiamConnector.Builder()
-                .setEndpoint(OSIAM_HOST)
+                .setEndpoint(OSIAM_ENDPOINT)
                 .setClientId("example-client")
                 .setClientSecret("secret")
                 .build();
         accessToken = osiamConnector.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
-        assertNotNull(osiamConnector.getUser(VALID_USER_ID, accessToken));
-        assertNotNull(osiamConnector.getGroup(VALID_GROUP_ID, accessToken));
-    }
-
-    @Test
-    public void retrieve_access_token_when_only_the_auth_server_endpoint_is_set() {
-        final OsiamConnector osiamConnector = new OsiamConnector.Builder()
-                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
-                .setClientId("example-client")
-                .setClientSecret("secret")
-                .build();
-        assertNotNull(osiamConnector.retrieveAccessToken("marissa", "koala", Scope.ADMIN));
-    }
-
-    @Test
-    public void get_user_and_group_when_only_the_resource_server_endpoint_is_set() {
-        final OsiamConnector osiamConnector = new OsiamConnector.Builder()
-                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
-                .setClientId("example-client")
-                .setClientSecret("secret")
-                .build();
-        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
         assertNotNull(osiamConnector.getUser(VALID_USER_ID, accessToken));
         assertNotNull(osiamConnector.getGroup(VALID_GROUP_ID, accessToken));
     }

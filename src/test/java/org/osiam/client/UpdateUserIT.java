@@ -291,7 +291,7 @@ public class UpdateUserIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    @Ignore("Fails because of a bug in resource-server")
+    @Ignore("Fails because of a bug in OSIAM")
     public void deleting_and_add_of_same_mail_address_works_independent_of_order() {
         User user = createFullUser(IRRELEVANT);
         Email email = user.getEmails().get(0);

@@ -38,7 +38,7 @@ public class OAuthSecurityIT extends AbstractIntegrationTestBase {
 
     @Test(expected = NotAuthorizedException.class)
     public void client_is_secured() throws IOException {
-        CLIENT.target(AUTH_ENDPOINT_ADDRESS + "/Client")
+        CLIENT.target(OSIAM_ENDPOINT + "/Client")
                 .path("example-client")
                 .request(MediaType.APPLICATION_JSON)
                 .get(String.class);
@@ -46,56 +46,56 @@ public class OAuthSecurityIT extends AbstractIntegrationTestBase {
 
     @Test(expected = NotAuthorizedException.class)
     public void oauth_token_is_secured() throws IOException {
-        CLIENT.target(AUTH_ENDPOINT_ADDRESS + "/oauth/token")
+        CLIENT.target(OSIAM_ENDPOINT + "/oauth/token")
                 .request(MediaType.APPLICATION_JSON)
                 .get(String.class);
     }
 
     @Test(expected = NotAuthorizedException.class)
     public void fb_oauth_token_is_secured() throws IOException {
-        CLIENT.target(AUTH_ENDPOINT_ADDRESS + "/fb/oauth/access_token")
+        CLIENT.target(OSIAM_ENDPOINT + "/fb/oauth/access_token")
                 .request(MediaType.APPLICATION_JSON)
                 .get(String.class);
     }
 
     @Test(expected = NotAuthorizedException.class)
     public void token_validation_is_secured() throws IOException {
-        CLIENT.target(AUTH_ENDPOINT_ADDRESS + "/token/validation")
+        CLIENT.target(OSIAM_ENDPOINT + "/token/validation")
                 .request(MediaType.APPLICATION_JSON)
                 .get(String.class);
     }
 
     @Test(expected = NotAuthorizedException.class)
     public void token_revocation_is_secured() throws IOException {
-        CLIENT.target(AUTH_ENDPOINT_ADDRESS + "/token/revocation")
+        CLIENT.target(OSIAM_ENDPOINT + "/token/revocation")
                 .request(MediaType.APPLICATION_JSON)
                 .get(String.class);
     }
 
     @Test(expected = NotAuthorizedException.class)
     public void token_revocation_for_user_id_is_secured() throws IOException {
-        CLIENT.target(AUTH_ENDPOINT_ADDRESS + "/token/revocation/exampleUserId")
+        CLIENT.target(OSIAM_ENDPOINT + "/token/revocation/exampleUserId")
                 .request(MediaType.APPLICATION_JSON)
                 .get(String.class);
     }
 
     @Test(expected = NotAuthorizedException.class)
     public void users_is_secured() throws IOException {
-        CLIENT.target(RESOURCE_ENDPOINT_ADDRESS + "/Users")
+        CLIENT.target(OSIAM_ENDPOINT + "/Users")
                 .request(MediaType.APPLICATION_JSON)
                 .get(String.class);
     }
 
     @Test(expected = NotAuthorizedException.class)
     public void groups_is_secured() throws IOException {
-        CLIENT.target(RESOURCE_ENDPOINT_ADDRESS + "/Groups")
+        CLIENT.target(OSIAM_ENDPOINT + "/Groups")
                 .request(MediaType.APPLICATION_JSON)
                 .get(String.class);
     }
 
     @Test(expected = NotAuthorizedException.class)
     public void metrics_is_secured() throws IOException {
-        CLIENT.target(RESOURCE_ENDPOINT_ADDRESS + "/Metrics")
+        CLIENT.target(OSIAM_ENDPOINT + "/Metrics")
                 .request(MediaType.APPLICATION_JSON)
                 .get(String.class);
     }

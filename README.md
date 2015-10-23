@@ -13,8 +13,7 @@ following repos and install them with ```mvn clean install```
 ```
 https://github.com/osiam/scim-schema
 https://github.com/osiam/connector4java
-https://github.com/osiam/auth-server
-https://github.com/osiam/resource-server
+https://github.com/osiam/osiam
 https://github.com/osiam/addon-self-administration
 https://github.com/osiam/addon-self-administration-plugin-api
 https://github.com/osiam/examples/tree/master/addon-self-administration-plugin

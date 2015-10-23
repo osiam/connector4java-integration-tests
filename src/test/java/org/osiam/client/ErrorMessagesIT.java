@@ -316,8 +316,7 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
         thrown.expectMessage(containsString("Bad credentials"));
 
         final OsiamConnector connectorWithWrongSecret = new OsiamConnector.Builder().
-                setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS).
-                setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS).
+                setEndpoint(OSIAM_ENDPOINT).
                 setClientId("example-client").
                 setClientSecret("wrongsecret")
                 .build();

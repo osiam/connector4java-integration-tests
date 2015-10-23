@@ -60,13 +60,12 @@
         <version.docker-maven-plugin>2.10.5</version.docker-maven-plugin>
 
         <!-- OSIAM -->
-        <version.osiam.auth-server>3.0-SNAPSHOT</version.osiam.auth-server>
-        <version.osiam.resource-server>3.0-SNAPSHOT</version.osiam.resource-server>
+        <version.osiam>3.0-SNAPSHOT</version.osiam>
         <version.osiam.addon-self-administration>2.0-SNAPSHOT</version.osiam.addon-self-administration>
         <version.osiam.addon-self-administration-plugin-example>
             1.4-SNAPSHOT
         </version.osiam.addon-self-administration-plugin-example>
-        <version.osiam.connector4java>1.8-SNAPSHOT</version.osiam.connector4java>
+        <version.osiam.connector4java>2.0-SNAPSHOT</version.osiam.connector4java>
     </properties>
 
     <dependencies>
@@ -351,7 +350,7 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>download-osiam-resource-server</id>
+                        <id>download-osiam</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack</goal>
@@ -360,33 +359,12 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.osiam</groupId>
-                                    <artifactId>resource-server</artifactId>
-                                    <version>${version.osiam.resource-server}</version>
+                                    <artifactId>osiam</artifactId>
+                                    <version>${version.osiam}</version>
                                     <type>war</type>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>
-                                ${project.build.directory}/osiam-resource-server
-                            </outputDirectory>
-                            <overWriteSnapshots>true</overWriteSnapshots>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>download-osiam-auth-server</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.osiam</groupId>
-                                    <artifactId>auth-server</artifactId>
-                                    <version>${version.osiam.auth-server}</version>
-                                    <type>war</type>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>${project.build.directory}/osiam-auth-server
+                            <outputDirectory>${project.build.directory}/osiam
                             </outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
@@ -442,20 +420,20 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>copy-osiam-auth-resources</id>
+                        <id>copy-osiam-resources</id>
                         <phase>generate-test-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                ${project.build.directory}/osiam-auth-server/WEB-INF/classes
+                                ${project.build.directory}/osiam/WEB-INF/classes
                             </outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
-                                    <directory>src/test/resources/auth-server-configuration</directory>
-                                    <include>auth-server/</include>
+                                    <directory>src/test/resources/osiam-configuration</directory>
+                                    <include>osiam/</include>
                                 </resource>
                             </resources>
                         </configuration>
@@ -500,22 +478,13 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <fileSets>
-                                <!-- resource-server -->
+                                <!-- osiam -->
                                 <fileSet>
                                     <sourceFile>
-                                        src/test/resources/resource-server-configuration/resource-server_${database.container}.properties
+                                        src/test/resources/osiam-configuration/osiam_${database.container}.properties
                                     </sourceFile>
                                     <destinationFile>
-                                        ${project.build.directory}/osiam-resource-server/WEB-INF/classes/resource-server.properties
-                                    </destinationFile>
-                                </fileSet>
-                                <!-- auth-server -->
-                                <fileSet>
-                                    <sourceFile>
-                                        src/test/resources/auth-server-configuration/auth-server_${database.container}.properties
-                                    </sourceFile>
-                                    <destinationFile>
-                                        ${project.build.directory}/osiam-auth-server/WEB-INF/classes/auth-server.properties
+                                        ${project.build.directory}/osiam/WEB-INF/classes/osiam.properties
                                     </destinationFile>
                                 </fileSet>
                                 <!-- integration-test -->

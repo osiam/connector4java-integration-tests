@@ -23,15 +23,10 @@
 
 package org.osiam.client;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
@@ -63,10 +58,14 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -197,7 +196,7 @@ public class LoginOAuth2IT extends AbstractIntegrationTestBase {
 
         {
             HttpPost httpPost = new HttpPost(
-                    AUTH_ENDPOINT_ADDRESS + "/login/check");
+                    OSIAM_ENDPOINT + "/login/check");
 
             List<NameValuePair> loginCredentials = new ArrayList<>();
             loginCredentials
@@ -232,8 +231,7 @@ public class LoginOAuth2IT extends AbstractIntegrationTestBase {
     @DatabaseSetup("/database_seed.xml")
     public void test_successful_update_user_with_ldap_relogin() throws IOException, InterruptedException {
         final OsiamConnector connector = new OsiamConnector.Builder()
-                .setAuthServerEndpoint(AUTH_ENDPOINT_ADDRESS)
-                .setResourceServerEndpoint(RESOURCE_ENDPOINT_ADDRESS)
+                .setEndpoint(OSIAM_ENDPOINT)
                 .setClientId("short-living-client")
                 .setClientSecret("other-secret")
                 .setClientRedirectUri("http://localhost:5001/oauth2")
@@ -316,7 +314,7 @@ public class LoginOAuth2IT extends AbstractIntegrationTestBase {
     public void test_failure_login_when_user_not_active() throws IOException {
         String redirectUri = givenValidAuthCode("ewilley", "ewilley", "internal");
         assertTrue(accessToken == null);
-        assertEquals(redirectUri, AUTH_ENDPOINT_ADDRESS + "/login/error");
+        assertEquals(redirectUri, OSIAM_ENDPOINT + "/login/error");
     }
 
     private void givenAccessTokenUsingAuthCode() {
@@ -333,7 +331,7 @@ public class LoginOAuth2IT extends AbstractIntegrationTestBase {
         }
 
         {
-            HttpPost httpPost = new HttpPost(AUTH_ENDPOINT_ADDRESS + "/login/check");
+            HttpPost httpPost = new HttpPost(OSIAM_ENDPOINT + "/login/check");
 
             List<NameValuePair> loginCredentials = new ArrayList<>();
             loginCredentials
@@ -362,7 +360,7 @@ public class LoginOAuth2IT extends AbstractIntegrationTestBase {
 
         {
             HttpPost httpPost = new HttpPost(
-                    AUTH_ENDPOINT_ADDRESS + "/oauth/authorize");
+                    OSIAM_ENDPOINT + "/oauth/authorize");
 
             List<NameValuePair> loginCredentials = new ArrayList<>();
             loginCredentials.add(new BasicNameValuePair("user_oauth_approval", "true"));

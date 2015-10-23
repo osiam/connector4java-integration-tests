@@ -93,10 +93,10 @@ class ScimExtensionTypesIT extends AbstractExtensionBaseIT {
         def jsonContent
 
         when:
-        def httpClient = new HTTPBuilder(RESOURCE_ENDPOINT)
+        def httpClient = new HTTPBuilder(OSIAM_ENDPOINT)
 
         httpClient.request(Method.GET) { req ->
-            uri.path = RESOURCE_ENDPOINT + '/osiam/extension-definition'
+            uri.path = OSIAM_ENDPOINT + '/osiam/extension-definition'
             headers.'Authorization' = 'Bearer ' + accessToken.getToken()
 
             response.success = { resp, json ->
@@ -126,10 +126,10 @@ class ScimExtensionTypesIT extends AbstractExtensionBaseIT {
         def statusCode
 
         when:
-        def httpClient = new HTTPBuilder(RESOURCE_ENDPOINT)
+        def httpClient = new HTTPBuilder(OSIAM_ENDPOINT)
 
         httpClient.request(Method.GET) { req ->
-            uri.path = RESOURCE_ENDPOINT + '/osiam/extension-definition'
+            uri.path = OSIAM_ENDPOINT + '/osiam/extension-definition'
             headers.'Authorization' = 'Bearer NOT-VALID'
 
             response.success = { resp, json ->

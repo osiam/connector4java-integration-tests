@@ -50,9 +50,7 @@ abstract class AbstractIT extends Specification {
 
     private static final String CLIENT_ID = 'example-client'
     private static final String CLIENT_SECRET = 'secret'
-    private static final String AUTH_ENDPOINT
-
-    protected static final String RESOURCE_ENDPOINT
+    protected static final String OSIAM_ENDPOINT
     protected static final String REGISTRATION_ENDPOINT
     protected static final String SELF_ADMIN_URN = 'urn:org.osiam:scim:extensions:addon-self-administration'
     protected static final OsiamConnector OSIAM_CONNECTOR
@@ -73,13 +71,11 @@ abstract class AbstractIT extends Specification {
         OSIAM_MAIL_PORT = System.getProperty('osiam.mail.port', '11110').toInteger()
 
         final String osiamHost = System.getProperty('osiam.test.host', 'http://localhost:8180')
-        AUTH_ENDPOINT = "${osiamHost}/osiam-auth-server"
-        RESOURCE_ENDPOINT = "${osiamHost}/osiam-resource-server"
+        OSIAM_ENDPOINT = "${osiamHost}/osiam"
         REGISTRATION_ENDPOINT = "${osiamHost}/addon-self-administration"
 
         OSIAM_CONNECTOR = new OsiamConnector.Builder()
-                .setAuthServerEndpoint(AUTH_ENDPOINT)
-                .setResourceServerEndpoint(RESOURCE_ENDPOINT)
+                .setEndpoint(OSIAM_ENDPOINT)
                 .setClientId(CLIENT_ID)
                 .setClientSecret(CLIENT_SECRET)
                 .build()
@@ -107,8 +103,7 @@ abstract class AbstractIT extends Specification {
 
     def createAccessToken(String userName, String password) {
         OsiamConnector osiamConnector = new OsiamConnector.Builder()
-                .setAuthServerEndpoint(AUTH_ENDPOINT)
-                .setResourceServerEndpoint(RESOURCE_ENDPOINT)
+                .setEndpoint(OSIAM_ENDPOINT)
                 .setClientId(CLIENT_ID)
                 .setClientSecret(CLIENT_SECRET)
                 .build()
