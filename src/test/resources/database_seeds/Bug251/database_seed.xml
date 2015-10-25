@@ -44,10 +44,10 @@
                middle_name="middleName" honorific_prefix="honorificPrefix" honorific_suffix="honorificSuffix"/>
 
     <scim_user display_name="BeccyT." locale="de" nick_name="Beccy"
-               password="908661cbdcd4795f95926b57e9979a80969f7ef55cec4c3dcfccabcae55d32f2a1eae227a91fd41df1462c2bb7b60c136beb75666d7bb60ff859ff886788a349"
+               password="$2a$13$f2.MuL0j1tHc0LWXXSqbOuVKTzs1hlo6862PIpSF8cJ0aTjQmqrae"
                title="Dr." user_name="jcambell" internal_id="100005" name="100007" active="false"/>
     <scim_user
-            password="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
+            password="$2a$13$CfkpeagYWq4kIuugqj/xCOi5LuI864wTuFShXvRFWHbSni1Rcgw/a"
             user_name="marissa" internal_id="100001" active="true"/>
 
 </dataset>

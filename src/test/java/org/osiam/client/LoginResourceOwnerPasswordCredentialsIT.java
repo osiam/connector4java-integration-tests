@@ -34,12 +34,21 @@ import org.osiam.client.exception.BadCredentialsException;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
+import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -53,12 +62,28 @@ import static org.junit.Assert.assertTrue;
 @DatabaseTearDown(value = "/database_tear_down.xml", type = DatabaseOperation.DELETE_ALL)
 public class LoginResourceOwnerPasswordCredentialsIT extends AbstractIntegrationTestBase {
 
+    @Autowired
+    private DataSource dataSource;
+
     @Test
     public void login_with_resource_owner_password_credentials_grant_should_provide_an_refresh_token() {
         accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
         assertNotNull("The hole access token object was null.", accessToken);
         assertNotNull("The access token was null.", accessToken.getToken());
         assertNotNull("The refresh token was null.", accessToken.getRefreshToken());
+    }
+
+    @Test
+    @DatabaseSetup("/database_seed_login_with_old_hash.xml")
+    public void login_updates_to_bcrypt_hash() throws SQLException {
+        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa02", "koala", Scope.ADMIN);
+        String sql = "SELECT password FROM scim_user WHERE internal_id = 100005";
+        ResultSet rs = dataSource.getConnection().createStatement().executeQuery(sql);
+        rs.next();
+        final String bCryptHashedPassword = rs.getString(1);
+        assertThat(bCryptHashedPassword, startsWith("$2a$13"));
+        assertThat(bCryptHashedPassword, not(equalTo
+                ("fb0ae3c36077b77c1907876f94a8ac65559454879b9750197e69a9325431a6e2d588f587c641a5a91e90b9f26ade1294d921ce3d5a5842e77bdc27b6f8d3146d")));
     }
 
     @Test(expected = BadCredentialsException.class)
