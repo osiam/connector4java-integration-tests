@@ -63,7 +63,7 @@
         <version.osiam>3.0-SNAPSHOT</version.osiam>
         <version.osiam.addon-self-administration>2.0-SNAPSHOT</version.osiam.addon-self-administration>
         <version.osiam.addon-self-administration-plugin-example>
-            1.4-SNAPSHOT
+            2.0-SNAPSHOT
         </version.osiam.addon-self-administration-plugin-example>
         <version.osiam.connector4java>2.0-SNAPSHOT</version.osiam.connector4java>
     </properties>
