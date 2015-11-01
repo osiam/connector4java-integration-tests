@@ -231,7 +231,7 @@ public class LoginOAuth2IT extends AbstractIntegrationTestBase {
     @DatabaseSetup("/database_seed.xml")
     public void test_successful_update_user_with_ldap_relogin() throws IOException, InterruptedException {
         final OsiamConnector connector = new OsiamConnector.Builder()
-                .setEndpoint(OSIAM_ENDPOINT)
+                .withEndpoint(OSIAM_ENDPOINT)
                 .setClientId("short-living-client")
                 .setClientSecret("other-secret")
                 .setClientRedirectUri("http://localhost:5001/oauth2")
