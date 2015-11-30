@@ -55,7 +55,7 @@ public class OsiamConnectorIT extends AbstractIntegrationTestBase {
     @BeforeClass
     public static void before() {
         lowTimeoutConnector = new OsiamConnector.Builder()
-                .setEndpoint(OSIAM_ENDPOINT)
+                .withEndpoint(OSIAM_ENDPOINT)
                 .setClientId("example-client")
                 .setClientSecret("secret")
                 .withConnectTimeout(1)
@@ -66,7 +66,7 @@ public class OsiamConnectorIT extends AbstractIntegrationTestBase {
     @Test
     public void when_combined_endpoint_is_set_both_endpoints_are_valid() {
         final OsiamConnector osiamConnector = new OsiamConnector.Builder()
-                .setEndpoint(OSIAM_ENDPOINT)
+                .withEndpoint(OSIAM_ENDPOINT)
                 .setClientId("example-client")
                 .setClientSecret("secret")
                 .build();

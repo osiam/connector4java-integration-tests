@@ -70,7 +70,7 @@ public class RefreshTokenGrantIT extends AbstractIntegrationTestBase {
     @Test
     public void refreshing_an_access_token_when_expired() throws InterruptedException {
         OsiamConnector connector = new OsiamConnector.Builder()
-                .setEndpoint(OSIAM_ENDPOINT)
+                .withEndpoint(OSIAM_ENDPOINT)
                 .setClientId("short-living-client")
                 .setClientSecret(CLIENT_SECRET)
                 .setClientRedirectUri("http://localhost:5000/oauth2")

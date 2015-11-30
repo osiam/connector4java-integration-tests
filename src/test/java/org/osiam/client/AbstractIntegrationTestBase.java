@@ -49,7 +49,7 @@ public abstract class AbstractIntegrationTestBase {
     protected static final String CLIENT_SECRET = "secret";
 
     protected static final OsiamConnector OSIAM_CONNECTOR = new OsiamConnector.Builder()
-            .setEndpoint(OSIAM_ENDPOINT)
+            .withEndpoint(OSIAM_ENDPOINT)
             .setClientId(CLIENT_ID)
             .setClientSecret(CLIENT_SECRET)
             .setClientRedirectUri("http://localhost:5000/oauth2")

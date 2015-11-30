@@ -61,11 +61,11 @@
 
         <!-- OSIAM -->
         <version.osiam>3.0-SNAPSHOT</version.osiam>
-        <version.osiam.addon-self-administration>2.0-SNAPSHOT</version.osiam.addon-self-administration>
+        <version.osiam.addon-self-administration>1.7-SNAPSHOT</version.osiam.addon-self-administration>
         <version.osiam.addon-self-administration-plugin-example>
-            2.0-SNAPSHOT
+            1.4-SNAPSHOT
         </version.osiam.addon-self-administration-plugin-example>
-        <version.osiam.connector4java>2.0-SNAPSHOT</version.osiam.connector4java>
+        <version.osiam.connector4java>1.8-SNAPSHOT</version.osiam.connector4java>
     </properties>
 
     <dependencies>

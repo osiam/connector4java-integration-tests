@@ -59,7 +59,7 @@ public class LoginClientCredentialsIT extends AbstractIntegrationTestBase {
     @Test(expected = UnauthorizedException.class)
     public void login_with_wrong_client_credentials() {
         final OsiamConnector connectorWithWrongSecret = new OsiamConnector.Builder().
-                setEndpoint(OSIAM_ENDPOINT).
+                withEndpoint(OSIAM_ENDPOINT).
                 setClientId("example-client").
                 setClientSecret("wrongsecret")
                 .build();

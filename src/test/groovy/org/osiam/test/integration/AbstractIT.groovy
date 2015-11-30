@@ -75,7 +75,7 @@ abstract class AbstractIT extends Specification {
         REGISTRATION_ENDPOINT = "${osiamHost}/addon-self-administration"
 
         OSIAM_CONNECTOR = new OsiamConnector.Builder()
-                .setEndpoint(OSIAM_ENDPOINT)
+                .withEndpoint(OSIAM_ENDPOINT)
                 .setClientId(CLIENT_ID)
                 .setClientSecret(CLIENT_SECRET)
                 .build()
@@ -103,7 +103,7 @@ abstract class AbstractIT extends Specification {
 
     def createAccessToken(String userName, String password) {
         OsiamConnector osiamConnector = new OsiamConnector.Builder()
-                .setEndpoint(OSIAM_ENDPOINT)
+                .withEndpoint(OSIAM_ENDPOINT)
                 .setClientId(CLIENT_ID)
                 .setClientSecret(CLIENT_SECRET)
                 .build()
