@@ -76,6 +76,7 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 public class LoginOAuth2IT extends AbstractIntegrationTestBase {
 
     private URI loginUri = OSIAM_CONNECTOR.getAuthorizationUri(Scope.ADMIN);
+    private URI osiamEndpointUri = URI.create(AUTH_ENDPOINT_ADDRESS);
     private CloseableHttpClient httpClient = HttpClientBuilder.create().build();
     private String authCode;
     private AccessToken accessToken;
@@ -210,7 +211,8 @@ public class LoginOAuth2IT extends AbstractIntegrationTestBase {
             httpPost.setEntity(loginCredentialsEntity);
             HttpResponse response = httpClient.execute(httpPost);
 
-            currentRedirectUri = response.getLastHeader("Location").getValue();
+            // resolve the redirect uri against OSIAM's endpoint to support relative URIs
+            currentRedirectUri = osiamEndpointUri.resolve(response.getLastHeader("Location").getValue()).toString();
 
             httpPost.releaseConnection();
         }
@@ -346,7 +348,8 @@ public class LoginOAuth2IT extends AbstractIntegrationTestBase {
             httpPost.setEntity(loginCredentialsEntity);
             HttpResponse response = httpClient.execute(httpPost);
 
-            currentRedirectUri = response.getLastHeader("Location").getValue();
+            // resolve the redirect uri against OSIAM's endpoint to support relative URIs
+            currentRedirectUri = osiamEndpointUri.resolve(response.getLastHeader("Location").getValue()).toString();
 
             httpPost.releaseConnection();
         }
