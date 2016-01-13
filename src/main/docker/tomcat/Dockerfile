@@ -1,4 +1,4 @@
-FROM tomcat:7-jre7
+FROM tomcat:8-jre8
 
 COPY osiam $CATALINA_HOME/webapps/osiam
 COPY addon-self-administration $CATALINA_HOME/webapps/addon-self-administration
