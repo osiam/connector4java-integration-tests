@@ -177,7 +177,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_complex_query.xml")
     public void search_for_user_by_complex_query() {
         Query query = new QueryBuilder().filter("userName eq \"user1\" and name.formatted eq \"formatted1\""
-                + " and emails eq \"email1@other.com\" and extension.stringValue eq \"Hello 1\"").build();
+                + " and emails eq \"email1@other.com\" and extension:stringValue eq \"Hello 1\"").build();
         queryResult = OSIAM_CONNECTOR.searchUsers(query, accessToken);
         assertThat(queryResult.getTotalResults(), is(equalTo(1L)));
     }
