@@ -1,4 +1,4 @@
-FROM postgres:9.3
+FROM postgres:9.4
 
 RUN cp -p /usr/share/zoneinfo/${user.timezone} /etc/localtime
 RUN echo "${user.timezone}" > /etc/timezone
