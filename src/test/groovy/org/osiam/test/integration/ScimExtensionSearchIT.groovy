@@ -27,7 +27,6 @@ import org.osiam.client.exception.ConflictException
 import org.osiam.client.query.Query
 import org.osiam.client.query.QueryBuilder
 import org.osiam.resources.scim.SCIMSearchResult
-
 import spock.lang.Unroll
 
 public class ScimExtensionSearchIT extends AbstractExtensionBaseIT {
@@ -37,10 +36,10 @@ public class ScimExtensionSearchIT extends AbstractExtensionBaseIT {
     }
 
     @Unroll
-    def 'search for user by #fieldType extension field and constraint #constraint with query string works'() {
+    def 'search for user by #fieldType extension field and constraint #constraint separated by ":" works'() {
 
         given:
-        Query query = new QueryBuilder().filter("extension.$fieldName $constraint \"$queryValue\"").build()
+        Query query = new QueryBuilder().filter("extension:$fieldName $constraint \"$queryValue\"").build()
 
         when:
         SCIMSearchResult result = OSIAM_CONNECTOR.searchUsers(query, accessToken)
@@ -76,12 +75,31 @@ public class ScimExtensionSearchIT extends AbstractExtensionBaseIT {
         FIELD_TYPE_REFERENCE | FIELD_NAME_REFERENCE | 'eq'       | 'https://beta.example.com/Users/28'   | 1
         FIELD_TYPE_REFERENCE | FIELD_NAME_REFERENCE | 'co'       | 'beta'                                | 1
         FIELD_TYPE_REFERENCE | FIELD_NAME_REFERENCE | 'sw'       | 'https://beta'                        | 1
+
+    }
+
+    @Unroll
+    def 'search for user by extension field separated by "." works'() {
+        given:
+        Query query = new QueryBuilder().filter("extension.$fieldName $constraint \"$queryValue\"").build()
+
+        when:
+        SCIMSearchResult result = OSIAM_CONNECTOR.searchUsers(query, accessToken)
+
+        then:
+        result.getTotalResults() == expectedResult
+
+        where:
+        fieldType         | fieldName         | constraint | queryValue | expectedResult
+        FIELD_TYPE_STRING | FIELD_NAME_STRING | 'eq'       | 'female'   | 3
+        FIELD_TYPE_STRING | FIELD_NAME_STRING | 'co'       | 'mal'      | 5
+        FIELD_TYPE_STRING | FIELD_NAME_STRING | 'sw'       | 'fe'       | 3
     }
 
     @Unroll
     def 'search for user by #fieldType extension field and constraint #constraint with query string raises exception'() {
         given:
-        Query query = new QueryBuilder().filter("extension.$fieldName $constraint \"irrelevant\"").build()
+        Query query = new QueryBuilder().filter("extension:$fieldName $constraint \"irrelevant\"").build()
 
         when:
         OSIAM_CONNECTOR.searchUsers(query, accessToken)

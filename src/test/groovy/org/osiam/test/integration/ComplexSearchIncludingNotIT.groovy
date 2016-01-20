@@ -72,7 +72,7 @@ class ComplexSearchIncludingNotIT extends AbstractIT {
         }
     }
 
-    def 'searching with escaped quot in value'() {
+    def 'searching with escaped quote in value'() {
         given:
         Query query = new QueryBuilder().filter('userName eq "george \\"alexander\\""').build()
 

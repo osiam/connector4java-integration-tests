@@ -69,7 +69,7 @@ public class BT22IT extends AbstractIntegrationTestBase {
 
     @Test
     public void searching_for_user_with_filter_on_extension_field_same_case() throws UnsupportedEncodingException {
-        Query query = new QueryBuilder().filter(URN + "." + FIELD + " eq \"female\"").build();
+        Query query = new QueryBuilder().filter(URN + ":" + FIELD + " eq \"female\"").build();
 
         SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(query, accessToken);
 
@@ -89,7 +89,7 @@ public class BT22IT extends AbstractIntegrationTestBase {
     @Test
     public void searching_for_user_with_filter_on_extension_field_with_wrong_cased_field_name()
             throws UnsupportedEncodingException {
-        Query query = new QueryBuilder().filter(URN + "." + FIELD_WRONG_CASE + " eq \"female\"").build();
+        Query query = new QueryBuilder().filter(URN + ":" + FIELD_WRONG_CASE + " eq \"female\"").build();
 
         SCIMSearchResult<User> result = OSIAM_CONNECTOR.searchUsers(query, accessToken);
 

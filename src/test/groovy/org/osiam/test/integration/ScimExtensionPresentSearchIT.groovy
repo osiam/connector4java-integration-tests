@@ -39,7 +39,7 @@ class ScimExtensionPresentSearchIT extends AbstractExtensionBaseIT {
     def 'search for user by #fieldType extension and constraint \'pr\' with query string works'() {
 
         given:
-        Query query = new QueryBuilder().filter("extension.$fieldName pr").build()
+        Query query = new QueryBuilder().filter("extension:$fieldName pr").build()
 
         when:
         SCIMSearchResult result = OSIAM_CONNECTOR.searchUsers(query, accessToken)
