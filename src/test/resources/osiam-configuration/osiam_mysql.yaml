@@ -1,0 +1,31 @@
+org.osiam:
+
+  #
+  # Database configuration
+  #
+  db:
+
+    #
+    # MySQL
+    #
+    vendor: mysql
+    driver: com.mysql.jdbc.Driver
+    url: jdbc:mysql://mysql:3306/ong
+    username: ong
+    password: b4s3dg0d
+
+  #
+  # LDAP configuration
+  #
+  ldap:
+    enabled: true
+    server-url: ldap://ldap:389/dc=osiam,dc=org
+    dn-patterns:
+      - uid={0},ou=people
+    sync-user-data: true
+    user-mapping:
+      userName: uid
+      email: mail
+      name.familyName: sn
+      name.givenName: givenName
+      displayName: displayName
