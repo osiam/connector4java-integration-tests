@@ -1,0 +1,31 @@
+org.osiam:
+
+  #
+  # Database configuration
+  #
+  db:
+
+    #
+    # PostgreSQL
+    #
+    vendor: postgresql
+    driver: org.postgresql.Driver
+    url: jdbc:postgresql://postgres:5432/ong
+    username: ong
+    password: b4s3dg0d
+
+  #
+  # LDAP configuration
+  #
+  ldap:
+    enabled: true
+    server-url: ldap://ldap:389/dc=osiam,dc=org
+    dn-patterns:
+      - uid={0},ou=people
+    sync-user-data: true
+    user-mapping:
+      userName: uid
+      email: mail
+      name.familyName: sn
+      name.givenName: givenName
+      displayName: displayName
