@@ -507,6 +507,7 @@
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>${version.docker-maven-plugin}</version>
                 <configuration>
+                    <src>src/test/docker</src>
                     <version>1.16</version>
                     <host>${docker.host}</host>
                     <exclude>${excluded.container}</exclude>
