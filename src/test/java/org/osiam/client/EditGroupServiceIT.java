@@ -30,6 +30,7 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.osiam.client.exception.BadRequestException;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.oauth.Scope;
@@ -66,13 +67,13 @@ public class EditGroupServiceIT extends AbstractIntegrationTestBase {
         accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
     }
 
-    @Test(expected = ConflictException.class)
+    @Test(expected = BadRequestException.class)
     public void create_group_without_displayName_raises_exception() {
         group = new Group.Builder().build();
         OSIAM_CONNECTOR.createGroup(group, accessToken);
     }
 
-    @Test(expected = ConflictException.class)
+    @Test(expected = BadRequestException.class)
     public void create_group_with_empty_displayName_raises_exception() {
         group = new Group.Builder("").build();
         OSIAM_CONNECTOR.createGroup(group, accessToken);
