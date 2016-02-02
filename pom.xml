@@ -420,25 +420,6 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>copy-osiam-resources</id>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>
-                                ${project.build.directory}/osiam/WEB-INF/classes
-                            </outputDirectory>
-                            <overwrite>true</overwrite>
-                            <resources>
-                                <resource>
-                                    <directory>src/test/resources/osiam-configuration</directory>
-                                    <include>osiam/</include>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>copy-addon-self-administration</id>
                         <phase>generate-test-resources</phase>
                         <goals>
@@ -478,15 +459,6 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <fileSets>
-                                <!-- osiam -->
-                                <fileSet>
-                                    <sourceFile>
-                                        src/test/resources/osiam-configuration/osiam_${database.container}.yaml
-                                    </sourceFile>
-                                    <destinationFile>
-                                        ${project.build.directory}/osiam/WEB-INF/classes/osiam.yaml
-                                    </destinationFile>
-                                </fileSet>
                                 <!-- integration-test -->
                                 <fileSet>
                                     <sourceFile>
