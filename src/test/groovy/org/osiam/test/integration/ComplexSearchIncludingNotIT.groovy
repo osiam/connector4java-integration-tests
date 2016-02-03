@@ -23,6 +23,7 @@
 
 package org.osiam.test.integration
 
+import org.osiam.client.exception.BadRequestException
 import org.osiam.client.exception.ConflictException
 import org.osiam.client.query.Query
 import org.osiam.client.query.QueryBuilder
@@ -94,6 +95,6 @@ class ComplexSearchIncludingNotIT extends AbstractIT {
         OSIAM_CONNECTOR.searchUsers(query, accessToken)
 
         then:
-        thrown(ConflictException)
+        thrown(BadRequestException)
     }
 }

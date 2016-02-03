@@ -30,6 +30,7 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.osiam.client.exception.BadRequestException;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
@@ -73,7 +74,7 @@ public class EditUserServiceIT extends AbstractIntegrationTestBase {
         accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
     }
 
-    @Test(expected = ConflictException.class)
+    @Test(expected = BadRequestException.class)
     public void create_user_with_no_username_raises_exception() {
         initializeUserWithNoUserName();
         createUser();

@@ -33,6 +33,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.osiam.client.exception.BadRequestException;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
@@ -142,7 +143,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/user_by_email.xml")
     public void search_with_double_quotes_less_value_returns_correct_exception_message() {
 
-        thrown.expect(ConflictException.class);
+        thrown.expect(BadRequestException.class);
         thrown.expectMessage(containsString("Please make sure that all values are surrounded by double quotes"));
 
         String email = "bjensen@example.com";
@@ -309,7 +310,7 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         assertThat(user.getUserName(), is("marissa"));
     }
 
-    @Test(expected = ConflictException.class)
+    @Test(expected = BadRequestException.class)
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
     public void search_for_user_by_non_exisitng_field_with_query_string_fails() {
         Query query = new QueryBuilder().filter(INVALID_STRING + " eq \"" + INVALID_STRING + "\"").build();

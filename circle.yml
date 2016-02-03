@@ -4,7 +4,7 @@ machine:
   environment:
     DOCKER_HOST: tcp://localhost:2375
   java:
-    version: openjdk7
+    version: oraclejdk8
   pre:
     - echo 'DOCKER_OPTS="${DOCKER_OPTS} -H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock"' | sudo tee -a /etc/default/docker
 
