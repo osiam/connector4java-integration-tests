@@ -34,7 +34,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.osiam.client.exception.BadRequestException;
-import org.osiam.client.exception.ConflictException;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
@@ -69,7 +68,6 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
 
     private static final int ITEMS_PER_PAGE = 3;
     private static final int START_INDEX_SECOND_PAGE = 4;
-    private static final String HASHED_PASSWORD = "cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800";
     private SCIMSearchResult<User> queryResult;
 
     @Before
@@ -301,13 +299,11 @@ public class SearchUserServiceIT extends AbstractIntegrationTestBase {
         }
     }
 
-    @Test
+    @Test(expected = BadRequestException.class)
     @DatabaseSetup("/database_seeds/SearchUserServiceIT/database_seed.xml")
-    public void search_for_user_by_Password_with_query_string_fails() {
-        Query query = new QueryBuilder().filter("password eq \"" + HASHED_PASSWORD + "\"").build();
-        queryResult = OSIAM_CONNECTOR.searchUsers(query, accessToken);
-        User user = queryResult.getResources().get(0);
-        assertThat(user.getUserName(), is("marissa"));
+    public void search_for_user_by_password_with_query_string_fails() {
+        Query query = new QueryBuilder().filter("password eq \"irrelevant\"").build();
+        OSIAM_CONNECTOR.searchUsers(query, accessToken);
     }
 
     @Test(expected = BadRequestException.class)
