@@ -141,11 +141,11 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void can_access_ServiceProviderConfigs_endpoint() {
+    public void can_access_ServiceProviderConfig_endpoint() {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
         Response response = CLIENT.target(OSIAM_ENDPOINT)
-                .path("ServiceProviderConfigs")
+                .path("ServiceProviderConfig")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())
                 .post(Entity.entity("irrelevant", MediaType.APPLICATION_FORM_URLENCODED_TYPE));
