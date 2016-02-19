@@ -1,4 +1,4 @@
-FROM osixia/openldap:1.0.1
+FROM osixia/openldap:1.0.9
 
 ENV LDAP_ORGANISATION="OSIAM ITs"
 ENV LDAP_DOMAIN=osiam.org
