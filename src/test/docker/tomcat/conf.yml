@@ -1,6 +1,6 @@
 packaging:
   add:
-    - target/osiam
+    - target/dependency/osiam.war
     - target/addon-self-administration
     - target/dependency/addon-self-administration-plugin-example.jar
 

@@ -1,7 +1,7 @@
 FROM tomcat:8-jre8
 
 COPY osiam.xml /usr/local/tomcat/conf/Catalina/localhost/osiam.xml
-COPY osiam $CATALINA_HOME/webapps/osiam
+COPY osiam.war $CATALINA_HOME/webapps/osiam.war
 COPY osiam-home /var/lib/osiam
 COPY osiam-home/config/osiam_${database.container}.yaml /var/lib/osiam/config/osiam.yaml
 
