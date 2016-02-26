@@ -353,7 +353,7 @@
                         <id>download-osiam</id>
                         <phase>generate-resources</phase>
                         <goals>
-                            <goal>unpack</goal>
+                            <goal>copy</goal>
                         </goals>
                         <configuration>
                             <artifactItems>
@@ -362,10 +362,9 @@
                                     <artifactId>osiam</artifactId>
                                     <version>${version.osiam}</version>
                                     <type>war</type>
+                                    <destFileName>osiam.war</destFileName>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/osiam
-                            </outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
                     </execution>
