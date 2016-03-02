@@ -52,22 +52,22 @@
     <scim_id internal_id="100001" meta="100004" id="cef9452e-00a9-4cec-a086-d171374ffbef"/>
 
     <scim_user display_name="AdelineD." locale="de" nick_name="Adeline"
-               password="de80fa5f5b167a83e57d0f388f1f1964b8c3b991347eb71d7d74ed8823e88d592b19762ca78b58982aa85bb28a3b4596a97346daeabfcf2913bdc400e9af4b67"
+               password="$2a$13$f2.MuL0j1tHc0LWXXSqbOuVKTzs1hlo6862PIpSF8cJ0aTjQmqrae"
                title="Prof." user_name="adavies" internal_id="100005" active="false"/>
     <scim_user display_name="BeccyT." locale="de" nick_name="Beccy"
-               password="908661cbdcd4795f95926b57e9979a80969f7ef55cec4c3dcfccabcae55d32f2a1eae227a91fd41df1462c2bb7b60c136beb75666d7bb60ff859ff886788a349"
+               password="$2a$13$f2.MuL0j1tHc0LWXXSqbOuVKTzs1hlo6862PIpSF8cJ0aTjQmqrae"
                title="Dr." user_name="bjensen" internal_id="100009" active="false"/>
     <scim_user display_name="CarolinaM." locale="de" nick_name="Carolina"
-               password="1fb68a8abc646ade5a1b75317269ff097374da7b39663adc5930bd92b21d8fce409eabc31ab60450c13046a533c4a7632c26fe75c72f12f4aa798aa034980ed1"
+               password="$2a$13$3cPk7tjUJlvznrRFFLmQq.BnmJ9te/oLjEL1wmCK.Y5SjWN9P57E6"
                user_name="cmiller" internal_id="100013" active="false"/>
     <scim_user display_name="DanielC." locale="de" nick_name="Daniel"
-               password="5adcf124d1edbad344f8bf4cac60d63dd3c071b58a2514a1a4b96837da370de4cd962d7275a6903b5c2c4a82712dc3b0c43a9f99c4a29631708af1352a86a0bf"
+               password="$2a$13$gx./SbTXFmDQPSepI9VyQeatCammNHABwf6UYiOnQqvCD3V9aAMoi"
                title="" user_name="dcooper" internal_id="100021" active="false"/>
     <scim_user display_name="EmilP." locale="de" nick_name="Emil"
-               password="bff691b597ddc20e9368e6a887d6f7575968c17e164da805c07e3c59df467cde7cb4db9d2bbaaee644950c3eeab8e7c246e65f655cb0c05b93fc5d17a8ae01c8"
+               password="$2a$13$XBwE0QC1F7Mi8Uy7NXU1kuHNDUcqKxzwbar7nqoQHWDTyuzqra4Lm"
                title="" user_name="epalmer" internal_id="100025" active="false"/>
     <scim_user
-            password="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
+            password="$2a$13$CfkpeagYWq4kIuugqj/xCOi5LuI864wTuFShXvRFWHbSni1Rcgw/a"
             user_name="marissa" internal_id="100001" active="true"/>
 
     <scim_email multi_value_id="100091" value="adavies@example.com" is_primary="false" type="work"

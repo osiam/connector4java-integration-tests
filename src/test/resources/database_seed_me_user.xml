@@ -40,7 +40,7 @@
     <scim_name id="100001" family_name="Thompson" formatted="Ms. Marissa Thompson" given_name="Marissa"/>
 
     <scim_user
-            password="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
+            password="$2a$13$CfkpeagYWq4kIuugqj/xCOi5LuI864wTuFShXvRFWHbSni1Rcgw/a"
             user_name="marissa" internal_id="100001" name="100001" active="true"/>
 
     <scim_email multi_value_id="100091" value="marissa@example.com" is_primary="true" type="work"

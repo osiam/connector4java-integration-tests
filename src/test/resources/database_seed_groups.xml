@@ -56,12 +56,12 @@
     <scim_name id="100048" family_name="Jensen" formatted="Ms. Barbara J Jensen III" given_name="Barbara"/>
 
     <scim_user
-            password="42db3b474c2a54f6b1c3c352e4436274de6b0239432c9a6c2d51c62e54b28ad1e3ecbb306f7748890934e3dae4292e339189c8bb7af55f68de9855ca455f19e4"
+            password="$2a$13$rp6AHpE.te/tn9jHnZ/yxeFxGYHjI/NTqLr6lDYG0vfMEyvAui5vG"
             display_name="BarbaraJ." locale="de" nick_name="Barbara" preferred_language="de"
             profile_url="http://babaraJ.com" timezone="UTC" title="Dr."
             user_name="bjensen" user_type="user" internal_id="100046" name="100048" active="false"/>
     <scim_user
-            password="cbae73fac0893291c4792ef19d158a589402288b35cb18fb8406e951b9d95f6b8b06a3526ffebe96ae0d91c04ae615a7fe2af362763db386ccbf3b55c29ae800"
+            password="$2a$13$CfkpeagYWq4kIuugqj/xCOi5LuI864wTuFShXvRFWHbSni1Rcgw/a"
             user_name="marissa" internal_id="100001" active="true"/>
 
     <scim_group display_name="test_group01" internal_id="100052"/>
