@@ -23,8 +23,6 @@
 
 package org.osiam.test.integration
 
-import com.icegreen.greenmail.util.ServerSetup
-import com.sun.mail.pop3.POP3Store
 import org.dbunit.database.DatabaseDataSourceConnection
 import org.dbunit.database.IDatabaseConnection
 import org.dbunit.dataset.IDataSet
@@ -37,10 +35,6 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext
 import spock.lang.Specification
 
-import javax.mail.Flags
-import javax.mail.Folder
-import javax.mail.Message
-import javax.mail.Session
 import javax.sql.DataSource
 
 /**
@@ -51,15 +45,7 @@ abstract class AbstractIT extends Specification {
     private static final String CLIENT_ID = 'example-client'
     private static final String CLIENT_SECRET = 'secret'
     protected static final String OSIAM_ENDPOINT
-    protected static final String REGISTRATION_ENDPOINT
-    protected static final String SELF_ADMIN_URN = 'urn:org.osiam:scim:extensions:addon-self-administration'
     protected static final OsiamConnector OSIAM_CONNECTOR
-
-    private static String OSIAM_MAIL_HOST
-    private static int OSIAM_MAIL_PORT
-
-    private POP3Store store
-    private Folder inbox
 
     protected AccessToken accessToken
 
@@ -67,12 +53,8 @@ abstract class AbstractIT extends Specification {
         OsiamConnector.setConnectTimeout(Integer.parseInt(System.getProperty("connector.timeout", "-1")));
         OsiamConnector.setReadTimeout(Integer.parseInt(System.getProperty("connector.timeout", "-1")));
 
-        OSIAM_MAIL_HOST = System.getProperty('osiam.mail.host', 'localhost')
-        OSIAM_MAIL_PORT = System.getProperty('osiam.mail.port', '11110').toInteger()
-
         final String osiamHost = System.getProperty('osiam.test.host', 'http://localhost:8180')
         OSIAM_ENDPOINT = "${osiamHost}/osiam"
-        REGISTRATION_ENDPOINT = "${osiamHost}/addon-self-administration"
 
         OSIAM_CONNECTOR = new OsiamConnector.Builder()
                 .withEndpoint(OSIAM_ENDPOINT)
@@ -110,30 +92,7 @@ abstract class AbstractIT extends Specification {
         osiamConnector.retrieveAccessToken(userName, password, Scope.ADMIN)
     }
 
-    def fetchEmail(String userNameAndPassword) {
-        final Properties properties = System.getProperties()
-        final Session session = Session.getDefaultInstance(properties)
-        store = (POP3Store) session.getStore(ServerSetup.PROTOCOL_POP3)
-        store.connect(OSIAM_MAIL_HOST, OSIAM_MAIL_PORT, userNameAndPassword, userNameAndPassword)
-        inbox = store.getFolder('INBOX')
-        inbox.open(Folder.READ_WRITE)
-        final Message[] messages = inbox.getMessages()
-
-        // mark all emails as delete
-        for (int i = 1; i <= inbox.getMessageCount(); i++) {
-            inbox.getMessage(i).setFlag(Flags.Flag.DELETED, true)
-        }
-
-        messages
-    }
-
     def cleanup() {
-
-        if (inbox != null && store != null) {
-            inbox.close(true)
-            store.close()
-        }
-
         // Load Spring context configuration.
         ApplicationContext ac = new ClassPathXmlApplicationContext('context.xml')
         // Get dataSource configuration.
