@@ -50,9 +50,6 @@
 
         <osiam.database.host>${osiam.host}</osiam.database.host>
 
-        <osiam.mail.host>${osiam.host}</osiam.mail.host>
-        <osiam.mail.port>11110</osiam.mail.port>
-
         <connector.timeout>10000</connector.timeout>
         <debug.pre.command.tomcat/>
 
@@ -61,10 +58,6 @@
 
         <!-- OSIAM -->
         <version.osiam>3.0-SNAPSHOT</version.osiam>
-        <version.osiam.addon-self-administration>1.8</version.osiam.addon-self-administration>
-        <version.osiam.addon-self-administration-plugin-example>
-            1.4-SNAPSHOT
-        </version.osiam.addon-self-administration-plugin-example>
         <version.osiam.connector4java>1.9-SNAPSHOT</version.osiam.connector4java>
     </properties>
 
@@ -331,9 +324,6 @@
                     <systemPropertyVariables>
                         <osiam.host>${osiam.host}</osiam.host>
                         <osiam.test.host>${osiam.test.host}</osiam.test.host>
-
-                        <osiam.mail.host>${osiam.mail.host}</osiam.mail.host>
-                        <osiam.mail.port>${osiam.mail.port}</osiam.mail.port>
                     </systemPropertyVariables>
                 </configuration>
                 <executions>
@@ -366,80 +356,6 @@
                                 </artifactItem>
                             </artifactItems>
                             <overWriteSnapshots>true</overWriteSnapshots>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>download-addon-self-administration</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.osiam</groupId>
-                                    <artifactId>addon-self-administration</artifactId>
-                                    <version>${version.osiam.addon-self-administration}</version>
-                                    <type>war</type>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>
-                                ${project.build.directory}/addon-self-administration
-                            </outputDirectory>
-                            <overWriteSnapshots>true</overWriteSnapshots>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>download-addon-self-administration-plugin</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.osiam</groupId>
-                                    <artifactId>addon-self-administration-plugin-example</artifactId>
-                                    <version>${version.osiam.addon-self-administration-plugin-example}</version>
-                                    <type>jar</type>
-                                    <destFileName>addon-self-administration-plugin-example.jar</destFileName>
-                                </artifactItem>
-                            </artifactItems>
-                            <overWriteSnapshots>true</overWriteSnapshots>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.6</version>
-                <configuration>
-                    <includeEmptyDirs>true</includeEmptyDirs>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>copy-addon-self-administration</id>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>
-                                ${project.build.directory}/addon-self-administration/WEB-INF/classes
-                            </outputDirectory>
-                            <overwrite>true</overwrite>
-                            <resources>
-                                <resource>
-                                    <directory>src/test/resources/addon-self-administration-configuration</directory>
-                                    <include>**/**</include>
-                                </resource>
-                                <resource>
-                                    <directory>src/test/resources/addon-self-administration-configuration</directory>
-                                    <include>addon-self-administration.properties</include>
-                                    <filtering>true</filtering>
-                                </resource>
-                            </resources>
                         </configuration>
                     </execution>
                 </executions>

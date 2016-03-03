@@ -1,8 +1,6 @@
 packaging:
   add:
     - target/dependency/osiam.war
-    - target/addon-self-administration
-    - target/dependency/addon-self-administration-plugin-example.jar
 
 links:
   - ${database.container}
@@ -10,7 +8,6 @@ links:
 
 ports:
   - 8180
-  - 11110
   - 8000
 
 healthChecks:

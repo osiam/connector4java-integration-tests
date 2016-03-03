@@ -11,13 +11,8 @@ The tests will fetch the snapshot dependencies from evolvis or you clone the
 following repos and install them with ```mvn clean install```
 
 ```
-https://github.com/osiam/scim-schema
 https://github.com/osiam/connector4java
 https://github.com/osiam/osiam
-https://github.com/osiam/addon-self-administration
-https://github.com/osiam/addon-self-administration-plugin-api
-https://github.com/osiam/examples/tree/master/addon-self-administration-plugin
-https://github.com/osiam/addon-administration
 ```
 
 ### Configure Docker
@@ -105,10 +100,6 @@ OSIAM:
 - `osiam.database.port`
   The port where the database for OSIAM is running. Defaults: Postgres:
   `15432`, MySQL: `13306`
-- `osiam.mail.host`
-  The mail host where OSIAM is connecting to. Default: `localhost`
-- `osiam.mail.port`
-  The mail port where OSIAM is connecting to. Default: `11110`
 
 Here is an example when docker running in a boot2docker vm:
 
