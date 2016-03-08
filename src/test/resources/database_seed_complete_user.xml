@@ -47,7 +47,7 @@
 
 	<scim_user active="true" display_name="marissa" locale="" nick_name="marissa" password="$2a$13$CfkpeagYWq4kIuugqj/xCOi5LuI864wTuFShXvRFWHbSni1Rcgw/a"
 	   preferred_language="" profile_url="" timezone="" title="" user_name="marissa" internal_id="100001" name="100001" />
-	<scim_user active="true" display_name="displayName" locale="de_DE" nick_name="nickname" password="2daa4905bb67d4101aca3c7fb673be0d1659a147e5e9da406e230808664c576313f7e0e7c98b77f5281d6e9f87f83e25aff68fc93ee6438dca298143cc585a31"
+	<scim_user active="true" display_name="displayName" locale="de_DE" nick_name="nickname" password="$2a$13$Yrr02ZDg09B3PWCcCyNyJ.rHU2yuFpEFpsmNRwdB.w02slUcMU96G"
 	   preferred_language="german" profile_url="/user/username" timezone="DE" title="title" user_name="username" internal_id="100002" name="100002" />
 
 	<scim_address multi_value_id="100001" is_primary="true" country="Germany" formatted="formatted" locality="Berlin" postal_code="12345" region="Berlin" street_address="Voltastr. 5" type="work" user_internal_id="100002" />

@@ -66,35 +66,35 @@
     <scim_id internal_id="1007" meta="100083" id="69e1a5dc-89be-4343-976c-b5541af549f4"/>
 
     <scim_user
-            password="123"
+            password="$2a$13$ak2lJewo1QbbGZV9SPZ9euQRwnedbHQp5QjVfceXQPnEo5w5bzJuy"
             user_name="george0" internal_id="10004" active="true"/>
 
     <scim_user
-            password="123"
+            password="$2a$13$u1OCInqeFR6wUGX3R4YG3O.xhZmMXPNExxdpVn6dizWKxXrf5wGOi"
             user_name="george1" internal_id="10005" active="false"/>
 
     <scim_user
-            password="123"
+            password="$2a$13$J520p0jOUCe5xGduqs72o.7UKO1vj0n..AY6H8W.Y6EWKR6IDwHtW"
             user_name="george2" internal_id="10006" active="true"/>
 
     <scim_user
-            password="123"
+            password="$2a$13$vsQl4W/R72q1MaQ5vGbarORLyWSwTdIKlWOYfvtoEQs6jYaX4infa"
             user_name="george3" internal_id="10007" active="false"/>
 
     <scim_user
-            password="123"
+            password="$2a$13$y6.i05uTGFcGbATL7EDqaeWUvuJH6bArBl/dbT2Ut8dOrrvJPG2fC"
             user_name="george4" internal_id="10008" active="false"/>
 
     <scim_user
-            password="123"
+            password="$2a$13$7LedinCGcSMSCAqNy0aAguMRLtWjCDOZf2JyjMdu38b1XjHv5FYyC"
             user_name="george5" internal_id="10009" active="false"/>
 
     <scim_user
-            password="123"
+            password="$2a$13$36eh.Al1G.2OA8Q3Bm10cuIzAZ3JO1ZkUtyEhwpFBOjxg7.RPTcUK"
             user_name="george6" internal_id="100010" active="false"/>
 
     <scim_user
-            password="123"
+            password="$2a$13$yQBLhkXDHud2jQjAQ8a/FuNiSbMcUgVXNj6Sekrx7JN88TdK75Lly"
             user_name="george &quot;alexander&quot;" internal_id="100011" active="false"/>
 
     <scim_user

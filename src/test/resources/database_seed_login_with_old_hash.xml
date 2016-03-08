@@ -46,6 +46,6 @@
             password="$2a$13$CfkpeagYWq4kIuugqj/xCOi5LuI864wTuFShXvRFWHbSni1Rcgw/a"
             user_name="marissa" internal_id="100001" active="true"/>
     <scim_user
-            password="fb0ae3c36077b77c1907876f94a8ac65559454879b9750197e69a9325431a6e2d588f587c641a5a91e90b9f26ade1294d921ce3d5a5842e77bdc27b6f8d3146d"
+            password="dd067faebd3c7c5b791c33ca65c2d15bc32957bf9d31e56869967112f12ad0edb9e546074479b0ab02e3327f56bc168f9f90cc75415f53518a71bce6d322dd2d"
             user_name="marissa02" internal_id="100005" active="true"/>
 </dataset>

@@ -57,7 +57,7 @@
 		preferred_language="" profile_url="" timezone="" title="" user_name="marissa"
 		internal_id="100001" name="1" />
 	<scim_user active="true" display_name="user1DisplayName"
-		password="82556377dfba11fea342dcd08904d9c436dcf4967da01c19c3541c0cf955ac6bcd9e9a40e1a4e2829f166a69f8130a7a5d8f7fdba41f0f1a0dcc434a8fbef684"
+		password="$2a$13$2YW0wRhrUQpF5HSFkhZX5ORzqriotocqY6MOg88OctV8ShxuHwy8C"
 		user_name="user1" internal_id="100002" name="2" />
 
 	<scim_email multi_value_id="1" is_primary="false" value="email1@other.com"

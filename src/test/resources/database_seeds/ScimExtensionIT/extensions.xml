@@ -45,7 +45,7 @@
             password="$2a$13$CfkpeagYWq4kIuugqj/xCOi5LuI864wTuFShXvRFWHbSni1Rcgw/a"
             user_name="marissa" internal_id="100001" active="true"/>
     <scim_user
-            password="b5b9fbac6ae8e0911ff47d59c91a64d05e2a3ee6fa3aa22e85d21d4b05ba51ec750f56d73a76eed27344638f3b2cefebd70d0b735dd8f657770b038ca9825652"
+            password="$2a$13$kN8JHUCeGJQ44a5NnH2Fh.nkz9n48VQxjraXAV8ufGS5JQfvnX4ly"
             user_name="existing" internal_id="100002" name="100001" active="false"/>
 
     <scim_extension internal_id="100081" urn="extension"/>

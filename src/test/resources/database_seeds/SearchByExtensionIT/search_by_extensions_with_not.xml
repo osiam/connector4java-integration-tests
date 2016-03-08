@@ -49,14 +49,14 @@
         password="$2a$13$CfkpeagYWq4kIuugqj/xCOi5LuI864wTuFShXvRFWHbSni1Rcgw/a"
         user_name="marissa" internal_id="100001" active="true" />
     <scim_user
-        password="b5b9fbac6ae8e0911ff47d59c91a64d05e2a3ee6fa3aa22e85d21d4b05ba51ec750f56d73a76eed27344638f3b2cefebd70d0b735dd8f657770b038ca9825652"
-        user_name="existing1" internal_id="100002" active="true" />
+        password="$2a$13$0tx1UvrTAQ3gxnz0WIVzJOR2gNrcqNCvXMEZfM.pPYJyxl0A0ixeG"
+        user_name="existing1" internal_id="100002" active="true"/>
     <scim_user
-        password="b5b9fbac6ae8e0911ff47d59c91a64d05e2a3ee6fa3aa22e85d21d4b05ba51ec750f56d73a76eed27344638f3b2cefebd70d0b735dd8f657770b038ca9825652"
-        user_name="existing2" internal_id="100003" active="true" />
+        password="$2a$13$YUm2bJkk5W2Q67FSNbF4quwwVTgSU9LCrT3AV.xytuyuTEQhh5HeO"
+        user_name="existing2" internal_id="100003" active="true"/>
     <scim_user
-        password="b5b9fbac6ae8e0911ff47d59c91a64d05e2a3ee6fa3aa22e85d21d4b05ba51ec750f56d73a76eed27344638f3b2cefebd70d0b735dd8f657770b038ca9825652"
-        user_name="existing3" internal_id="100004" active="true" />
+        password="$2a$13$Le/8AOkCYxFRFGyPUUhHyesNguAFdS2OIHfenqvum9wcrkrPc0/Ve"
+        user_name="existing3" internal_id="100004" active="true"/>
 
     <scim_extension internal_id="100081" urn="extension" />
 
