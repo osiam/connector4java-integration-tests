@@ -29,6 +29,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.osiam.client.exception.BadRequestException;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.Scope;
@@ -53,35 +54,18 @@ import static org.junit.Assert.assertEquals;
 public class MeUserServiceIT extends AbstractIntegrationTestBase {
 
     @Test
-    public void get_current_user_basic_returns_correct_user() throws Exception {
-        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
-
-        BasicUser basicUser = OSIAM_CONNECTOR.getCurrentUserBasic(accessToken);
-
-        assertEquals("cef9452e-00a9-4cec-a086-d171374ffbef", basicUser.getId());
-        assertEquals("marissa", basicUser.getUserName());
-        assertEquals("marissa@example.com", basicUser.getEmail());
-        assertEquals("Marissa", basicUser.getFirstName());
-        assertEquals("Thompson", basicUser.getLastName());
-        assertEquals("", basicUser.getLocale());
-        SimpleDateFormat sdfToDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = sdfToDate.parse("2011-10-10 00:00:00");
-        assertEquals(date, basicUser.getUpdatedTime());
-    }
-
-    @Test
     public void get_current_user_returns_correct_user() throws Exception {
         accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
 
-        User user = OSIAM_CONNECTOR.getCurrentUser(accessToken);
+        User user = OSIAM_CONNECTOR.getMe(accessToken);
 
         assertEquals("cef9452e-00a9-4cec-a086-d171374ffbef", user.getId());
         assertEquals("marissa", user.getUserName());
     }
 
-    @Test(expected = ConflictException.class)
+    @Test(expected = BadRequestException.class)
     public void get_current_user_while_logged_in_with_client_credential_raises_exception() throws Exception {
-        OSIAM_CONNECTOR.getCurrentUserBasic(OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN));
+        OSIAM_CONNECTOR.getMe(OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN));
     }
 
     @Test(expected = UnauthorizedException.class)
@@ -89,6 +73,6 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
         accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
         OSIAM_CONNECTOR.deleteUser("cef9452e-00a9-4cec-a086-d171374ffbef", accessToken);
 
-        OSIAM_CONNECTOR.getCurrentUserBasic(accessToken);
+        OSIAM_CONNECTOR.getMe(accessToken);
     }
 }

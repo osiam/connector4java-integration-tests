@@ -189,19 +189,10 @@ public class AdminScopeIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void can_get_me_basic() {
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
-
-        BasicUser user = OSIAM_CONNECTOR.getCurrentUserBasic(accessToken);
-
-        assertThat(user.getUserName(), is(equalTo("marissa")));
-    }
-
-    @Test
     public void can_get_me() {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
 
-        User user = OSIAM_CONNECTOR.getCurrentUser(accessToken);
+        User user = OSIAM_CONNECTOR.getMe(accessToken);
 
         assertThat(user.getUserName(), is(equalTo("marissa")));
     }
