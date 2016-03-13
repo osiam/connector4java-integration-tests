@@ -52,10 +52,7 @@ abstract class AbstractIT extends Specification {
     static {
         OsiamConnector.setConnectTimeout(Integer.parseInt(System.getProperty("connector.timeout", "-1")));
         OsiamConnector.setReadTimeout(Integer.parseInt(System.getProperty("connector.timeout", "-1")));
-
-        final String osiamHost = System.getProperty('osiam.test.host', 'http://localhost:8180')
-        OSIAM_ENDPOINT = "${osiamHost}/osiam"
-
+        OSIAM_ENDPOINT = System.getProperty('osiam.test.host', 'http://localhost:8180')
         OSIAM_CONNECTOR = new OsiamConnector.Builder()
                 .withEndpoint(OSIAM_ENDPOINT)
                 .setClientId(CLIENT_ID)

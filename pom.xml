@@ -51,7 +51,7 @@
         <osiam.database.host>${osiam.host}</osiam.database.host>
 
         <connector.timeout>10000</connector.timeout>
-        <debug.pre.command.tomcat/>
+        <osiam.debug.opts/>
 
         <version.spring>4.2.4.RELEASE</version.spring>
         <version.docker-maven-plugin>2.10.6</version.docker-maven-plugin>
@@ -453,7 +453,9 @@
         <profile>
             <id>debug</id>
             <properties>
-                <debug.pre.command.tomcat>"jpda",</debug.pre.command.tomcat>
+                <osiam.debug.opts>
+                    -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
+                </osiam.debug.opts>
             </properties>
         </profile>
     </profiles>
