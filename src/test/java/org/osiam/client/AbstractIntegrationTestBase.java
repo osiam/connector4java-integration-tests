@@ -44,7 +44,7 @@ public abstract class AbstractIntegrationTestBase {
     protected static final String DELETE_USER_ID = "618b398c-0110-43f2-95df-d1bc4e7d2b4a";
     protected static final String VALID_GROUP_ID = "69e1a5dc-89be-4343-976c-b5541af249f4";
     protected static final String OSIAM_ENDPOINT =
-            System.getProperty("osiam.test.host", "http://localhost:8180") + "/osiam";
+            System.getProperty("osiam.test.host", "http://localhost:8180");
     protected static final String CLIENT_ID = "example-client";
     protected static final String CLIENT_SECRET = "secret";
 

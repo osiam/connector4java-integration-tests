@@ -1,3 +1,0 @@
-<Context>
-    <Environment name="osiam.home" value="/var/lib/osiam" type="java.lang.String"/>
-</Context>

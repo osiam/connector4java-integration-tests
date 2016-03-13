@@ -1,0 +1,19 @@
+packaging:
+  add:
+    - target/dependency/osiam.war
+
+links:
+  - ${database.container}
+  - ldap
+
+ports:
+  - 8180
+  - 8000
+
+healthChecks:
+  pings:
+    - url: ${osiam.test.host}/login
+      timeout: 90000
+      pattern: form-signin
+
+tag: ${project.artifactId}_osiam-${database.container}
