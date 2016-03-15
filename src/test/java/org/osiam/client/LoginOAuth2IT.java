@@ -288,7 +288,7 @@ public class LoginOAuth2IT extends AbstractIntegrationTestBase {
         givenValidAuthCode("marissa", "koala", "internal");
         givenAuthCode();
         givenAccessTokenUsingAuthCode();
-        User user = OSIAM_CONNECTOR.getCurrentUser(accessToken);
+        User user = OSIAM_CONNECTOR.getMe(accessToken);
         assertEquals("marissa", user.getUserName());
     }
 

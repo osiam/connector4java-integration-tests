@@ -37,7 +37,12 @@ import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
 import org.osiam.client.user.BasicUser;
-import org.osiam.resources.scim.*;
+import org.osiam.resources.scim.Email;
+import org.osiam.resources.scim.Group;
+import org.osiam.resources.scim.MemberRef;
+import org.osiam.resources.scim.UpdateGroup;
+import org.osiam.resources.scim.UpdateUser;
+import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -123,19 +128,10 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void can_get_me_basic() {
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
-
-        BasicUser user = OSIAM_CONNECTOR.getCurrentUserBasic(accessToken);
-
-        assertThat(user.getUserName(), is(equalTo("marissa")));
-    }
-
-    @Test
     public void can_get_me() {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
-        User user = OSIAM_CONNECTOR.getCurrentUser(accessToken);
+        User user = OSIAM_CONNECTOR.getMe(accessToken);
 
         assertThat(user.getUserName(), is(equalTo("marissa")));
     }
