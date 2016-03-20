@@ -10,7 +10,7 @@ osiam:
     #
     vendor: mysql
     driver: com.mysql.jdbc.Driver
-    url: jdbc:mysql://mysql:3306/ong
+    url: jdbc:mysql://mysql:3306/ong?useSSL=false
     username: ong
     password: b4s3dg0d
 
