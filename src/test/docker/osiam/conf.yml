@@ -7,7 +7,7 @@ links:
   - ldap
 
 ports:
-  - 8180
+  - ${osiam.port}
   - 8000
 
 healthChecks:
