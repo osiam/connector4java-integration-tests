@@ -236,15 +236,15 @@
 
     <repositories>
         <repository>
-            <id>osiam releases repo</id>
+            <id>osiam-releases</id>
             <url>https://maven-repo.evolvis.org/releases</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
         </repository>
         <repository>
-            <id>osiam snapshots repo</id>
-            <url>https://maven-repo.evolvis.org/snapshots</url>
+            <id>osiam-snapshots</id>
+            <url>https://oss.jfrog.org/artifactory/repo/</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
