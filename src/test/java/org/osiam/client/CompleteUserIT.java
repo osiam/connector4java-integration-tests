@@ -166,55 +166,100 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
     }
 
     private User createUserWithUpdatedField() {
-        List<Address> addresses = new ArrayList<Address>();
-        Address address = new Address.Builder().setCountry("USA")
-                .setFormatted("formattedAddress").setLocality("Houston")
-                .setPostalCode("ab5781").setPrimary(false).setRegion("Texas")
-                .setStreetAddress("Main Street. 22").setType(Address.Type.HOME)
+        List<Address> addresses = new ArrayList<>();
+        Address address = new Address.Builder()
+                .setCountry("USA")
+                .setFormatted("formattedAddress")
+                .setLocality("Houston")
+                .setPostalCode("ab5781")
+                .setPrimary(false)
+                .setRegion("Texas")
+                .setStreetAddress("Main Street. 22")
+                .setType(Address.Type.HOME)
+                .setDisplay("myaddress")
                 .build();
         addresses.add(address);
-        List<Email> emails = new ArrayList<Email>();
-        Email email = new Email.Builder().setPrimary(true)
-                .setValue("my@mail.com").setType(Email.Type.HOME).build();
+
+        List<Email> emails = new ArrayList<>();
+        Email email = new Email.Builder()
+                .setPrimary(true)
+                .setValue("my@mail.com")
+                .setType(Email.Type.HOME)
+                .setDisplay("myemail")
+                .build();
         emails.add(email);
-        List<Entitlement> entitlements = new ArrayList<Entitlement>();
-        Entitlement entitlement = new Entitlement.Builder().setPrimary(true)
+
+        List<Entitlement> entitlements = new ArrayList<>();
+        Entitlement entitlement = new Entitlement.Builder()
+                .setPrimary(true)
                 .setType(new Entitlement.Type("not irrelevant"))
-                .setValue("some entitlement").build();
+                .setValue("some entitlement")
+                .setDisplay("myentitlement")
+                .build();
         entitlements.add(entitlement);
-        List<Im> ims = new ArrayList<Im>();
-        Im im = new Im.Builder().setPrimary(true).setType(Im.Type.GTALK)
-                .setValue("gtalk").build();
+
+        List<Im> ims = new ArrayList<>();
+        Im im = new Im.Builder().setPrimary(true)
+                .setType(Im.Type.GTALK)
+                .setValue("gtalk")
+                .setDisplay("gtalk")
+                .build();
         ims.add(im);
-        Name name = new Name.Builder().setFamilyName("Simpson")
-                .setFormatted("formatted").setGivenName("Homer")
-                .setHonorificPrefix("Dr.").setHonorificSuffix("Mr.")
-                .setMiddleName("J").build();
-        List<PhoneNumber> phoneNumbers = new ArrayList<PhoneNumber>();
-        PhoneNumber phoneNumber = new PhoneNumber.Builder().setPrimary(true)
-                .setType(PhoneNumber.Type.WORK).setValue("03012345678").build();
+
+        Name name = new Name.Builder()
+                .setFamilyName("Simpson")
+                .setFormatted("formatted")
+                .setGivenName("Homer")
+                .setHonorificPrefix("Dr.")
+                .setHonorificSuffix("Mr.")
+                .setMiddleName("J")
+                .build();
+
+        List<PhoneNumber> phoneNumbers = new ArrayList<>();
+        PhoneNumber phoneNumber = new PhoneNumber.Builder()
+                .setPrimary(true)
+                .setType(PhoneNumber.Type.WORK)
+                .setValue("03012345678")
+                .setDisplay("myphonenumber")
+                .build();
         phoneNumbers.add(phoneNumber);
-        List<Photo> photos = new ArrayList<Photo>();
+
+        List<Photo> photos = new ArrayList<>();
         URI uri = null;
         try {
             uri = new URI("username.jpg");
         } catch (Exception e) {
         }
 
-        Photo photo = new Photo.Builder().setPrimary(true)
-                .setType(Photo.Type.PHOTO).setValue(uri).build();
+        Photo photo = new Photo.Builder()
+                .setPrimary(true)
+                .setType(Photo.Type.PHOTO)
+                .setValue(uri)
+                .setDisplay("myphoto")
+                .build();
         photos.add(photo);
-        List<Role> roles = new ArrayList<Role>();
-        Role role = new Role.Builder().setPrimary(true).setValue("user_role")
+
+        List<Role> roles = new ArrayList<>();
+        Role role = new Role.Builder()
+                .setPrimary(true)
+                .setValue("user_role")
+                .setDisplay("myrole")
                 .build();
         roles.add(role);
-        List<X509Certificate> x509Certificates = new ArrayList<X509Certificate>();
-        X509Certificate x509Certificat = new X509Certificate.Builder()
-                .setPrimary(true).setValue("x509Certificat").build();
-        x509Certificates.add(x509Certificat);
+
+        List<X509Certificate> x509Certificates = new ArrayList<>();
+        X509Certificate x509Certificate = new X509Certificate.Builder()
+                .setPrimary(true)
+                .setValue("x509Certificat")
+                .setDisplay("mycert")
+                .build();
+        x509Certificates.add(x509Certificate);
+
         Extension extension = new Extension.Builder(EXTENSION_URN)
                 .setField("gender", "female")
-                .setField("age", new BigInteger("22")).build();
+                .setField("age", new BigInteger("22"))
+                .build();
+
         return new User.Builder("complete_add_user").setActive(true)
                 .addAddresses(addresses).setDisplayName("displayName")
                 .addEmails(emails).addEntitlements(entitlements)
@@ -229,55 +274,96 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
     }
 
     private User initializeUserWithAllAttributes() {
-        List<Address> addresses = new ArrayList<Address>();
-        Address address = new Address.Builder().setCountry("USA")
-                .setFormatted("formattedAddress").setLocality("Houston")
-                .setPostalCode("ab5781").setPrimary(false).setRegion("Texas")
-                .setStreetAddress("Main Street. 22").setType(Address.Type.HOME)
+        List<Address> addresses = new ArrayList<>();
+        Address address = new Address.Builder()
+                .setCountry("USA")
+                .setFormatted("formattedAddress")
+                .setLocality("Houston")
+                .setPostalCode("ab5781")
+                .setPrimary(false)
+                .setRegion("Texas")
+                .setStreetAddress("Main Street. 22")
+                .setType(Address.Type.HOME)
+                .setDisplay("myaddress")
                 .build();
         addresses.add(address);
-        List<Email> emails = new ArrayList<Email>();
-        Email email = new Email.Builder().setPrimary(true)
-                .setValue("my@mail.com").setType(Email.Type.HOME).build();
+
+        List<Email> emails = new ArrayList<>();
+        Email email = new Email.Builder()
+                .setPrimary(true)
+                .setValue("my@mail.com")
+                .setType(Email.Type.HOME)
+                .setDisplay("myemail")
+                .build();
         emails.add(email);
-        List<Entitlement> entitlements = new ArrayList<Entitlement>();
-        Entitlement entitlement = new Entitlement.Builder().setPrimary(true)
+
+        List<Entitlement> entitlements = new ArrayList<>();
+        Entitlement entitlement = new Entitlement.Builder()
+                .setPrimary(true)
                 .setType(new Entitlement.Type("not irrelevant"))
-                .setValue("some entitlement").build();
+                .setValue("some entitlement")
+                .setDisplay("myentitlement")
+                .build();
         entitlements.add(entitlement);
-        List<Im> ims = new ArrayList<Im>();
-        Im im = new Im.Builder().setPrimary(true).setType(Im.Type.GTALK)
-                .setValue("gtalk").build();
+
+        List<Im> ims = new ArrayList<>();
+        Im im = new Im.Builder().setPrimary(true)
+                .setType(Im.Type.GTALK)
+                .setValue("gtalk")
+                .setDisplay("gtalk")
+                .build();
         ims.add(im);
+
         Name name = new Name.Builder().setFamilyName("Simpson")
                 .setFormatted("formatted").setGivenName("Homer")
                 .setHonorificPrefix("Dr.").setHonorificSuffix("Mr.")
                 .setMiddleName("J").build();
-        List<PhoneNumber> phoneNumbers = new ArrayList<PhoneNumber>();
-        PhoneNumber phoneNumber = new PhoneNumber.Builder().setPrimary(true)
-                .setType(PhoneNumber.Type.WORK).setValue("03012345678").build();
+
+        List<PhoneNumber> phoneNumbers = new ArrayList<>();
+        PhoneNumber phoneNumber = new PhoneNumber.Builder()
+                .setPrimary(true)
+                .setType(PhoneNumber.Type.WORK)
+                .setValue("03012345678")
+                .setDisplay("myprhonenumber")
+                .build();
         phoneNumbers.add(phoneNumber);
-        List<Photo> photos = new ArrayList<Photo>();
+
+        List<Photo> photos = new ArrayList<>();
         URI uri = null;
         try {
             uri = new URI("username.jpg");
         } catch (Exception e) {
         }
 
-        Photo photo = new Photo.Builder().setPrimary(true)
-                .setType(Photo.Type.PHOTO).setValue(uri).build();
+        Photo photo = new Photo.Builder()
+                .setPrimary(true)
+                .setType(Photo.Type.PHOTO)
+                .setValue(uri)
+                .setDisplay("myphoto")
+                .build();
         photos.add(photo);
-        List<Role> roles = new ArrayList<Role>();
-        Role role = new Role.Builder().setPrimary(true).setValue("user_role")
+
+        List<Role> roles = new ArrayList<>();
+        Role role = new Role.Builder()
+                .setPrimary(true)
+                .setValue("user_role")
+                .setDisplay("myrole")
                 .build();
         roles.add(role);
-        List<X509Certificate> x509Certificates = new ArrayList<X509Certificate>();
+
+        List<X509Certificate> x509Certificates = new ArrayList<>();
         X509Certificate x509Certificate = new X509Certificate.Builder()
-                .setPrimary(true).setValue("x509Certificat").build();
+                .setPrimary(true)
+                .setValue("x509Certificat")
+                .setDisplay("mycert")
+                .build();
         x509Certificates.add(x509Certificate);
+
         Extension extension = new Extension.Builder(EXTENSION_URN)
                 .setField("gender", "female")
-                .setField("age", new BigInteger("18")).build();
+                .setField("age", new BigInteger("18"))
+                .build();
+
         return new User.Builder("complete_add_user")
                 .setActive(true)
                 .addAddresses(addresses)
@@ -356,6 +442,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
 
         assertEquals(expectedValue.getValue(), actualValue.getValue());
         assertEquals(expectedValue.isPrimary(), actualValue.isPrimary());
+        assertEquals(expectedValue.getDisplay(), actualValue.getDisplay());
     }
 
     private void assertThatNamesAreEqual(Name expected, Name actual) {
@@ -375,6 +462,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
 
         assertEquals(expectedValue.getValue(), actualValue.getValue());
         assertEquals(expectedValue.isPrimary(), actualValue.isPrimary());
+        assertEquals(expectedValue.getDisplay(), actualValue.getDisplay());
     }
 
     private void assertThatPhotosAreEqual(List<Photo> expected, List<Photo> actual) {
@@ -386,6 +474,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         assertEquals(expectedValue.getType(), actualValue.getType());
         assertEquals(expectedValue.getValueAsURI().toString(), actualValue.getValueAsURI().toString());
         assertEquals(expectedValue.isPrimary(), actualValue.isPrimary());
+        assertEquals(expectedValue.getDisplay(), actualValue.getDisplay());
     }
 
     private void assertThatPhoneNumbersAreEqual(List<PhoneNumber> expected, List<PhoneNumber> actual) {
@@ -397,6 +486,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         assertEquals(expectedValue.getType(), actualValue.getType());
         assertEquals(expectedValue.getValue(), actualValue.getValue());
         assertEquals(expectedValue.isPrimary(), actualValue.isPrimary());
+        assertEquals(expectedValue.getDisplay(), actualValue.getDisplay());
     }
 
     private void assertThatEmailsAreEqual(List<Email> expected, List<Email> actual) {
@@ -408,6 +498,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         assertEquals(expectedValue.getType(), actualValue.getType());
         assertEquals(expectedValue.getValue(), actualValue.getValue());
         assertEquals(expectedValue.isPrimary(), actualValue.isPrimary());
+        assertEquals(expectedValue.getDisplay(), actualValue.getDisplay());
     }
 
     private void assertThatImsAreEqual(List<Im> expected, List<Im> actual) {
@@ -419,6 +510,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         assertEquals(expectedValue.getType(), actualValue.getType());
         assertEquals(expectedValue.getValue(), actualValue.getValue());
         assertEquals(expectedValue.isPrimary(), actualValue.isPrimary());
+        assertEquals(expectedValue.getDisplay(), actualValue.getDisplay());
     }
 
     private void assertThatEntitlementsAreEqual(List<Entitlement> expected, List<Entitlement> actual) {
@@ -430,6 +522,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
         assertEquals(expectedValue.getType(), actualValue.getType());
         assertEquals(expectedValue.getValue(), actualValue.getValue());
         assertEquals(expectedValue.isPrimary(), actualValue.isPrimary());
+        assertEquals(expectedValue.getDisplay(), actualValue.getDisplay());
     }
 
     private void assertThatAddressesAreEqual(List<Address> expected, List<Address> actual) {
@@ -440,6 +533,7 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
 
         assertEquals(expectedValue.getType(), actualValue.getType());
         assertEquals(expectedValue.isPrimary(), actualValue.isPrimary());
+        assertEquals(expectedValue.getDisplay(), actualValue.getDisplay());
         assertEquals(expectedValue.getCountry(), actualValue.getCountry());
         assertEquals(expectedValue.getFormatted(), actualValue.getFormatted());
         assertEquals(expectedValue.getLocality(), actualValue.getLocality());

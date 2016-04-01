@@ -50,27 +50,30 @@
 	<scim_user active="true" display_name="displayName" locale="de_DE" nick_name="nickname" password="$2a$13$Yrr02ZDg09B3PWCcCyNyJ.rHU2yuFpEFpsmNRwdB.w02slUcMU96G"
 	   preferred_language="german" profile_url="/user/username" timezone="DE" title="title" user_name="username" internal_id="100002" name="100002" />
 
-	<scim_address multi_value_id="100001" is_primary="true" country="Germany" formatted="formatted" locality="Berlin" postal_code="12345" region="Berlin" street_address="Voltastr. 5" type="work" user_internal_id="100002" />
+	<scim_address multi_value_id="100001" is_primary="true" country="Germany"
+				  formatted="formatted" locality="Berlin" postal_code="12345"
+				  region="Berlin" street_address="Voltastr. 5" type="work"
+				  user_internal_id="100002" display="myaddress"/>
 
-	<scim_certificate multi_value_id="100001" value="x509Certificate" user_internal_id="100002" is_primary="true" />
+	<scim_certificate multi_value_id="100001" value="x509Certificate" user_internal_id="100002" is_primary="true" display="mycert" />
 
-	<scim_email multi_value_id="100001" is_primary="true" value="test@tarent.de" type="work" user_internal_id="100002" />
+	<scim_email multi_value_id="100001" is_primary="true" value="test@tarent.de" type="work" user_internal_id="100002" display="mymail"/>
 
-	<scim_entitlements multi_value_id="100001" is_primary="false" value="entitlement" type="irrelevant" user_internal_id="100002" />
+	<scim_entitlements multi_value_id="100001" is_primary="false" value="entitlement" type="irrelevant" user_internal_id="100002" display="myentitlement"/>
 
-	<scim_group display_name="group1" internal_id="100003" />
+	<scim_group display_name="group1" internal_id="100003"/>
 
 	<scim_group_members groups="100003" members="100002"/>
 
-	<scim_im multi_value_id="100001" value="aim" type="aim" user_internal_id="100002" is_primary="false"/>
+	<scim_im multi_value_id="100001" value="aim" type="aim" user_internal_id="100002" is_primary="false" display="myim"/>
 
-	<scim_phonenumber multi_value_id="100001" value="03012345678" type="work" user_internal_id="100002" is_primary="true" />
+	<scim_phonenumber multi_value_id="100001" value="03012345678" type="work" user_internal_id="100002" is_primary="true" display="myphonenumber" />
 
-	<scim_photo multi_value_id="100001" value="username.jpg" type="photo" user_internal_id="100002" is_primary="true" />
+	<scim_photo multi_value_id="100001" value="username.jpg" type="photo" user_internal_id="100002" is_primary="true" display="myphoto"/>
 
-	<scim_roles multi_value_id="100090" value="admin" user_internal_id="100001" is_primary="true"/>
+	<scim_roles multi_value_id="100090" value="admin" user_internal_id="100001" is_primary="true" display="myrole"/>
 
-	<scim_roles multi_value_id="100091" value="superadmin" user_internal_id="100002" is_primary="true"/>
+	<scim_roles multi_value_id="100091" value="superadmin" user_internal_id="100002" is_primary="true" display="myrole"/>
 
 	<scim_extension internal_id="100081" urn="extension"/>
 
