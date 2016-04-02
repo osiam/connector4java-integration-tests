@@ -82,6 +82,7 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
 
         assertThat(email.getValue(), is(equalTo("bjensen@example.com")));
         assertThat(email.getType(), is(equalTo(Email.Type.WORK)));
+        assertThat(email.getDisplay(), is(equalTo("myemail")));
     }
 
     @Test
@@ -119,6 +120,7 @@ public class UserServiceIT extends AbstractIntegrationTestBase {
         assertThat(address.getRegion(), is(equalTo("Berlin")));
         assertThat(address.getPostalCode(), is(equalTo("10777")));
         assertThat(address.getStreetAddress(), is(startsWith("Hauptstr. ")));
+        assertThat(address.getDisplay(), is(equalTo("myaddress")));
     }
 
     @Test

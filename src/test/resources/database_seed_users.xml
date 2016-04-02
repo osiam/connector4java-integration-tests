@@ -63,7 +63,7 @@
             user_name="marissa" internal_id="100001" active="true"/>
 
     <scim_email multi_value_id="100092" value="bjensen@example.com" is_primary="false" type="work"
-                user_internal_id="100046"/>
+                user_internal_id="100046" display="myemail"/>
 
     <scim_address multi_value_id="100008" country="Germany" locality="Berlin" postal_code="10777"
                   is_primary="false" region="Berlin" street_address="Hauptstr. 69"
@@ -71,7 +71,7 @@
 
     <scim_address multi_value_id="100012" country="Germany" locality="Berlin" postal_code="10777"
                   is_primary="false" region="Berlin" street_address="Hauptstr. 68"
-                  type="work" user_internal_id="100046" />
+                  type="work" user_internal_id="100046" display="myaddress" />
 
     <scim_photo multi_value_id="100102" value="http://example.com/barbara.jpg" type="photo" user_internal_id="100046"/>
 
