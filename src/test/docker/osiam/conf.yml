@@ -15,5 +15,3 @@ healthChecks:
     - url: ${osiam.test.host}/login
       timeout: 90000
       pattern: form-signin
-
-tag: ${project.artifactId}_osiam-${database.container}

@@ -34,7 +34,7 @@
 	<osiam_client_grants id="100003" grants="client_credentials" />
 	<osiam_client_scopes id="100003" scope="ADMIN" />
 
-	<scim_name id="100001" family_name="" formatted="" given_name="" honorific_prefix="" honorific_suffix="" middle_name="" />
+	<scim_name id="100001" family_name="family_name" formatted="formatted" given_name="given_name" honorific_prefix="prefix" honorific_suffix="suffix" middle_name="middle_name" />
 	<scim_name id="100002" family_name="familyName" formatted="formatted" given_name="name" honorific_prefix="Dr." honorific_suffix="Mr." middle_name="middleName" />
 
 	<scim_meta id="100004" created="2011-10-10 00:00:00.0" last_modified="2011-10-10 00:00:00.0" resource_type="User" />
@@ -45,8 +45,8 @@
 	<scim_id internal_id="100001" id="cef9452e-00a9-4cec-a086-d171374ffbef" meta="100004" />
 	<scim_id internal_id="100003" external_id="GrExternalId1" id="ddf772b2-a864-44d7-a58b-3fdd6e647b7b" meta="100006" />
 
-	<scim_user active="true" display_name="marissa" locale="" nick_name="marissa" password="$2a$13$CfkpeagYWq4kIuugqj/xCOi5LuI864wTuFShXvRFWHbSni1Rcgw/a"
-	   preferred_language="" profile_url="" timezone="" title="" user_name="marissa" internal_id="100001" name="100001" />
+	<scim_user active="true" display_name="marissa" locale="de_DE" nick_name="marissa" password="$2a$13$CfkpeagYWq4kIuugqj/xCOi5LuI864wTuFShXvRFWHbSni1Rcgw/a"
+	   preferred_language="german" profile_url="url" timezone="CET" title="title" user_name="marissa" internal_id="100001" name="100001" />
 	<scim_user active="true" display_name="displayName" locale="de_DE" nick_name="nickname" password="$2a$13$Yrr02ZDg09B3PWCcCyNyJ.rHU2yuFpEFpsmNRwdB.w02slUcMU96G"
 	   preferred_language="german" profile_url="/user/username" timezone="DE" title="title" user_name="username" internal_id="100002" name="100002" />
 
