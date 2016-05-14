@@ -82,13 +82,13 @@
                user_name="cmiller" internal_id="100013" active="false"/>
     <scim_user display_name="DanielC." locale="de" nick_name="Daniel"
                password="$2a$13$gx./SbTXFmDQPSepI9VyQeatCammNHABwf6UYiOnQqvCD3V9aAMoi"
-               title="" user_name="dcooper" internal_id="100021" active="false"/>
+               title="title" user_name="dcooper" internal_id="100021" active="false"/>
     <scim_user display_name="EmilP." locale="de" nick_name="Emil"
                password="$2a$13$XBwE0QC1F7Mi8Uy7NXU1kuHNDUcqKxzwbar7nqoQHWDTyuzqra4Lm"
-               title="" user_name="epalmer" internal_id="100025" active="false"/>
+               title="title" user_name="epalmer" internal_id="100025" active="false"/>
     <scim_user display_name="GreggB." locale="de" nick_name="Gregg"
                password="$2a$13$DAVXMv9qe9rTZAOn5ZtX2u9QBRHsctdXPRmsd9XF1wwYqx8qMkDiC"
-               title="" user_name="gparker" internal_id="100029" active="false"/>
+               title="title" user_name="gparker" internal_id="100029" active="false"/>
     <scim_user display_name="HomerS." locale="us" nick_name="Homer"
                password="$2a$13$BqLbFGSnhj0uJ3l8wo2mnO7rWO7xulbdRJfcJpadgDRtkpm2d.sVG"
                title="King" user_name="hsimpson" internal_id="100033" active="true"/>
