@@ -38,8 +38,6 @@ import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
 import org.osiam.client.oauth.Scope;
 import org.osiam.resources.scim.Group;
-import org.osiam.resources.scim.UpdateGroup;
-import org.osiam.resources.scim.UpdateUser;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -48,8 +46,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 
 import java.util.UUID;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.startsWith;
+import static org.hamcrest.Matchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -167,24 +164,12 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
         thrown.expectMessage(containsString("user"));
         thrown.expectMessage(containsString("already taken"));
 
+        String userId = "aba67300-74f1-4e51-a68a-0a6c5c45b79c";
+        User user = OSIAM_CONNECTOR.getUser(userId, accessToken);
+
         String existingUserName = "jcambell";
-        UpdateUser updateUser = new UpdateUser.Builder().updateUserName(existingUserName).build();
-        OSIAM_CONNECTOR.updateUser("aba67300-74f1-4e51-a68a-0a6c5c45b79c", updateUser, accessToken);
-    }
-
-    /**
-     * example message: Can't update the group with the id "0cb908cf-81a9-4966-803f-a3eb92968bb4". The displayname
-     * "test_group10" is already taken.
-     */
-    @Test
-    public void update_group_with_existing_displayName_returns_correct_error_message() {
-        thrown.expect(ConflictException.class);
-        thrown.expectMessage(containsString("group"));
-        thrown.expectMessage(containsString("already taken"));
-
-        String existingUserName = "test_group10";
-        UpdateGroup updateUser = new UpdateGroup.Builder().updateDisplayName(existingUserName).build();
-        OSIAM_CONNECTOR.updateGroup("0cb908cf-81a9-4966-803f-a3eb92968bb4", updateUser, accessToken);
+        User updateUser = new User.Builder(user).setUserName(existingUserName).build();
+        OSIAM_CONNECTOR.replaceUser(userId, updateUser, accessToken);
     }
 
     /**
@@ -197,24 +182,12 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
         thrown.expectMessage(containsString("user"));
         thrown.expectMessage(containsString("already taken"));
 
-        String existingExternalId = "cmiller";
-        UpdateUser updateUser = new UpdateUser.Builder().updateExternalId(existingExternalId).build();
-        OSIAM_CONNECTOR.updateUser("aba67300-74f1-4e51-a68a-0a6c5c45b79c", updateUser, accessToken);
-    }
-
-    /**
-     * example message: Can't update the group with the id "69e1a5dc-89be-4343-976c-b5541af249f4". The externalId
-     * "cmiller" is already taken.
-     */
-    @Test
-    public void update_group_with_existing_external_id_returns_correct_error_message() {
-        thrown.expect(ConflictException.class);
-        thrown.expectMessage(containsString("group"));
-        thrown.expectMessage(containsString("already taken"));
+        String userId = "aba67300-74f1-4e51-a68a-0a6c5c45b79c";
+        User user = OSIAM_CONNECTOR.getUser(userId, accessToken);
 
         String existingExternalId = "cmiller";
-        UpdateGroup updateUser = new UpdateGroup.Builder().updateExternalId(existingExternalId).build();
-        OSIAM_CONNECTOR.updateGroup("69e1a5dc-89be-4343-976c-b5541af249f4", updateUser, accessToken);
+        User updateUser = new User.Builder(user).setExternalId(existingExternalId).build();
+        OSIAM_CONNECTOR.replaceUser(userId, updateUser, accessToken);
     }
 
     /**

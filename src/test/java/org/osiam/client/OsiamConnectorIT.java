@@ -33,7 +33,6 @@ import org.junit.runner.RunWith;
 import org.osiam.client.exception.ConnectionInitializationException;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.QueryBuilder;
-import org.osiam.resources.scim.UpdateUser;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -131,12 +130,6 @@ public class OsiamConnectorIT extends AbstractIntegrationTestBase {
     public void setting_timeout_to_minimum_and_create_user_triggers_exception() {
         accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
         lowTimeoutConnector.searchUsers(new QueryBuilder().build(), accessToken);
-    }
-
-    @Test(expected = ConnectionInitializationException.class)
-    public void setting_timeout_to_minimum_and_update_user_triggers_exception() {
-        accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
-        lowTimeoutConnector.updateUser(VALID_USER_ID, new UpdateUser.Builder().build(), accessToken);
     }
 
     @Test(expected = ConnectionInitializationException.class)

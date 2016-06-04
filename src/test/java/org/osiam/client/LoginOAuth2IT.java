@@ -51,7 +51,6 @@ import org.osiam.client.query.QueryBuilder;
 import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.Email.Type;
 import org.osiam.resources.scim.SCIMSearchResult;
-import org.osiam.resources.scim.UpdateUser;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -64,8 +63,13 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -259,10 +263,14 @@ public class LoginOAuth2IT extends AbstractIntegrationTestBase {
         Email newEmail = new Email.Builder().setValue("ben@osiam.org").build();
         Email toBeDeleteLdapEmail = new Email.Builder().setValue("should.be@deleted.de").setType(new Type("ldap"))
                 .build();
-        UpdateUser updateUser = new UpdateUser.Builder().updateNickName("benNickname")
-                .addEmail(newEmail).addEmail(toBeDeleteLdapEmail).deleteEmail(ldapEmail).build();
+        User updateUser = new User.Builder(user)
+                .setNickName("benNickname")
+                .addEmail(newEmail)
+                .addEmail(toBeDeleteLdapEmail)
+                .removeEmail(ldapEmail)
+                .build();
 
-        connector.updateUser(user.getId(), updateUser, accessToken);
+        connector.replaceUser(user.getId(), updateUser, accessToken);
 
         Thread.sleep(1000);
 
