@@ -350,7 +350,7 @@ public class AdminScopeIT extends AbstractIntegrationTestBase {
 
         Group group = OSIAM_CONNECTOR.replaceGroup(GROUP_ID, groupToReplace, accessToken);
 
-        assertThat(group.getMembers(), hasSize(2));
+        assertThat(group.getMembers(), hasSize(1));
     }
 
     @Test
