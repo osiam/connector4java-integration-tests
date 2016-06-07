@@ -23,11 +23,11 @@
 
 package org.osiam.test.integration
 
+import org.osiam.client.exception.BadRequestException
 import org.osiam.client.exception.ConflictException
 import org.osiam.client.query.Query
 import org.osiam.client.query.QueryBuilder
 import org.osiam.resources.scim.SCIMSearchResult
-
 import spock.lang.Unroll
 
 public class ScimExtensionSearchIT extends AbstractExtensionBaseIT {
@@ -37,7 +37,7 @@ public class ScimExtensionSearchIT extends AbstractExtensionBaseIT {
     }
 
     @Unroll
-    def 'search for user by #fieldType extension field and constraint #constraint with query string works'() {
+    def 'search for user by #fieldType extension field and constraint #constraint works'() {
 
         given:
         Query query = new QueryBuilder().filter("extension.$fieldName $constraint \"$queryValue\"").build()
@@ -79,7 +79,7 @@ public class ScimExtensionSearchIT extends AbstractExtensionBaseIT {
     }
 
     @Unroll
-    def 'search for user by #fieldType extension field and constraint #constraint with query string raises exception'() {
+    def 'search for user by #fieldType extension field and constraint #constraint returns 400 Bad Request'() {
         given:
         Query query = new QueryBuilder().filter("extension.$fieldName $constraint \"irrelevant\"").build()
 
@@ -87,12 +87,10 @@ public class ScimExtensionSearchIT extends AbstractExtensionBaseIT {
         OSIAM_CONNECTOR.searchUsers(query, accessToken)
 
         then:
-        thrown(ConflictException)
+        thrown(BadRequestException)
 
         where:
         fieldType            | fieldName            | constraint
-        FIELD_TYPE_INTEGER   | FIELD_NAME_INTEGER   | 'co'
-        FIELD_TYPE_INTEGER   | FIELD_NAME_INTEGER   | 'sw'
         FIELD_TYPE_BOOLEAN   | FIELD_NAME_BOOLEAN   | 'co'
         FIELD_TYPE_BOOLEAN   | FIELD_NAME_BOOLEAN   | 'sw'
         FIELD_TYPE_BOOLEAN   | FIELD_NAME_BOOLEAN   | 'gt'
@@ -112,5 +110,22 @@ public class ScimExtensionSearchIT extends AbstractExtensionBaseIT {
         FIELD_TYPE_REFERENCE | FIELD_NAME_REFERENCE | 'ge'
         FIELD_TYPE_REFERENCE | FIELD_NAME_REFERENCE | 'lt'
         FIELD_TYPE_REFERENCE | FIELD_NAME_REFERENCE | 'le'
+    }
+
+    @Unroll
+    def 'search for user by #fieldType extension field and constraint #constraint returns 409 Conflict'() {
+        given:
+        Query query = new QueryBuilder().filter("extension.$fieldName $constraint \"irrelevant\"").build()
+
+        when:
+        OSIAM_CONNECTOR.searchUsers(query, accessToken)
+
+        then:
+        thrown(ConflictException)
+
+        where:
+        fieldType            | fieldName            | constraint
+        FIELD_TYPE_INTEGER   | FIELD_NAME_INTEGER   | 'co'
+        FIELD_TYPE_INTEGER   | FIELD_NAME_INTEGER   | 'sw'
     }
 }

@@ -25,9 +25,8 @@ package org.osiam.test.integration
 
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
-
+import org.osiam.client.exception.BadRequestException
 import org.osiam.client.oauth.Scope
-import org.osiam.client.exception.ConflictException
 import org.osiam.resources.scim.Extension
 import org.osiam.resources.scim.User
 import spock.lang.Unroll
@@ -49,7 +48,7 @@ class ScimExtensionTypesIT extends AbstractExtensionBaseIT {
         OSIAM_CONNECTOR.createUser(userBuilder.build(), accessToken)
 
         then:
-        thrown(ConflictException)
+        thrown(BadRequestException)
 
         where:
         fieldName            | fieldType            | fieldValue

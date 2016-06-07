@@ -32,6 +32,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.osiam.client.exception.BadRequestException;
 import org.osiam.client.exception.ConflictException;
 import org.osiam.client.exception.NoResultException;
 import org.osiam.client.exception.UnauthorizedException;
@@ -47,8 +48,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 
 import java.util.UUID;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.startsWith;
+import static org.hamcrest.Matchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -107,7 +107,7 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
      */
     @Test
     public void create_user_without_userName_returns_correct_error_message() {
-        thrown.expect(ConflictException.class);
+        thrown.expect(BadRequestException.class);
         thrown.expectMessage(containsString("userName"));
         thrown.expectMessage(containsString("mandatory"));
 
@@ -120,7 +120,7 @@ public class ErrorMessagesIT extends AbstractIntegrationTestBase {
      */
     @Test
     public void create_group_without_displayName_returns_correct_error_message() {
-        thrown.expect(ConflictException.class);
+        thrown.expect(BadRequestException.class);
         thrown.expectMessage(containsString("displayName"));
         thrown.expectMessage(containsString("mandatory"));
 
