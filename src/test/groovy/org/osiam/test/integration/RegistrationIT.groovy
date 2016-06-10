@@ -54,16 +54,7 @@ import javax.ws.rs.core.MediaType
 class RegistrationIT extends AbstractIT {
 
     @Shared
-    ObjectMapper mapper = new ObjectMapper()
-
-    @Shared
     Client client = ClientBuilder.newClient();
-
-    def setupSpec() {
-        def userDeserializerModule = new SimpleModule('userDeserializerModule', new Version(1, 0, 0, null))
-                .addDeserializer(User.class, new UserDeserializer(User.class))
-        mapper.registerModule(userDeserializerModule)
-    }
 
     def setup() {
         setupDatabase('database_seed_registration.xml')
