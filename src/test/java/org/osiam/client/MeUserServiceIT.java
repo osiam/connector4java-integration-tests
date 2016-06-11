@@ -73,7 +73,7 @@ public class MeUserServiceIT extends AbstractIntegrationTestBase {
     public void get_current_user_returns_correct_user() throws Exception {
         accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
 
-        User user = OSIAM_CONNECTOR.getCurrentUser(accessToken);
+        User user = OSIAM_CONNECTOR.getMe(accessToken);
 
         assertEquals("cef9452e-00a9-4cec-a086-d171374ffbef", user.getId());
         assertEquals("marissa", user.getUserName());
