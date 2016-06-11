@@ -235,13 +235,6 @@
 
     <repositories>
         <repository>
-            <id>osiam-releases</id>
-            <url>https://maven-repo.evolvis.org/releases</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
             <id>osiam-snapshots</id>
             <url>https://oss.jfrog.org/artifactory/repo/</url>
             <releases>
