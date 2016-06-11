@@ -117,7 +117,7 @@ public class MethodBasedScopesIT {
     @Test(expected = ForbiddenException.class)
     public void getting_current_user_in_DELETE_scope_raises_exception() {
         AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.DELETE);
-        oConnector.getCurrentUser(accessToken);
+        oConnector.getMe(accessToken);
     }
 
     @Test(expected = ForbiddenException.class)
@@ -201,7 +201,7 @@ public class MethodBasedScopesIT {
     @Test
     public void get_current_user_in_GET_scope_works() {
         AccessToken accessToken = oConnector.retrieveAccessToken("marissa", "koala", Scope.GET);
-        User user = oConnector.getCurrentUser(accessToken);
+        User user = oConnector.getMe(accessToken);
         assertThat(user, is(notNullValue()));
     }
 
