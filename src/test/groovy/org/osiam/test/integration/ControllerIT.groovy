@@ -30,7 +30,6 @@ import org.osiam.client.exception.UnauthorizedException
 import org.osiam.client.oauth.AccessToken
 import org.osiam.client.oauth.Scope
 import org.osiam.resources.scim.Email
-import org.osiam.resources.scim.UpdateUser
 import org.osiam.resources.scim.User
 import spock.lang.Unroll
 
@@ -319,32 +318,21 @@ class ControllerIT extends AbstractIT {
     def 'OSNG-467: Deactivating a user should revoke his access token'() {
         given: 'active user with valid access token'
         def userId = "cef9452e-00a9-4cec-a086-d171374ffbef"
-        AccessToken serviceAccessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
-        UpdateUser updateUser = new UpdateUser.Builder().updateActive(false).build()
+        def serviceAccessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
+        def user = OSIAM_CONNECTOR.getUser(userId, serviceAccessToken)
 
         when: 'the user is deactivated'
-        AccessToken validationResult = OSIAM_CONNECTOR.validateAccessToken(accessToken) // should be valid
-        User updatedUser = OSIAM_CONNECTOR.updateUser(userId, updateUser, serviceAccessToken)
-        validationResult = OSIAM_CONNECTOR.validateAccessToken(accessToken) // should not be authorized
+        def updateUser = new User.Builder(user)
+                .setActive(false)
+                .build()
+        def validationResult = OSIAM_CONNECTOR.validateAccessToken(accessToken) // should be valid
+        def updatedUser = OSIAM_CONNECTOR.replaceUser(userId, updateUser, serviceAccessToken)
+        OSIAM_CONNECTOR.validateAccessToken(accessToken) // should not be authorized
 
         then: 'the user should be deactivated and the access token should be revoked'
+        validationResult != null
         updatedUser.isActive() == false
         thrown(UnauthorizedException)
-    }
-
-    def 'OSNG-467: Updating a user without deactivating him should not revoke his access token'() {
-        given: 'active user with valid access token'
-        def userId = "cef9452e-00a9-4cec-a086-d171374ffbef"
-        AccessToken serviceAccessToken = OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN)
-        UpdateUser updateUser = new UpdateUser.Builder().updateDisplayName('Marissa').build()
-
-        when: 'the user is updated'
-        User updatedUser = OSIAM_CONNECTOR.updateUser(userId, updateUser, serviceAccessToken)
-        AccessToken validationResult = OSIAM_CONNECTOR.validateAccessToken(accessToken)
-
-        then: 'update was successful and the token is still valid'
-        updatedUser.getDisplayName() == 'Marissa'
-        validationResult.expired == false
     }
 
     def 'OSNG-467: Replacing a user with deactivating him should revoke his access token'() {

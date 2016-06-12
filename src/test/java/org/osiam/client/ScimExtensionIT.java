@@ -23,22 +23,10 @@
 
 package org.osiam.client;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.math.BigInteger;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.NoSuchElementException;
-
-import javax.sql.DataSource;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,7 +37,6 @@ import org.osiam.resources.scim.Extension;
 import org.osiam.resources.scim.Extension.Field;
 import org.osiam.resources.scim.ExtensionFieldType;
 import org.osiam.resources.scim.SCIMSearchResult;
-import org.osiam.resources.scim.UpdateUser;
 import org.osiam.resources.scim.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -57,10 +44,17 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -167,20 +161,6 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
 
     @Test
     @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/extensions.xml")
-    public void updating_a_user_with_extension_data_to_database_works() {
-        Extension extension = createExtensionWithData(URN, extensionDataToPatch);
-        UpdateUser patchUser = new UpdateUser.Builder().updateExtension(extension).build();
-
-        OSIAM_CONNECTOR.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
-
-        User storedUser = OSIAM_CONNECTOR.getUser(EXISTING_USER_UUID, accessToken);
-        Extension storedExtension = storedUser.getExtension(URN);
-
-        assertExtensionEqualsExtensionMap(storedExtension, extensionDataToPatch);
-    }
-
-    @Test
-    @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/extensions.xml")
     public void deleting_a_user_also_deletes_her_extension_values() throws SQLException {
         OSIAM_CONNECTOR.deleteUser(EXISTING_USER_UUID, accessToken);
 
@@ -189,100 +169,6 @@ public class ScimExtensionIT extends AbstractIntegrationTestBase {
         rs.next();
 
         assertThat(rs.getInt(1), is(0));
-    }
-
-    @Test
-    @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/extensions_with_less_values.xml")
-    public void updating_a_user_with_less_extension_data_to_database_works() {
-        Extension extension = createExtensionWithData(URN, extensionDataToPatch);
-        UpdateUser patchUser = new UpdateUser.Builder().updateExtension(extension).build();
-
-        OSIAM_CONNECTOR.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
-
-        User storedUser = OSIAM_CONNECTOR.getUser(EXISTING_USER_UUID, accessToken);
-        Extension storedExtension = storedUser.getExtension(URN);
-
-        assertExtensionEqualsExtensionMap(storedExtension, extensionDataToPatch);
-    }
-
-    @Test
-    @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/extensions.xml")
-    public void updating_one_extension_field_doesnt_change_the_other_fields() {
-        Map<String, Extension.Field> extensionDataToPatch = new HashMap<>();
-        extensionDataToPatch.put("gender", new Extension.Field(ExtensionFieldType.STRING, "male"));
-        Extension extension = createExtensionWithData(URN, extensionDataToPatch);
-        UpdateUser patchUser = new UpdateUser.Builder().updateExtension(extension).build();
-
-        User updatedUser = OSIAM_CONNECTOR.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
-
-        Extension storedExtension = updatedUser.getExtension(URN);
-        assertEquals(BigInteger.valueOf(28), storedExtension.getField("age", ExtensionFieldType.INTEGER));
-    }
-
-    @Test(expected = NoSuchElementException.class)
-    @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/extensions.xml")
-    public void deleting_extension_works() {
-        UpdateUser patchUser = new UpdateUser.Builder().deleteExtension(URN).build();
-
-        User updatedUser = OSIAM_CONNECTOR.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
-
-        updatedUser.getExtension(URN);
-    }
-
-    @Test
-    @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/extensions.xml")
-    public void deleting_extension_field_works() {
-        UpdateUser patchUser = new UpdateUser.Builder().deleteExtensionField(URN, "gender").build();
-
-        User updatedUser = OSIAM_CONNECTOR.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
-
-        assertThat(updatedUser.getExtension(URN).isFieldPresent("gender"), is(false));
-        assertThat(updatedUser.getExtension(URN).isFieldPresent("newsletter"), is(true));
-    }
-
-    @Test
-    @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/extensions.xml")
-    public void updating_an_extension_field_works() {
-        Extension updateExtension = new Extension.Builder(URN).setField("gender", "female").build();
-        UpdateUser patchUser = new UpdateUser.Builder().updateExtension(updateExtension).build();
-
-        User updatedUser = OSIAM_CONNECTOR.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
-
-        assertThat(updatedUser.getExtension(URN).getField("gender", ExtensionFieldType.STRING), is("female"));
-    }
-
-    @Test
-    @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/extensions_with_less_values.xml")
-    public void set_a_new_extension_field_works() {
-        Extension updateExtension = new Extension.Builder(URN).setField("newsletter", true).build();
-        UpdateUser patchUser = new UpdateUser.Builder().updateExtension(updateExtension).build();
-
-        User updatedUser = OSIAM_CONNECTOR.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
-
-        assertThat(updatedUser.getExtension(URN).getField("newsletter", ExtensionFieldType.BOOLEAN), is(true));
-    }
-
-    @Test
-    @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/extensions.xml")
-    public void updating_an_extension_with_an_empty_string_doesnt_change_the_value() {
-        Extension updateExtension = new Extension.Builder(URN).setField("gender", "").build();
-        UpdateUser patchUser = new UpdateUser.Builder().updateExtension(updateExtension).build();
-
-        User updatedUser = OSIAM_CONNECTOR.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
-
-        assertThat(updatedUser.getExtension(URN).getField("gender", ExtensionFieldType.STRING), is("male"));
-    }
-
-    @Test
-    @DatabaseSetup(value = "/database_seeds/ScimExtensionIT/extensions.xml")
-    public void delete_and_add_in_one_request_works() {
-        Extension updateExtension = new Extension.Builder(URN).setField("gender", "female").build();
-        UpdateUser patchUser = new UpdateUser.Builder().updateExtension(updateExtension)
-                .deleteExtensionField(URN, "gender").build();
-
-        User updatedUser = OSIAM_CONNECTOR.updateUser(EXISTING_USER_UUID, patchUser, accessToken);
-
-        assertThat(updatedUser.getExtension(URN).getField("gender", ExtensionFieldType.STRING), is("female"));
     }
 
     private Extension createExtensionWithData(String urn, Map<String, Extension.Field> extensionData) {

@@ -35,8 +35,11 @@ import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
-import org.osiam.client.user.BasicUser;
-import org.osiam.resources.scim.*;
+import org.osiam.resources.scim.Email;
+import org.osiam.resources.scim.Group;
+import org.osiam.resources.scim.MemberRef;
+import org.osiam.resources.scim.SCIMSearchResult;
+import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -139,27 +142,6 @@ public class AdminScopeIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void can_update_own_user() {
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
-        Email email = new Email.Builder()
-                .setValue("marrisa@example.com")
-                .setType(Email.Type.HOME)
-                .build();
-        UpdateUser updateUser = new UpdateUser.Builder()
-                .updateDisplayName("Marissa")
-                .updateActive(false)
-                .addEmail(email)
-                .build();
-
-        User user = OSIAM_CONNECTOR.updateUser(OWN_USER_ID, updateUser, accessToken);
-
-        assertThat(user.getDisplayName(), is(equalTo("Marissa")));
-        assertThat(user.isActive(), is(equalTo(false)));
-        assertThat(user.getEmails().get(0).getValue(), is(equalTo("marrisa@example.com")));
-        assertThat(user.getEmails().get(0).getType(), is(equalTo(Email.Type.HOME)));
-    }
-
-    @Test
     public void can_replace_own_user() {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
         User originalUser = OSIAM_CONNECTOR.getUser(OWN_USER_ID, accessToken);
@@ -250,27 +232,6 @@ public class AdminScopeIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void can_update_other_user() {
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
-        Email email = new Email.Builder()
-                .setValue("barbara@example.com")
-                .setType(Email.Type.HOME)
-                .build();
-        UpdateUser updateUser = new UpdateUser.Builder()
-                .updateDisplayName("Barbara")
-                .updateActive(false)
-                .addEmail(email)
-                .build();
-
-        User user = OSIAM_CONNECTOR.updateUser(OTHER_USER_ID, updateUser, accessToken);
-
-        assertThat(user.getDisplayName(), is(equalTo("Barbara")));
-        assertThat(user.isActive(), is(equalTo(false)));
-        assertThat(user.getEmails().get(0).getValue(), is(equalTo("barbara@example.com")));
-        assertThat(user.getEmails().get(0).getType(), is(equalTo(Email.Type.HOME)));
-    }
-
-    @Test
     public void can_replace_other_user() {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
         User originalUser = OSIAM_CONNECTOR.getUser(OTHER_USER_ID, accessToken);
@@ -322,19 +283,6 @@ public class AdminScopeIT extends AbstractIntegrationTestBase {
         Group group = OSIAM_CONNECTOR.createGroup(groupToCreate, accessToken);
 
         assertThat(group.getDisplayName(), is(equalTo("newGroup")));
-    }
-
-    @Test
-    public void can_update_group() {
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
-        UpdateGroup updateGroup = new UpdateGroup.Builder()
-                .addMember(OWN_USER_ID)
-                .updateDisplayName("newDisplayName")
-                .build();
-
-        Group group = OSIAM_CONNECTOR.updateGroup(GROUP_ID, updateGroup, accessToken);
-
-        assertThat(group.getDisplayName(), is(equalTo("newDisplayName")));
     }
 
     @Test

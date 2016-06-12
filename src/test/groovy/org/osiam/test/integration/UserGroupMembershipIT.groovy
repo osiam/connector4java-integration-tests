@@ -46,12 +46,11 @@ class UserGroupMembershipIT extends AbstractIT {
         def createdUser = OSIAM_CONNECTOR.createUser(user, OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN))
         def createdGroup = OSIAM_CONNECTOR.createGroup(group, OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN))
 
-        def updateGroup = new UpdateGroup.Builder()
-                .addMember(createdUser.getId())
-                .build()
-
         when:
-        def updatedGroup = OSIAM_CONNECTOR.updateGroup(createdGroup.getId(), updateGroup, OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN))
+        def updateGroup = new Group.Builder(createdGroup)
+                .addMember(new MemberRef.Builder().setValue(createdUser.getId()).build())
+                .build()
+        def updatedGroup = OSIAM_CONNECTOR.replaceGroup(createdGroup.getId(), updateGroup, OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN))
 
         then:
         updatedGroup.getMembers().size() == 1
@@ -70,12 +69,12 @@ class UserGroupMembershipIT extends AbstractIT {
         def createdParentGroup = OSIAM_CONNECTOR.createGroup(parentGroup, OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN))
         def createdMemberGroup = OSIAM_CONNECTOR.createGroup(memberGroup, OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN))
 
-        def updateGroup = new UpdateGroup.Builder()
-                .addMember(createdMemberGroup.getId())
+        def updateGroup = new Group.Builder(createdParentGroup)
+                .addMember(new MemberRef.Builder().setValue(createdMemberGroup.getId()).build())
                 .build()
 
         when:
-        def updatedGroup = OSIAM_CONNECTOR.updateGroup(createdParentGroup.getId(), updateGroup, OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN))
+        def updatedGroup = OSIAM_CONNECTOR.replaceGroup(createdParentGroup.getId(), updateGroup, OSIAM_CONNECTOR.retrieveAccessToken(Scope.ADMIN))
 
         then:
         updatedGroup.getMembers().size() == 1
@@ -101,15 +100,13 @@ class UserGroupMembershipIT extends AbstractIT {
             groupMember1,
             groupMember2,
             userMember3] as Set).build()
-
         def retParentGroup = OSIAM_CONNECTOR.createGroup(parentGroup, accessToken)
 
-        UpdateGroup updateGroup = new UpdateGroup.Builder()
-                .deleteMember(memberGroup1.getId())
-                .build()
-
         when:
-        def resultParentGroup = OSIAM_CONNECTOR.updateGroup(retParentGroup.getId(), updateGroup, accessToken)
+        def updatedGroup = new Group.Builder(retParentGroup)
+                .removeMember(retParentGroup.members[0])
+                .build()
+        def resultParentGroup = OSIAM_CONNECTOR.replaceGroup(retParentGroup.getId(), updatedGroup, accessToken)
 
         then:
         parentGroup.getMembers().size() == 3
@@ -132,12 +129,11 @@ class UserGroupMembershipIT extends AbstractIT {
 
         def parent = OSIAM_CONNECTOR.createGroup(parentGroup, accessToken)
 
-        UpdateGroup updateGroup = new UpdateGroup.Builder()
-                .deleteMembers()
-                .build()
-
         when:
-        def result = OSIAM_CONNECTOR.updateGroup(parent.getId(), updateGroup, accessToken)
+        def updatedGroup = new Group.Builder(parent)
+                .removeMembers()
+                .build()
+        def result = OSIAM_CONNECTOR.replaceGroup(parent.getId(), updatedGroup, accessToken)
 
         then:
         parent.getMembers().size() == 2

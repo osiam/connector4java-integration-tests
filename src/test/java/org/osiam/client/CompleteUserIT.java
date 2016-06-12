@@ -23,17 +23,10 @@
 
 package org.osiam.client;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.math.BigInteger;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -52,7 +45,6 @@ import org.osiam.resources.scim.PhoneNumber;
 import org.osiam.resources.scim.Photo;
 import org.osiam.resources.scim.Role;
 import org.osiam.resources.scim.SCIMSearchResult;
-import org.osiam.resources.scim.UpdateUser;
 import org.osiam.resources.scim.User;
 import org.osiam.resources.scim.X509Certificate;
 import org.springframework.test.context.ContextConfiguration;
@@ -60,10 +52,16 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import java.math.BigInteger;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/context.xml")
@@ -93,8 +91,8 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
     public void update_all_attributes_of_one_user_works() {
         User oldUser = OSIAM_CONNECTOR.getUser(VALID_USER_ID, accessToken);
         User expectedUser = createUserWithUpdatedField();
-        UpdateUser updateUser = createUpdateUser(oldUser, expectedUser);
-        User dbUser = OSIAM_CONNECTOR.updateUser(VALID_USER_ID, updateUser, accessToken);
+        User updateUser = createUpdatedUser(oldUser, expectedUser);
+        User dbUser = OSIAM_CONNECTOR.replaceUser(VALID_USER_ID, updateUser, accessToken);
         assertThatNewUserAndReturnUserAreEqual(expectedUser, dbUser);
     }
 
@@ -388,26 +386,32 @@ public class CompleteUserIT extends AbstractIntegrationTestBase {
                 .build();
     }
 
-    private UpdateUser createUpdateUser(User oldUser, User expectedUser) {
-        UpdateUser.Builder updateUserBuilder = new UpdateUser.Builder();
-
-        updateUserBuilder.updateActive(expectedUser.isActive());
-        updateUserBuilder.updateAddress(oldUser.getAddresses().get(0), expectedUser.getAddresses().get(0));
-        updateUserBuilder.updateEmail(oldUser.getEmails().get(0), expectedUser.getEmails().get(0));
-        updateUserBuilder.updateExternalId(expectedUser.getExternalId());
-        updateUserBuilder.updateName(expectedUser.getName());
-        updateUserBuilder.updatePhoneNumber(oldUser.getPhoneNumbers().get(0), expectedUser.getPhoneNumbers().get(0));
-        updateUserBuilder.updatePreferredLanguage(expectedUser.getPreferredLanguage());
-        updateUserBuilder.updateRole(oldUser.getRoles().get(0), expectedUser.getRoles().get(0));
-        updateUserBuilder.updateX509Certificate(oldUser.getX509Certificates().get(0), expectedUser
-                .getX509Certificates().get(0));
-        updateUserBuilder.updateEntitlement(oldUser.getEntitlements().get(0), expectedUser.getEntitlements().get(0));
-        updateUserBuilder.updateIm(oldUser.getIms().get(0), expectedUser.getIms().get(0));
-        updateUserBuilder.updatePhoto(oldUser.getPhotos().get(0), expectedUser.getPhotos().get(0));
-        updateUserBuilder.updateUserName(expectedUser.getUserName());
-        updateUserBuilder.updateExtension(expectedUser.getExtension(EXTENSION_URN));
-
-        return updateUserBuilder.build();
+    private User createUpdatedUser(User oldUser, User expectedUser) {
+        return new User.Builder(oldUser)
+                .setActive(expectedUser.isActive())
+                .removeAddress(oldUser.getAddresses().get(0))
+                .addAddress(expectedUser.getAddresses().get(0))
+                .removeEmail(oldUser.getEmails().get(0))
+                .addEmail(expectedUser.getEmails().get(0))
+                .setExternalId(expectedUser.getExternalId())
+                .setName(expectedUser.getName())
+                .removePhoneNumber(oldUser.getPhoneNumbers().get(0))
+                .addPhoneNumber(expectedUser.getPhoneNumbers().get(0))
+                .setPreferredLanguage(expectedUser.getPreferredLanguage())
+                .removeRole(oldUser.getRoles().get(0))
+                .addRole(expectedUser.getRoles().get(0))
+                .removeX509Certificate(oldUser.getX509Certificates().get(0))
+                .addX509Certificate(expectedUser.getX509Certificates().get(0))
+                .removeEntitlement(oldUser.getEntitlements().get(0))
+                .addEntitlement(expectedUser.getEntitlements().get(0))
+                .removeIm(oldUser.getIms().get(0))
+                .addIm(expectedUser.getIms().get(0))
+                .removePhoto(oldUser.getPhotos().get(0))
+                .addPhoto(expectedUser.getPhotos().get(0))
+                .setUserName(expectedUser.getUserName())
+                .removeExtension(EXTENSION_URN)
+                .addExtension(expectedUser.getExtension(EXTENSION_URN))
+                .build();
     }
 
     private void assertThatNewUserAndReturnUserAreEqual(User expectedUser, User actualUser) {

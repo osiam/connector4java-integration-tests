@@ -36,12 +36,9 @@ import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.Scope;
 import org.osiam.client.query.Query;
 import org.osiam.client.query.QueryBuilder;
-import org.osiam.client.user.BasicUser;
 import org.osiam.resources.scim.Email;
 import org.osiam.resources.scim.Group;
 import org.osiam.resources.scim.MemberRef;
-import org.osiam.resources.scim.UpdateGroup;
-import org.osiam.resources.scim.UpdateUser;
 import org.osiam.resources.scim.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -54,8 +51,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.Collections;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -77,26 +73,6 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
         User user = OSIAM_CONNECTOR.getUser(OWN_USER_ID, accessToken);
 
         assertThat(user.getUserName(), is(equalTo("marissa")));
-    }
-
-    @Test
-    public void can_update_own_user() {
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
-        Email email = new Email.Builder()
-                .setValue("marrisa@example.com")
-                .setType(Email.Type.HOME)
-                .build();
-        UpdateUser updateUser = new UpdateUser.Builder()
-                .updateDisplayName("Marissa")
-                .updateActive(false)
-                .addEmail(email)
-                .build();
-
-        User user = OSIAM_CONNECTOR.updateUser(OWN_USER_ID, updateUser, accessToken);
-
-        assertThat(user.getDisplayName(), is(equalTo("Marissa")));
-        assertThat(user.getEmails().get(0).getValue(), is(equalTo("marrisa@example.com")));
-        assertThat(user.getEmails().get(0).getType(), is(equalTo(Email.Type.HOME)));
     }
 
     @Test
@@ -190,21 +166,6 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
     }
 
     @Test(expected = ForbiddenException.class)
-    public void cannot_update_other_user() {
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
-        Email email = new Email.Builder()
-                .setValue("marrisa@example.com")
-                .setType(Email.Type.HOME)
-                .build();
-        UpdateUser updateUser = new UpdateUser.Builder()
-                .updateDisplayName("Marissa")
-                .addEmail(email)
-                .build();
-
-        OSIAM_CONNECTOR.updateUser(OTHER_USER_ID, updateUser, accessToken);
-    }
-
-    @Test(expected = ForbiddenException.class)
     public void cannot_replace_other_user() {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
         User originalUser = OSIAM_CONNECTOR.getUser(OWN_USER_ID, accessToken);
@@ -246,17 +207,6 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
                 .build();
 
         OSIAM_CONNECTOR.createGroup(group, accessToken);
-    }
-
-    @Test(expected = ForbiddenException.class)
-    public void cannot_update_group() {
-        AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
-        UpdateGroup updateGroup = new UpdateGroup.Builder()
-                .addMember(OWN_USER_ID)
-                .updateDisplayName("newDisplayName")
-                .build();
-
-        OSIAM_CONNECTOR.updateGroup(GROUP_ID, updateGroup, accessToken);
     }
 
     @Test(expected = ForbiddenException.class)
