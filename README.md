@@ -7,7 +7,7 @@ The integration-tests for OSIAM.
 You can run the integration-tests on your machine, you only need to install
 java, maven and docker, and configure docker.
 
-The tests will fetch the snapshot dependencies from evolvis or you clone the
+The tests will fetch the snapshot dependencies from OSS JFrog or you clone the
 following repos and install them with ```mvn clean install```
 
 ```
