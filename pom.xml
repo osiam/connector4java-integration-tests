@@ -66,7 +66,7 @@
         <version.osiam.addon-self-administration-plugin-example>
             1.4-SNAPSHOT
         </version.osiam.addon-self-administration-plugin-example>
-        <version.osiam.connector4java>1.9-SNAPSHOT</version.osiam.connector4java>
+        <version.osiam.connector4java>latest-SNAPSHOT</version.osiam.connector4java>
     </properties>
 
     <dependencies>
