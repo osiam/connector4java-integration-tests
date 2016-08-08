@@ -62,11 +62,11 @@
         <!-- OSIAM -->
         <version.osiam.auth-server>2.5</version.osiam.auth-server>
         <version.osiam.resource-server>2.5</version.osiam.resource-server>
-        <version.osiam.addon-self-administration>latest-SNAPSHOT</version.osiam.addon-self-administration>
+        <version.osiam.addon-self-administration>1.9</version.osiam.addon-self-administration>
         <version.osiam.addon-self-administration-plugin-example>
             1.4-SNAPSHOT
         </version.osiam.addon-self-administration-plugin-example>
-        <version.osiam.connector4java>latest-SNAPSHOT</version.osiam.connector4java>
+        <version.osiam.connector4java>1.9</version.osiam.connector4java>
     </properties>
 
     <dependencies>
@@ -256,6 +256,13 @@
             <releases>
                 <enabled>false</enabled>
             </releases>
+        </repository>
+        <repository>
+            <id>osiam-releases</id>
+            <url>https://dl.bintray.com/osiam/OSIAM/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>osiam-snapshots</id>
