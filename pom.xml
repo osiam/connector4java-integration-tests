@@ -292,6 +292,12 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.5.1</version>
                 <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
                 <configuration>
                     <compilerId>groovy-eclipse-compiler</compilerId>
                     <verbose>false</verbose>
