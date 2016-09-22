@@ -127,7 +127,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>9.4.1209</version>
+            <version>9.4.1210</version>
             <scope>test</scope>
         </dependency>
 
@@ -148,7 +148,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>5.2.1.Final</version>
+            <version>5.2.2.Final</version>
             <scope>test</scope>
         </dependency>
 
@@ -162,7 +162,7 @@
         <dependency>
             <groupId>org.dbunit</groupId>
             <artifactId>dbunit</artifactId>
-            <version>2.5.2</version>
+            <version>2.5.3</version>
             <scope>test</scope>
         </dependency>
 
@@ -190,7 +190,7 @@
         <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>
-            <version>1.0-groovy-2.4</version>
+            <version>1.1-groovy-2.4-rc-2</version>
             <scope>test</scope>
         </dependency>
 
@@ -214,14 +214,14 @@
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>2.23.1</version>
+            <version>2.23.2</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-jackson</artifactId>
-            <version>2.23.1</version>
+            <version>2.23.2</version>
             <scope>test</scope>
         </dependency>
 
@@ -292,6 +292,12 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.5.1</version>
                 <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
                 <configuration>
                     <compilerId>groovy-eclipse-compiler</compilerId>
                     <verbose>false</verbose>
