@@ -272,11 +272,12 @@ public class MeScopeIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void cannot_access_metrics_endpoint() {
+    public void cannot_access_management_info_endpoint() {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ME);
 
         Response response = CLIENT.target(OSIAM_ENDPOINT)
-                .path("Metrics")
+                .path("management")
+                .path("info")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())
                 .get();

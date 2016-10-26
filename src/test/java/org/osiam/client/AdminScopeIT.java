@@ -107,11 +107,12 @@ public class AdminScopeIT extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void can_access_metrics_endpoint() {
+    public void can_access_management_info_endpoint() {
         AccessToken accessToken = OSIAM_CONNECTOR.retrieveAccessToken("marissa", "koala", Scope.ADMIN);
 
         Response response = CLIENT.target(OSIAM_ENDPOINT)
-                .path("Metrics")
+                .path("management")
+                .path("info")
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken.getToken())
                 .get();
