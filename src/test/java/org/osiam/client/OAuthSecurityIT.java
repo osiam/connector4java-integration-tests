@@ -95,7 +95,7 @@ public class OAuthSecurityIT extends AbstractIntegrationTestBase {
 
     @Test(expected = NotAuthorizedException.class)
     public void metrics_is_secured() throws IOException {
-        CLIENT.target(OSIAM_ENDPOINT + "/Metrics")
+        CLIENT.target(OSIAM_ENDPOINT + "/management/info")
                 .request(MediaType.APPLICATION_JSON)
                 .get(String.class);
     }
