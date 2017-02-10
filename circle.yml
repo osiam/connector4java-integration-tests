@@ -10,7 +10,7 @@ machine:
 
 dependencies:
   override:
-    - mvn -U dependency:resolve generate-resources
+    - ./mvnw -U dependency:resolve generate-resources
 
 test:
   override:
