@@ -5,10 +5,10 @@ The integration-tests for OSIAM.
 ## Install
 
 You can run the integration-tests on your machine, you only need to install
-java, maven and docker, and configure docker.
+java and docker, and configure docker.
 
 The tests will fetch the snapshot dependencies from OSS JFrog or you clone the
-following repos and install them with ```mvn clean install```
+following repos and install them with ```./mvnw clean install```
 
 ```
 https://github.com/osiam/connector4java
@@ -36,11 +36,11 @@ To run the integration-tests against
 
 postgres (default)
 
-    $ mvn clean verify
+    $ ./mvnw clean verify
 
 mysql
 
-    $ mvn clean verify -P mysql
+    $ ./mvnw clean verify -P mysql
 
 ## Run in your IDE
 
@@ -48,11 +48,11 @@ To run the integration-tests in your IDE against the started containers
 
 postgres (default)
 
-    $ mvn clean pre-integration-test
+    $ ./mvnw clean pre-integration-test
 
 mysql
 
-    $ mvn clean pre-integration-test -P mysql
+    $ ./mvnw clean pre-integration-test -P mysql
 
 If you are on mac or want to run them in a VM, just checkout the
 [OSIAM vagrant VM](https://github.com/osiam/vagrant). It's pretty easy to setup.
@@ -66,11 +66,11 @@ you need to enable the `debug` profile. Please remember that this overrides
 the active-by-default setting for the `postgres` profile, so if you want to use
 it, run it like
 
-    $ mvn clean pre-integration-test -P postgres,debug
+    $ ./mvnw clean pre-integration-test -P postgres,debug
 
 This changes nothing for the `mysql` profile, so running
 
-    $ mvn clean pre-integration-test -P mysql,debug
+    $ ./mvnw clean pre-integration-test -P mysql,debug
 
 is equivalent.
 
@@ -103,4 +103,4 @@ OSIAM:
 
 Here is an example when docker running in a boot2docker vm:
 
-    $ mvn verify -Ddocker.host=https://192.168.99.100:2376 -Dosiam.host=192.168.99.100
+    $ ./mvnw verify -Ddocker.host=https://192.168.99.100:2376 -Dosiam.host=192.168.99.100
