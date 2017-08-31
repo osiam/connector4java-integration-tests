@@ -236,7 +236,7 @@
     <repositories>
         <repository>
             <id>osiam-snapshots</id>
-            <url>https://oss.jfrog.org/artifactory/repo/</url>
+            <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
